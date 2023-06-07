@@ -265,10 +265,46 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.claim.fields.files') }}
+                            {{ trans('cruds.claim.fields.damage_files') }}
                         </th>
                         <td>
-                            @foreach($claim->files as $key => $media)
+                            @foreach($claim->damage_files as $key => $media)
+                                <a href="{{ $media->getUrl() }}" target="_blank">
+                                    {{ trans('global.view_file') }}
+                                </a>
+                            @endforeach
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.claim.fields.report_files') }}
+                        </th>
+                        <td>
+                            @foreach($claim->report_files as $key => $media)
+                                <a href="{{ $media->getUrl() }}" target="_blank">
+                                    {{ trans('global.view_file') }}
+                                </a>
+                            @endforeach
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.claim.fields.financial_files') }}
+                        </th>
+                        <td>
+                            @foreach($claim->financial_files as $key => $media)
+                                <a href="{{ $media->getUrl() }}" target="_blank">
+                                    {{ trans('global.view_file') }}
+                                </a>
+                            @endforeach
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.claim.fields.other_files') }}
+                        </th>
+                        <td>
+                            @foreach($claim->other_files as $key => $media)
                                 <a href="{{ $media->getUrl() }}" target="_blank">
                                     {{ trans('global.view_file') }}
                                 </a>
@@ -286,6 +322,22 @@
     </div>
 </div>
 
-
+<div class="card">
+    <div class="card-header">
+        {{ trans('global.relatedData') }}
+    </div>
+    <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="#claim_notes" role="tab" data-toggle="tab">
+                {{ trans('cruds.note.title') }}
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" role="tabpanel" id="claim_notes">
+            @includeIf('admin.claims.relationships.claimNotes', ['notes' => $claim->claimNotes])
+        </div>
+    </div>
+</div>
 
 @endsection

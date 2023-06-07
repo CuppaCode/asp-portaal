@@ -18,7 +18,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('company'))
-                    <span class="text-danger">{{ $errors->first('company') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('company') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.injuryOffice.fields.company_helper') }}</span>
             </div>
@@ -26,7 +28,9 @@
                 <label for="identifier">{{ trans('cruds.injuryOffice.fields.identifier') }}</label>
                 <input class="form-control {{ $errors->has('identifier') ? 'is-invalid' : '' }}" type="text" name="identifier" id="identifier" value="{{ old('identifier', $injuryOffice->identifier) }}">
                 @if($errors->has('identifier'))
-                    <span class="text-danger">{{ $errors->first('identifier') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('identifier') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.injuryOffice.fields.identifier_helper') }}</span>
             </div>

@@ -17,7 +17,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('company'))
-                    <span class="text-danger">{{ $errors->first('company') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('company') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
             </div>
@@ -28,7 +30,9 @@
                     <label class="form-check-label" for="assign_self">{{ trans('cruds.claim.fields.assign_self') }}</label>
                 </div>
                 @if($errors->has('assign_self'))
-                    <span class="text-danger">{{ $errors->first('assign_self') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('assign_self') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.assign_self_helper') }}</span>
             </div>
@@ -36,7 +40,9 @@
                 <label class="required" for="subject">{{ trans('cruds.claim.fields.subject') }}</label>
                 <input class="form-control {{ $errors->has('subject') ? 'is-invalid' : '' }}" type="text" name="subject" id="subject" value="{{ old('subject', '') }}" required>
                 @if($errors->has('subject'))
-                    <span class="text-danger">{{ $errors->first('subject') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('subject') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.subject_helper') }}</span>
             </div>
@@ -44,7 +50,9 @@
                 <label class="required" for="claim_number">{{ trans('cruds.claim.fields.claim_number') }}</label>
                 <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', '') }}" required>
                 @if($errors->has('claim_number'))
-                    <span class="text-danger">{{ $errors->first('claim_number') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('claim_number') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.claim_number_helper') }}</span>
             </div>
@@ -57,7 +65,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('status'))
-                    <span class="text-danger">{{ $errors->first('status') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('status') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.status_helper') }}</span>
             </div>
@@ -70,7 +80,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('injury'))
-                    <span class="text-danger">{{ $errors->first('injury') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('injury') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.injury_helper') }}</span>
             </div>
@@ -83,7 +95,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('contact_lawyer'))
-                    <span class="text-danger">{{ $errors->first('contact_lawyer') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('contact_lawyer') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.contact_lawyer_helper') }}</span>
             </div>
@@ -91,7 +105,9 @@
                 <label for="injury_other">{{ trans('cruds.claim.fields.injury_other') }}</label>
                 <input class="form-control {{ $errors->has('injury_other') ? 'is-invalid' : '' }}" type="text" name="injury_other" id="injury_other" value="{{ old('injury_other', '') }}">
                 @if($errors->has('injury_other'))
-                    <span class="text-danger">{{ $errors->first('injury_other') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('injury_other') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.injury_other_helper') }}</span>
             </div>
@@ -103,7 +119,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('injury_office'))
-                    <span class="text-danger">{{ $errors->first('injury_office') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('injury_office') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.injury_office_helper') }}</span>
             </div>
@@ -115,7 +133,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('vehicle'))
-                    <span class="text-danger">{{ $errors->first('vehicle') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('vehicle') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_helper') }}</span>
             </div>
@@ -127,7 +147,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('vehicle_opposite'))
-                    <span class="text-danger">{{ $errors->first('vehicle_opposite') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('vehicle_opposite') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_opposite_helper') }}</span>
             </div>
@@ -140,7 +162,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('opposite_type'))
-                    <span class="text-danger">{{ $errors->first('opposite_type') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('opposite_type') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.opposite_type_helper') }}</span>
             </div>
@@ -148,7 +172,9 @@
                 <label for="damaged_part">{{ trans('cruds.claim.fields.damaged_part') }}</label>
                 <input class="form-control {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" type="text" name="damaged_part" id="damaged_part" value="{{ old('damaged_part', '') }}">
                 @if($errors->has('damaged_part'))
-                    <span class="text-danger">{{ $errors->first('damaged_part') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damaged_part') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_helper') }}</span>
             </div>
@@ -156,7 +182,9 @@
                 <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
                 <input class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" type="text" name="damage_origin" id="damage_origin" value="{{ old('damage_origin', '') }}">
                 @if($errors->has('damage_origin'))
-                    <span class="text-danger">{{ $errors->first('damage_origin') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damage_origin') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_helper') }}</span>
             </div>
@@ -169,7 +197,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('damaged_area'))
-                    <span class="text-danger">{{ $errors->first('damaged_area') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damaged_area') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_helper') }}</span>
             </div>
@@ -177,7 +207,9 @@
                 <label for="damaged_part_opposite">{{ trans('cruds.claim.fields.damaged_part_opposite') }}</label>
                 <input class="form-control {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" type="text" name="damaged_part_opposite" id="damaged_part_opposite" value="{{ old('damaged_part_opposite', '') }}">
                 @if($errors->has('damaged_part_opposite'))
-                    <span class="text-danger">{{ $errors->first('damaged_part_opposite') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damaged_part_opposite') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_opposite_helper') }}</span>
             </div>
@@ -185,7 +217,9 @@
                 <label for="damage_origin_opposite">{{ trans('cruds.claim.fields.damage_origin_opposite') }}</label>
                 <input class="form-control {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" type="text" name="damage_origin_opposite" id="damage_origin_opposite" value="{{ old('damage_origin_opposite', '') }}">
                 @if($errors->has('damage_origin_opposite'))
-                    <span class="text-danger">{{ $errors->first('damage_origin_opposite') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damage_origin_opposite') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_opposite_helper') }}</span>
             </div>
@@ -198,7 +232,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('damaged_area_opposite'))
-                    <span class="text-danger">{{ $errors->first('damaged_area_opposite') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damaged_area_opposite') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_opposite_helper') }}</span>
             </div>
@@ -210,7 +246,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('recovery_office'))
-                    <span class="text-danger">{{ $errors->first('recovery_office') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('recovery_office') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.recovery_office_helper') }}</span>
             </div>
@@ -218,7 +256,9 @@
                 <label for="damage_costs">{{ trans('cruds.claim.fields.damage_costs') }}</label>
                 <input class="form-control {{ $errors->has('damage_costs') ? 'is-invalid' : '' }}" type="number" name="damage_costs" id="damage_costs" value="{{ old('damage_costs', '') }}" step="0.01">
                 @if($errors->has('damage_costs'))
-                    <span class="text-danger">{{ $errors->first('damage_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damage_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.damage_costs_helper') }}</span>
             </div>
@@ -226,7 +266,9 @@
                 <label for="recovery_costs">{{ trans('cruds.claim.fields.recovery_costs') }}</label>
                 <input class="form-control {{ $errors->has('recovery_costs') ? 'is-invalid' : '' }}" type="number" name="recovery_costs" id="recovery_costs" value="{{ old('recovery_costs', '') }}" step="0.01">
                 @if($errors->has('recovery_costs'))
-                    <span class="text-danger">{{ $errors->first('recovery_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('recovery_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.recovery_costs_helper') }}</span>
             </div>
@@ -234,7 +276,9 @@
                 <label for="replacement_vehicle_costs">{{ trans('cruds.claim.fields.replacement_vehicle_costs') }}</label>
                 <input class="form-control {{ $errors->has('replacement_vehicle_costs') ? 'is-invalid' : '' }}" type="number" name="replacement_vehicle_costs" id="replacement_vehicle_costs" value="{{ old('replacement_vehicle_costs', '') }}" step="0.01">
                 @if($errors->has('replacement_vehicle_costs'))
-                    <span class="text-danger">{{ $errors->first('replacement_vehicle_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('replacement_vehicle_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.replacement_vehicle_costs_helper') }}</span>
             </div>
@@ -242,7 +286,9 @@
                 <label for="expert_costs">{{ trans('cruds.claim.fields.expert_costs') }}</label>
                 <input class="form-control {{ $errors->has('expert_costs') ? 'is-invalid' : '' }}" type="number" name="expert_costs" id="expert_costs" value="{{ old('expert_costs', '') }}" step="0.01">
                 @if($errors->has('expert_costs'))
-                    <span class="text-danger">{{ $errors->first('expert_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('expert_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.expert_costs_helper') }}</span>
             </div>
@@ -250,7 +296,9 @@
                 <label for="other_costs">{{ trans('cruds.claim.fields.other_costs') }}</label>
                 <input class="form-control {{ $errors->has('other_costs') ? 'is-invalid' : '' }}" type="number" name="other_costs" id="other_costs" value="{{ old('other_costs', '') }}" step="0.01">
                 @if($errors->has('other_costs'))
-                    <span class="text-danger">{{ $errors->first('other_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('other_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.other_costs_helper') }}</span>
             </div>
@@ -258,7 +306,9 @@
                 <label for="deductible_excess_costs">{{ trans('cruds.claim.fields.deductible_excess_costs') }}</label>
                 <input class="form-control {{ $errors->has('deductible_excess_costs') ? 'is-invalid' : '' }}" type="number" name="deductible_excess_costs" id="deductible_excess_costs" value="{{ old('deductible_excess_costs', '') }}" step="0.01">
                 @if($errors->has('deductible_excess_costs'))
-                    <span class="text-danger">{{ $errors->first('deductible_excess_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('deductible_excess_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.deductible_excess_costs_helper') }}</span>
             </div>
@@ -266,7 +316,9 @@
                 <label for="insurance_costs">{{ trans('cruds.claim.fields.insurance_costs') }}</label>
                 <input class="form-control {{ $errors->has('insurance_costs') ? 'is-invalid' : '' }}" type="number" name="insurance_costs" id="insurance_costs" value="{{ old('insurance_costs', '') }}" step="0.01">
                 @if($errors->has('insurance_costs'))
-                    <span class="text-danger">{{ $errors->first('insurance_costs') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('insurance_costs') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.insurance_costs_helper') }}</span>
             </div>
@@ -278,7 +330,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('expertise_office'))
-                    <span class="text-danger">{{ $errors->first('expertise_office') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('expertise_office') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.expertise_office_helper') }}</span>
             </div>
@@ -289,7 +343,9 @@
                     <label class="form-check-label" for="expert_report_is_in">{{ trans('cruds.claim.fields.expert_report_is_in') }}</label>
                 </div>
                 @if($errors->has('expert_report_is_in'))
-                    <span class="text-danger">{{ $errors->first('expert_report_is_in') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('expert_report_is_in') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.expert_report_is_in_helper') }}</span>
             </div>
@@ -297,7 +353,9 @@
                 <label class="required" for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
                 <input class="form-control datetime {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at') }}" required>
                 @if($errors->has('requested_at'))
-                    <span class="text-danger">{{ $errors->first('requested_at') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('requested_at') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.requested_at_helper') }}</span>
             </div>
@@ -305,18 +363,55 @@
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
                 <input class="form-control datetime {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at') }}">
                 @if($errors->has('report_received_at'))
-                    <span class="text-danger">{{ $errors->first('report_received_at') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('report_received_at') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.report_received_at_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="files">{{ trans('cruds.claim.fields.files') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('files') ? 'is-invalid' : '' }}" id="files-dropzone">
+                <label for="damage_files">{{ trans('cruds.claim.fields.damage_files') }}</label>
+                <div class="needsclick dropzone {{ $errors->has('damage_files') ? 'is-invalid' : '' }}" id="damage_files-dropzone">
                 </div>
-                @if($errors->has('files'))
-                    <span class="text-danger">{{ $errors->first('files') }}</span>
+                @if($errors->has('damage_files'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damage_files') }}
+                    </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.files_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.claim.fields.damage_files_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="report_files">{{ trans('cruds.claim.fields.report_files') }}</label>
+                <div class="needsclick dropzone {{ $errors->has('report_files') ? 'is-invalid' : '' }}" id="report_files-dropzone">
+                </div>
+                @if($errors->has('report_files'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('report_files') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.report_files_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="financial_files">{{ trans('cruds.claim.fields.financial_files') }}</label>
+                <div class="needsclick dropzone {{ $errors->has('financial_files') ? 'is-invalid' : '' }}" id="financial_files-dropzone">
+                </div>
+                @if($errors->has('financial_files'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('financial_files') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.financial_files_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="other_files">{{ trans('cruds.claim.fields.other_files') }}</label>
+                <div class="needsclick dropzone {{ $errors->has('other_files') ? 'is-invalid' : '' }}" id="other_files-dropzone">
+                </div>
+                @if($errors->has('other_files'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('other_files') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.other_files_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
@@ -333,8 +428,8 @@
 
 @section('scripts')
 <script>
-    var uploadedFilesMap = {}
-Dropzone.options.filesDropzone = {
+    var uploadedDamageFilesMap = {}
+Dropzone.options.damageFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
     maxFilesize: 5, // MB
     addRemoveLinks: true,
@@ -345,8 +440,8 @@ Dropzone.options.filesDropzone = {
       size: 5
     },
     success: function (file, response) {
-      $('form').append('<input type="hidden" name="files[]" value="' + response.name + '">')
-      uploadedFilesMap[file.name] = response.name
+      $('form').append('<input type="hidden" name="damage_files[]" value="' + response.name + '">')
+      uploadedDamageFilesMap[file.name] = response.name
     },
     removedfile: function (file) {
       file.previewElement.remove()
@@ -354,19 +449,187 @@ Dropzone.options.filesDropzone = {
       if (typeof file.file_name !== 'undefined') {
         name = file.file_name
       } else {
-        name = uploadedFilesMap[file.name]
+        name = uploadedDamageFilesMap[file.name]
       }
-      $('form').find('input[name="files[]"][value="' + name + '"]').remove()
+      $('form').find('input[name="damage_files[]"][value="' + name + '"]').remove()
     },
     init: function () {
-@if(isset($claim) && $claim->files)
+@if(isset($claim) && $claim->damage_files)
           var files =
-            {!! json_encode($claim->files) !!}
+            {!! json_encode($claim->damage_files) !!}
               for (var i in files) {
               var file = files[i]
               this.options.addedfile.call(this, file)
               file.previewElement.classList.add('dz-complete')
-              $('form').append('<input type="hidden" name="files[]" value="' + file.file_name + '">')
+              $('form').append('<input type="hidden" name="damage_files[]" value="' + file.file_name + '">')
+            }
+@endif
+    },
+     error: function (file, response) {
+         if ($.type(response) === 'string') {
+             var message = response //dropzone sends it's own error messages in string
+         } else {
+             var message = response.errors.file
+         }
+         file.previewElement.classList.add('dz-error')
+         _ref = file.previewElement.querySelectorAll('[data-dz-errormessage]')
+         _results = []
+         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+             node = _ref[_i]
+             _results.push(node.textContent = message)
+         }
+
+         return _results
+     }
+}
+</script>
+<script>
+    var uploadedReportFilesMap = {}
+Dropzone.options.reportFilesDropzone = {
+    url: '{{ route('admin.claims.storeMedia') }}',
+    maxFilesize: 5, // MB
+    addRemoveLinks: true,
+    headers: {
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    params: {
+      size: 5
+    },
+    success: function (file, response) {
+      $('form').append('<input type="hidden" name="report_files[]" value="' + response.name + '">')
+      uploadedReportFilesMap[file.name] = response.name
+    },
+    removedfile: function (file) {
+      file.previewElement.remove()
+      var name = ''
+      if (typeof file.file_name !== 'undefined') {
+        name = file.file_name
+      } else {
+        name = uploadedReportFilesMap[file.name]
+      }
+      $('form').find('input[name="report_files[]"][value="' + name + '"]').remove()
+    },
+    init: function () {
+@if(isset($claim) && $claim->report_files)
+          var files =
+            {!! json_encode($claim->report_files) !!}
+              for (var i in files) {
+              var file = files[i]
+              this.options.addedfile.call(this, file)
+              file.previewElement.classList.add('dz-complete')
+              $('form').append('<input type="hidden" name="report_files[]" value="' + file.file_name + '">')
+            }
+@endif
+    },
+     error: function (file, response) {
+         if ($.type(response) === 'string') {
+             var message = response //dropzone sends it's own error messages in string
+         } else {
+             var message = response.errors.file
+         }
+         file.previewElement.classList.add('dz-error')
+         _ref = file.previewElement.querySelectorAll('[data-dz-errormessage]')
+         _results = []
+         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+             node = _ref[_i]
+             _results.push(node.textContent = message)
+         }
+
+         return _results
+     }
+}
+</script>
+<script>
+    var uploadedFinancialFilesMap = {}
+Dropzone.options.financialFilesDropzone = {
+    url: '{{ route('admin.claims.storeMedia') }}',
+    maxFilesize: 5, // MB
+    addRemoveLinks: true,
+    headers: {
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    params: {
+      size: 5
+    },
+    success: function (file, response) {
+      $('form').append('<input type="hidden" name="financial_files[]" value="' + response.name + '">')
+      uploadedFinancialFilesMap[file.name] = response.name
+    },
+    removedfile: function (file) {
+      file.previewElement.remove()
+      var name = ''
+      if (typeof file.file_name !== 'undefined') {
+        name = file.file_name
+      } else {
+        name = uploadedFinancialFilesMap[file.name]
+      }
+      $('form').find('input[name="financial_files[]"][value="' + name + '"]').remove()
+    },
+    init: function () {
+@if(isset($claim) && $claim->financial_files)
+          var files =
+            {!! json_encode($claim->financial_files) !!}
+              for (var i in files) {
+              var file = files[i]
+              this.options.addedfile.call(this, file)
+              file.previewElement.classList.add('dz-complete')
+              $('form').append('<input type="hidden" name="financial_files[]" value="' + file.file_name + '">')
+            }
+@endif
+    },
+     error: function (file, response) {
+         if ($.type(response) === 'string') {
+             var message = response //dropzone sends it's own error messages in string
+         } else {
+             var message = response.errors.file
+         }
+         file.previewElement.classList.add('dz-error')
+         _ref = file.previewElement.querySelectorAll('[data-dz-errormessage]')
+         _results = []
+         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+             node = _ref[_i]
+             _results.push(node.textContent = message)
+         }
+
+         return _results
+     }
+}
+</script>
+<script>
+    var uploadedOtherFilesMap = {}
+Dropzone.options.otherFilesDropzone = {
+    url: '{{ route('admin.claims.storeMedia') }}',
+    maxFilesize: 5, // MB
+    addRemoveLinks: true,
+    headers: {
+      'X-CSRF-TOKEN': "{{ csrf_token() }}"
+    },
+    params: {
+      size: 5
+    },
+    success: function (file, response) {
+      $('form').append('<input type="hidden" name="other_files[]" value="' + response.name + '">')
+      uploadedOtherFilesMap[file.name] = response.name
+    },
+    removedfile: function (file) {
+      file.previewElement.remove()
+      var name = ''
+      if (typeof file.file_name !== 'undefined') {
+        name = file.file_name
+      } else {
+        name = uploadedOtherFilesMap[file.name]
+      }
+      $('form').find('input[name="other_files[]"][value="' + name + '"]').remove()
+    },
+    init: function () {
+@if(isset($claim) && $claim->other_files)
+          var files =
+            {!! json_encode($claim->other_files) !!}
+              for (var i in files) {
+              var file = files[i]
+              this.options.addedfile.call(this, file)
+              file.previewElement.classList.add('dz-complete')
+              $('form').append('<input type="hidden" name="other_files[]" value="' + file.file_name + '">')
             }
 @endif
     },

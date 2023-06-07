@@ -75,6 +75,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('teams/destroy', 'TeamController@massDestroy')->name('teams.massDestroy');
     Route::resource('teams', 'TeamController');
 
+    // Audit Logs
+    Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
+
+    // Note
+    Route::delete('notes/destroy', 'NoteController@massDestroy')->name('notes.massDestroy');
+    Route::post('notes/media', 'NoteController@storeMedia')->name('notes.storeMedia');
+    Route::post('notes/ckmedia', 'NoteController@storeCKEditorImages')->name('notes.storeCKEditorImages');
+    Route::resource('notes', 'NoteController');
+
     Route::get('team-members', 'TeamMembersController@index')->name('team-members.index');
     Route::post('team-members', 'TeamMembersController@invite')->name('team-members.invite');
 });

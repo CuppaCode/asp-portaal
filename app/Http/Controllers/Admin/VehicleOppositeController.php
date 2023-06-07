@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyVehicleOppositeRequest;
 use App\Http\Requests\StoreVehicleOppositeRequest;
 use App\Http\Requests\UpdateVehicleOppositeRequest;
+use App\Models\Driver;
 use App\Models\Team;
 use App\Models\VehicleOpposite;
 use Gate;
@@ -18,23 +19,28 @@ class VehicleOppositeController extends Controller
     {
         abort_if(Gate::denies('vehicle_opposite_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $vehicleOpposites = VehicleOpposite::with(['team'])->get();
+        $vehicleOpposites = VehicleOpposite::with(['drivers', 'team'])->get();
+
+        $drivers = Driver::get();
 
         $teams = Team::get();
 
-        return view('admin.vehicleOpposites.index', compact('teams', 'vehicleOpposites'));
+        return view('admin.vehicleOpposites.index', compact('drivers', 'teams', 'vehicleOpposites'));
     }
 
     public function create()
     {
         abort_if(Gate::denies('vehicle_opposite_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.vehicleOpposites.create');
+        $drivers = Driver::pluck('last_name', 'id');
+
+        return view('admin.vehicleOpposites.create', compact('drivers'));
     }
 
     public function store(StoreVehicleOppositeRequest $request)
     {
         $vehicleOpposite = VehicleOpposite::create($request->all());
+        $vehicleOpposite->drivers()->sync($request->input('drivers', []));
 
         return redirect()->route('admin.vehicle-opposites.index');
     }
@@ -43,14 +49,17 @@ class VehicleOppositeController extends Controller
     {
         abort_if(Gate::denies('vehicle_opposite_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $vehicleOpposite->load('team');
+        $drivers = Driver::pluck('last_name', 'id');
 
-        return view('admin.vehicleOpposites.edit', compact('vehicleOpposite'));
+        $vehicleOpposite->load('drivers', 'team');
+
+        return view('admin.vehicleOpposites.edit', compact('drivers', 'vehicleOpposite'));
     }
 
     public function update(UpdateVehicleOppositeRequest $request, VehicleOpposite $vehicleOpposite)
     {
         $vehicleOpposite->update($request->all());
+        $vehicleOpposite->drivers()->sync($request->input('drivers', []));
 
         return redirect()->route('admin.vehicle-opposites.index');
     }
@@ -59,7 +68,7 @@ class VehicleOppositeController extends Controller
     {
         abort_if(Gate::denies('vehicle_opposite_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $vehicleOpposite->load('team', 'vehicleOppositeDrivers', 'vehicleOppositeClaims');
+        $vehicleOpposite->load('drivers', 'team', 'vehicleOppositeClaims');
 
         return view('admin.vehicleOpposites.show', compact('vehicleOpposite'));
     }

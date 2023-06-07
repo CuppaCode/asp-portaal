@@ -70,8 +70,20 @@ class ClaimController extends Controller
     {
         $claim = Claim::create($request->all());
 
-        foreach ($request->input('files', []) as $file) {
-            $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('files');
+        foreach ($request->input('damage_files', []) as $file) {
+            $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('damage_files');
+        }
+
+        foreach ($request->input('report_files', []) as $file) {
+            $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('report_files');
+        }
+
+        foreach ($request->input('financial_files', []) as $file) {
+            $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('financial_files');
+        }
+
+        foreach ($request->input('other_files', []) as $file) {
+            $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('other_files');
         }
 
         if ($media = $request->input('ck-media', false)) {
@@ -106,17 +118,59 @@ class ClaimController extends Controller
     {
         $claim->update($request->all());
 
-        if (count($claim->files) > 0) {
-            foreach ($claim->files as $media) {
-                if (! in_array($media->file_name, $request->input('files', []))) {
+        if (count($claim->damage_files) > 0) {
+            foreach ($claim->damage_files as $media) {
+                if (! in_array($media->file_name, $request->input('damage_files', []))) {
                     $media->delete();
                 }
             }
         }
-        $media = $claim->files->pluck('file_name')->toArray();
-        foreach ($request->input('files', []) as $file) {
+        $media = $claim->damage_files->pluck('file_name')->toArray();
+        foreach ($request->input('damage_files', []) as $file) {
             if (count($media) === 0 || ! in_array($file, $media)) {
-                $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('files');
+                $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('damage_files');
+            }
+        }
+
+        if (count($claim->report_files) > 0) {
+            foreach ($claim->report_files as $media) {
+                if (! in_array($media->file_name, $request->input('report_files', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $claim->report_files->pluck('file_name')->toArray();
+        foreach ($request->input('report_files', []) as $file) {
+            if (count($media) === 0 || ! in_array($file, $media)) {
+                $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('report_files');
+            }
+        }
+
+        if (count($claim->financial_files) > 0) {
+            foreach ($claim->financial_files as $media) {
+                if (! in_array($media->file_name, $request->input('financial_files', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $claim->financial_files->pluck('file_name')->toArray();
+        foreach ($request->input('financial_files', []) as $file) {
+            if (count($media) === 0 || ! in_array($file, $media)) {
+                $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('financial_files');
+            }
+        }
+
+        if (count($claim->other_files) > 0) {
+            foreach ($claim->other_files as $media) {
+                if (! in_array($media->file_name, $request->input('other_files', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $claim->other_files->pluck('file_name')->toArray();
+        foreach ($request->input('other_files', []) as $file) {
+            if (count($media) === 0 || ! in_array($file, $media)) {
+                $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('other_files');
             }
         }
 
@@ -127,7 +181,7 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
+        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
 
         return view('admin.claims.show', compact('claim'));
     }

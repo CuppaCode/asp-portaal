@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTasksTable extends Migration
+class CreateNotesTable extends Migration
 {
     public function up()
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('notes', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('task_number')->unique();
-            $table->longText('description')->nullable();
+            $table->string('title');
+            $table->longText('description');
             $table->timestamps();
             $table->softDeletes();
         });

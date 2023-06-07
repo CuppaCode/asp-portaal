@@ -41,22 +41,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.driver.fields.vehicle') }}
-                        </th>
-                        <td>
-                            {{ $driver->vehicle->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.driver.fields.vehicle_opposite') }}
-                        </th>
-                        <td>
-                            {{ $driver->vehicle_opposite->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.driver.fields.email') }}
                         </th>
                         <td>
@@ -82,6 +66,30 @@
     </div>
 </div>
 
-
+<div class="card">
+    <div class="card-header">
+        {{ trans('global.relatedData') }}
+    </div>
+    <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="#driver_vehicles" role="tab" data-toggle="tab">
+                {{ trans('cruds.vehicle.title') }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#driver_vehicle_opposites" role="tab" data-toggle="tab">
+                {{ trans('cruds.vehicleOpposite.title') }}
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" role="tabpanel" id="driver_vehicles">
+            @includeIf('admin.drivers.relationships.driverVehicles', ['vehicles' => $driver->driverVehicles])
+        </div>
+        <div class="tab-pane" role="tabpanel" id="driver_vehicle_opposites">
+            @includeIf('admin.drivers.relationships.driverVehicleOpposites', ['vehicleOpposites' => $driver->driverVehicleOpposites])
+        </div>
+    </div>
+</div>
 
 @endsection

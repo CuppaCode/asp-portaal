@@ -26,6 +26,12 @@ class StoreVehicleOppositeRequest extends FormRequest
                 'required',
                 'unique:vehicle_opposites',
             ],
+            'drivers.*' => [
+                'integer',
+            ],
+            'drivers' => [
+                'array',
+            ],
         ];
     }
 }

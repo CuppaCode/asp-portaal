@@ -32,6 +32,9 @@
                             {{ trans('cruds.vehicleOpposite.fields.plates') }}
                         </th>
                         <th>
+                            {{ trans('cruds.vehicleOpposite.fields.driver') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -46,6 +49,14 @@
                         </td>
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
+                        </td>
+                        <td>
+                            <select class="search">
+                                <option value>{{ trans('global.all') }}</option>
+                                @foreach($drivers as $key => $item)
+                                    <option value="{{ $item->last_name }}">{{ $item->last_name }}</option>
+                                @endforeach
+                            </select>
                         </td>
                         <td>
                         </td>
@@ -65,6 +76,11 @@
                             </td>
                             <td>
                                 {{ $vehicleOpposite->plates ?? '' }}
+                            </td>
+                            <td>
+                                @foreach($vehicleOpposite->drivers as $key => $item)
+                                    <span class="badge badge-info">{{ $item->last_name }}</span>
+                                @endforeach
                             </td>
                             <td>
                                 @can('vehicle_opposite_show')

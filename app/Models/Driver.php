@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use App\Traits\MultiTenantModelTrait;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Driver extends Model
 {
-    use SoftDeletes, MultiTenantModelTrait, HasFactory;
+    use SoftDeletes, MultiTenantModelTrait, Auditable, HasFactory;
 
     public $table = 'drivers';
 
@@ -23,8 +24,6 @@ class Driver extends Model
     protected $fillable = [
         'first_name',
         'last_name',
-        'vehicle_id',
-        'vehicle_opposite_id',
         'email',
         'phone',
         'created_at',
@@ -38,14 +37,14 @@ class Driver extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function vehicle()
+    public function driverVehicles()
     {
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsToMany(Vehicle::class);
     }
 
-    public function vehicle_opposite()
+    public function driverVehicleOpposites()
     {
-        return $this->belongsTo(VehicleOpposite::class, 'vehicle_opposite_id');
+        return $this->belongsToMany(VehicleOpposite::class);
     }
 
     public function team()
