@@ -27,8 +27,8 @@ class Company extends Model implements HasMedia
     public const COMPANY_TYPE_SELECT = [
         'transport'  => 'Transport',
         'touringcar' => 'Touringcar',
-        'salvage'    => 'Salvage',
-        'recovery'   => 'Recovery',
+        'salvage'    => 'Berging',
+        'recovery'   => 'Hersteller',
         'expertise'  => 'Expertise',
     ];
 

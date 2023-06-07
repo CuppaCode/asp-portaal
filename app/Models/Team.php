@@ -33,6 +33,11 @@ class Team extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
+    public function teamCompanies()
+    {
+        return $this->hasMany(Company::class, 'team_id', 'id');
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');

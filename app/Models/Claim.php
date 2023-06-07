@@ -20,15 +20,15 @@ class Claim extends Model implements HasMedia
     public $table = 'claims';
 
     public const INJURY_SELECT = [
-        'yes'   => 'Yes',
-        'no'    => 'No',
-        'other' => 'Other',
+        'yes'   => 'Ja',
+        'no'    => 'Nee',
+        'other' => 'Anders...',
     ];
 
     public const CONTACT_LAWYER_SELECT = [
-        'yes' => 'Yes',
-        'no'  => 'No',
-        'n/a' => 'N/A',
+        'yes' => 'Ja',
+        'no'  => 'Nee',
+        'n/a' => 'N.V.T',
     ];
 
     protected $appends = [
@@ -47,9 +47,9 @@ class Claim extends Model implements HasMedia
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
-        'private'  => 'Private',
-        'business' => 'Business',
-        'unknown'  => 'Unknown',
+        'private'  => 'Particulier',
+        'business' => 'Zakelijk',
+        'unknown'  => 'Onbekend',
     ];
 
     public const STATUS_SELECT = [
@@ -60,17 +60,17 @@ class Claim extends Model implements HasMedia
     ];
 
     public const DAMAGED_AREA_SELECT = [
-        'left_front'  => 'Left Front',
-        'left_back'   => 'Left Back',
-        'right_front' => 'Right Front',
-        'right_back'  => 'Right Back',
+        'left_front'  => 'Links voor',
+        'left_back'   => 'Link achter',
+        'right_front' => 'Rechts voor',
+        'right_back'  => 'Rechts achter',
     ];
 
     public const DAMAGED_AREA_OPPOSITE_SELECT = [
-        'left_front'  => 'Left Front',
-        'left_back'   => 'Left Back',
-        'right_front' => 'Right Front',
-        'right_back'  => 'Right Back',
+        'left_front'  => 'Links voor',
+        'left_back'   => 'Links achter',
+        'right_front' => 'Rechts voor',
+        'right_back'  => 'Rechts achter',
     ];
 
     protected $fillable = [
