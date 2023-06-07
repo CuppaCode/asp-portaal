@@ -35,6 +35,12 @@
                             {{ trans('cruds.task.fields.claim') }}
                         </th>
                         <th>
+                            {{ trans('cruds.task.fields.deadline_at') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.task.fields.status') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -64,6 +70,17 @@
                             </select>
                         </td>
                         <td>
+                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
+                        </td>
+                        <td>
+                            <select class="search" strict="true">
+                                <option value>{{ trans('global.all') }}</option>
+                                @foreach(App\Models\Task::STATUS_SELECT as $key => $item)
+                                    <option value="{{ $item }}">{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 </thead>
@@ -84,6 +101,12 @@
                             </td>
                             <td>
                                 {{ $task->claim->claim_number ?? '' }}
+                            </td>
+                            <td>
+                                {{ $task->deadline_at ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Task::STATUS_SELECT[$task->status] ?? '' }}
                             </td>
                             <td>
                                 @can('task_show')

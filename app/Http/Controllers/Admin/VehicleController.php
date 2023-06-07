@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyVehicleRequest;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Company;
+use App\Models\Driver;
 use App\Models\Vehicle;
 use Gate;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class VehicleController extends Controller
     {
         abort_if(Gate::denies('vehicle_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $vehicles = Vehicle::with(['company', 'team'])->get();
+        $vehicles = Vehicle::with(['company', 'drivers', 'team'])->get();
 
         return view('admin.vehicles.index', compact('vehicles'));
     }
@@ -29,12 +30,15 @@ class VehicleController extends Controller
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.vehicles.create', compact('companies'));
+        $drivers = Driver::pluck('last_name', 'id');
+
+        return view('admin.vehicles.create', compact('companies', 'drivers'));
     }
 
     public function store(StoreVehicleRequest $request)
     {
         $vehicle = Vehicle::create($request->all());
+        $vehicle->drivers()->sync($request->input('drivers', []));
 
         return redirect()->route('admin.vehicles.index');
     }
@@ -45,14 +49,17 @@ class VehicleController extends Controller
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $vehicle->load('company', 'team');
+        $drivers = Driver::pluck('last_name', 'id');
 
-        return view('admin.vehicles.edit', compact('companies', 'vehicle'));
+        $vehicle->load('company', 'drivers', 'team');
+
+        return view('admin.vehicles.edit', compact('companies', 'drivers', 'vehicle'));
     }
 
     public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
     {
         $vehicle->update($request->all());
+        $vehicle->drivers()->sync($request->input('drivers', []));
 
         return redirect()->route('admin.vehicles.index');
     }
@@ -61,7 +68,7 @@ class VehicleController extends Controller
     {
         abort_if(Gate::denies('vehicle_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $vehicle->load('company', 'team', 'vehicleDrivers', 'vehicleClaims');
+        $vehicle->load('company', 'drivers', 'team', 'vehicleClaims');
 
         return view('admin.vehicles.show', compact('vehicle'));
     }

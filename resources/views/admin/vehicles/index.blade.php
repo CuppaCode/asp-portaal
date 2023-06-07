@@ -35,6 +35,9 @@
                             {{ trans('cruds.vehicle.fields.plates') }}
                         </th>
                         <th>
+                            {{ trans('cruds.vehicle.fields.driver') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -56,6 +59,11 @@
                             </td>
                             <td>
                                 {{ $vehicle->plates ?? '' }}
+                            </td>
+                            <td>
+                                @foreach($vehicle->drivers as $key => $item)
+                                    <span class="badge badge-info">{{ $item->last_name }}</span>
+                                @endforeach
                             </td>
                             <td>
                                 @can('vehicle_show')

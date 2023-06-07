@@ -55,6 +55,22 @@
                             {{ $task->claim->claim_number ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.task.fields.deadline_at') }}
+                        </th>
+                        <td>
+                            {{ $task->deadline_at }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.task.fields.status') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Task::STATUS_SELECT[$task->status] ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

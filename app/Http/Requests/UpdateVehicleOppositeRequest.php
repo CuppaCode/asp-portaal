@@ -26,6 +26,12 @@ class UpdateVehicleOppositeRequest extends FormRequest
                 'required',
                 'unique:vehicle_opposites,plates,' . request()->route('vehicle_opposite')->id,
             ],
+            'drivers.*' => [
+                'integer',
+            ],
+            'drivers' => [
+                'array',
+            ],
         ];
     }
 }

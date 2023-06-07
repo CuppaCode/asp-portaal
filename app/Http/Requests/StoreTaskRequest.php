@@ -26,9 +26,12 @@ class StoreTaskRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'claim_id' => [
+            'deadline_at' => [
                 'required',
-                'integer',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            ],
+            'status' => [
+                'required',
             ],
         ];
     }

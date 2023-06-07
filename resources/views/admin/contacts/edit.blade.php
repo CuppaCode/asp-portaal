@@ -18,7 +18,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('company'))
-                    <span class="text-danger">{{ $errors->first('company') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('company') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.company_helper') }}</span>
             </div>
@@ -30,7 +32,9 @@
                     @endforeach
                 </select>
                 @if($errors->has('user'))
-                    <span class="text-danger">{{ $errors->first('user') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('user') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.user_helper') }}</span>
             </div>
@@ -38,7 +42,9 @@
                 <label class="required" for="first_name">{{ trans('cruds.contact.fields.first_name') }}</label>
                 <input class="form-control {{ $errors->has('first_name') ? 'is-invalid' : '' }}" type="text" name="first_name" id="first_name" value="{{ old('first_name', $contact->first_name) }}" required>
                 @if($errors->has('first_name'))
-                    <span class="text-danger">{{ $errors->first('first_name') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('first_name') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.first_name_helper') }}</span>
             </div>
@@ -46,7 +52,9 @@
                 <label class="required" for="last_name">{{ trans('cruds.contact.fields.last_name') }}</label>
                 <input class="form-control {{ $errors->has('last_name') ? 'is-invalid' : '' }}" type="text" name="last_name" id="last_name" value="{{ old('last_name', $contact->last_name) }}" required>
                 @if($errors->has('last_name'))
-                    <span class="text-danger">{{ $errors->first('last_name') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('last_name') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.last_name_helper') }}</span>
             </div>
@@ -54,7 +62,9 @@
                 <label class="required" for="email">{{ trans('cruds.contact.fields.email') }}</label>
                 <input class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" type="email" name="email" id="email" value="{{ old('email', $contact->email) }}" required>
                 @if($errors->has('email'))
-                    <span class="text-danger">{{ $errors->first('email') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('email') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.email_helper') }}</span>
             </div>

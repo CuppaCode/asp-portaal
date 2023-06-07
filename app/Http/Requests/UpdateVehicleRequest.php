@@ -30,6 +30,12 @@ class UpdateVehicleRequest extends FormRequest
                 'required',
                 'unique:vehicles,plates,' . request()->route('vehicle')->id,
             ],
+            'drivers.*' => [
+                'integer',
+            ],
+            'drivers' => [
+                'array',
+            ],
         ];
     }
 }

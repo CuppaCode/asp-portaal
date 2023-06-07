@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use App\Traits\MultiTenantModelTrait;
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -14,13 +15,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Claim extends Model implements HasMedia
 {
-    use SoftDeletes, MultiTenantModelTrait, InteractsWithMedia, HasFactory;
+    use SoftDeletes, MultiTenantModelTrait, InteractsWithMedia, Auditable, HasFactory;
 
     public $table = 'claims';
-
-    protected $appends = [
-        'files',
-    ];
 
     public const INJURY_SELECT = [
         'yes'   => 'Yes',
@@ -32,6 +29,13 @@ class Claim extends Model implements HasMedia
         'yes' => 'Yes',
         'no'  => 'No',
         'n/a' => 'N/A',
+    ];
+
+    protected $appends = [
+        'damage_files',
+        'report_files',
+        'financial_files',
+        'other_files',
     ];
 
     protected $dates = [
@@ -117,6 +121,11 @@ class Claim extends Model implements HasMedia
         $this->addMediaConversion('preview')->fit('crop', 120, 120);
     }
 
+    public function claimNotes()
+    {
+        return $this->belongsToMany(Note::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
@@ -167,9 +176,24 @@ class Claim extends Model implements HasMedia
         $this->attributes['report_received_at'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
-    public function getFilesAttribute()
+    public function getDamageFilesAttribute()
     {
-        return $this->getMedia('files');
+        return $this->getMedia('damage_files');
+    }
+
+    public function getReportFilesAttribute()
+    {
+        return $this->getMedia('report_files');
+    }
+
+    public function getFinancialFilesAttribute()
+    {
+        return $this->getMedia('financial_files');
+    }
+
+    public function getOtherFilesAttribute()
+    {
+        return $this->getMedia('other_files');
     }
 
     public function team()

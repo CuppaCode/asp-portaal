@@ -47,6 +47,16 @@
                             {{ $vehicle->plates }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.vehicle.fields.driver') }}
+                        </th>
+                        <td>
+                            @foreach($vehicle->drivers as $key => $driver)
+                                <span class="label label-info">{{ $driver->last_name }}</span>
+                            @endforeach
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
@@ -64,20 +74,12 @@
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
-            <a class="nav-link" href="#vehicle_drivers" role="tab" data-toggle="tab">
-                {{ trans('cruds.driver.title') }}
-            </a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="#vehicle_claims" role="tab" data-toggle="tab">
                 {{ trans('cruds.claim.title') }}
             </a>
         </li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane" role="tabpanel" id="vehicle_drivers">
-            @includeIf('admin.vehicles.relationships.vehicleDrivers', ['drivers' => $vehicle->vehicleDrivers])
-        </div>
         <div class="tab-pane" role="tabpanel" id="vehicle_claims">
             @includeIf('admin.vehicles.relationships.vehicleClaims', ['claims' => $vehicle->vehicleClaims])
         </div>

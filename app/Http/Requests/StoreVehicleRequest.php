@@ -30,6 +30,12 @@ class StoreVehicleRequest extends FormRequest
                 'required',
                 'unique:vehicles',
             ],
+            'drivers.*' => [
+                'integer',
+            ],
+            'drivers' => [
+                'array',
+            ],
         ];
     }
 }

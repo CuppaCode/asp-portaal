@@ -67,7 +67,16 @@ class StoreClaimRequest extends FormRequest
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
                 'nullable',
             ],
-            'files' => [
+            'damage_files' => [
+                'array',
+            ],
+            'report_files' => [
+                'array',
+            ],
+            'financial_files' => [
+                'array',
+            ],
+            'other_files' => [
                 'array',
             ],
         ];

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use App\Traits\MultiTenantModelTrait;
+use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,14 +15,22 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Task extends Model implements HasMedia
 {
-    use SoftDeletes, MultiTenantModelTrait, InteractsWithMedia, HasFactory;
+    use SoftDeletes, MultiTenantModelTrait, InteractsWithMedia, Auditable, HasFactory;
 
     public $table = 'tasks';
 
     protected $dates = [
         'created_at',
+        'deadline_at',
         'updated_at',
         'deleted_at',
+    ];
+
+    public const STATUS_SELECT = [
+        'new'         => 'New',
+        'in_progress' => 'In Progress',
+        'waiting'     => 'Waiting...',
+        'done'        => 'Done',
     ];
 
     protected $fillable = [
@@ -29,6 +39,8 @@ class Task extends Model implements HasMedia
         'user_id',
         'claim_id',
         'created_at',
+        'deadline_at',
+        'status',
         'updated_at',
         'deleted_at',
         'team_id',
@@ -53,6 +65,16 @@ class Task extends Model implements HasMedia
     public function claim()
     {
         return $this->belongsTo(Claim::class, 'claim_id');
+    }
+
+    public function getDeadlineAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
+    }
+
+    public function setDeadlineAtAttribute($value)
+    {
+        $this->attributes['deadline_at'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function team()

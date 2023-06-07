@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\VerifyUserNotification;
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Hash;
@@ -16,7 +17,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use SoftDeletes, Notifiable, HasFactory;
+    use SoftDeletes, Notifiable, Auditable, HasFactory;
 
     public $table = 'users';
 
@@ -63,6 +64,11 @@ class User extends Authenticatable
                 $user->roles()->attach($registrationRole);
             }
         });
+    }
+
+    public function userNotes()
+    {
+        return $this->hasMany(Note::class, 'user_id', 'id');
     }
 
     public function getEmailVerifiedAtAttribute($value)

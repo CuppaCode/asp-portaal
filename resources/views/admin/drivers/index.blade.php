@@ -29,15 +29,6 @@
                             {{ trans('cruds.driver.fields.last_name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.driver.fields.vehicle') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.vehicle.fields.plates') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.driver.fields.vehicle_opposite') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.driver.fields.email') }}
                         </th>
                         <th>
@@ -55,24 +46,6 @@
                         </td>
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($vehicles as $key => $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                            <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($vehicle_opposites as $key => $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
                         </td>
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
@@ -95,15 +68,6 @@
                             </td>
                             <td>
                                 {{ $driver->last_name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $driver->vehicle->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $driver->vehicle->plates ?? '' }}
-                            </td>
-                            <td>
-                                {{ $driver->vehicle_opposite->name ?? '' }}
                             </td>
                             <td>
                                 {{ $driver->email ?? '' }}
@@ -182,7 +146,7 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
-    order: [[ 3, 'asc' ]],
+    order: [[ 1, 'asc' ]],
     pageLength: 100,
   });
   let table = $('.datatable-Driver:not(.ajaxTable)').DataTable({ buttons: dtButtons })

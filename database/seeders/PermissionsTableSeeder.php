@@ -292,6 +292,34 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 71,
+                'title' => 'audit_log_show',
+            ],
+            [
+                'id'    => 72,
+                'title' => 'audit_log_access',
+            ],
+            [
+                'id'    => 73,
+                'title' => 'note_create',
+            ],
+            [
+                'id'    => 74,
+                'title' => 'note_edit',
+            ],
+            [
+                'id'    => 75,
+                'title' => 'note_show',
+            ],
+            [
+                'id'    => 76,
+                'title' => 'note_delete',
+            ],
+            [
+                'id'    => 77,
+                'title' => 'note_access',
+            ],
+            [
+                'id'    => 78,
                 'title' => 'profile_password_edit',
             ],
         ];
