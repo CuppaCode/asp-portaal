@@ -55,9 +55,9 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.subject_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group d-none">
                 <label class="required" for="claim_number">{{ trans('cruds.claim.fields.claim_number') }}</label>
-                <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', '') }}" required>
+                <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', 'caim_number_format') }}" required readonly>
                 @if($errors->has('claim_number'))
                     <div class="invalid-feedback">
                         {{ $errors->first('claim_number') }}
