@@ -134,21 +134,16 @@
     },
     columnDefs: [{
         orderable: false,
-        className: 'select-checkbox',
-        targets: 0
-    }, {
-        orderable: false,
         searchable: false,
         targets: -1
     }],
     select: {
       style:    'multi+shift',
-      selector: 'td:first-child'
     },
     order: [],
     scrollX: true,
     pageLength: 100,
-    dom: 'lBfrtip<"actions">',
+    dom: '<"dt-search"f>tlp<"dt-c-buttons"B><r><"actions">',
     buttons: [
       {
         extend: 'selectAll',
