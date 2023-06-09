@@ -19,10 +19,7 @@
             <table class=" table table-bordered table-striped table-hover datatable datatable-Company">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
+                        <th width=10>
                             {{ trans('cruds.company.fields.id') }}
                         </th>
                         <th>
@@ -39,8 +36,6 @@
                         </th>
                     </tr>
                     <tr>
-                        <td>
-                        </td>
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
@@ -64,9 +59,6 @@
                 <tbody>
                     @foreach($companies as $key => $company)
                         <tr data-entry-id="{{ $company->id }}">
-                            <td>
-
-                            </td>
                             <td>
                                 {{ $company->id ?? '' }}
                             </td>
