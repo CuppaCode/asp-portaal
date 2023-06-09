@@ -51,7 +51,21 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $isAdmin = auth()->user()->roles->contains(1);
+
+        if($isAdmin) {
+
+            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        } else {
+
+            dd(auth()->user());
+
+            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        }
+
+        
 
         $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
