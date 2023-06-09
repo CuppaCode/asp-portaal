@@ -130,3 +130,11 @@ table.dataTable thead .sorting_desc {
 .custom-select.form-control-sm {
     padding: 0.25rem 1.5rem;
 }
+
+div.dt-buttons {
+    margin-top: 40px;
+}
+
+#DataTables_Table_0_wrapper .dt-search input {
+    width: 300px;
+}
