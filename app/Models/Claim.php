@@ -25,6 +25,11 @@ class Claim extends Model implements HasMedia
         'other' => 'Anders...',
     ];
 
+    public const DAMAGED_PART_SELECT = [
+        'transport' => 'Transport',
+        'traffic'   => 'Verkeer',
+    ];
+
     public const CONTACT_LAWYER_SELECT = [
         'yes' => 'Ja',
         'no'  => 'Nee',
@@ -36,6 +41,11 @@ class Claim extends Model implements HasMedia
         'report_files',
         'financial_files',
         'other_files',
+    ];
+
+    public const DAMAGED_PART_OPPOSITE_SELECT = [
+        'transport' => 'Transport',
+        'traffic'   => 'Verkeer',
     ];
 
     protected $dates = [

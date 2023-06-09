@@ -124,7 +124,7 @@
                             {{ trans('cruds.claim.fields.damaged_part') }}
                         </th>
                         <td>
-                            {{ $claim->damaged_part }}
+                            {{ App\Models\Claim::DAMAGED_PART_SELECT[$claim->damaged_part] ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -148,7 +148,7 @@
                             {{ trans('cruds.claim.fields.damaged_part_opposite') }}
                         </th>
                         <td>
-                            {{ $claim->damaged_part_opposite }}
+                            {{ App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT[$claim->damaged_part_opposite] ?? '' }}
                         </td>
                     </tr>
                     <tr>

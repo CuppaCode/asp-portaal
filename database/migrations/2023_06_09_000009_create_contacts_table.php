@@ -13,6 +13,7 @@ class CreateContactsTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
+            $table->boolean('newsletter')->default(0)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

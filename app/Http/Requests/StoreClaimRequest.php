@@ -43,15 +43,7 @@ class StoreClaimRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'damaged_part' => [
-                'string',
-                'nullable',
-            ],
             'damage_origin' => [
-                'string',
-                'nullable',
-            ],
-            'damaged_part_opposite' => [
                 'string',
                 'nullable',
             ],
