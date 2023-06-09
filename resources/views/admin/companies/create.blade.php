@@ -9,7 +9,6 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.companies.store") }}" enctype="multipart/form-data">
             @csrf
-            @can('company_access')
             <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.company.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', '') }}" required>
@@ -20,7 +19,6 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.company.fields.name_helper') }}</span>
             </div>
-            @endcan;
             <div class="form-group">
                 <label>{{ trans('cruds.company.fields.company_type') }}</label>
                 <select class="form-control {{ $errors->has('company_type') ? 'is-invalid' : '' }}" name="company_type" id="company_type">

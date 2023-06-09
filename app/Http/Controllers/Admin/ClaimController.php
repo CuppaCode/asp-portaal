@@ -68,12 +68,7 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
-
         $claim = Claim::create($request->all());
-        
-        $claim->claim_number = date('Y').'-'.str_pad($claim->id, 5, 0, STR_PAD_LEFT);
-
-        $claim->save();
 
         foreach ($request->input('damage_files', []) as $file) {
             $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('damage_files');

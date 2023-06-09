@@ -16,6 +16,8 @@ class CreateClaimsTable extends Migration
             $table->string('status');
             $table->string('injury');
             $table->string('contact_lawyer')->nullable();
+            $table->date('date_accident')->nullable();
+            $table->string('recoverable_claim')->nullable();
             $table->string('injury_other')->nullable();
             $table->string('opposite_type')->nullable();
             $table->string('damaged_part')->nullable();
