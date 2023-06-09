@@ -69,6 +69,19 @@
                 <span class="help-block">{{ trans('cruds.contact.fields.email_helper') }}</span>
             </div>
             <div class="form-group">
+                <div class="form-check {{ $errors->has('newsletter') ? 'is-invalid' : '' }}">
+                    <input type="hidden" name="newsletter" value="0">
+                    <input class="form-check-input" type="checkbox" name="newsletter" id="newsletter" value="1" {{ $contact->newsletter || old('newsletter', 0) === 1 ? 'checked' : '' }}>
+                    <label class="form-check-label" for="newsletter">{{ trans('cruds.contact.fields.newsletter') }}</label>
+                </div>
+                @if($errors->has('newsletter'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('newsletter') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.contact.fields.newsletter_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

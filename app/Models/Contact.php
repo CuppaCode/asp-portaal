@@ -28,6 +28,7 @@ class Contact extends Model
         'last_name',
         'email',
         'created_at',
+        'newsletter',
         'updated_at',
         'deleted_at',
         'team_id',

@@ -63,6 +63,14 @@
                             {{ $contact->email }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.contact.fields.newsletter') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $contact->newsletter ? 'checked' : '' }}>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
