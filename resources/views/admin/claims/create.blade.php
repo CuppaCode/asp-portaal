@@ -84,7 +84,7 @@
     </div>
         <div class="card">
             <div class="card-header">
-                Klant informatie
+                Schademelding
             </div>
             <div class="card-body">
             <div class="form-group">
