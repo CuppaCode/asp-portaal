@@ -21,7 +21,7 @@
                     @endif
                     <span class="help-block">{{ trans('cruds.company.fields.name_helper') }}</span>
                 </div>
-            @endcan;
+            @endcan
 
             <div class="form-group">
                 <label>{{ trans('cruds.company.fields.company_type') }}</label>
