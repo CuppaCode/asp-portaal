@@ -48,14 +48,6 @@ class Claim extends Model implements HasMedia
         'traffic'   => 'Verkeer',
     ];
 
-    protected $dates = [
-        'requested_at',
-        'report_received_at',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
-
     public const OPPOSITE_TYPE_SELECT = [
         'private'  => 'Particulier',
         'business' => 'Zakelijk',
@@ -69,18 +61,38 @@ class Claim extends Model implements HasMedia
         'finished' => 'Finished',
     ];
 
+    protected $dates = [
+        'date_accident',
+        'requested_at',
+        'report_received_at',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    public const RECOVERABLE_CLAIM_SELECT = [
+        'unknown'   => 'Onbekend',
+        'yes'       => 'Ja',
+        'no'        => 'Nee',
+        'partially' => 'Gedeeltelijk',
+    ];
+
     public const DAMAGED_AREA_SELECT = [
-        'left_front'  => 'Links voor',
-        'left_back'   => 'Link achter',
-        'right_front' => 'Rechts voor',
-        'right_back'  => 'Rechts achter',
+        'left_side'   => 'Linkerzijde',
+        'right_side'  => 'Rechterzijde',
+        'top_side'    => 'Bovenzijde',
+        'bottom_side' => 'Onderzijde',
+        'front_side'  => 'Voorzijde',
+        'back_side'   => 'Achterzijde',
     ];
 
     public const DAMAGED_AREA_OPPOSITE_SELECT = [
-        'left_front'  => 'Links voor',
-        'left_back'   => 'Links achter',
-        'right_front' => 'Rechts voor',
-        'right_back'  => 'Rechts achter',
+        'left_side'   => 'Linkerzijde',
+        'right_side'  => 'Rechterzijde',
+        'top_side'    => 'Bovenzijde',
+        'bottom_side' => 'Onderzijde',
+        'front_side'  => 'Voorzijde',
+        'back_side'   => 'Achterzijde',
     ];
 
     protected $fillable = [
@@ -91,6 +103,8 @@ class Claim extends Model implements HasMedia
         'status',
         'injury',
         'contact_lawyer',
+        'date_accident',
+        'recoverable_claim',
         'injury_other',
         'injury_office_id',
         'vehicle_id',
@@ -139,6 +153,16 @@ class Claim extends Model implements HasMedia
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function getDateAccidentAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setDateAccidentAttribute($value)
+    {
+        $this->attributes['date_accident'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
     public function injury_office()

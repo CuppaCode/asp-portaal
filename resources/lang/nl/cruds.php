@@ -149,6 +149,10 @@ return [
             'damaged_part_helper'              => ' ',
             'damaged_part_opposite'            => 'Beschadigd aard wederpartij',
             'damaged_part_opposite_helper'     => ' ',
+            'date_accident'                    => 'Datum schade',
+            'date_accident_helper'             => ' ',
+            'recoverable_claim'                => 'Verhaalbaar',
+            'recoverable_claim_helper'         => ' ',
         ],
     ],
     'company' => [

@@ -68,9 +68,8 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
-
         $claim = Claim::create($request->all());
-        
+
         $claim->claim_number = date('Y').'-'.str_pad($claim->id, 5, 0, STR_PAD_LEFT);
 
         $claim->save();

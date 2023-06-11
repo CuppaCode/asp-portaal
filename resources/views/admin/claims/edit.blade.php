@@ -103,6 +103,31 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.contact_lawyer_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="date_accident">{{ trans('cruds.claim.fields.date_accident') }}</label>
+                <input class="form-control date {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident', $claim->date_accident) }}">
+                @if($errors->has('date_accident'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('date_accident') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.date_accident_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label>{{ trans('cruds.claim.fields.recoverable_claim') }}</label>
+                <select class="form-control {{ $errors->has('recoverable_claim') ? 'is-invalid' : '' }}" name="recoverable_claim" id="recoverable_claim">
+                    <option value disabled {{ old('recoverable_claim', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::RECOVERABLE_CLAIM_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('recoverable_claim', $claim->recoverable_claim) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('recoverable_claim'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('recoverable_claim') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.recoverable_claim_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="injury_other">{{ trans('cruds.claim.fields.injury_other') }}</label>
                 <input class="form-control {{ $errors->has('injury_other') ? 'is-invalid' : '' }}" type="text" name="injury_other" id="injury_other" value="{{ old('injury_other', $claim->injury_other) }}">
                 @if($errors->has('injury_other'))
