@@ -7,6 +7,9 @@ use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyCompanyRequest;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Models\ExpertiseOffice;
+use App\Models\InjuryOffice;
+use App\Models\RecoveryOffice;
 use App\Models\Company;
 use App\Models\Team;
 use Gate;
@@ -42,6 +45,41 @@ class CompanyController extends Controller
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $company->id]);
+        }
+
+        if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise') {
+
+            $identifier = str_replace(' ', '_', strtolower($company->company_type . '_' . $company->name));
+
+            $office = [
+                'company_id' => $company->id,
+                'identifier' => $identifier
+            ];
+
+            switch ($company->company_type) {
+                case 'injury':
+
+                    InjuryOffice::create($office);
+
+                    break;
+
+                case 'recovery':
+
+                    RecoveryOffice::create($office);
+
+                    break;
+
+                case 'expertise':
+
+                    ExpertiseOffice::create($office);
+
+                    break;
+
+                default:
+                    // This should not happen
+                    break;
+            }
+
         }
 
         return redirect()->route('admin.companies.index');
