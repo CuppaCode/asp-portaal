@@ -44,7 +44,18 @@ class ContactController extends Controller
 
     public function store(StoreContactRequest $request)
     {
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
+
         $contact = Contact::create($request->all());
+
+        if(!$isAdmin) {
+            
+            $contact->company_id = $user->contact->company->id;
+
+        }
+
+        $contact->save();
 
         return redirect()->route('admin.contacts.index');
     }

@@ -52,20 +52,13 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $isAdmin = auth()->user()->roles->contains(1);
+        $companies = null;
 
         if($isAdmin) {
 
             $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        } else {
-
-            dd(auth()->user());
-
-            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         }
-
-        
 
         $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -82,11 +75,26 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
+        /* Custom bit */
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
+
         $claim = Claim::create($request->all());
 
         $claim->claim_number = date('Y').'-'.str_pad($claim->id, 5, 0, STR_PAD_LEFT);
 
+        
+        if(!$isAdmin) {
+            
+            $claim->company_id = $user->contact->company->id;
+
+        }
+
+        $claim->status = 'new';
+
         $claim->save();
+        /* end custom bit */
+
 
         foreach ($request->input('damage_files', []) as $file) {
             $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('damage_files');

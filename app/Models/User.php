@@ -102,4 +102,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
+
+    public function contact()
+    {
+        return $this->hasOne(Contact::class);
+    }
 }
