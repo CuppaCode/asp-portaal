@@ -9,20 +9,28 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.contacts.store") }}" enctype="multipart/form-data">
             @csrf
-            <div class="form-group">
-                <label class="required" for="company_id">{{ trans('cruds.contact.fields.company') }}</label>
-                <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>
-                    @foreach($companies as $id => $entry)
-                        <option value="{{ $id }}" {{ old('company_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('company'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('company') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.contact.fields.company_helper') }}</span>
-            </div>
+
+            @if (auth()->user()->roles->contains(1))
+                <div class="form-group">
+
+                    <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
+                    <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>
+                        @foreach($companies as $id => $entry)
+                            <option value="{{ $id }}" {{ old('company_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('company'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('company') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
+                </div>
+            @else
+                <input type="hidden" name="company_id" id="company_id" value="1">
+
+            @endif
+            
             <div class="form-group">
                 <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>
                 <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id">

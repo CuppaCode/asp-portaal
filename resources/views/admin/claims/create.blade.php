@@ -20,20 +20,27 @@
 
         <div class="card-body">
             @csrf
-            <div class="form-group">
-                <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
-                <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>
-                    @foreach($companies as $id => $entry)
-                        <option value="{{ $id }}" {{ old('company_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('company'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('company') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
-            </div>
+
+            @if (auth()->user()->roles->contains(1))
+                <div class="form-group">
+
+                    <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
+                    <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>
+                        @foreach($companies as $id => $entry)
+                            <option value="{{ $id }}" {{ old('company_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('company'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('company') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
+                </div>
+            @else
+                <input type="hidden" name="company_id" id="company_id" value="1">
+
+            @endif
             <div class="form-group">
                 <div class="form-check {{ $errors->has('assign_self') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="assign_self" value="0">
@@ -77,21 +84,7 @@
         </div>
         <div class="card-body">
 
-            <div class="form-group">
-                <label class="required">{{ trans('cruds.claim.fields.status') }}</label>
-                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
-                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('status'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('status') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.status_helper') }}</span>
-            </div>
+            <input type="hidden" name="status" id="status" value="new"/>
             <div class="form-group">
                 <label class="required">{{ trans('cruds.claim.fields.injury') }}</label>
                 <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="injury" id="injury" required>
