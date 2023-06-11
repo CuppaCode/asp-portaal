@@ -1,5 +1,10 @@
 @extends('layouts.admin')
 @section('content')
+@php
+
+    $isAdmin = auth()->user()->roles->contains(1);
+
+@endphp
 
 <div class="card">
     <div class="card-header">
@@ -10,7 +15,10 @@
         <form method="POST" action="{{ route("admin.contacts.store") }}" enctype="multipart/form-data">
             @csrf
 
-            @if (auth()->user()->roles->contains(1))
+            
+
+            @if ($isAdmin)
+
                 <div class="form-group">
 
                     <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
@@ -31,20 +39,26 @@
 
             @endif
             
-            <div class="form-group">
-                <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>
-                <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id">
-                    @foreach($users as $id => $entry)
-                        <option value="{{ $id }}" {{ old('user_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('user'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('user') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.contact.fields.user_helper') }}</span>
-            </div>
+
+            @if ($isAdmin)
+
+                <div class="form-group">
+                    <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>
+                    <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id">
+                        @foreach($users as $id => $entry)
+                            <option value="{{ $id }}" {{ old('user_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('user'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('user') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.contact.fields.user_helper') }}</span>
+                </div>
+
+            @endif
+            
             <div class="form-group">
                 <label class="required" for="first_name">{{ trans('cruds.contact.fields.first_name') }}</label>
                 <input class="form-control {{ $errors->has('first_name') ? 'is-invalid' : '' }}" type="text" name="first_name" id="first_name" value="{{ old('first_name', '') }}" required>
