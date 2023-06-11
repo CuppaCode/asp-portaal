@@ -7,7 +7,18 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.claims.store") }}" enctype="multipart/form-data">
+        <p>Cupcake ipsum dolor sit amet jelly-o. Topping gingerbread chocolate toffee pudding. Pudding donut marzipan cookie croissant fruitcake.</p>
+        <p>Ice cream jujubes jujubes oat cake tiramisu soufflé sesame snaps jelly. Macaroon wafer jelly beans toffee wafer caramels dragée bonbon. Candy jelly beans caramels dessert marzipan sugar plum sesame snaps jelly-o muffin.</p>
+    </div>
+</div>
+<form method="POST" action="{{ route("admin.claims.store") }}" enctype="multipart/form-data">
+    <div class="card">
+
+        <div class="card-header">
+            Klant informatie
+        </div>
+
+        <div class="card-body">
             @csrf
             <div class="form-group">
                 <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
@@ -46,9 +57,9 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.subject_helper') }}</span>
             </div>
-            <div class="form-group">
+            <div class="form-group d-none">
                 <label class="required" for="claim_number">{{ trans('cruds.claim.fields.claim_number') }}</label>
-                <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', '') }}" required>
+                <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', 'claim_number_format') }}" required readonly>
                 @if($errors->has('claim_number'))
                     <div class="invalid-feedback">
                         {{ $errors->first('claim_number') }}
@@ -56,6 +67,16 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.claim_number_helper') }}</span>
             </div>
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div class="card-header">
+            Schademelding
+        </div>
+        <div class="card-body">
+
             <div class="form-group">
                 <label class="required">{{ trans('cruds.claim.fields.status') }}</label>
                 <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
@@ -100,6 +121,31 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.contact_lawyer_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="date_accident">{{ trans('cruds.claim.fields.date_accident') }}</label>
+                <input class="form-control date {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident') }}">
+                @if($errors->has('date_accident'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('date_accident') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.date_accident_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label>{{ trans('cruds.claim.fields.recoverable_claim') }}</label>
+                <select class="form-control {{ $errors->has('recoverable_claim') ? 'is-invalid' : '' }}" name="recoverable_claim" id="recoverable_claim">
+                    <option value disabled {{ old('recoverable_claim', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::RECOVERABLE_CLAIM_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('recoverable_claim', 'Niet bekend') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('recoverable_claim'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('recoverable_claim') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.recoverable_claim_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="injury_other">{{ trans('cruds.claim.fields.injury_other') }}</label>

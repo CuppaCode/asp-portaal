@@ -81,6 +81,22 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.claim.fields.date_accident') }}
+                        </th>
+                        <td>
+                            {{ $claim->date_accident }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.claim.fields.recoverable_claim') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$claim->recoverable_claim] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.claim.fields.injury_other') }}
                         </th>
                         <td>

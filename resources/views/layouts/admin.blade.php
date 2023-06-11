@@ -21,8 +21,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-  
+
     @yield('styles')
 </head>
 
@@ -148,7 +150,8 @@
     order: [],
     scrollX: true,
     pageLength: 100,
-    dom: 'lBfrtip<"actions">',
+    dom: '<"dt-search"f>tlp<"dt-c-buttons"B><r><"actions">',
+    //dom: 'lBfrtip<"actions">',
     buttons: [
       {
         extend: 'selectAll',
