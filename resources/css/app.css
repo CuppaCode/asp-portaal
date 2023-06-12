@@ -138,3 +138,28 @@ div.dt-buttons {
 #DataTables_Table_0_wrapper .dt-search input {
     width: 300px;
 }
+
+.menu-profile-link a:hover {
+    text-decoration: none;
+}
+
+.c-sidebar .c-sidebar-brand {
+    background: #344A9B;
+}
+
+.c-sidebar {
+    background: #344A9B;
+}
+
+.c-sidebar .c-sidebar-nav-dropdown-toggle:hover, .c-sidebar .c-sidebar-nav-link:hover {
+    background: #5FE846;
+    color: #000;
+}
+
+.c-sidebar .c-sidebar-nav-dropdown-toggle:hover .c-sidebar-nav-icon, .c-sidebar .c-sidebar-nav-link:hover .c-sidebar-nav-icon {
+    color: #000;
+}
+
+.asp-logo {
+    width: 250px;
+}
