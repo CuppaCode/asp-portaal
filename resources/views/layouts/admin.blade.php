@@ -56,7 +56,26 @@
                     </li>
                 @endif
 
-
+              <li>
+                <div class="dropdown show menu-profile-link">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ Auth::user()->name }}
+                  </a>
+                
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
+                        @can('profile_password_edit')
+                            <a class="dropdown-item" href="{{ route('profile.password.edit') }}">
+                                {{ trans('global.profile_information') }}
+                            </a>
+                        @endcan
+                  @endif
+                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
+                        {{ trans('global.logout') }}    
+                    </a>
+                  </div>
+                </div>  
+              </li>
             </ul>
         </header>
 
