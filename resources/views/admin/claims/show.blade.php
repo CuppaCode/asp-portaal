@@ -65,7 +65,7 @@
                 </div>
                 <p class="card-text">{{ App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$claim->recoverable_claim] ?? '' }}</p>
 
-                @if ( $claim->injury_office->identifier != '')
+                @if ( $claim->injury_office->identifier ?? ''  != '')
                     <div class="card-title">
                         {{ trans('cruds.claim.fields.injury_office') }}
                     </div>
@@ -189,7 +189,7 @@
         <div class="row">
             <div class="col-2 date-holder text-right">
                 <div class="icon"><i class="fa fa-user"></i></div>
-                <div class="date"> <span>{{ $note->user->name }}</span><br><span class="text-info">{{ $note->created_at }}</span></div>
+                <div class="date"> <span></span><br><span class="text-info"></span></div>
                 </div>
                 <div class="col-10 content">
                     <form method="POST" action="{{ route("admin.notes.store") }}" enctype="multipart/form-data">
