@@ -64,3 +64,27 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Setting up Mailpit
+
+Install mailpit locally by following the instructions on [this page](https://github.com/axllent/mailpit) or running the following commands:
+
+### Install via bash script (Linux & Mac)
+
+`sudo bash < <(curl -sL https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh)`
+
+### Install via Brew (Mac)
+
+`brew tap axllent/apps` and then `brew install mailpit`
+
+Thats it, now you can fix your env file by putting in the following:
+``MAIL_MAILER=smtp
+MAIL_HOST=localhost
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="noreply@asp-portaal.nl"
+MAIL_FROM_NAME="ASP Portaal"``
+
+and run `mailpit` from your terminal, you can now visit [http://localhost:8025/](http://localhost:8025/) for the UI. 
