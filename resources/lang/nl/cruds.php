@@ -87,7 +87,7 @@ return [
             'updated_at_helper'                => ' ',
             'deleted_at'                       => 'Deleted at',
             'deleted_at_helper'                => ' ',
-            'injury'                           => 'Letsel?',
+            'injury'                           => 'Letsel',
             'injury_helper'                    => ' ',
             'contact_lawyer'                   => 'Jurist inschakelen?',
             'contact_lawyer_helper'            => ' ',

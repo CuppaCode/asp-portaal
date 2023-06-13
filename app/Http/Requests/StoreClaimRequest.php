@@ -56,8 +56,8 @@ class StoreClaimRequest extends FormRequest
                 'nullable',
             ],
             'requested_at' => [
-                'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'nullable',
             ],
             'report_received_at' => [
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
