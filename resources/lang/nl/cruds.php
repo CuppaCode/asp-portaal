@@ -243,6 +243,8 @@ return [
             'team_helper'       => ' ',
             'newsletter'        => 'Nieuwsbrief?',
             'newsletter_helper' => ' ',
+            'create_user'       => 'Maak gebruiker aan voor deze contact',
+            'create_user_helper'=> '',
         ],
     ],
     'injuryOffice' => [
