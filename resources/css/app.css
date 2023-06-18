@@ -152,7 +152,7 @@ div.dt-buttons {
 }
 
 .c-sidebar .c-sidebar-nav-dropdown-toggle:hover, .c-sidebar .c-sidebar-nav-link:hover {
-    background: #5FE846;
+    background: #fff;
     color: #000;
 }
 
@@ -245,4 +245,26 @@ div.dt-buttons {
     margin-right: 10px;
     -webkit-transition: none;
     transition: none
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row p {
+    margin-bottom: 0;
+}
+
+.table tbody tr.overdue-yes {
+    color: #772b35;
+    background-color: #fadddd;
+    border-color: #f8cfcf;
+}
+
+.table .clickable-row:hover {
+    background-color: #e0e0e0;
+}
+
+.top-bar-claims .alert {
+    margin-bottom: 0;
 }

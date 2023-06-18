@@ -42,19 +42,25 @@ class NoteController extends Controller
         $claims = Claim::pluck('claim_number', 'id');
 
         $users = User::pluck('email', 'id')->prepend(trans('global.pleaseSelect'), '');
-
+        
         return view('admin.notes.create', compact('claims', 'users'));
     }
 
     public function store(StoreNoteRequest $request)
     {
+        $claim_id = $request->input('claims');
+
         $note = Note::create($request->all());
         $note->claims()->sync($request->input('claims', []));
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $note->id]);
         }
 
-        return redirect()->route('admin.notes.index');
+        if($request->input('add-new-note', 'true')) {
+            return redirect()->route('admin.claims.show', $claim_id[0]);
+        } else {
+            return redirect()->route('admin.notes.index');
+        }
     }
 
     public function edit(Note $note)
