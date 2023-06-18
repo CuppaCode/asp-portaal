@@ -30,4 +30,9 @@ $(document).ready(function () {
     $('#expert_report_is_in').change(function   ()  {
         expertise_receive_date.toggleClass('d-none');
     });
+
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+    
 });

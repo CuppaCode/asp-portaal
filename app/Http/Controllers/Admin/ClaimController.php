@@ -9,6 +9,7 @@ use App\Http\Requests\StoreClaimRequest;
 use App\Http\Requests\UpdateClaimRequest;
 use App\Models\Claim;
 use App\Models\Company;
+use App\Models\Contact;
 use App\Models\ExpertiseOffice;
 use App\Models\InjuryOffice;
 use App\Models\RecoveryOffice;
@@ -207,10 +208,13 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
+        $contacts = Contact::find($claim->company->id);
+        // dd($contacts);
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
 
-        return view('admin.claims.show', compact('claim'));
+        return view('admin.claims.show', compact('claim', 'contacts'));
     }
 
     public function destroy(Claim $claim)

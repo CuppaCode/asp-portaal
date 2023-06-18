@@ -55,10 +55,21 @@ class Claim extends Model implements HasMedia
     ];
 
     public const STATUS_SELECT = [
-        'new'      => 'New',
-        'on_hold'  => 'On hold',
-        'ongoing'  => 'Ongoing',
-        'finished' => 'Finished',
+        'new'                       => 'Nieuw',
+        'on_hold'                   => 'Claim ingediend',
+        'awaiting_docs'             => 'Afwachting documenten',
+        'received_docs'             => 'Documenten binnen',
+        'expert'                    => 'Expert ingeschakeld',
+        'delivered'                 => 'Afspraak aflevering',
+        'damagerepair'              => 'Afspraak schadeherstel',
+        'liable'                    => 'Aansprakelijk gesteld',
+        'invoice_asp'               => 'Factuur ASP',
+        'saf_received'              => 'SAF binnen',
+        'amount_incident'           => 'Schadebedrag bekend',
+        'invoice_incident'          => 'Schadefactuur afwachten',
+        'invoice_indicent_payed'    => 'Schadefactuur betaald',
+        'payment_recveived'         => 'Uitkering binnen',
+        'finished'                  => 'Afgesloten',
     ];
 
     protected $dates = [
