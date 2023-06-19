@@ -92,7 +92,48 @@ class ClaimController extends Controller
 
         }
 
+        $companyId = $claim->company_id;
+
         $claim->status = 'new';
+
+        $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
+
+        if(!isset($vehicle)) {
+
+            $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
+
+            
+            $vehicle = Vehicle::create([
+                'name' => $vehicleName,
+                'plates' => $request->vehicle_plates,
+                'company_id' => $companyId
+            ]);
+
+        }
+
+        $claim->vehicle_id = $vehicle->id;
+
+        //
+
+        if(isset($request->vehicle_plates_opposite)){
+
+            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
+
+            if(!isset($vehicleOpposite)) {
+
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
+
+                
+                $vehicleOpposite = VehicleOpposite::create([
+                    'name' => $vehicleName,
+                    'plates' => $request->vehicle_plates_opposite
+                ]);
+
+            }
+
+            $claim->vehicle_opposite_id = $vehicleOpposite->id;
+        
+        }
 
         $claim->save();
         /* end custom bit */
