@@ -81,10 +81,20 @@ class RegisterController extends Controller
                  $user->update(['team_id' => $team->id]);
              }
 
-             $contact = Contact::find(request()->input('contact'));
+             if(request()->has('contact')) {
+                
+                $contact = Contact::find(request()->input('contact'));
 
-             $contact->user_id = $user->id;
-             $contact->save();
+                if(!isset($contact->user_id)) {
+                    
+                    $contact->user_id = $user->id;
+                    $contact->save();
+                    
+                }
+                
+             }
+
+             
 
              return $user;
          }
