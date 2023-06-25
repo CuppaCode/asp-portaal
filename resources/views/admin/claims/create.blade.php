@@ -168,6 +168,16 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.recoverable_claim_helper') }}</span>
             </div>
+            <div class="form-group">
+                <label>Soort schade</label>
+                <input class="form-control {{ $errors->has('damage_kind') ? 'is-invalid' : '' }}" type="text" name="damage_kind" id="damage_kind" value="{{ old('damage_kind', '') }}">
+                    @if($errors->has('damage_kind'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('damage_kind') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.damage_kind') }}</span>
+            </div>
         </div>
     </div>
     <div class="card">
@@ -206,7 +216,23 @@
                     <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_helper') }}</span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
+                    <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
+                    <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area" id="damaged_area">
+                        <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('damaged_area'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('damaged_area') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_helper') }}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
                     <input class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" type="text" name="damage_origin" id="damage_origin" value="{{ old('damage_origin', '') }}">
                     @if($errors->has('damage_origin'))
                         <div class="invalid-feedback">
@@ -214,22 +240,6 @@
                         </div>
                     @endif
                     <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_helper') }}</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
-                <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area" id="damaged_area">
-                    <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('damaged_area'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('damaged_area') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_helper') }}</span>
             </div>
         </div>
     </div>

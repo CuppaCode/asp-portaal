@@ -26,8 +26,15 @@ class Claim extends Model implements HasMedia
     ];
 
     public const DAMAGED_PART_SELECT = [
-        'transport' => 'Transport',
-        'traffic'   => 'Verkeer',
+        'backpart'  => 'Achterscherm',
+        'tire'      => 'Band/Velg',
+        'roof'      => 'Dak',
+        'dorpel'    => 'Dorpel',
+        'interior'  => 'Interieur',
+        'motor'     => 'Motor',
+        'portdoor'  => 'Portier',
+        'window'    => 'Ruit',
+        'light'     => 'Verlichting'
     ];
 
     public const CONTACT_LAWYER_SELECT = [
@@ -44,8 +51,15 @@ class Claim extends Model implements HasMedia
     ];
 
     public const DAMAGED_PART_OPPOSITE_SELECT = [
-        'transport' => 'Transport',
-        'traffic'   => 'Verkeer',
+        'backpart'  => 'Achterscherm',
+        'tire'      => 'Band/Velg',
+        'roof'      => 'Dak',
+        'dorpel'    => 'Dorpel',
+        'interior'  => 'Interieur',
+        'motor'     => 'Motor',
+        'portdoor'  => 'Portier',
+        'window'    => 'Ruit',
+        'light'     => 'Verlichting'
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
@@ -124,6 +138,7 @@ class Claim extends Model implements HasMedia
         'damaged_part',
         'damage_origin',
         'damaged_area',
+        'damage_kind',
         'damaged_part_opposite',
         'damage_origin_opposite',
         'damaged_area_opposite',

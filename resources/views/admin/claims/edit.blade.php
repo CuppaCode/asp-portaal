@@ -1,7 +1,9 @@
 @extends('layouts.admin')
 @section('content')
 
-<form method="POST" action="{{ route("admin.claims.store") }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route("admin.claims.update", [$claim->id]) }}" enctype="multipart/form-data">
+    @method('PUT')
+    @csrf
     <div class="card">
 
         <div class="card-header">
@@ -39,16 +41,6 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.subject_helper') }}</span>
-            </div>
-            <div class="form-group d-none">
-                <label class="required" for="claim_number">{{ trans('cruds.claim.fields.claim_number') }}</label>
-                <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', 'claim_number_format') }}" required readonly>
-                @if($errors->has('claim_number'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('claim_number') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.claim_number_helper') }}</span>
             </div>
         </div>
     </div>
@@ -181,10 +173,10 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
-                    <select class="form-control {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part" id="damaged_part">
+                    <select class="form-control {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part" id="damaged_part" aria-label="multiple select">
                         <option value disabled {{ old('damaged_part', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                         @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('damaged_part', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ old('damaged_part', $claim->damaged_part) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @if($errors->has('damaged_part'))
@@ -195,30 +187,30 @@
                     <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_helper') }}</span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
-                    <input class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" type="text" name="damage_origin" id="damage_origin" value="{{ old('damage_origin', '') }}">
-                    @if($errors->has('damage_origin'))
+                    <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
+                    <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area" id="damaged_area" aria-label="multiple select">
+                        <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('damaged_area', $claim->damaged_area) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('damaged_area'))
                         <div class="invalid-feedback">
-                            {{ $errors->first('damage_origin') }}
+                            {{ $errors->first('damaged_area') }}
                         </div>
                     @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_helper') }}</span>
+                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_helper') }}</span>
                 </div>
             </div>
             <div class="form-group">
-                <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
-                <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area" id="damaged_area">
-                    <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('damaged_area'))
+                <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
+                <input class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" type="text" name="damage_origin" id="damage_origin" value="{{ old('damage_origin', $claim->damage_origin) }}">
+                @if($errors->has('damage_origin'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('damaged_area') }}
+                        {{ $errors->first('damage_origin') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_helper') }}</span>
             </div>
         </div>
     </div>
@@ -261,28 +253,28 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part_opposite') }}</label>
-                    <select class="form-control {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite" id="damaged_part_opposite">
-                        <option value disabled {{ old('damaged_part_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('damaged_part_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    @if($errors->has('damaged_part_opposite'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('damaged_part_opposite') }}
-                        </div>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_opposite_helper') }}</span>
+                <select class="form-control {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite" id="damaged_part_opposite">
+                    <option value disabled {{ old('damaged_part_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('damaged_part_opposite', $claim->damaged_part_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('damaged_part_opposite'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damaged_part_opposite') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_opposite_helper') }}</span>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="damage_origin_opposite">{{ trans('cruds.claim.fields.damage_origin_opposite') }}</label>
-                    <input class="form-control {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" type="text" name="damage_origin_opposite" id="damage_origin_opposite" value="{{ old('damage_origin_opposite', '') }}">
-                    @if($errors->has('damage_origin_opposite'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('damage_origin_opposite') }}
-                        </div>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_opposite_helper') }}</span>
+                <input class="form-control {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" type="text" name="damage_origin_opposite" id="damage_origin_opposite" value="{{ old('damage_origin_opposite', $claim->damage_origin_opposite) }}">
+                @if($errors->has('damage_origin_opposite'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('damage_origin_opposite') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_opposite_helper') }}</span>
                 </div>
             </div>
             <div class="form-group">
@@ -290,7 +282,7 @@
                 <select class="form-control {{ $errors->has('damaged_area_opposite') ? 'is-invalid' : '' }}" name="damaged_area_opposite" id="damaged_area_opposite">
                     <option value disabled {{ old('damaged_area_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('damaged_area_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $key }}" {{ old('damaged_area_opposite', $claim->damaged_area_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('damaged_area_opposite'))
@@ -311,7 +303,7 @@
                 <label for="recovery_office_id">{{ trans('cruds.claim.fields.recovery_office') }}</label>
                 <select class="form-control select2 {{ $errors->has('recovery_office') ? 'is-invalid' : '' }}" name="recovery_office_id" id="recovery_office_id">
                     @foreach($recovery_offices as $id => $entry)
-                        <option value="{{ $id }}" {{ old('recovery_office_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        <option value="{{ $id }}" {{ (old('recovery_office_id') ? old('recovery_office_id') : $claim->recovery_office->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('recovery_office'))
@@ -332,7 +324,7 @@
                 <label for="expertise_office_id">{{ trans('cruds.claim.fields.expertise_office') }}</label>
                 <select class="form-control select2 {{ $errors->has('expertise_office') ? 'is-invalid' : '' }}" name="expertise_office_id" id="expertise_office_id">
                     @foreach($expertise_offices as $id => $entry)
-                        <option value="{{ $id }}" {{ old('expertise_office_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        <option value="{{ $id }}" {{ (old('expertise_office_id') ? old('expertise_office_id') : $claim->expertise_office->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('expertise_office'))
@@ -343,8 +335,8 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.expertise_office_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="" for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
-                <input class="form-control datetime {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at') }}">
+                <label class="required" for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
+                <input class="form-control datetime {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}" required>
                 @if($errors->has('requested_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('requested_at') }}
@@ -355,7 +347,7 @@
             <div class="form-group">
                 <div class="form-check {{ $errors->has('expert_report_is_in') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="expert_report_is_in" value="0">
-                    <input class="form-check-input" type="checkbox" name="expert_report_is_in" id="expert_report_is_in" value="1" {{ old('expert_report_is_in', 0) == 1 ? 'checked' : '' }}>
+                    <input class="form-check-input" type="checkbox" name="expert_report_is_in" id="expert_report_is_in" value="1" {{ $claim->expert_report_is_in || old('expert_report_is_in', 0) === 1 ? 'checked' : '' }}>
                     <label class="form-check-label" for="expert_report_is_in">{{ trans('cruds.claim.fields.expert_report_is_in') }}</label>
                 </div>
                 @if($errors->has('expert_report_is_in'))
@@ -367,7 +359,7 @@
             </div>
             <div class="form-group expertise-report-show d-none">
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
-                <input class="form-control datetime {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at') }}">
+                <input class="form-control datetime {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
                 @if($errors->has('report_received_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('report_received_at') }}
@@ -559,16 +551,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.subject_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label class="required" for="claim_number">{{ trans('cruds.claim.fields.claim_number') }}</label>
-                <input class="form-control {{ $errors->has('claim_number') ? 'is-invalid' : '' }}" type="text" name="claim_number" id="claim_number" value="{{ old('claim_number', $claim->claim_number) }}" required>
-                @if($errors->has('claim_number'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('claim_number') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.claim_number_helper') }}</span>
-            </div>
+    
             <div class="form-group">
                 <label class="required">{{ trans('cruds.claim.fields.status') }}</label>
                 <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
@@ -961,11 +944,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.other_files_helper') }}</span>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
-            </div>
+            
         </form>
     </div>
 </div>

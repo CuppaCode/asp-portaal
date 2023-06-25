@@ -59,7 +59,7 @@
                 </thead>
                 <tbody>
                     @foreach($drivers as $key => $driver)
-                        <tr data-entry-id="{{ $driver->id }}">
+                        <tr data-entry-url="{{ route('admin.drivers.show', $driver->id) }}" data-entry-id="{{ $driver->id }}">
                             <td>
 
                             </td>

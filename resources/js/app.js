@@ -34,5 +34,14 @@ $(document).ready(function () {
     $(".clickable-row").click(function() {
         window.location = $(this).data("href");
     });
+ 
+
+    $('.datatable tbody').on('click', 'tr', function (evt) { // clickable row
     
+        if(!$(".btn, .select-checkbox").is(evt.target)){
+            var url = $(this).attr('data-entry-url');
+            window.location = url;  
+        } 
+    });
+
 });

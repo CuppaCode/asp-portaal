@@ -82,6 +82,10 @@
                     <p class="card-text">{{ $claim->injury_other }}</p>
                 @endif
                 
+                <div class="card-title">
+                    Soort schade
+                </div>
+                <p class="card-text">{{ $claim->damage_kind }}</p>
             </div>
         </div>
     </div>

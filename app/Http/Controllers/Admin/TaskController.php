@@ -15,6 +15,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Notification;
 
 class TaskController extends Controller
 {
@@ -43,12 +44,15 @@ class TaskController extends Controller
 
         $claims = Claim::pluck('claim_number', 'id')->prepend(trans('global.pleaseSelect'), '');
 
+        
         return view('admin.tasks.create', compact('claims', 'users'));
     }
-
+    
     public function store(StoreTaskRequest $request)
     {
         $task = Task::create($request->all());
+        
+        Notification::send('mail', 'jeewee94@gmail.com')->notify('test');
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $task->id]);
