@@ -64,21 +64,34 @@ class RegisterController extends Controller
           */
          protected function create(array $data)
          {
-             $user = User::create([
-                 'name'     => $data['name'],
-                 'email'    => $data['email'],
-                 'password' => Hash::make($data['password']),
-                 'team_id'  => request()->input('team', null),
-             ]);
+            $user = User::create([
+                'name'     => $data['name'],
+                'email'    => $data['email'],
+                'password' => Hash::make($data['password']),
+                'team_id'  => request()->input('team', null)
+            ]);
 
-             if (! request()->has('team')) {
-                 $team = \App\Models\Team::create([
-                     'owner_id' => $user->id,
-                     'name'     => $data['email'],
-                 ]);
+            if (! request()->has('team')) {
+                $team = \App\Models\Team::create([
+                    'owner_id' => $user->id,
+                    'name'     => $data['email'],
+                ]);
 
-                 $user->update(['team_id' => $team->id]);
-             }
+                $user->update(['team_id' => $team->id]);
+            }
+
+            if(request()->has('contact')) {
+               
+               $contact = Contact::find(request()->input('contact'));
+
+               if(!isset($contact->user_id)) {
+                   
+                   $contact->user_id = $user->id;
+                   $contact->save();
+                   
+               }
+               
+            }
 
              return $user;
          }

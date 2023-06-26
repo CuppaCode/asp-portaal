@@ -12,6 +12,10 @@
                     @if(request()->has('team'))
                         <input type="hidden" name="team" id="team" value="{{ request()->query('team') }}">
                     @endif
+
+                    @if(request()->has('contact'))
+                        <input type="hidden" name="contact" id="contact" value="{{ request()->query('contact') }}">
+                    @endif
                     <h1>{{ trans('panel.site_title') }}</h1>
                     <p class="text-muted">{{ trans('global.register') }}</p>
 
