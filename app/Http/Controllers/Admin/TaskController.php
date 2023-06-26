@@ -52,13 +52,18 @@ class TaskController extends Controller
     {
         $task = Task::create($request->all());
         
-        Notification::send('mail', 'jeewee94@gmail.com')->notify('test');
+        // Notification::send('mail', 'jeewee94@gmail.com')->notify('test');
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $task->id]);
         }
 
-        return redirect()->route('admin.tasks.index');
+        if($request->input('add-task-dashboard', 'true')) {
+            return redirect()->route("admin.home");
+        } else {
+            return redirect()->route('admin.tasks.index');
+        }
+        
     }
 
     public function edit(Task $task)

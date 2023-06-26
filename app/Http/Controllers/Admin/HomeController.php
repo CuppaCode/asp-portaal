@@ -13,6 +13,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
 use App\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 
 class HomeController
 {
@@ -21,7 +22,7 @@ class HomeController
         $user = auth()->user();
 
         $claims = Claim::whereNot('status', 'finished')->with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->get();
-        $company_claims = Claim::whereNot('status', 'finished')->where('team_id', $user->team_id)->get();
+        $company_claims = Claim::whereNot('status', 'finished')->where('company_id', $user->team_id)->get();
         
         $companies = Company::get();
         

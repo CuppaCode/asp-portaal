@@ -26,9 +26,6 @@
                             {{ trans('cruds.task.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.task.fields.task_number') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.task.fields.user') }}
                         </th>
                         <th>
@@ -44,45 +41,6 @@
                             &nbsp;
                         </th>
                     </tr>
-                    <tr>
-                        <td>
-                        </td>
-                        <td>
-                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($users as $key => $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                            <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($claims as $key => $item)
-                                    <option value="{{ $item->claim_number }}">{{ $item->claim_number }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            <select class="search" strict="true">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach(App\Models\Task::STATUS_SELECT as $key => $item)
-                                    <option value="{{ $item }}">{{ $item }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
-                        </td>
-                    </tr>
                 </thead>
                 <tbody>
                     @foreach($tasks as $key => $task)
@@ -92,9 +50,6 @@
                             </td>
                             <td>
                                 {{ $task->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $task->task_number ?? '' }}
                             </td>
                             <td>
                                 {{ $task->user->name ?? '' }}
