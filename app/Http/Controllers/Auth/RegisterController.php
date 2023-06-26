@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Contact;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -64,12 +65,12 @@ class RegisterController extends Controller
           */
          protected function create(array $data)
          {
-            $user = User::create([
-                'name'     => $data['name'],
-                'email'    => $data['email'],
-                'password' => Hash::make($data['password']),
-                'team_id'  => request()->input('team', null)
-            ]);
+             $user = User::create([
+                 'name'     => $data['name'],
+                 'email'    => $data['email'],
+                 'password' => Hash::make($data['password']),
+                 'team_id'  => request()->input('team', null)
+             ]);
 
             if (! request()->has('team')) {
                 $team = \App\Models\Team::create([
@@ -92,6 +93,21 @@ class RegisterController extends Controller
                }
                
             }
+
+             if(request()->has('contact')) {
+                
+                $contact = Contact::find(request()->input('contact'));
+
+                if(!isset($contact->user_id)) {
+                    
+                    $contact->user_id = $user->id;
+                    $contact->save();
+                    
+                }
+                
+             }
+
+             
 
              return $user;
          }

@@ -1,6 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
+@php
+
+    $isAdmin = auth()->user()->roles->contains(1);
+
+@endphp
+
 <div class="card">
     <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.claim.title_singular') }}
@@ -21,7 +27,7 @@
         <div class="card-body">
             @csrf
 
-            @if (auth()->user()->roles->contains(1))
+            @if ($isAdmin)
                 <div class="form-group">
 
                     <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
@@ -196,6 +202,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
             </div>
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
@@ -262,6 +269,7 @@
                     <span class="help-block">{{ trans('cruds.claim.fields.opposite_type_helper') }}</span>
                 </div>
             </div>
+
             <div class="form-group">
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
                 <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', '') }}">
@@ -272,6 +280,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_opposite_helper') }}</span>
             </div>
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part_opposite') }}</label>

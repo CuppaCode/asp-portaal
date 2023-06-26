@@ -98,6 +98,7 @@ return [
             'injury_office'                    => 'Letsel Bureau',
             'injury_office_helper'             => ' ',
             'vehicle'                          => 'Voertuig',
+            'vehicle_helper'                   => ' ',
             'vehicle_plates'                   => 'Voertuig kenteken',
             'vehicle_plates_helper'            => ' ',
             'vehicle_opposite'                 => 'Voertuig wederpartij',
@@ -246,6 +247,8 @@ return [
             'team_helper'       => ' ',
             'newsletter'        => 'Nieuwsbrief?',
             'newsletter_helper' => ' ',
+            'create_user'       => 'Maak gebruiker aan voor deze contact',
+            'create_user_helper'=> '',
         ],
     ],
     'injuryOffice' => [
