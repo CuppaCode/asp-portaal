@@ -78,13 +78,33 @@
             </li>
         @endcan
         @can('claim_access')
-            <li class="c-sidebar-nav-item">
-                <a href="{{ route("admin.claims.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims") || request()->is("admin/claims/*") ? "c-active" : "" }}">
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/claims*") ? "c-show" : "" }}">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-address-book c-sidebar-nav-icon">
 
                     </i>
-                    {{ trans('cruds.claim.title') }}
+                    {{ trans('cruds.claim.title') }}s
                 </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    @can('company_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims") || request()->is("admin/claims/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.claim.title') }}s
+                            </a>
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.index") }}?status=nieuw" class="c-sidebar-nav-link {{ request()->is("admin/claims", 'status=nieuw') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                Nieuwe {{ trans('cruds.claim.title') }}s
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
             </li>
         @endcan
         @can('task_access')

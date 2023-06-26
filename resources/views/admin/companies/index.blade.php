@@ -63,7 +63,7 @@
                 </thead>
                 <tbody>
                     @foreach($companies as $key => $company)
-                        <tr data-entry-id="{{ $company->id }}">
+                        <tr data-entry-url="{{ route('admin.companies.show', $company->id) }}" data-entry-id="{{ $company->id }}">
                             <td>
 
                             </td>

@@ -38,7 +38,7 @@
                 </thead>
                 <tbody>
                     @foreach($recoveryOffices as $key => $recoveryOffice)
-                        <tr data-entry-id="{{ $recoveryOffice->id }}">
+                        <tr data-entry-url="{{ route('admin.recovery-offices.edit', $recoveryOffice->id) }}" data-entry-id="{{ $recoveryOffice->id }}">
                             <td>
 
                             </td>

@@ -268,3 +268,7 @@ div.dt-buttons {
 .top-bar-claims .alert {
     margin-bottom: 0;
 }
+
+.datatable tr {
+    cursor: pointer;
+}

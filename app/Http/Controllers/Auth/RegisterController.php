@@ -72,14 +72,27 @@ class RegisterController extends Controller
                  'team_id'  => request()->input('team', null)
              ]);
 
-             if (! request()->has('team')) {
-                 $team = \App\Models\Team::create([
-                     'owner_id' => $user->id,
-                     'name'     => $data['email'],
-                 ]);
+            if (! request()->has('team')) {
+                $team = \App\Models\Team::create([
+                    'owner_id' => $user->id,
+                    'name'     => $data['email'],
+                ]);
 
-                 $user->update(['team_id' => $team->id]);
-             }
+                $user->update(['team_id' => $team->id]);
+            }
+
+            if(request()->has('contact')) {
+               
+               $contact = Contact::find(request()->input('contact'));
+
+               if(!isset($contact->user_id)) {
+                   
+                   $contact->user_id = $user->id;
+                   $contact->save();
+                   
+               }
+               
+            }
 
              if(request()->has('contact')) {
                 

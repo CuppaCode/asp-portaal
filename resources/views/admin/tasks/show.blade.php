@@ -6,7 +6,7 @@
         {{ trans('global.back_to_list') }}
     </a>
 
-    <a class="btn btn-success" href="{{ route('admin.claims.edit', $task->id) }}">
+    <a class="btn btn-success" href="{{ route('admin.tasks.edit', $task->id) }}">
         {{ trans('global.edit') }}
     </a>
 </div>
@@ -26,14 +26,6 @@
                         </th>
                         <td>
                             {{ $task->id }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.task.fields.task_number') }}
-                        </th>
-                        <td>
-                            {{ $task->task_number }}
                         </td>
                     </tr>
                     <tr>
