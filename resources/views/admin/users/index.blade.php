@@ -70,7 +70,7 @@
                 </thead>
                 <tbody>
                     @foreach($users as $key => $user)
-                        <tr data-entry-id="{{ $user->id }}">
+                        <tr data-entry-url="{{ route('admin.users.show', $user->id) }}" data-entry-id="{{ $user->id }}">
                             <td>
 
                             </td>

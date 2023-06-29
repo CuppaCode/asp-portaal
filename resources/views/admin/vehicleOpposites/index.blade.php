@@ -64,7 +64,7 @@
                 </thead>
                 <tbody>
                     @foreach($vehicleOpposites as $key => $vehicleOpposite)
-                        <tr data-entry-id="{{ $vehicleOpposite->id }}">
+                        <tr data-entry-url="{{ route('admin.vehicle-opposites.show', $vehicleOpposite->id) }}" data-entry-id="{{ $vehicleOpposite->id }}">
                             <td>
 
                             </td>

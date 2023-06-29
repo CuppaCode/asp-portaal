@@ -16,7 +16,7 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-hover datatable datatable-Claim">
+            <table id="Claim-Dtable" class="table table-bordered table-striped table-hover datatable datatable-Claim">
                 <thead>
                     <tr>
                         <th width="10">
@@ -75,7 +75,7 @@
                 </thead>
                 <tbody>
                     @foreach($claims as $key => $claim)
-                        <tr data-entry-id="{{ $claim->id }}">
+                        <tr data-entry-url="{{ route('admin.claims.show', $claim->id) }}" data-entry-id="{{ $claim->id }}">
                             <td>
 
                             </td>
@@ -94,9 +94,9 @@
                             <td>
                                 {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
                             </td>
-                            <td>
+                            <td class="edits-td">
                                 @can('claim_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.claims.show', $claim->id) }}">
+                                    <a id="view-row-datatable" class="btn btn-xs btn-primary" href="{{ route('admin.claims.show', $claim->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
@@ -173,6 +173,22 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
+
+    $( function() {
+        $.urlParam = function(name){
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            if (results!=null){
+                return results[1] || 0;
+            }
+        }
+        
+        if ($.urlParam('status') != null) {
+            param = $.urlParam('status')
+            table.column(5).search(param, 'strict').draw();
+        }
+
+        table.column( 1 ).visible( false );
+    });
   
 let visibleColumnsIndexes = null;
 $('.datatable thead').on('input', '.search', function () {
@@ -180,6 +196,7 @@ $('.datatable thead').on('input', '.search', function () {
       let value = strict && this.value ? "^" + this.value + "$" : this.value
 
       let index = $(this).parent().index()
+      console.log(index);
       if (visibleColumnsIndexes !== null) {
         index = visibleColumnsIndexes[index]
       }
@@ -188,13 +205,14 @@ $('.datatable thead').on('input', '.search', function () {
         .column(index)
         .search(value, strict)
         .draw()
-  });
-table.on('column-visibility.dt', function(e, settings, column, state) {
-      visibleColumnsIndexes = []
-      table.columns(":visible").every(function(colIdx) {
-          visibleColumnsIndexes.push(colIdx);
-      });
-  })
+    });
+    table.on('column-visibility.dt', function(e, settings, column, state) {
+        visibleColumnsIndexes = []
+        table.columns(":visible").every(function(colIdx) {
+            visibleColumnsIndexes.push(colIdx);
+        });
+    })
+    
 })
 
 </script>

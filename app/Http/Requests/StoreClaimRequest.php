@@ -35,6 +35,10 @@ class StoreClaimRequest extends FormRequest
             'injury' => [
                 'required',
             ],
+            'date_accident' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
             'injury_other' => [
                 'string',
                 'nullable',
@@ -52,8 +56,8 @@ class StoreClaimRequest extends FormRequest
                 'nullable',
             ],
             'requested_at' => [
-                'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'nullable',
             ],
             'report_received_at' => [
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),

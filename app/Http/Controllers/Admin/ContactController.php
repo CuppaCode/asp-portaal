@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\TeamMembersController;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyContactRequest;
 use App\Http\Requests\StoreContactRequest;
@@ -44,7 +46,24 @@ class ContactController extends Controller
 
     public function store(StoreContactRequest $request)
     {
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
+
         $contact = Contact::create($request->all());
+
+        if(!$isAdmin) {
+            
+            $contact->company_id = $user->contact->company->id;
+
+        }
+
+        $contact->save();
+
+        if($request->create_user) {
+
+            (new TeamMembersController)->invite($request, $contact);
+
+        }
 
         return redirect()->route('admin.contacts.index');
     }

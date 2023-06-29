@@ -38,7 +38,7 @@
                 </thead>
                 <tbody>
                     @foreach($teams as $key => $team)
-                        <tr data-entry-id="{{ $team->id }}">
+                        <tr data-entry-url="{{ route('admin.teams.show', $team->id) }}" data-entry-id="{{ $team->id }}">
                             <td>
 
                             </td>

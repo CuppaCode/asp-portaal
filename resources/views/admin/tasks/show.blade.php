@@ -1,18 +1,23 @@
 @extends('layouts.admin')
 @section('content')
 
+<div class="top-bar-claims form-group d-flex justify-content-between align-items-center">
+    <a class="btn btn-dark" href="{{ route('admin.claims.index') }}">
+        {{ trans('global.back_to_list') }}
+    </a>
+
+    <a class="btn btn-success" href="{{ route('admin.tasks.edit', $task->id) }}">
+        {{ trans('global.edit') }}
+    </a>
+</div>
+
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.task.title') }}
+        Taak 
     </div>
 
     <div class="card-body">
         <div class="form-group">
-            <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.tasks.index') }}">
-                    {{ trans('global.back_to_list') }}
-                </a>
-            </div>
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
@@ -21,14 +26,6 @@
                         </th>
                         <td>
                             {{ $task->id }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.task.fields.task_number') }}
-                        </th>
-                        <td>
-                            {{ $task->task_number }}
                         </td>
                     </tr>
                     <tr>
@@ -73,11 +70,6 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.tasks.index') }}">
-                    {{ trans('global.back_to_list') }}
-                </a>
-            </div>
         </div>
     </div>
 </div>

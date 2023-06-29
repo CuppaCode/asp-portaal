@@ -9,6 +9,7 @@ use App\Http\Requests\StoreClaimRequest;
 use App\Http\Requests\UpdateClaimRequest;
 use App\Models\Claim;
 use App\Models\Company;
+use App\Models\Contact;
 use App\Models\ExpertiseOffice;
 use App\Models\InjuryOffice;
 use App\Models\RecoveryOffice;
@@ -52,42 +53,91 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $isAdmin = auth()->user()->roles->contains(1);
+        $companies = null;
 
         if($isAdmin) {
 
             $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        } else {
-
-            dd(auth()->user());
-
-            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         }
 
-        
+        $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $recovery_offices = RecoveryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        
 
         $vehicles = Vehicle::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $recovery_offices = RecoveryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $expertise_offices = ExpertiseOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.claims.create', compact('companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles'));
     }
 
     public function store(StoreClaimRequest $request)
     {
+        /* Custom bit */
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
 
         $claim = Claim::create($request->all());
-        
+
         $claim->claim_number = date('Y').'-'.str_pad($claim->id, 5, 0, STR_PAD_LEFT);
 
+        
+        if(!$isAdmin) {
+            
+            $claim->company_id = $user->contact->company->id;
+
+        }
+
+        $companyId = $claim->company_id;
+
+        $claim->status = 'new';
+
+        $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
+
+        if(!isset($vehicle)) {
+
+            $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
+
+            
+            $vehicle = Vehicle::create([
+                'name' => $vehicleName,
+                'plates' => $request->vehicle_plates,
+                'company_id' => $companyId
+            ]);
+
+        }
+
+        $claim->vehicle_id = $vehicle->id;
+
+        //
+
+        if(isset($request->vehicle_plates_opposite)){
+
+            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
+
+            if(!isset($vehicleOpposite)) {
+
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
+
+                
+                $vehicleOpposite = VehicleOpposite::create([
+                    'name' => $vehicleName,
+                    'plates' => $request->vehicle_plates_opposite
+                ]);
+
+            }
+
+            $claim->vehicle_opposite_id = $vehicleOpposite->id;
+        
+        }
+
         $claim->save();
+        /* end custom bit */
+
 
         foreach ($request->input('damage_files', []) as $file) {
             $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('damage_files');
@@ -199,10 +249,13 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
+        $contacts = Contact::find($claim->company->id);
+        // dd($contacts);
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
 
-        return view('admin.claims.show', compact('claim'));
+        return view('admin.claims.show', compact('claim', 'contacts'));
     }
 
     public function destroy(Claim $claim)

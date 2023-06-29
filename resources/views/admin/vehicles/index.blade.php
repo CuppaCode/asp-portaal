@@ -44,7 +44,7 @@
                 </thead>
                 <tbody>
                     @foreach($vehicles as $key => $vehicle)
-                        <tr data-entry-id="{{ $vehicle->id }}">
+                        <tr data-entry-url="{{ route('admin.vehicles.show', $vehicle->id) }}" data-entry-id="{{ $vehicle->id }}">
                             <td>
 
                             </td>

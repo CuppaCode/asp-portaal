@@ -21,8 +21,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-  
+
     @yield('styles')
 </head>
 
@@ -54,7 +56,26 @@
                     </li>
                 @endif
 
-
+              <li>
+                <div class="dropdown show menu-profile-link">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ Auth::user()->name }}
+                  </a>
+                
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
+                        @can('profile_password_edit')
+                            <a class="dropdown-item" href="{{ route('profile.password.edit') }}">
+                                {{ trans('global.profile_information') }}
+                            </a>
+                        @endcan
+                  @endif
+                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
+                        {{ trans('global.logout') }}    
+                    </a>
+                  </div>
+                </div>  
+              </li>
             </ul>
         </header>
 
@@ -134,16 +155,22 @@
     },
     columnDefs: [{
         orderable: false,
+        className: 'select-checkbox',
+        targets: 0
+    }, {
+        orderable: false,
         searchable: false,
         targets: -1
     }],
     select: {
       style:    'multi+shift',
+      selector: 'td:first-child'
     },
     order: [],
     scrollX: true,
     pageLength: 100,
     dom: '<"dt-search"f>tlp<"dt-c-buttons"B><r><"actions">',
+    //dom: 'lBfrtip<"actions">',
     buttons: [
       {
         extend: 'selectAll',

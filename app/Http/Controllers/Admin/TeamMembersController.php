@@ -23,11 +23,21 @@ class TeamMembersController extends Controller
         return view('admin.team-members.index', compact('team', 'users', 'roles'));
     }
 
-    public function invite(Request $request)
+    public function invite(Request $request, $contact = false)
     {
         $request->validate(['email' => 'email']);
         $team    = Team::where('owner_id', auth()->user()->id)->first();
-        $url     = URL::signedRoute('register', ['team' => $team->id]);
+
+        if($contact){
+
+            $url     = URL::signedRoute('register', ['team' => $team->id, 'contact' => $contact->id]);
+
+        } else {
+
+            $url     = URL::signedRoute('register', ['team' => $team->id]);
+
+        }
+        
         $message = new \App\Notifications\TeamMemberInvite($url);
         Notification::route('mail', $request->input('email'))->notify($message);
 
