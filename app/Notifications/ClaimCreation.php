@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\HtmlString;
 use Illuminate\Notifications\Notification;
 
-class TaskCreation extends Notification
+class ClaimCreation extends Notification
 {
     use Queueable;
 
@@ -17,9 +17,8 @@ class TaskCreation extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($task, $claim, $user)
+    public function __construct($claim, $user)
     {
-        $this->task = $task;
         $this->claim = $claim;
         $this->user = $user;
     }
@@ -39,24 +38,20 @@ class TaskCreation extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/admin/tasks/'.$this->task->id);
+        $url = url('/admin/claims/'.$this->claim->id);
+
+        $assign_self = $this->claim->assign_self;
+        $claim_number = $this->claim->claim_number;
         
         // dd($this->claim);
 
-        if (isset($this->claim[0]->claim_number)){
-            $claim_number = $this->claim[0]->claim_number;
-        } else {
-            $claim_number = null;
-        }
-
         return (new MailMessage)
-            ->subject(config('app.name') . ': Er is een nieuwe taak aangemaakt ')
-            ->greeting("Hi {$this->user['name']},")
-            ->line("Er staat een nieuwe taak voor je klaar")
-            ->lineIf($claim_number != null, "Betreffende schadedossier: {$claim_number}")
-            ->line("Beschrijving taak: {$this->task['description']}")
-            ->line("Deadline: {$this->task['deadline_at']}  ")
-            ->action('Bekijk taak', $url)
+            ->subject(config('app.name') . ': Er is een nieuwe claim aangemaakt ')
+            ->greeting("Hi Patrick,")
+            ->line("Er staat een nieuwe claim klaar")
+            ->lineIf($assign_self == 1, "LET OP CLAIM WORDT DOOR KLANT ZELF OPGEPAKT.")
+            ->line("Schadedossier nummer: {$claim_number}")
+            ->action('Bekijk schadedossier', $url)
             ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
     }
 

@@ -25,42 +25,20 @@
                 </a>
                 <ul class="c-sidebar-nav-dropdown-items">
                     @can('company_access')
+                        <li class="c-sidebar-nav-item nav-item-create">
+                            <a href="{{ route("admin.companies.create") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims/create", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.company.title') }} aanmaken
+                            </a>
+                        </li>
                         <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.companies.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/companies") || request()->is("admin/companies/*") ? "c-active" : "" }}">
                                 <i class="fa-fw fas fa-building c-sidebar-nav-icon">
 
                                 </i>
-                                {{ trans('cruds.company.title') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('injury_office_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.injury-offices.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/injury-offices") || request()->is("admin/injury-offices/*") ? "c-active" : "" }}">
-                                <i class="fa-fw fab fa-accessible-icon c-sidebar-nav-icon">
-
-                                </i>
-                                {{ trans('cruds.injuryOffice.title') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('expertise_office_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.expertise-offices.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/expertise-offices") || request()->is("admin/expertise-offices/*") ? "c-active" : "" }}">
-                                <i class="fa-fw fas fa-graduation-cap c-sidebar-nav-icon">
-
-                                </i>
-                                {{ trans('cruds.expertiseOffice.title') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('recovery_office_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.recovery-offices.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/recovery-offices") || request()->is("admin/recovery-offices/*") ? "c-active" : "" }}">
-                                <i class="fa-fw fas fa-wrench c-sidebar-nav-icon">
-
-                                </i>
-                                {{ trans('cruds.recoveryOffice.title') }}
+                                {{ trans('cruds.business.title') }}
                             </a>
                         </li>
                     @endcan
@@ -68,13 +46,31 @@
             </li>
         @endcan
         @can('contact_access')
-            <li class="c-sidebar-nav-item">
-                <a href="{{ route("admin.contacts.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/contacts") || request()->is("admin/contacts/*") ? "c-active" : "" }}">
-                    <i class="fa-fw fas fa-user-tie c-sidebar-nav-icon">
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/contacts/*") ? "c-show" : "" }} {{ request()->is("admin/injury-offices*") ? "c-show" : "" }} {{ request()->is("admin/expertise-offices*") ? "c-show" : "" }} {{ request()->is("admin/recovery-offices*") ? "c-show" : "" }}">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-briefcase c-sidebar-nav-icon">
 
                     </i>
                     {{ trans('cruds.contact.title') }}
                 </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    <li class="c-sidebar-nav-item nav-item-create">
+                        <a href="{{ route("admin.contacts.create") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims/create", '') ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                            </i>
+                            Contact aanmaken
+                        </a>
+                    </li>
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.contacts.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/contacts") || request()->is("admin/contacts/*") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-user-tie c-sidebar-nav-icon">
+
+                            </i>
+                            {{ trans('cruds.contact.title') }}
+                        </a>
+                    </li>
+                </ul>
             </li>
         @endcan
         @can('claim_access')
@@ -86,21 +82,29 @@
                     {{ trans('cruds.claim.title') }}s
                 </a>
                 <ul class="c-sidebar-nav-dropdown-items">
-                    @can('company_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.claims.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims") || request()->is("admin/claims/*") ? "c-active" : "" }}">
+                    @can('claim_access')
+                        <li class="c-sidebar-nav-item nav-item-create">
+                            <a href="{{ route("admin.claims.create") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims/create", '') ? "c-active" : "" }}">
                                 <i class="fa-fw fas fa-building c-sidebar-nav-icon">
 
                                 </i>
-                                {{ trans('cruds.claim.title') }}s
+                                {{ trans('cruds.claim.title') }} aanmaken
                             </a>
                         </li>
                         <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.claims.index") }}?status=nieuw" class="c-sidebar-nav-link {{ request()->is("admin/claims", 'status=nieuw') ? "c-active" : "" }}">
+                            <a href="{{ route("admin.claims.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims", '') ? "c-active" : "" }}">
                                 <i class="fa-fw fas fa-building c-sidebar-nav-icon">
 
                                 </i>
-                                Nieuwe {{ trans('cruds.claim.title') }}s
+                                Alle {{ trans('cruds.claim.title') }}s
+                            </a>
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.index") }}?status=nieuw" class="c-sidebar-nav-link {{ request()->is("admin/claims", '?status=nieuw') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                 Nieuwe {{ trans('cruds.claim.title') }}s
                             </a>
                         </li>
                     @endcan

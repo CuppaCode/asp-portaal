@@ -51,8 +51,12 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $task = Task::create($request->all());
+        $user = $task->user;
+        $claim = Claim::where('id', $request->claim_id)->get();
         
-        // Notification::send('mail', 'jeewee94@gmail.com')->notify('test');
+        $message = new \App\Notifications\TaskCreation($task, $claim, $user);
+        Notification::route('mail', [
+            $task->user->email => $task->user->name])->notify($message);
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $task->id]);

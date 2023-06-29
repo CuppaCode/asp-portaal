@@ -159,6 +159,15 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.recoverable_claim_helper') }}</span>
             </div>
+            <div class="form-group">
+                <label>Soort schade</label>
+                <input class="form-control {{ $errors->has('damage_kind') ? 'is-invalid' : '' }}" type="text" name="damage_kind" id="damage_kind" value="{{ old('damage_kind', $claim->damage_kind) }}">
+                    @if($errors->has('damage_kind'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('damage_kind') }}
+                        </div>
+                    @endif
+            </div>
         </div>
     </div>
     <div class="card">
@@ -170,7 +179,7 @@
             <input type="hidden" name="vehicle_id" value="1"/>
             <div class="form-group">
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
-                <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', '') }}">
+                <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', $claim->vehicle->name ?? null) }}">
                 @if($errors->has('vehicle_plates'))
                     <div class="invalid-feedback">
                         {{ $errors->first('vehicle_plates') }}
@@ -246,7 +255,7 @@
             </div>
             <div class="form-group">
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
-                <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', '') }}">
+                <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', $claim->vehicle_opposite->name ?? null) }}">
                 @if($errors->has('vehicle_plates_opposite'))
                     <div class="invalid-feedback">
                         {{ $errors->first('vehicle_plates_opposite') }}

@@ -30,7 +30,7 @@ class TeamMembersController extends Controller
 
         if($contact){
 
-            $url     = URL::signedRoute('register', ['team' => $team->id, 'contact' => $contact->id]);
+            $url     = URL::signedRoute('register', ['team' => $team->id, 'contact' => $contact->id, 'first_name' => $contact->first_name, 'last_name' => $contact->last_name, 'email' => $contact->email]);
 
         } else {
 

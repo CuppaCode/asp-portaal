@@ -151,7 +151,12 @@ div.dt-buttons {
     background: #344A9B;
 }
 
-.c-sidebar .c-sidebar-nav-dropdown-toggle:hover, .c-sidebar .c-sidebar-nav-link:hover {
+#sidebar.c-sidebar .c-sidebar-nav-dropdown-toggle:hover {
+    background: #fff;
+    color: #000;
+}
+
+#sidebar.c-sidebar .c-sidebar-nav-link:hover {
     background: #fff;
     color: #000;
 }
@@ -241,6 +246,15 @@ div.dt-buttons {
     color: #fff !important
 }
 
+.page-item.active .page-link {
+    background-color: #344A9B;
+    border-color: #344A9B;
+}
+
+.page-link, a, a:hover {
+    color: #344A9B
+}
+
 .card-close .dropdown-menu a i {
     margin-right: 10px;
     -webkit-transition: none;
@@ -271,4 +285,8 @@ div.dt-buttons {
 
 .datatable tr {
     cursor: pointer;
+}
+
+.nav-item-create {
+    background-color: #2eb85c;
 }
