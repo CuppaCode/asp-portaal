@@ -13,6 +13,8 @@ use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
 
 class HomeController
@@ -21,7 +23,7 @@ class HomeController
     {
         $user = auth()->user();
 
-        $claims = Claim::whereNot('status', 'finished')->with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->get();
+        $claims = Claim::whereNot('status', 'finished')->with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->paginate(7, ['*'], 'claims');
         $company_claims = Claim::whereNot('status', 'finished')->where('company_id', $user->team_id)->get();
         
         $companies = Company::get();
@@ -36,8 +38,8 @@ class HomeController
         
         $expertise_offices = ExpertiseOffice::get();
         
-        $tasks = Task::with(['user', 'claim', 'team'])->get();
-        $personal_tasks = Task::where('user_id', $user->id)->get()->sortBy('deadline_at');
+        $tasks = Task::with(['user', 'claim', 'team'])->orderBy('deadline_at')->paginate(5, ['*'], 'tasks');
+        $personal_tasks = Task::where('user_id', $user->id)->orderBy('deadline_at')->paginate(5, ['*'], 'ptasks');
         
         $users = User::get();
         $teams = Team::get();

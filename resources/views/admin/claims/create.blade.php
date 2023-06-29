@@ -182,7 +182,6 @@
                             {{ $errors->first('damage_kind') }}
                         </div>
                     @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.damage_kind') }}</span>
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.claims.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.claim.title_singular') }}
+                {{ trans('cruds.claim.title_singular') }} aanmaken
             </a>
         </div>
     </div>

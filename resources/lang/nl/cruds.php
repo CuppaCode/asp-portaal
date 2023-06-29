@@ -117,6 +117,7 @@ return [
             'damaged_area_opposite_helper'     => ' ',
             'recovery_office'                  => 'Herstel Bureau',
             'recovery_office_helper'           => ' ',
+            'damage_kind'                      => 'Soort schade',
             'damage_costs'                     => 'Schade kosten',
             'damage_costs_helper'              => ' ',
             'recovery_costs'                   => 'Herstel kosten',

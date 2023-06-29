@@ -20,6 +20,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Notification;
 
 class ClaimController extends Controller
 {
@@ -96,22 +97,25 @@ class ClaimController extends Controller
 
         $claim->status = 'new';
 
-        $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
 
-        if(!isset($vehicle)) {
+        if(isset($request->vehicle_plates)){
+            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
 
-            $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
+            if($vehicle != null) {
 
-            
-            $vehicle = Vehicle::create([
-                'name' => $vehicleName,
-                'plates' => $request->vehicle_plates,
-                'company_id' => $companyId
-            ]);
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
 
+                
+                $vehicle = Vehicle::create([
+                    'name' => $vehicleName,
+                    'plates' => $request->vehicle_plates,
+                    'company_id' => $companyId
+                ]);
+
+            }
+
+            $claim->vehicle_id = $vehicle->id;
         }
-
-        $claim->vehicle_id = $vehicle->id;
 
         //
 
@@ -158,6 +162,11 @@ class ClaimController extends Controller
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $claim->id]);
         }
+
+        $message = new \App\Notifications\ClaimCreation($claim, $user);
+        Notification::route('mail', [
+            'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
+
 
         return redirect()->route('admin.claims.index');
     }
