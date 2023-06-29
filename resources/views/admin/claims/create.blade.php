@@ -190,7 +190,6 @@
             Gegevens wagenpark
         </div>
         <div class="card-body">
-            <input type="hidden" name="vehicle_id" value="1"/>
             <div class="form-group">
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
                 <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', '') }}">

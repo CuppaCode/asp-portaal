@@ -1,12 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
+@php
+
+    $isAdmin = auth()->user()->roles->contains(1);
+
+@endphp
+
 <div class="top-bar-claims form-group d-flex justify-content-between align-items-center">
     <a class="btn btn-dark" href="{{ route('admin.claims.index') }}">
         {{ trans('global.back_to_list') }}
     </a>
 
-    @if (auth()->user()->roles->contains(1))
+    @if ($isAdmin)
+
         @if ($claim->assign_self == true)
             <div class="alert alert-danger" role="alert">
                 Let op! Deze schadedossier wordt behandeld door klant zelf.
@@ -15,9 +22,14 @@
     
     @endif
 
-    <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-        {{ trans('global.edit') }}
-    </a>
+    @unless( !$claim->assign_self && !$isAdmin )
+
+        <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+            {{ trans('global.edit') }}
+        </a>
+
+    @endunless
+    
 </div>
 
 <div class="card">
