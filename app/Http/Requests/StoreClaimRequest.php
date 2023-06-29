@@ -44,7 +44,6 @@ class StoreClaimRequest extends FormRequest
                 'nullable',
             ],
             'vehicle_id' => [
-                'required',
                 'integer',
             ],
             'damage_origin' => [

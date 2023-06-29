@@ -101,7 +101,7 @@ class ClaimController extends Controller
         if(isset($request->vehicle_plates)){
             $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
 
-            if($vehicle != null) {
+            if(!isset($vehicle)) {
 
                 $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
 
@@ -174,6 +174,10 @@ class ClaimController extends Controller
     public function edit(Claim $claim)
     {
         abort_if(Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $isAdmin = auth()->user()->roles->contains(1);
+
+        abort_if(!$isAdmin && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
