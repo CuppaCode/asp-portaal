@@ -11,6 +11,21 @@
             @method('PUT')
             @csrf
             <div class="form-group">
+              <label class="required">{{ trans('cruds.task.fields.status') }}</label>
+              <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
+                  <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                  @foreach(App\Models\Task::STATUS_SELECT as $key => $label)
+                      <option value="{{ $key }}" {{ old('status', $task->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                  @endforeach
+              </select>
+              @if($errors->has('status'))
+                  <div class="invalid-feedback">
+                      {{ $errors->first('status') }}
+                  </div>
+              @endif
+              <span class="help-block">{{ trans('cruds.task.fields.status_helper') }}</span>
+          </div>
+            <div class="form-group">
                 <label class="required" for="user_id">{{ trans('cruds.task.fields.user') }}</label>
                 <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id" required>
                     @foreach($users as $id => $entry)
@@ -57,21 +72,6 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.task.fields.deadline_at_helper') }}</span>
-            </div>
-            <div class="form-group d-none">
-                <label class="required">{{ trans('cruds.task.fields.status') }}</label>
-                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
-                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Task::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', $task->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('status'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('status') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.task.fields.status_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

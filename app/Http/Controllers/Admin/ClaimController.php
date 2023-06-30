@@ -263,7 +263,9 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         
-        $contacts = Contact::find($claim->company->id);
+        // dd($claim->company->id);
+
+        $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
         // dd($contacts);
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');

@@ -325,11 +325,7 @@
                     </form>
             </div>
         </div>
-    </div>
-
-    <div class="card-footer text-muted">
-        Footer
-    </div>
+    </div>    
 </div>
 @if (auth()->user()->roles->contains(1))
 <div class="row">
