@@ -58,7 +58,7 @@
                                 <tr class='clickable-row' data-href='{{ route('admin.claims.show', $claim->id) }}'>
                                     <td>{{ $claim->claim_number }}</td>
                                     <td>{{ $claim->subject }}</td>
-                                    <td>{{ $claim->status }}</td>
+                                    <td>{{ App\Models\Claim::STATUS_SELECT[$claim->status] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -68,69 +68,6 @@
                 @endif
             </div>
         </div>
-        @if (auth()->user()->roles->contains(1))
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    Alle openstaande taken
-                </div>
-                <div class="collapse show" id="collapseTasks">
-                    <div class="card-body">
-                        @isset($tasks)
-                        <table class="table table-borderless table-striped table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Datum</th>
-                                    <th scope="col">Beschrijving</th>
-                                    <th scope="col">Owner</th>
-                                    <th scope="col">status</th>
-                                    <th scope="col">Schadedossier</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($tasks as $task)
-                                    @php 
-                                        $deadline_at = $task->deadline_at;
-                                        $today = date('d-m-Y');
-
-                                        // dd($deadline_at);
-                                        $deadline_at_time = strtotime($deadline_at);
-                                        $today_time = strtotime($today);
-                                    @endphp
-
-                                    @if($today_time <= $deadline_at_time)
-                                        @php $overdue = 'overdue-no'; @endphp
-                                    @else 
-                                        @php $overdue = 'overdue-yes'; @endphp  
-                                    @endif
-                                    <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.tasks.show', $task->id) }}'>
-                                        <td>{{ date('d-m-Y', strtotime($task->deadline_at)) }}</td>
-                                        <td>{!! Str::limit($task->description, 25) !!}</td>
-                                        <td>{{ $task->user->name }}</td>
-                                        <td>{{ $task->status }}</td>
-                                        <td>
-                                            @isset($task->claim->claim_number) 
-                                            {{ $task->claim->claim_number }}
-                                            @else 
-                                            ...
-                                            @endisset
-                                        </td>
-                                    </tr>
-                                @endforeach
-
-                            </tbody>
-                        </table>
-
-                        {{ $tasks->links() }}
-                        @else
-                        Geen openstaande taken
-                        @endisset
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -164,10 +101,10 @@
                                 @else 
                                     @php $overdue = 'overdue-yes'; @endphp
                                 @endif
-                                <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.notes.show', $task->id) }}'>
+                                <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.tasks.show', $task->id) }}'>
                                     <td>{{ date('d-m-Y', strtotime($task->deadline_at)) }}</td>
                                     <td>{!! Str::limit($task->description, 40) !!}</td>
-                                    <td>{{ $task->status }}</td>
+                                    <td>{{ App\Models\TASK::STATUS_SELECT[$task->status] }}</td>
                                     <td>
                                         @isset($task->claim->claim_number) 
                                         {{ $task->claim->claim_number }}
@@ -188,6 +125,69 @@
                 </div>
             </div>
         </div>
+        @if (auth()->user()->roles->contains(1))
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Alle openstaande taken
+                    </div>
+                    <div class="collapse show" id="collapseTasks">
+                        <div class="card-body">
+                            @isset($tasks)
+                            <table class="table table-borderless table-striped table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Datum</th>
+                                        <th scope="col">Beschrijving</th>
+                                        <th scope="col">Owner</th>
+                                        <th scope="col">status</th>
+                                        <th scope="col">Schadedossier</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($tasks as $task)
+                                        @php 
+                                            $deadline_at = $task->deadline_at;
+                                            $today = date('d-m-Y');
+
+                                            // dd($deadline_at);
+                                            $deadline_at_time = strtotime($deadline_at);
+                                            $today_time = strtotime($today);
+                                        @endphp
+
+                                        @if($today_time <= $deadline_at_time)
+                                            @php $overdue = 'overdue-no'; @endphp
+                                        @else 
+                                            @php $overdue = 'overdue-yes'; @endphp  
+                                        @endif
+                                        <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.tasks.show', $task->id) }}'>
+                                            <td>{{ date('d-m-Y', strtotime($task->deadline_at)) }}</td>
+                                            <td>{!! Str::limit($task->description, 25) !!}</td>
+                                            <td>{{ $task->user->name }}</td>
+                                            <td>{{ App\Models\TASK::STATUS_SELECT[$task->status] }}</td>
+                                            <td>
+                                                @isset($task->claim->claim_number) 
+                                                {{ $task->claim->claim_number }}
+                                                @else 
+                                                ...
+                                                @endisset
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+
+                            {{ $tasks->links() }}
+                            @else
+                            Geen openstaande taken
+                            @endisset
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
