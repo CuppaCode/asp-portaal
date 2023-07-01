@@ -50,6 +50,10 @@ class CompanyController extends Controller
         $team = Team::create([
             'name' => $company->name,
         ]);
+
+        $company->team_id = $team->id;
+
+        $company->save();
         
         if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise') {
 
