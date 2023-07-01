@@ -97,9 +97,12 @@ class ClaimController extends Controller
 
         $claim->status = 'new';
 
-        $team_id = Company::find($companyId)->team_id;
+        $company = Company::where('id', $companyId)->first();
+
+        $team_id = $company->team_id;
         
-        $claim->team_id = $team_id;
+        // This doesn't work because of the Multitenanti trait.
+        //$claim->team_id = $team_id;
 
         if(isset($request->vehicle_plates)){
             $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
