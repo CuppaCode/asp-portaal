@@ -47,12 +47,17 @@ class CompanyController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $company->id]);
         }
 
+        $team = Team::create([
+            'name' => $company->name,
+        ]);
+        
         if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise') {
 
             $identifier = str_replace(' ', '_', strtolower($company->company_type . '_' . $company->name));
 
             $office = [
                 'company_id' => $company->id,
+                'team_id'    => $team->id,
                 'identifier' => $identifier
             ];
 
