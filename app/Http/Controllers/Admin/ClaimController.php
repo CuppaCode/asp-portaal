@@ -84,7 +84,7 @@ class ClaimController extends Controller
 
         $claim = Claim::create($request->all());
 
-        $claim->claim_number = date('Y').'-'.str_pad($claim->id, 5, 0, STR_PAD_LEFT);
+        $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 84), 5, 0, STR_PAD_LEFT);
 
         
         if(!$isAdmin) {
@@ -97,6 +97,9 @@ class ClaimController extends Controller
 
         $claim->status = 'new';
 
+        $team_id = Company::find($companyId)->team_id;
+        
+        $claim->team_id = $team_id;
 
         if(isset($request->vehicle_plates)){
             $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
@@ -109,7 +112,8 @@ class ClaimController extends Controller
                 $vehicle = Vehicle::create([
                     'name' => $vehicleName,
                     'plates' => $request->vehicle_plates,
-                    'company_id' => $companyId
+                    'company_id' => $companyId,
+                    'team_id' => $team_id
                 ]);
 
             }
@@ -130,7 +134,8 @@ class ClaimController extends Controller
                 
                 $vehicleOpposite = VehicleOpposite::create([
                     'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite
+                    'plates' => $request->vehicle_plates_opposite,
+                    'team_id' => $team_id
                 ]);
 
             }
