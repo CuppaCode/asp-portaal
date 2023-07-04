@@ -7,12 +7,26 @@
     <div class="card">
 
         <div class="card-header">
-            Klant informatie
+            Dossier informatie
         </div>
 
         <div class="card-body">
             @csrf
-
+            <div class="form-group">
+                <label>Status</label>
+                <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="status" id="status" required>
+                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::STATUS_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('status', $claim->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('injury'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('injury') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.injury_helper') }}</span>
+            </div>
             @if (auth()->user()->roles->contains(1))
             <div class="form-group">
                 <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
@@ -61,8 +75,6 @@
             Schademelding
         </div>
         <div class="card-body">
-
-            <input type="hidden" name="status" id="status" value="new"/>
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <div class="form-check {{ $errors->has('assign_self') ? 'is-invalid' : '' }}">
@@ -77,7 +89,7 @@
                     @endif
                     <span class="help-block">{{ trans('cruds.claim.fields.assign_self_helper') }}</span>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-6">
                     <label for="date_accident">{{ trans('cruds.claim.fields.date_accident') }}</label>
                 <input class="form-control date {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident', $claim->date_accident) }}">
                 @if($errors->has('date_accident'))
@@ -89,7 +101,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-6">
                     <label class="required">{{ trans('cruds.claim.fields.injury') }}</label>
                 <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="injury" id="injury" required>
                     <option value disabled {{ old('injury', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
@@ -161,7 +173,12 @@
             </div>
             <div class="form-group">
                 <label>Soort schade</label>
-                <input class="form-control {{ $errors->has('damage_kind') ? 'is-invalid' : '' }}" type="text" name="damage_kind" id="damage_kind" value="{{ old('damage_kind', $claim->damage_kind) }}">
+                <select class="form-control {{ $errors->has('damage_kind') ? 'is-invalid' : '' }}" name="damage_kind" id="damage_kind">
+                    <option value disabled {{ old('damage_kind', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::DAMAGE_KIND as $key => $label)
+                        <option value="{{ $key }}" {{ old('damage_kind', $claim->damage_kind) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
                     @if($errors->has('damage_kind'))
                         <div class="invalid-feedback">
                             {{ $errors->first('damage_kind') }}
@@ -221,7 +238,12 @@
             </div>
             <div class="form-group">
                 <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
-                <input class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" type="text" name="damage_origin" id="damage_origin" value="{{ old('damage_origin', $claim->damage_origin) }}">
+                <select class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin" id="damage_origin">
+                    <option value disabled {{ old('damage_kind', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
+                        <option value="{{ $key }}" {{ old('damage_origin', $claim->damage_origin) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
                 @if($errors->has('damage_origin'))
                     <div class="invalid-feedback">
                         {{ $errors->first('damage_origin') }}

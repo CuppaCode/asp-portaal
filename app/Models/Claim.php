@@ -34,7 +34,15 @@ class Claim extends Model implements HasMedia
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
-        'light'     => 'Verlichting'
+        'light'     => 'Verlichting',
+        'carhood'   => 'Moterkap',
+        'trunk'     => 'Achterklep',
+        'exhaust'   => 'Uitlaat',
+        'steeringwheel' => 'Stuurinrichting',
+        'carter'    => 'Carter',
+        'wheel'     => 'Wielophanding',
+        'bumper'    => 'Bumper',
+
     ];
 
     public const CONTACT_LAWYER_SELECT = [
@@ -59,7 +67,14 @@ class Claim extends Model implements HasMedia
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
-        'light'     => 'Verlichting'
+        'light'     => 'Verlichting',
+        'carhood'   => 'Moterkap',
+        'trunk'     => 'Achterklep',
+        'exhaust'   => 'Uitlaat',
+        'steeringwheel' => 'Stuurinrichting',
+        'carter'    => 'Carter',
+        'wheel'     => 'Wielophanding',
+        'bumper'    => 'Bumper',
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
@@ -70,20 +85,13 @@ class Claim extends Model implements HasMedia
 
     public const STATUS_SELECT = [
         'new'                       => 'Nieuw',
-        'on_hold'                   => 'Claim ingediend',
-        'awaiting_docs'             => 'Afwachting documenten',
-        'received_docs'             => 'Documenten binnen',
-        'expert'                    => 'Expert ingeschakeld',
-        'delivered'                 => 'Afspraak aflevering',
-        'damagerepair'              => 'Afspraak schadeherstel',
-        'liable'                    => 'Aansprakelijk gesteld',
-        'invoice_asp'               => 'Factuur ASP',
-        'saf_received'              => 'SAF binnen',
-        'amount_incident'           => 'Schadebedrag bekend',
-        'invoice_incident'          => 'Schadefactuur afwachten',
-        'invoice_indicent_payed'    => 'Schadefactuur betaald',
-        'payment_recveived'         => 'Uitkering binnen',
-        'finished'                  => 'Afgesloten',
+        'in_progress'               => 'In behandeling',
+        'damage_estimate_requested' => 'Schadebegroting opgevraagd',
+        'damage_estimate_received'  => 'Schadebegroting ontvangen',
+        'awaiting_invoice'          => 'Factuur afwachten',
+        'awaiting_report'           => 'Rapport afwachten',
+        'awaiting_approval'         => 'Goedkeuring afwachten',
+        'finished'                  => 'Gesloten',
     ];
 
     protected $dates = [
@@ -118,6 +126,31 @@ class Claim extends Model implements HasMedia
         'bottom_side' => 'Onderzijde',
         'front_side'  => 'Voorzijde',
         'back_side'   => 'Achterzijde',
+    ];
+
+    public const DAMAGE_KIND = [
+        'traffic'   => 'Verkeer',
+        'transport' => 'Transport',
+        'other'     => 'Overige'
+    ];
+
+    public const DAMAGE_ORIGIN = [
+        'no_priority'                   => 'Geen voorrang',
+        'parking'                       => 'Parkeren',
+        'backtoopposite'                => 'Achterop Tegenpartij',
+        'oppositetoback'                => 'Tegenpartij achterop',
+        'slip'                          => 'Slippen',
+        'special_maneuver'              => 'Bijzondere manoeuvre',
+        'obstacle'                      => 'Tegen opstakel',
+        'loadings'                      => 'Laden',
+        'unloading'                     => 'Lossen',
+        'animal_collision'              => 'Aanrijding dier',
+        'stone_chips'                   => 'Steenslag',
+        'fire'                          => 'Brand',
+        'cyclist_pedestrian-collision'  => 'Aanrijding fietsen/voetganger',
+        'dodge'                         => 'Uitwijken',
+        'transport'                     => 'Tranport'
+
     ];
 
     protected $fillable = [

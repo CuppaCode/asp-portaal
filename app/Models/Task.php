@@ -27,10 +27,10 @@ class Task extends Model implements HasMedia
     ];
 
     public const STATUS_SELECT = [
-        'new'         => 'New',
-        'in_progress' => 'In Progress',
-        'waiting'     => 'Waiting...',
-        'done'        => 'Done',
+        'new'         => 'Nieuw',
+        'in_progress' => 'In behandeling',
+        'waiting'     => 'Afwachting',
+        'done'        => 'Afgerond',
     ];
 
     protected $fillable = [
