@@ -21,7 +21,7 @@
     <div class="card">
 
         <div class="card-header">
-            Klant informatie
+            Dossier informatie
         </div>
 
         <div class="card-body">
@@ -176,7 +176,12 @@
             </div>
             <div class="form-group">
                 <label>Soort schade</label>
-                <input class="form-control {{ $errors->has('damage_kind') ? 'is-invalid' : '' }}" type="text" name="damage_kind" id="damage_kind" value="{{ old('damage_kind', '') }}">
+                <select class="form-control {{ $errors->has('damage_kind') ? 'is-invalid' : '' }}" name="damage_kind" id="damage_kind">
+                    <option value disabled {{ old('damage_kind', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::DAMAGE_KIND as $key => $label)
+                        <option value="{{ $key }}" {{ old('damage_kind', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
                     @if($errors->has('damage_kind'))
                         <div class="invalid-feedback">
                             {{ $errors->first('damage_kind') }}
@@ -235,7 +240,12 @@
             </div>
             <div class="form-group">
                 <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
-                    <input class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" type="text" name="damage_origin" id="damage_origin" value="{{ old('damage_origin', '') }}">
+                    <select class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin" id="damage_origin">
+                        <option value disabled {{ old('damage_kind', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
+                            <option value="{{ $key }}" {{ old('damage_origin', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
                     @if($errors->has('damage_origin'))
                         <div class="invalid-feedback">
                             {{ $errors->first('damage_origin') }}

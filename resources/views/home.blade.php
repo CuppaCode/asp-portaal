@@ -30,7 +30,7 @@
                                     <td>{{ $claim->claim_number }}</td>
                                     <td>{{ $claim->company->name }}</td>
                                     <td>{{ $claim->subject }}</td>
-                                    <td>{{ $claim->status }}</td>
+                                    <td>{{ App\Models\Claim::STATUS_SELECT[$claim->status] }}</td>
                                     </tr>
                                 @endforeach
 

@@ -97,7 +97,7 @@
                 <div class="card-title">
                     Soort schade
                 </div>
-                <p class="card-text">{{ $claim->damage_kind }}</p>
+                <p class="card-text">{{ App\Models\Claim::DAMAGE_KIND[$claim->damage_kind] ?? '' }}</p>
             </div>
         </div>
     </div>
@@ -147,7 +147,7 @@
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.damage_origin') }}
                 </div>
-                <p class="card-text">{{ $claim->damage_origin }}</p>
+                <p class="card-text">{{ App\Models\Claim::DAMAGE_ORIGIN[$claim->damage_origin] ?? '' }}</p>
 
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.damaged_area') }}
