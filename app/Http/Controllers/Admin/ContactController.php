@@ -59,6 +59,13 @@ class ContactController extends Controller
 
         $contact->save();
 
+        if(!isset($contact->team_id)){
+
+            $contact->team_id = Company::find($contact->company_id)->team_id;
+            $contact->save();
+
+        }
+
         if($request->create_user) {
 
             (new TeamMembersController)->invite($request, $contact);
