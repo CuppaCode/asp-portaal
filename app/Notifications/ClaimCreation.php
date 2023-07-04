@@ -47,7 +47,7 @@ class ClaimCreation extends Notification
 
         return (new MailMessage)
             ->subject(config('app.name') . ': Er is een nieuwe claim aangemaakt ')
-            ->greeting("Hi Patrick,")
+            ->greeting("Hallo Patrick,")
             ->line("Er staat een nieuwe claim klaar")
             ->lineIf($assign_self == 1, "LET OP CLAIM WORDT DOOR KLANT ZELF OPGEPAKT.")
             ->line("Schadedossier nummer: {$claim_number}")

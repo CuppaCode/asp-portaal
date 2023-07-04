@@ -51,7 +51,7 @@ class TaskCreation extends Notification
 
         return (new MailMessage)
             ->subject(config('app.name') . ': Er is een nieuwe taak aangemaakt ')
-            ->greeting("Hi {$this->user['name']},")
+            ->greeting("Hallo {$this->user['name']},")
             ->line("Er staat een nieuwe taak voor je klaar")
             ->lineIf($claim_number != null, "Betreffende schadedossier: {$claim_number}")
             ->line("Beschrijving taak: {$this->task['description']}")

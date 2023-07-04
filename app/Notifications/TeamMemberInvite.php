@@ -32,8 +32,8 @@ class TeamMemberInvite extends Notification
     public function getMessage()
     {
         return (new MailMessage)
-            ->subject(config('app.name') . ': invitation ')
-            ->greeting('Hi,')
+            ->subject(config('app.name') . ': Gebruiker aangemaakt ')
+            ->greeting('Hallo,')
             ->line('Er is zojuist een account aangemaakt voor AutosSchadePlan Portaal')
             ->line('Klik hier om jouw account te activeren')
             ->action('Registreren', $this->url)
