@@ -176,7 +176,7 @@
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.damage_origin_opposite') }}
                 </div>
-                <p class="card-text">{{ $claim->damage_origin_opposite }}</p>
+                <p class="card-text">{{ App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE[$claim->damage_origin_opposite] ?? '' }}</p>
 
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.damaged_area_opposite') }}

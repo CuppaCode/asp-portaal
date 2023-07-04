@@ -47,14 +47,6 @@ class UpdateClaimRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'damage_origin' => [
-                'string',
-                'nullable',
-            ],
-            'damage_origin_opposite' => [
-                'string',
-                'nullable',
-            ],
             'requested_at' => [
                 'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),

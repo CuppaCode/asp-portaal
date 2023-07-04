@@ -35,7 +35,7 @@ class Claim extends Model implements HasMedia
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
         'light'     => 'Verlichting',
-        'carhood'   => 'Moterkap',
+        'carhood'   => 'Motorkap',
         'trunk'     => 'Achterklep',
         'exhaust'   => 'Uitlaat',
         'steeringwheel' => 'Stuurinrichting',
@@ -137,7 +137,7 @@ class Claim extends Model implements HasMedia
     public const DAMAGE_ORIGIN = [
         'no_priority'                   => 'Geen voorrang',
         'parking'                       => 'Parkeren',
-        'backtoopposite'                => 'Achterop Tegenpartij',
+        'backtoopposite'                => 'Achterop tegenpartij',
         'oppositetoback'                => 'Tegenpartij achterop',
         'slip'                          => 'Slippen',
         'special_maneuver'              => 'Bijzondere manoeuvre',
@@ -147,10 +147,28 @@ class Claim extends Model implements HasMedia
         'animal_collision'              => 'Aanrijding dier',
         'stone_chips'                   => 'Steenslag',
         'fire'                          => 'Brand',
-        'cyclist_pedestrian-collision'  => 'Aanrijding fietsen/voetganger',
+        'cyclist_pedestrian_collision'  => 'Aanrijding fietsen/voetganger',
         'dodge'                         => 'Uitwijken',
         'transport'                     => 'Tranport'
 
+    ];
+
+    public const DAMAGE_ORIGIN_OPPOSITE = [
+        'no_priority'                   => 'Geen voorrang',
+        'parking'                       => 'Parkeren',
+        'backtoopposite'                => 'Achterop tegenpartij',
+        'oppositetoback'                => 'Tegenpartij achterop',
+        'slip'                          => 'Slippen',
+        'special_maneuver'              => 'Bijzondere manoeuvre',
+        'obstacle'                      => 'Tegen opstakel',
+        'loadings'                      => 'Laden',
+        'unloading'                     => 'Lossen',
+        'animal_collision'              => 'Aanrijding dier',
+        'stone_chips'                   => 'Steenslag',
+        'fire'                          => 'Brand',
+        'cyclist_pedestrian_collision'  => 'Aanrijding fietsen/voetganger',
+        'dodge'                         => 'Uitwijken',
+        'transport'                     => 'Tranport'
     ];
 
     protected $fillable = [
