@@ -28,6 +28,12 @@ class TeamMembersController extends Controller
         $request->validate(['email' => 'email']);
         $team    = Team::where('owner_id', auth()->user()->id)->first();
 
+        if(!isset($team)){
+
+            $team = Team::find($contact->team_id);
+            
+        }
+
         if($contact){
 
             $url     = URL::signedRoute('register', ['team' => $team->id, 'contact' => $contact->id, 'first_name' => $contact->first_name, 'last_name' => $contact->last_name, 'email' => $contact->email]);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Contact;
+use App\Models\Team;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -73,7 +74,7 @@ class RegisterController extends Controller
              ]);
 
             if (! request()->has('team')) {
-                $team = \App\Models\Team::create([
+                $team = Team::create([
                     'owner_id' => $user->id,
                     'name'     => $data['email'],
                 ]);
@@ -81,21 +82,8 @@ class RegisterController extends Controller
                 $user->update(['team_id' => $team->id]);
             }
 
-            if(request()->has('contact')) {
-               
-               $contact = Contact::find(request()->input('contact'));
-
-               if(!isset($contact->user_id)) {
-                   
-                   $contact->user_id = $user->id;
-                   $contact->save();
-                   
-               }
-               
-            }
-
-             if(request()->has('contact')) {
-                
+            if (request()->has('contact')) {
+            
                 $contact = Contact::find(request()->input('contact'));
 
                 if(!isset($contact->user_id)) {
@@ -104,8 +92,20 @@ class RegisterController extends Controller
                     $contact->save();
                     
                 }
+            
+            }
+
+            if (request()->has('team')) {
                 
-             }
+                $team = Team::find(request()->input('team'));
+
+                if(!isset($team->owner_id)) {
+
+                    $team->update(['owner_id' => $user->id]);
+
+                }
+
+            }
 
              
 
