@@ -116,8 +116,6 @@
                                         </a>
                                     @endcan
 
-                                @endunless
-
                                 @can('claim_delete')
                                     <form action="{{ route('admin.claims.destroy', $claim->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
@@ -126,6 +124,7 @@
                                     </form>
                                 @endcan
 
+                                @endunless
                             </td>
 
                         </tr>

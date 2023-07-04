@@ -82,6 +82,10 @@ class ClaimController extends Controller
         $user = auth()->user();
         $isAdmin = $user->roles->contains(1);
 
+        $damaged_area = $request->input('damaged_area');
+        
+        $request->damaged_area = implode(',', $damaged_area);
+
         $claim = Claim::create($request->all());
 
         $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 84), 5, 0, STR_PAD_LEFT);
@@ -206,6 +210,27 @@ class ClaimController extends Controller
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
+        // Damage area
+        // $damaged_area = $request->damaged_area;
+        // $request->damaged_area = implode(',', $damaged_area); 
+
+        // $damaged_area_opposite = $request->damaged_area_opposite;
+        // $request->damaged_area_opposite = implode(',', $damaged_area_opposite); 
+
+        // // Damage part
+        // $damaged_part = $request->damaged_part;
+        // $request->damaged_part = implode(',', $damaged_part); 
+
+        // $damaged_part_opposite = $request->damaged_part_opposite;
+        // $request->damaged_part_opposite = implode(',', $damaged_part_opposite); 
+
+        // // Damage origin
+        // $damage_origin = $request->damage_origin;
+        // $request->damage_origin = implode(',', $damage_origin);
+
+        // $damage_origin_opposite = $request->damage_origin_opposite;
+        // $request->damage_origin_opposite = implode(',', $damage_origin_opposite);
+
         $claim->update($request->all());
 
         if (count($claim->damage_files) > 0) {

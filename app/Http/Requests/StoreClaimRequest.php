@@ -46,14 +46,6 @@ class StoreClaimRequest extends FormRequest
             'vehicle_id' => [
                 'integer',
             ],
-            'damage_origin' => [
-                'string',
-                'nullable',
-            ],
-            'damage_origin_opposite' => [
-                'string',
-                'nullable',
-            ],
             'requested_at' => [
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
                 'nullable',
