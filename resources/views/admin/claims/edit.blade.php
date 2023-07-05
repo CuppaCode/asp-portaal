@@ -102,7 +102,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label class="required">{{ trans('cruds.claim.fields.injury') }}</label>
+                    <label>{{ trans('cruds.claim.fields.injury') }}</label>
                 <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="injury" id="injury" required>
                     <option value disabled {{ old('injury', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Claim::INJURY_SELECT as $key => $label)
@@ -196,7 +196,7 @@
             <input type="hidden" name="vehicle_id" value="1"/>
             <div class="form-group">
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
-                <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', $claim->vehicle->name ?? null) }}">
+                <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', $claim->vehicle->plates ?? null) }}">
                 @if($errors->has('vehicle_plates'))
                     <div class="invalid-feedback">
                         {{ $errors->first('vehicle_plates') }}
@@ -207,10 +207,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
+                    {{$claim->damaged_part}}
                     <select class="form-control {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part[]" id="damaged_part" aria-label="multiple select" multiple>
                         <option value disabled {{ old('damaged_part', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                         @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('damaged_part', $claim->damaged_part) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array( $key, array( $claim->damaged_part ) ) ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @if($errors->has('damaged_part'))
@@ -222,10 +223,11 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
+                    {{ $claim->damaged_area }}
                     <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" aria-label="multiple select" multiple>
                         <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                         @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('damaged_area', $claim->damaged_area) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array($key, ) ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @if($errors->has('damaged_area'))
@@ -262,9 +264,9 @@
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.opposite_type') }}</label>
                     <select class="form-control {{ $errors->has('opposite_type') ? 'is-invalid' : '' }}" name="opposite_type" id="opposite_type">
-                        <option value disabled {{ old('opposite_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        <option value=false disabled {{ old('opposite_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                         @foreach(App\Models\Claim::OPPOSITE_TYPE_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('opposite_type', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ old('opposite_type', $claim->opposite_type) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @if($errors->has('opposite_type'))
@@ -275,62 +277,78 @@
                     <span class="help-block">{{ trans('cruds.claim.fields.opposite_type_helper') }}</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
-                <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', $claim->vehicle_opposite->name ?? null) }}">
-                @if($errors->has('vehicle_plates_opposite'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('vehicle_plates_opposite') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_opposite_helper') }}</span>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label>{{ trans('cruds.claim.fields.damaged_part_opposite') }}</label>
-                <select class="form-control {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite[]" id="damaged_part_opposite" multiple>
-                    <option value disabled {{ old('damaged_part_opposite', $claim->damaged_part_opposite) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('damaged_part_opposite', $claim->damaged_part_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('damaged_part_opposite'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('damaged_part_opposite') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_opposite_helper') }}</span>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="damage_origin_opposite">{{ trans('cruds.claim.fields.damage_origin_opposite') }}</label>
-                <select class="form-control {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" name="damage_origin_opposite[]" id="damage_origin_opposite" multiple>
-                    <option value disabled {{ old('damage_origin_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE as $key => $label)
-                        <option value="{{ $key }}" {{ old('damage_origin_opposite', $claim->damage_origin_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('damage_origin_opposite'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('damage_origin_opposite') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_opposite_helper') }}</span>
+
+            <div class="obstacle-show d-none">
+                <div class="form-group">
+                    <label for="obstacle">{{ trans('cruds.claim.fields.obstacle') }}</label>
+                    <input class="form-control {{ $errors->has('obstacle') ? 'is-invalid' : '' }}" type="text" name="obstacle" id="obstacle" value="{{ old('obstacle', $claim->obstacle) }}">
+                    @if($errors->has('obstacle'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('obstacle') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.obstacle_helper') }}</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label>{{ trans('cruds.claim.fields.damaged_area_opposite') }}</label>
-                <select class="form-control {{ $errors->has('damaged_area_opposite') ? 'is-invalid' : '' }}" name="damaged_area_opposite[]" id="damaged_area_opposite" multiple>
-                    <option value disabled {{ old('damaged_area_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('damaged_area_opposite', $claim->damaged_area_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('damaged_area_opposite'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('damaged_area_opposite') }}
+
+            <div class="opposite-vehicle-show d-none">
+                <div class="form-group">
+                    <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
+                    <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', $claim->vehicle_opposite->plates ?? null) }}">
+                    @if($errors->has('vehicle_plates_opposite'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('vehicle_plates_opposite') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_opposite_helper') }}</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>{{ trans('cruds.claim.fields.damaged_part_opposite') }}</label>
+                    <select class="form-control {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite[]" id="damaged_part_opposite" multiple>
+                        <option value disabled {{ old('damaged_part_opposite', $claim->damaged_part_opposite) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('damaged_part_opposite', $claim->damaged_part_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('damaged_part_opposite'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('damaged_part_opposite') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_opposite_helper') }}</span>
                     </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_opposite_helper') }}</span>
+                    <div class="form-group col-md-6">
+                        <label for="damage_origin_opposite">{{ trans('cruds.claim.fields.damage_origin_opposite') }}</label>
+                    <select class="form-control {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" name="damage_origin_opposite[]" id="damage_origin_opposite" multiple>
+                        <option value disabled {{ old('damage_origin_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE as $key => $label)
+                            <option value="{{ $key }}" {{ old('damage_origin_opposite', $claim->damage_origin_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('damage_origin_opposite'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('damage_origin_opposite') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_opposite_helper') }}</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{ trans('cruds.claim.fields.damaged_area_opposite') }}</label>
+                    <select class="form-control {{ $errors->has('damaged_area_opposite') ? 'is-invalid' : '' }}" name="damaged_area_opposite[]" id="damaged_area_opposite" multiple>
+                        <option value disabled {{ old('damaged_area_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('damaged_area_opposite', $claim->damaged_area_opposite) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('damaged_area_opposite'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('damaged_area_opposite') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_opposite_helper') }}</span>
+                </div>
             </div>
         </div>
     </div>

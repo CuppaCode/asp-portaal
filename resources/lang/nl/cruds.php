@@ -107,6 +107,8 @@ return [
             'vehicle_plates_opposite_helper'   => ' ',
             'opposite_type'                    => 'Wederpartij type',
             'opposite_type_helper'             => ' ',
+            'obstacle'                         => 'Obstakel',
+            'obstacle_helper'                  => '',
             'damage_origin'                    => 'Schade oorzaak',
             'damage_origin_helper'             => ' ',
             'damaged_area'                     => 'Schadeplaats',

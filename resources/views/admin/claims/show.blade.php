@@ -163,6 +163,7 @@
             </div>
 
             <div class="card-body">
+                @if ($claim->opposite_type != 'obstacle')
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.vehicle_opposite') }}
                 </div>
@@ -182,6 +183,12 @@
                     {{ trans('cruds.claim.fields.damaged_area_opposite') }}
                 </div>
                 <p class="card-text">{{ App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$claim->damaged_area_opposite] ?? '' }}</p>
+                @else
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.obstacle') }}
+                </div>
+                <p class="card-text">{{ $claim->obstacle }}</p>
+                @endif
             </div>
         </div>
     </div>

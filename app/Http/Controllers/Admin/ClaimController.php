@@ -84,11 +84,11 @@ class ClaimController extends Controller
 
         $damaged_area = $request->input('damaged_area');
         
-        $request->damaged_area = implode(',', $damaged_area);
+        $request->damaged_area = json_encode($damaged_area);
 
         $claim = Claim::create($request->all());
 
-        $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 84), 5, 0, STR_PAD_LEFT);
+        $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 99), 5, 0, STR_PAD_LEFT);
 
         
         if(!$isAdmin) {
@@ -211,8 +211,11 @@ class ClaimController extends Controller
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
         // Damage area
-        // $damaged_area = $request->damaged_area;
-        // $request->damaged_area = implode(',', $damaged_area); 
+        $damaged_area = $request->input('damaged_area');
+        dd($request->input('damaged_area'));
+        
+        $request->damaged_area = json_encode($damaged_area);
+        // dd($request->damaged_area);
 
         // $damaged_area_opposite = $request->damaged_area_opposite;
         // $request->damaged_area_opposite = implode(',', $damaged_area_opposite); 
@@ -230,6 +233,65 @@ class ClaimController extends Controller
 
         // $damage_origin_opposite = $request->damage_origin_opposite;
         // $request->damage_origin_opposite = implode(',', $damage_origin_opposite);
+
+        $isAdmin = auth()->user()->roles->contains(1);
+        $companies = null;
+
+        if(!$isAdmin) {
+            
+            $claim->company_id = $user->contact->company->id;
+
+        }
+
+        $companyId = $claim->company_id;
+
+        $company = Company::where('id', $companyId)->first();
+
+        $team_id = $company->team_id;
+
+        if(isset($request->vehicle_plates)){
+            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
+
+            if(!isset($vehicle)) {
+
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
+
+                
+                $vehicle = Vehicle::create([
+                    'name' => $vehicleName,
+                    'plates' => $request->vehicle_plates,
+                    'company_id' => $companyId,
+                    'team_id' => $team_id
+                ]);
+
+            }
+
+            $claim->vehicle_id = $vehicle->id;
+        }
+
+        //
+
+        if(isset($request->vehicle_plates_opposite)){
+
+            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
+
+            if(!isset($vehicleOpposite)) {
+
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
+
+                
+                $vehicleOpposite = VehicleOpposite::create([
+                    'name' => $vehicleName,
+                    'plates' => $request->vehicle_plates_opposite,
+                    'team_id' => $team_id
+                ]);
+
+            }
+
+            $claim->vehicle_opposite_id = $vehicleOpposite->id;
+        
+        }
+
 
         $claim->update($request->all());
 

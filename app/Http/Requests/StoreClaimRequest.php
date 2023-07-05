@@ -32,9 +32,6 @@ class StoreClaimRequest extends FormRequest
             'status' => [
                 'required',
             ],
-            'injury' => [
-                'required',
-            ],
             'date_accident' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
