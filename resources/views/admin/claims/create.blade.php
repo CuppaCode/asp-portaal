@@ -224,7 +224,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
-                    <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area" id="damaged_area" multiple>
+                    <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" multiple>
                         <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                         @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
                             <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>

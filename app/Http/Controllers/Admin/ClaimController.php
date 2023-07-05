@@ -82,11 +82,15 @@ class ClaimController extends Controller
         $user = auth()->user();
         $isAdmin = $user->roles->contains(1);
 
-        $damaged_area = $request->input('damaged_area');
+        //dd($request->input('damaged_area'));
         
-        $request->damaged_area = json_encode($damaged_area);
+        //$request->damaged_area = serialize($request->input('damaged_area'));
 
-        $claim = Claim::create($request->all());
+        $multiSelects = ['damaged_area'];
+
+        $claim = Claim::create($request->except($multiSelects));
+
+        $claim->damaged_area = json_encode($request->input('damaged_area'));
 
         $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 99), 5, 0, STR_PAD_LEFT);
 
