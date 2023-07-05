@@ -206,6 +206,22 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
             </div>
 
+            <div class="form-group">
+
+                <label for="driver_vehicle">{{ trans('cruds.claim.fields.driver_vehicle') }}</label>
+                <select class="form-control select2 {{ $errors->has('driver_vehicle') ? 'is-invalid' : '' }}" name="driver_vehicle" id="driver_vehicle">
+                    @foreach($drivers as $id => $entry)
+                        <option value="{{ $id }}" {{ old('driver_vehicle') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('driver_vehicle'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('driver_vehicle') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.driver_vehicle_helper') }}</span>
+            </div>
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
@@ -279,7 +295,7 @@
             </div>
 
             <div class="form-group">
-                <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
+                <label for="vehicle_plates_opposite">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
                 <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', '') }}">
                 @if($errors->has('vehicle_plates_opposite'))
                     <div class="invalid-feedback">
@@ -287,6 +303,22 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_opposite_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+
+                <label for="driver_vehicle_opposite">{{ trans('cruds.claim.fields.driver_vehicle_opposite') }}</label>
+                <select class="form-control select2 {{ $errors->has('driver_vehicle_opposite') ? 'is-invalid' : '' }}" name="driver_vehicle_opposite" id="driver_vehicle_opposite">
+                    @foreach($drivers as $id => $entry)
+                        <option value="{{ $id }}" {{ old('driver_vehicle_opposite') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('driver_vehicle_opposite'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('driver_vehicle_opposite') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.driver_vehicle_opposite_helper') }}</span>
             </div>
 
             <div class="form-row">

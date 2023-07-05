@@ -153,6 +153,11 @@
                     {{ trans('cruds.claim.fields.damaged_area') }}
                 </div>
                 <p class="card-text">{{ App\Models\Claim::DAMAGED_AREA_SELECT[$claim->damaged_area] ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.driver_vehicle') }}
+                </div>
+                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle)->driver_full_name ?? '' }}</p>
             </div>
         </div>
     </div>
@@ -182,6 +187,11 @@
                     {{ trans('cruds.claim.fields.damaged_area_opposite') }}
                 </div>
                 <p class="card-text">{{ App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$claim->damaged_area_opposite] ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
+                </div>
+                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}</p>
             </div>
         </div>
     </div>

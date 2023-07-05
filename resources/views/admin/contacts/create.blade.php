@@ -118,6 +118,20 @@
             </div>
 
             <div class="form-group">
+                <div class="form-check {{ $errors->has('is_driver') ? 'is-invalid' : '' }}">
+                    <input type="hidden" name="is_driver" value="0">
+                    <input class="form-check-input" type="checkbox" name="is_driver" id="is_driver" value="1" {{ old('is_driver', 0) == 1 ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_driver">{{ trans('cruds.contact.fields.is_driver') }}</label>
+                </div>
+                @if($errors->has('is_driver'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('is_driver') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.contact.fields.is_driver_helper') }}</span>
+            </div>
+
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

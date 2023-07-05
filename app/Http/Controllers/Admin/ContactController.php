@@ -12,6 +12,7 @@ use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Driver;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,6 +70,16 @@ class ContactController extends Controller
         if($request->create_user) {
 
             (new TeamMembersController)->invite($request, $contact);
+
+        }
+
+        if($request->is_driver) {
+
+            Driver::create([
+                'team_id' => $contact->team_id,
+                'company_id' => $contact->company_id,
+                'contact_id' => $contact->id
+            ]);
 
         }
 

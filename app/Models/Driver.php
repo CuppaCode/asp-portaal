@@ -22,14 +22,12 @@ class Driver extends Model
     ];
 
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'phone',
         'created_at',
         'updated_at',
         'deleted_at',
         'team_id',
+        'company_id',
+        'contact_id'
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -50,5 +48,20 @@ class Driver extends Model
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
+
+    public function getDriverFullNameAttribute()
+    {
+        return "{$this->contact->first_name} {$this->contact->last_name} | {$this->company->name}";
     }
 }
