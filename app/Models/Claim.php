@@ -81,6 +81,7 @@ class Claim extends Model implements HasMedia
         'private'  => 'Particulier',
         'business' => 'Zakelijk',
         'unknown'  => 'Onbekend',
+        'obstacle' => 'Obstakel',
     ];
 
     public const STATUS_SELECT = [
@@ -188,6 +189,7 @@ class Claim extends Model implements HasMedia
         'driver_vehicle',
         'driver_vehicle_opposite',
         'opposite_type',
+        'obstacle',
         'damaged_part',
         'damage_origin',
         'damaged_area',
