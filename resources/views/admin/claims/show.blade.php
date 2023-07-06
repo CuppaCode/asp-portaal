@@ -77,24 +77,27 @@
                 </div>
                 <p class="card-text">{{ App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' }}</p>
                             
+                @if ($claim->injury == 'yes')
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.injury_office') }}
+                    </div>
+                    <p class="card-text text-capitalize">
+                        @if ($claim->injury_office != null)
+                        {{ substr($claim->injury_office->identifier, 7) ?? '' }}
+                        @endif
+                    </p>
+                @elseif ( $claim->injury == 'other' )
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.injury_other') }}
+                </div>
+                <p class="card-text">{{ $claim->injury_other }}</p>
+                @else
+
+                @endif
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.recoverable_claim') }}
                 </div>
                 <p class="card-text">{{ App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$claim->recoverable_claim] ?? '' }}</p>
-
-                @if ( App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' == 'yes' )
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.injury_office') }}
-                    </div>
-                    <p class="card-text text-capitalize">{{ substr($claim->injury_office->identifier, 7) ?? '' }}</p>
-                @elseif ( App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' == 'other' )
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.injury_other') }}
-                    </div>
-                    <p class="card-text">{{ $claim->injury_other }}</p>
-                @else
-                
-                @endif
                 
                 <div class="card-title">
                     Soort schade
