@@ -103,4 +103,10 @@ $(document).ready(function () {
         } 
     });
 
+    $('.reset-multiSelect').on('click', function (e) {
+        var data = $(this).data('for');
+
+        $('#'+data).val('');
+    });
+
 });

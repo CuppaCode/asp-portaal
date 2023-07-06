@@ -106,7 +106,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label>{{ trans('cruds.claim.fields.injury') }}</label>
-                    <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="injury" id="injury" required>
+                    <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="injury" id="injury">
                         <option value disabled {{ old('injury', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                         @foreach(App\Models\Claim::INJURY_SELECT as $key => $label)
                             <option value="{{ $key }}" {{ old('injury', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
@@ -209,8 +209,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
-                    <select class="form-control {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part" id="damaged_part">
-                        <option value disabled {{ old('damaged_part', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <select class="form-control select2 {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part[]" id="damaged_part" multiple>
                         @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
                             <option value="{{ $key }}" {{ old('damaged_part', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
@@ -224,8 +223,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
-                    <select class="form-control {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" multiple>
-                        <option value disabled {{ old('damaged_area', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <select class="form-control select2 {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" multiple>
                         @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
                             <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
@@ -240,8 +238,7 @@
             </div>
             <div class="form-group">
                 <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
-                    <select class="form-control {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin" id="damage_origin">
-                        <option value disabled {{ old('damage_kind', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <select class="form-control select2 {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin[]" id="damage_origin" multiple>
                         @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
                             <option value="{{ $key }}" {{ old('damage_origin', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
@@ -306,8 +303,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label>{{ trans('cruds.claim.fields.damaged_part_opposite') }}</label>
-                        <select class="form-control {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite" id="damaged_part_opposite">
-                            <option value disabled {{ old('damaged_part_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        <select class="form-control select2 {{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite[]" id="damaged_part_opposite" multiple>
                             @foreach(App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $label)
                                 <option value="{{ $key }}" {{ old('damaged_part_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
@@ -321,7 +317,11 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="damage_origin_opposite">{{ trans('cruds.claim.fields.damage_origin_opposite') }}</label>
-                        <input class="form-control {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" type="text" name="damage_origin_opposite" id="damage_origin_opposite" value="{{ old('damage_origin_opposite', '') }}">
+                        <select class="form-control select2 {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" name="damage_origin_opposite[]" id="damage_origin_opposite" multiple>
+                            @foreach(App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE as $key => $label)
+                                <option value="{{ $key }}" {{ old('damage_origin_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
                         @if($errors->has('damage_origin_opposite'))
                             <div class="invalid-feedback">
                                 {{ $errors->first('damage_origin_opposite') }}
@@ -332,8 +332,7 @@
                 </div>
                 <div class="form-group">
                     <label>{{ trans('cruds.claim.fields.damaged_area_opposite') }}</label>
-                    <select class="form-control {{ $errors->has('damaged_area_opposite') ? 'is-invalid' : '' }}" name="damaged_area_opposite" id="damaged_area_opposite">
-                        <option value disabled {{ old('damaged_area_opposite', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    <select class="form-control select2 {{ $errors->has('damaged_area_opposite') ? 'is-invalid' : '' }}" name="damaged_area_opposite[]" id="damaged_area_opposite" multiple>
                         @foreach(App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT as $key => $label)
                             <option value="{{ $key }}" {{ old('damaged_area_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach

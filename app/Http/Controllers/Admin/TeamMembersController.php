@@ -47,6 +47,6 @@ class TeamMembersController extends Controller
         $message = new \App\Notifications\TeamMemberInvite($url);
         Notification::route('mail', $request->input('email'))->notify($message);
 
-        return redirect()->back()->with('message', 'Invite sent.');
+        return redirect()->back()->with('message', 'Gebruiker is uitgenodigd.');
     }
 }
