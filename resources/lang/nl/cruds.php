@@ -101,10 +101,14 @@ return [
             'vehicle_helper'                   => ' ',
             'vehicle_plates'                   => 'Voertuig kenteken',
             'vehicle_plates_helper'            => ' ',
+            'driver_vehicle'                   => 'Chauffeur voertuig',
+            'driver_vehicle_helper'            => '',
             'vehicle_opposite'                 => 'Voertuig wederpartij',
             'vehicle_opposite_helper'          => ' ',
             'vehicle_plates_opposite'          => 'Voertuig kenteken wederpartij',
             'vehicle_plates_opposite_helper'   => ' ',
+            'driver_vehicle_opposite'          => 'Chauffeur voertuig wederpartij',
+            'driver_vehicle_opposite_helper'   => '',
             'opposite_type'                    => 'Wederpartij type',
             'opposite_type_helper'             => ' ',
             'obstacle'                         => 'Obstakel',
@@ -252,6 +256,8 @@ return [
             'newsletter_helper' => ' ',
             'create_user'       => 'Maak gebruiker aan voor deze contact',
             'create_user_helper'=> '',
+            'is_driver'         => 'Is deze contact een chauffeur?',
+            'is_driver_helper'  => ''
         ],
     ],
     'injuryOffice' => [

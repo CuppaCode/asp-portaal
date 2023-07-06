@@ -166,6 +166,7 @@
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.damaged_area') }}
                 </div>
+                
                 <p class="card-text">
                     @if ( $claim->damaged_area !== null )
                         @foreach(json_decode( $claim->damaged_area ) as $area)
@@ -173,6 +174,12 @@
                         @endforeach
                     @endif
                 </p>
+                <p class="card-text">{{ App\Models\Claim::DAMAGED_AREA_SELECT[$claim->damaged_area] ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.driver_vehicle') }}
+                </div>
+                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle)->driver_full_name ?? '' }}</p>
             </div>
         </div>
     </div>
@@ -227,6 +234,11 @@
                 </div>
                 <p class="card-text">{{ $claim->obstacle }}</p>
                 @endif
+
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
+                </div>
+                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}</p>
             </div>
         </div>
     </div>

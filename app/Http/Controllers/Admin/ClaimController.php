@@ -16,6 +16,7 @@ use App\Models\RecoveryOffice;
 use App\Models\Team;
 use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
+use App\Models\Driver;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -53,7 +54,8 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $isAdmin = auth()->user()->roles->contains(1);
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
         $companies = null;
 
         if($isAdmin) {
@@ -73,7 +75,18 @@ class ClaimController extends Controller
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.claims.create', compact('companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles'));
+        if($isAdmin) {
+
+            $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        } else {
+
+            $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        }
+
+
+        return view('admin.claims.create', compact('companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles', 'drivers'));
     }
 
     public function store(StoreClaimRequest $request)
@@ -129,6 +142,7 @@ class ClaimController extends Controller
                 ]);
 
             }
+
 
             $claim->vehicle_id = $vehicle->id;
         }
@@ -208,9 +222,19 @@ class ClaimController extends Controller
 
         $expertise_offices = ExpertiseOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
+        if($isAdmin) {
+
+            $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        } else {
+
+            $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        }
+
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles', 'drivers'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)

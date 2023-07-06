@@ -206,6 +206,22 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
             </div>
 
+            <div class="form-group">
+
+                <label for="driver_vehicle">{{ trans('cruds.claim.fields.driver_vehicle') }}</label>
+                <select class="form-control select2 {{ $errors->has('driver_vehicle') ? 'is-invalid' : '' }}" name="driver_vehicle" id="driver_vehicle">
+                    @foreach($drivers as $id => $entry)
+                        <option value="{{ $id }}" {{ old('driver_vehicle') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('driver_vehicle'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('driver_vehicle') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.driver_vehicle_helper') }}</span>
+            </div>
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>

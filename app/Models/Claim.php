@@ -186,6 +186,8 @@ class Claim extends Model implements HasMedia
         'injury_office_id',
         'vehicle_id',
         'vehicle_opposite_id',
+        'driver_vehicle',
+        'driver_vehicle_opposite',
         'opposite_type',
         'obstacle',
         'damaged_part',
