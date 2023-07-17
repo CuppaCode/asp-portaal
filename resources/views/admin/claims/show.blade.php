@@ -231,17 +231,17 @@
                         @endforeach
                     @endif
                 </p>
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
+                </div>
+                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}</p>
+
                 @else
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.obstacle') }}
                 </div>
                 <p class="card-text">{{ $claim->obstacle }}</p>
                 @endif
-
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
-                </div>
-                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}</p>
             </div>
         </div>
     </div>
