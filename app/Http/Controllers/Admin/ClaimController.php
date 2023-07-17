@@ -242,6 +242,7 @@ class ClaimController extends Controller
     {
         
         $isAdmin = auth()->user()->roles->contains(1);
+        $user = auth()->user();
         $companies = null;
         
         if(!$isAdmin) {
