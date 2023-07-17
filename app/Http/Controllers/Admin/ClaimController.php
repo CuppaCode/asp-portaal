@@ -207,6 +207,7 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $isAdmin = auth()->user()->roles->contains(1);
+        $user = auth()->user();
 
         abort_if(!$isAdmin && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -227,7 +228,7 @@ class ClaimController extends Controller
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         } else {
-
+            
             $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         }
