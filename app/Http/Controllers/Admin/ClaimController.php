@@ -199,7 +199,7 @@ class ClaimController extends Controller
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
 
-        return dd(redirect()->route('admin.claims.show', $claim->id));
+        return redirect()->route('admin.claims.index');
     }
 
     public function edit(Claim $claim)
@@ -370,7 +370,7 @@ class ClaimController extends Controller
             }
         }
 
-        return redirect()->route('admin.claims.index');
+        return redirect()->route('admin.claims.show', $claim->id);
     }
 
     public function show(Claim $claim)
