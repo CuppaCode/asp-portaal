@@ -43,7 +43,7 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
             </div>
             @else
-                <input type="hidden" name="company_id" id="company_id" value="1">
+                <input type="hidden" name="company_id" id="company_id" value="{{ $claim->company->id }}">
 
             @endif
             <div class="form-group">
@@ -427,8 +427,8 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.expertise_office_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
-                <input class="form-control datetime {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}" required>
+                <label for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
+                <input class="form-control date {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}">
                 @if($errors->has('requested_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('requested_at') }}
@@ -451,7 +451,7 @@
             </div>
             <div class="form-group expertise-report-show d-none">
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
-                <input class="form-control datetime {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
+                <input class="form-control date {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
                 @if($errors->has('report_received_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('report_received_at') }}

@@ -45,11 +45,11 @@ class UpdateClaimRequest extends FormRequest
                 'integer',
             ],
             'requested_at' => [
-                'required',
-                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'nullable',
+                'date_format:' . config('panel.date_format'),
             ],
             'report_received_at' => [
-                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
             'damage_files' => [

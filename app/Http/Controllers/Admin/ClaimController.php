@@ -370,7 +370,7 @@ class ClaimController extends Controller
             }
         }
 
-        return redirect()->route('admin.claims.index');
+        return redirect()->route('admin.claims.show', $claim->id);
     }
 
     public function show(Claim $claim)
