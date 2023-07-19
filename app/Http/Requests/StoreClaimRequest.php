@@ -44,11 +44,11 @@ class StoreClaimRequest extends FormRequest
                 'integer',
             ],
             'requested_at' => [
-                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
             'report_received_at' => [
-                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
             'damage_files' => [

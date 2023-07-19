@@ -405,7 +405,7 @@
             </div>
             <div class="form-group">
                 <label class="" for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
-                <input class="form-control datetime {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at') }}">
+                <input class="form-control date {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at') }}">
                 @if($errors->has('requested_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('requested_at') }}
