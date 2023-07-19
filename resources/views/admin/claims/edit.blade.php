@@ -43,7 +43,7 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
             </div>
             @else
-                <input type="hidden" name="company_id" id="company_id" value="1">
+                <input type="hidden" name="company_id" id="company_id" value="{{ $claim->company->id }}">
 
             @endif
             <div class="form-group">
