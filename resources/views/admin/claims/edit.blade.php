@@ -451,7 +451,7 @@
             </div>
             <div class="form-group expertise-report-show d-none">
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
-                <input class="form-control datetime {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
+                <input class="form-control date {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
                 @if($errors->has('report_received_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('report_received_at') }}
