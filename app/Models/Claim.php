@@ -42,6 +42,7 @@ class Claim extends Model implements HasMedia
         'carter'    => 'Carter',
         'wheel'     => 'Wielophanding',
         'bumper'    => 'Bumper',
+        'grill'    => 'Grill',
 
     ];
 
@@ -68,13 +69,14 @@ class Claim extends Model implements HasMedia
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
         'light'     => 'Verlichting',
-        'carhood'   => 'Moterkap',
+        'carhood'   => 'Motorkap',
         'trunk'     => 'Achterklep',
         'exhaust'   => 'Uitlaat',
         'steeringwheel' => 'Stuurinrichting',
         'carter'    => 'Carter',
         'wheel'     => 'Wielophanding',
         'bumper'    => 'Bumper',
+        'grill'    => 'Grill',
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
@@ -87,11 +89,16 @@ class Claim extends Model implements HasMedia
     public const STATUS_SELECT = [
         'new'                       => 'Nieuw',
         'in_progress'               => 'In behandeling',
+        'requested_info'            => 'Informatie opgevraagd',
         'damage_estimate_requested' => 'Schadebegroting opgevraagd',
         'damage_estimate_received'  => 'Schadebegroting ontvangen',
+        'sended_responsible'        => 'Aansprakelijkheid verstuurd',
+        'received_responsible'      => 'Aansprakelijkheid ontvangen',
+        'requested_expert'          => 'Expert aangevraagd',
         'awaiting_invoice'          => 'Factuur afwachten',
         'awaiting_report'           => 'Rapport afwachten',
         'awaiting_approval'         => 'Goedkeuring afwachten',
+        'claim_denied'              => 'Claim afgewezen',
         'finished'                  => 'Gesloten',
     ];
 

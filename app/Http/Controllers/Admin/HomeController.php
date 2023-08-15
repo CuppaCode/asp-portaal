@@ -38,8 +38,8 @@ class HomeController
         
         $expertise_offices = ExpertiseOffice::get();
         
-        $tasks = Task::with(['user', 'claim', 'team'])->orderBy('deadline_at')->paginate(5, ['*'], 'tasks');
-        $personal_tasks = Task::where('user_id', $user->id)->orderBy('deadline_at')->paginate(5, ['*'], 'ptasks');
+        $tasks = Task::with(['user', 'claim', 'team'])->whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'tasks');
+        $personal_tasks = Task::where('user_id', $user->id)->whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'ptasks');
         
         $users = User::get();
         $teams = Team::get();

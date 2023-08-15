@@ -16,7 +16,7 @@
 
         @if ($claim->assign_self == true)
             <div class="alert alert-danger" role="alert">
-                Let op! Deze schadedossier wordt behandeld door klant zelf.
+                Let op! Dit schadedossier wordt behandeld door klant zelf.
             </div>
         @endif
     
