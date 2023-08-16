@@ -244,6 +244,41 @@
                 @endif
             </div>
         </div>
+        @if (!empty($opposite))
+        <div class="card">
+            <div class="card-header">
+                Details wederpartij
+            </div>
+
+            <div class="card-body">
+                <div class="card-title">
+                    {{ trans('cruds.opposite.fields.name') }}
+                </div>
+                <p class="card-text">{{ $opposite->name ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.opposite.fields.street') }}
+                </div>
+                <p class="card-text">{{ $opposite->street ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.opposite.fields.zipcode') }} + {{ trans('cruds.opposite.fields.city') }}
+                </div>
+                <p class="card-text">{{ $opposite->zipcode ?? '' }} {{ $opposite->city ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.opposite.fields.phone') }}
+                </div>
+                <p class="card-text">{{ $opposite->phone ?? '' }}</p>
+
+                <div class="card-title">
+                    {{ trans('cruds.opposite.fields.email') }}
+                </div>
+                <p class="card-text"><a href="mailto:{{ $opposite->email ?? '' }}">{{ $opposite->email ?? '' }}</a></p>
+            
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 

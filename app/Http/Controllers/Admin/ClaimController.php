@@ -17,6 +17,7 @@ use App\Models\Team;
 use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
 use App\Models\Driver;
+use App\Models\Opposite;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -108,6 +109,16 @@ class ClaimController extends Controller
 
         $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 99), 5, 0, STR_PAD_LEFT);
 
+        Opposite::create([
+            'name'          => $request->op_name,
+            'street'        => $request->op_street,
+            'zipcode'       => $request->op_zipcode,
+            'city'          => $request->op_city,
+            'country'       => $request->op_country,
+            'phone'         => $request->op_phone,
+            'email'         => $request->op_email,
+            'claim_id'      => $claim->id,
+        ]);
         
         if(!$isAdmin) {
             
@@ -223,6 +234,9 @@ class ClaimController extends Controller
 
         $expertise_offices = ExpertiseOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
+        $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
+
+
         if($isAdmin) {
 
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
@@ -235,7 +249,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles', 'drivers'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles', 'drivers', 'opposite'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)
@@ -301,6 +315,33 @@ class ClaimController extends Controller
         }
         
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite', 'vehicle_id', 'vehicle_opposite_id'];
+        
+        $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
+
+        if(isset($opposite)) {
+            $opposite_val = [
+                'name' => $request->op_name,
+                'street' => $request->op_street,
+                'zipcode' => $request->op_zipcode,
+                'city' => $request->op_city,
+                'country' => $request->op_country,
+                'phone' => $request->op_phone,
+                'email' => $request->op_email,
+            ];
+    
+            $opposite->update($opposite_val);
+        } else {
+            Opposite::create([
+                'name'          => $request->op_name,
+                'street'        => $request->op_street,
+                'zipcode'       => $request->op_zipcode,
+                'city'          => $request->op_city,
+                'country'       => $request->op_country,
+                'phone'         => $request->op_phone,
+                'email'         => $request->op_email,
+                'claim_id'      => $claim->id,
+            ]);
+        }
         
         $claim->update($request->except($multiSelects));
 
@@ -379,12 +420,13 @@ class ClaimController extends Controller
         
         // dd($claim->company->id);
 
+        $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
-        // dd($contacts);
+        // dd($opposite);
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
 
-        return view('admin.claims.show', compact('claim', 'contacts'));
+        return view('admin.claims.show', compact('claim', 'contacts', 'opposite'));
     }
 
     public function destroy(Claim $claim)
