@@ -388,6 +388,43 @@
     </div>
     <div class="card">
         <div class="card-header">
+            Details wederpartij
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label>{{ trans('cruds.opposite.fields.name') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="text" name="op_name" id="op_name" value="{{ old('op_name', $opposite->name ?? '') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ trans('cruds.opposite.fields.street') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="text" name="op_street" id="op_street" value="{{ old('op_street', $opposite->street ?? '') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ trans('cruds.opposite.fields.zipcode') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="text" name="op_zipcode" id="op_zipcode" value="{{ old('op_zipcode', $opposite->zipcode ?? '') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ trans('cruds.opposite.fields.city') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="text" name="op_city" id="op_city" value="{{ old('op_city', $opposite->city ?? '') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ trans('cruds.opposite.fields.country') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="text" name="op_country" id="op_country" value="{{ old('op_country', $opposite->country ?? '') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ trans('cruds.opposite.fields.phone') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="text" name="op_phone" id="op_phone" value="{{ old('op_phone', $opposite->phone ?? '') }}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ trans('cruds.opposite.fields.email') }}</label>
+                    <input class="form-control {{ $errors->has('op_name') ? 'is-invalid' : '' }}" type="email" name="op_email" id="op_email" value="{{ old('op_email', $opposite->email ?? '') }}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
             Schadehersteller
         </div>
         <div class="card-body">

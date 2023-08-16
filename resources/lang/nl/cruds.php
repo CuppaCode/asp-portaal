@@ -464,5 +464,31 @@ return [
             'team_helper'        => ' ',
         ],
     ],
+    'opposite' => [
+        'fields'         => [
+            'id'                  => 'ID',
+            'id_helper'           => ' ',
+            'name'                => 'Naam',
+            'name_helper'         => ' ',
+            'street'              => 'Straat',
+            'street_helper'       => ' ',
+            'zipcode'             => 'Postcode',
+            'zipcode_helper'      => ' ',
+            'city'                => 'Stad',
+            'city_helper'         => ' ',
+            'country'             => 'Land',
+            'country_helper'      => ' ',
+            'phone'               => 'Telefoon',
+            'phone_helper'        => ' ',
+            'email'              => 'Email',
+            'email_helper'       => ' ',
+            'created_at'          => 'Created at',
+            'created_at_helper'   => ' ',
+            'updated_at'          => 'Updated at',
+            'updated_at_helper'   => ' ',
+            'deleted_at'          => 'Deleted at',
+            'deleted_at_helper'   => ' ',
+        ],
+    ]
 
 ];
