@@ -1,6 +1,13 @@
 @extends('layouts.admin')
 @section('content')
 
+@php 
+
+    $isAdmin = auth()->user()->roles->contains(1);
+
+@endphp
+
+
 <form method="POST" action="{{ route("admin.claims.update", [$claim->id]) }}" enctype="multipart/form-data">
     @method('PUT')
     @csrf
@@ -65,6 +72,16 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.claim_number_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="opposite_claim_no">{{ trans('cruds.claim.fields.opposite_claim_no') }}</label>
+                <input class="form-control {{ $errors->has('opposite_claim_no') ? 'is-invalid' : '' }}" type="number" name="opposite_claim_no" id="opposite_claim_no" value="{{ old('opposite_claim_no', $claim->opposite_claim_no ) }}">
+                @if($errors->has('opposite_claim_no'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('opposite_claim_no') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.invoice_settlement_helper') }}</span>
             </div>
         </div>
     </div>
@@ -504,6 +521,23 @@
         </div>
         <div class="card-body">
             <div class="form-row">
+                @if ($isAdmin)
+                <div class="form-group col-md-3">
+                    <label>{{ trans('cruds.claim.fields.invoice_settlement') }}</label>
+                    <input type="hidden" name="invoice_settlement_asp" value="0">
+                    <input class="form-control {{ $errors->has('invoice_settlement_asp') ? 'is-invalid' : '' }}" type="checkbox" name="invoice_settlement_asp" id="invoice_settlement_asp" value="1" {{ $claim->invoice_settlement_asp || old('invoice_settlement_asp', 0) === 1 ? 'checked' : '' }}>
+                </div>
+                <div class="form-group col-md-9">
+                    <label for="invoice_comment">{{ trans('cruds.claim.fields.invoice_comment') }}</label>
+                    <input class="form-control {{ $errors->has('invoice_comment') ? 'is-invalid' : '' }}" type="text" name="invoice_comment" id="invoice_comment" value="{{ old('invoice_comment', $claim->invoice_comment ) }}">
+                    @if($errors->has('invoice_comment'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('invoice_comment') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.invoice_comment_helper') }}</span>
+                </div>
+                @endif
                 <div class="form-group col-md-6">
                     <label for="deductible_excess_costs">{{ trans('cruds.claim.fields.deductible_excess_costs') }}</label>
                     <input class="form-control {{ $errors->has('deductible_excess_costs') ? 'is-invalid' : '' }}" type="number" name="deductible_excess_costs" id="deductible_excess_costs" value="{{ old('deductible_excess_costs', '') }}" step="0.01">

@@ -55,6 +55,13 @@
                     {{ trans('cruds.claim.fields.subject') }}</div>
                 {{ $claim->subject }}
             </div>
+            @if ($claim->opposite_claim_no)
+            <div class="col-md-3">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.opposite_claim_no') }}</div>
+                {{ $claim->opposite_claim_no }}
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -474,22 +481,39 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 d-none">
-        <div class="card">
-            <div class="card-header">
-                ...
-            </div>
+    @if ($isAdmin)
 
-            <div class="card-body">
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damage_costs') }}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    ASP Financieel
                 </div>
-                <p class="card-text">{{ $claim->vehicle_opposite->name ?? '' }}</p>
-            
-            
+
+                <div class="card-body">
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.invoice_settlement') }}
+                    </div>
+                    <p class="card-text">
+                        @if ($claim->invoice_settlement == 1)
+                        Ja
+                        @else
+                        Nee
+                        @endif
+                    </p>
+
+                    @if ($claim->invoice_comment)
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.invoice_comment') }}
+                    </div>
+                    <p class="card-text">
+                        {{ $claim->invoice_comment }}
+                    </p>
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
+
+    @endif
 </div>
 @endif
 
