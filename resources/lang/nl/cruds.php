@@ -168,7 +168,7 @@ return [
             'invoice_settlement_helper'        => ' ',
             'invoice_comment'                  => 'Factuur opmerking',
             'invoice_comment_helper'                  => '',
-            'opposite_claim_no'                => 'Factuurnr. wederpartij',
+            'opposite_claim_no'                => 'Schadedossier nr. wederpartij',
             'opposite_claim_no_helper'         => '',
         ],
     ],

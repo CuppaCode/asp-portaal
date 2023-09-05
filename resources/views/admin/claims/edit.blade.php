@@ -81,7 +81,7 @@
                         {{ $errors->first('opposite_claim_no') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.invoice_settlement_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.claim.fields.opposite_claim_no_helper') }}</span>
             </div>
         </div>
     </div>
