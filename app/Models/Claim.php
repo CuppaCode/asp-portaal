@@ -220,6 +220,9 @@ class Claim extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'team_id',
+        'invoice_settlement_asp',
+        'opposite_claim_no',
+        'invoice_comment',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
