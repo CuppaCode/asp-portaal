@@ -506,7 +506,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="deductible_excess_costs">{{ trans('cruds.claim.fields.deductible_excess_costs') }}</label>
-                    <input class="form-control {{ $errors->has('deductible_excess_costs') ? 'is-invalid' : '' }}" type="number" name="deductible_excess_costs" id="deductible_excess_costs" value="{{ old('deductible_excess_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('deductible_excess_costs') ? 'is-invalid' : '' }}" type="number" name="deductible_excess_costs" id="deductible_excess_costs" value="{{ old('deductible_excess_costs', $claim->deductible_excess_costs ) }}" step="0.01">
                     @if($errors->has('deductible_excess_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('deductible_excess_costs') }}
@@ -516,7 +516,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="insurance_costs">{{ trans('cruds.claim.fields.insurance_costs') }}</label>
-                    <input class="form-control {{ $errors->has('insurance_costs') ? 'is-invalid' : '' }}" type="number" name="insurance_costs" id="insurance_costs" value="{{ old('insurance_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('insurance_costs') ? 'is-invalid' : '' }}" type="number" name="insurance_costs" id="insurance_costs" value="{{ old('insurance_costs', $claim->insurance_costs ) }}" step="0.01">
                     @if($errors->has('insurance_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('insurance_costs') }}
@@ -526,7 +526,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="expert_costs">{{ trans('cruds.claim.fields.expert_costs') }}</label>
-                    <input class="form-control {{ $errors->has('expert_costs') ? 'is-invalid' : '' }}" type="number" name="expert_costs" id="expert_costs" value="{{ old('expert_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('expert_costs') ? 'is-invalid' : '' }}" type="number" name="expert_costs" id="expert_costs" value="{{ old('expert_costs', $claim->expert_costs ) }}" step="0.01">
                     @if($errors->has('expert_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('expert_costs') }}
@@ -536,7 +536,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="damage_costs">{{ trans('cruds.claim.fields.damage_costs') }}</label>
-                    <input class="form-control {{ $errors->has('damage_costs') ? 'is-invalid' : '' }}" type="number" name="damage_costs" id="damage_costs" value="{{ old('damage_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('damage_costs') ? 'is-invalid' : '' }}" type="number" name="damage_costs" id="damage_costs" value="{{ old('damage_costs', $claim->damage_costs ) }}" step="0.01">
                     @if($errors->has('damage_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('damage_costs') }}
@@ -546,7 +546,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="recovery_costs">{{ trans('cruds.claim.fields.recovery_costs') }}</label>
-                    <input class="form-control {{ $errors->has('recovery_costs') ? 'is-invalid' : '' }}" type="number" name="recovery_costs" id="recovery_costs" value="{{ old('recovery_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('recovery_costs') ? 'is-invalid' : '' }}" type="number" name="recovery_costs" id="recovery_costs" value="{{ old('recovery_costs', $claim->recovery_costs ) }}" step="0.01">
                     @if($errors->has('recovery_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('recovery_costs') }}
@@ -556,7 +556,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="replacement_vehicle_costs">{{ trans('cruds.claim.fields.replacement_vehicle_costs') }}</label>
-                    <input class="form-control {{ $errors->has('replacement_vehicle_costs') ? 'is-invalid' : '' }}" type="number" name="replacement_vehicle_costs" id="replacement_vehicle_costs" value="{{ old('replacement_vehicle_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('replacement_vehicle_costs') ? 'is-invalid' : '' }}" type="number" name="replacement_vehicle_costs" id="replacement_vehicle_costs" value="{{ old('replacement_vehicle_costs', $claim->replacement_vehicle_costs ) }}" step="0.01">
                     @if($errors->has('replacement_vehicle_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('replacement_vehicle_costs') }}
@@ -566,7 +566,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="other_costs">{{ trans('cruds.claim.fields.other_costs') }}</label>
-                    <input class="form-control {{ $errors->has('other_costs') ? 'is-invalid' : '' }}" type="number" name="other_costs" id="other_costs" value="{{ old('other_costs', '') }}" step="0.01">
+                    <input class="form-control {{ $errors->has('other_costs') ? 'is-invalid' : '' }}" type="number" name="other_costs" id="other_costs" value="{{ old('other_costs', $claim->other_costs ) }}" step="0.01">
                     @if($errors->has('other_costs'))
                         <div class="invalid-feedback">
                             {{ $errors->first('other_costs') }}
