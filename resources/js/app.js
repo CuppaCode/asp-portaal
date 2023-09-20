@@ -109,4 +109,20 @@ $(document).ready(function () {
         $('#'+data).val('');
     });
 
+
+    // Claims AJAX requests
+    $('#test-button').on('click', function (e) {
+
+        var claimID = $(this).data('claim-id');
+
+        console.log('claimID:', claimID);
+
+        $.post('/api/v1/claims/' + claimID + '/update-status', function(res) {
+            console.log(res);
+        });
+
+    });
+
+    
+
 });

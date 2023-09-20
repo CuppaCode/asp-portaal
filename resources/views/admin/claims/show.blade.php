@@ -35,6 +35,22 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         Schadedossier overzicht <div class="btn btn-primary claim-status">{{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}</div>
+        
+        <!-- Example split danger button -->
+        <div class="btn-group">
+            <button type="button" id="test-button" class="btn btn-danger" data-claim-id="{{ $claim->id }}">TEST</button>
+            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+        </div>
+  
     </div>
 
     <div class="card-body">
