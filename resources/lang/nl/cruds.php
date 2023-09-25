@@ -164,6 +164,12 @@ return [
             'date_accident_helper'             => ' ',
             'recoverable_claim'                => 'Verhaalbaar',
             'recoverable_claim_helper'         => ' ',
+            'invoice_settlement'               => 'Factuur afgewikkeld',
+            'invoice_settlement_helper'        => ' ',
+            'invoice_comment'                  => 'Factuur opmerking',
+            'invoice_comment_helper'                  => '',
+            'opposite_claim_no'                => 'Schadedossier nr. wederpartij',
+            'opposite_claim_no_helper'         => '',
         ],
     ],
     'company' => [
