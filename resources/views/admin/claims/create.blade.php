@@ -500,7 +500,7 @@
                 </div>
                 <div class="form-group col-md-9">
                     <label for="invoice_comment">{{ trans('cruds.claim.fields.invoice_comment') }}</label>
-                    <input class="form-control {{ $errors->has('invoice_comment') ? 'is-invalid' : '' }}" type="text" name="invoice_comment" id="invoice_comment" value="{{ old('invoice_comment', $claim->invoice_comment ) }}">
+                    <input class="form-control {{ $errors->has('invoice_comment') ? 'is-invalid' : '' }}" type="text" name="invoice_comment" id="invoice_comment" value="{{ old('invoice_comment') }}">
                     @if($errors->has('invoice_comment'))
                         <div class="invalid-feedback">
                             {{ $errors->first('invoice_comment') }}
