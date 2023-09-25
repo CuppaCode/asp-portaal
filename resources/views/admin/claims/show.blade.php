@@ -494,7 +494,7 @@
                         {{ trans('cruds.claim.fields.invoice_settlement') }}
                     </div>
                     <p class="card-text">
-                        @if ($claim->invoice_settlement == 1)
+                        @if ($claim->invoice_settlement_asp == 1)
                         Ja
                         @else
                         Nee
