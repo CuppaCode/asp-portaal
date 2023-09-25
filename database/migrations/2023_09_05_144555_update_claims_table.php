@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('claims', function (Blueprint $table) {
-            $table->boolean('assiinvoice_settlement_aspgn_self')->default(0)->nullable()->change();
+            $table->boolean('invoice_settlement_asp')->default(0)->nullable()->change();
             
         });
     }
