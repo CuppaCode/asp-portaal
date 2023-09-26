@@ -111,14 +111,15 @@ $(document).ready(function () {
 
 
     // Claims AJAX requests
-    $('#test-button').on('click', function (e) {
+    $('[data-status]').on('click', function (e) {
 
         var claimID = $(this).data('claim-id');
+        var newStatus = $(this).data('status');
 
-        console.log('claimID:', claimID);
+        $.post('/api/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
+            
+            $('#current-status').text(res.status);
 
-        $.post('/api/v1/claims/' + claimID + '/update-status', function(res) {
-            console.log(res);
         });
 
     });
