@@ -75,7 +75,7 @@
             </div>
             <div class="form-group">
                 <label for="opposite_claim_no">{{ trans('cruds.claim.fields.opposite_claim_no') }}</label>
-                <input class="form-control {{ $errors->has('opposite_claim_no') ? 'is-invalid' : '' }}" type="number" name="opposite_claim_no" id="opposite_claim_no" value="{{ old('opposite_claim_no', $claim->opposite_claim_no ) }}">
+                <input class="form-control {{ $errors->has('opposite_claim_no') ? 'is-invalid' : '' }}" type="text" name="opposite_claim_no" id="opposite_claim_no" value="{{ old('opposite_claim_no', $claim->opposite_claim_no ) }}">
                 @if($errors->has('opposite_claim_no'))
                     <div class="invalid-feedback">
                         {{ $errors->first('opposite_claim_no') }}
