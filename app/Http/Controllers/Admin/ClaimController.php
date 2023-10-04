@@ -462,4 +462,25 @@ class ClaimController extends Controller
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
+
+    public function quickUpdateStatus(Request $request)
+    {
+        //dd($request);
+
+        $claim = Claim::find($request->claim_id);
+
+        $claim->status = $request->new_status;
+
+        $claim->save();
+
+        $new_status = null;
+
+        foreach(Claim::STATUS_SELECT as $key => $status) {
+            if ($key == $claim->status) {
+                $new_status = $status;
+            }
+        }
+
+        return response()->json(['status' => $new_status], 200);
+    }
 }
