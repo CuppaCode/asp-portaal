@@ -481,6 +481,10 @@ class ClaimController extends Controller
             }
         }
 
-        return response()->json(['status' => $new_status], 200);
+        return response()->json(
+            [
+                'status' => $new_status,
+                'message' => 'Status is succesvol aangepast!'
+            ], 200);
     }
 }

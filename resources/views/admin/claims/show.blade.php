@@ -35,29 +35,18 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         Schadedossier overzicht
-        
-        <!-- Example split danger button -->
-        <div class="btn-group">
 
-            <button type="button" class="btn btn-primary" id="current-status">
-                {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
-            </button>
+        <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
-            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
+            @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
 
-            <div class="dropdown-menu">
+                <option value="{{ $key }}" {{ $claim->status == $key ? 'selected' : '' }}>{{ $status }}</option>
 
-                @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
+            @endforeach
 
-                <a class="dropdown-item" href="javascript:;" data-status="{{ $key }}" data-claim-id="{{ $claim->id }}">{{ $status }}</a>
+        </select>
 
-                @endforeach
-                
-            </div>
 
-        </div>
   
     </div>
 

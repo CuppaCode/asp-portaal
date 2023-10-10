@@ -296,3 +296,18 @@ div.dt-buttons {
     cursor: pointer;
     float: right;
 }
+
+#js-message {
+    display: none;
+}
+
+.custom-alert {
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+}
+
+#current-status {
+    color: white;
+    background-color: var(--primary);
+}

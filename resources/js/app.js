@@ -111,19 +111,35 @@ $(document).ready(function () {
 
 
     // Claims AJAX requests
-    $('[data-status]').on('click', function (e) {
+    $('#current-status').on('change', function (e) {
 
         var claimID = $(this).data('claim-id');
-        var newStatus = $(this).data('status');
+        var newStatus = $(this).val();
 
         $.post('/api/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
-            
-            $('#current-status').text(res.status);
+
+            sendFlashMessage(res.message);
 
         });
 
-    });
-
-    
-
+    });  
 });
+
+
+function sendFlashMessage( message ) {
+
+    var flashMessage = $('#js-message');
+
+    flashMessage.text(message)
+    flashMessage.fadeToggle();
+
+    setTimeout(() => {
+
+        flashMessage.fadeToggle();
+        flashMessage.empty();
+
+    }, 3000);
+
+    return;
+
+}
