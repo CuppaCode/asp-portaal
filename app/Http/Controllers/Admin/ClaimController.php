@@ -92,12 +92,14 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
+        
+
         /* Custom bit */
         $user = auth()->user();
         $isAdmin = $user->roles->contains(1);
 
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
-
+        
         $claim = Claim::create($request->except($multiSelects));
 
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
@@ -465,8 +467,6 @@ class ClaimController extends Controller
 
     public function quickUpdateStatus(Request $request)
     {
-        //dd($request);
-
         $claim = Claim::find($request->claim_id);
 
         $claim->status = $request->new_status;

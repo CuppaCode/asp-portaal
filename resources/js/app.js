@@ -111,6 +111,8 @@ $(document).ready(function () {
 
 
     // Claims AJAX requests
+
+    // Status change
     $('#current-status').on('change', function (e) {
 
         var claimID = $(this).data('claim-id');
@@ -122,8 +124,54 @@ $(document).ready(function () {
 
         });
 
-    });  
+    });
+
+    // Company creation
+    var companyID = $('#company_id');
+
+    ajaxCreateCompany(companyID);
+
+
+    // Injury office creation
+    var injuryOfficeID = $('#injury_office_id');
+
+    ajaxCreateCompany(injuryOfficeID, 'injury');
+
+
+
 });
+
+function ajaxCreateCompany( inputID, typeID = null ) {
+
+    inputID.select2({
+        tags: true
+    });
+
+    inputID.on('select2:select', function (e) {
+
+        var selected = e.params.data;
+
+        if( !selected.element ) {
+            
+
+            $.post('/api/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
+
+                var newOption = inputID.find('option[value="'+ selected.id +'"]');
+            
+                sendFlashMessage(res.message);
+                newOption.attr('value', res.company_id);
+                newOption.attr('selected', 'selected');
+                newOption.prop('selected', true);
+                inputID.attr('disabled', 'disabled');
+
+                console.log(inputID.val());
+    
+            });
+
+        }
+
+    });
+}
 
 
 function sendFlashMessage( message ) {
