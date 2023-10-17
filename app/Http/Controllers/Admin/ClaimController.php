@@ -92,7 +92,6 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
-        
 
         /* Custom bit */
         $user = auth()->user();
@@ -155,7 +154,6 @@ class ClaimController extends Controller
                 ]);
 
             }
-
 
             $claim->vehicle_id = $vehicle->id;
         }

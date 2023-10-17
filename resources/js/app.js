@@ -152,19 +152,20 @@ function ajaxCreateCompany( inputID, typeID = null ) {
         var selected = e.params.data;
 
         if( !selected.element ) {
-            
 
             $.post('/api/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
 
                 var newOption = inputID.find('option[value="'+ selected.id +'"]');
-            
+                var inputName = inputID.attr('name');
+
                 sendFlashMessage(res.message);
                 newOption.attr('value', res.company_id);
-                newOption.attr('selected', 'selected');
-                newOption.prop('selected', true);
                 inputID.attr('disabled', 'disabled');
 
-                console.log(inputID.val());
+                var newInputID = $(`<input type="hidden" name="${inputName}" value="${inputID.val()}">`);
+
+                inputID.removeAttr('name');
+                inputID.after(newInputID); 
     
             });
 
