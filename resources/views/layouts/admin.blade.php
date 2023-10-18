@@ -85,13 +85,13 @@
 
 
                 <div class="container-fluid">
-                    @if(session('message'))
+                    {{-- @if(session('message'))
                         <div class="row mb-2">
                             <div class="col-lg-12">
                                 <div class="alert alert-success" role="alert">{{ session('message') }}</div>
                             </div>
                         </div>
-                    @endif
+                    @endif --}}
                     @if($errors->count() > 0)
                         <div class="alert alert-danger">
                             <ul class="list-unstyled">

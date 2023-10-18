@@ -1,5 +1,11 @@
 import './bootstrap';
 
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
+
 $(document).ready(function () {
 
     var injury_office = $('.injury-office-show');
@@ -128,14 +134,20 @@ $(document).ready(function () {
 
     // Company creation
     var companyID = $('#company_id');
-
     ajaxCreateCompany(companyID);
 
 
     // Injury office creation
     var injuryOfficeID = $('#injury_office_id');
-
     ajaxCreateCompany(injuryOfficeID, 'injury');
+
+    // Recovery office creation
+    var recoveryOfficeID = $('#recovery_office_id');
+    ajaxCreateCompany(recoveryOfficeID, 'recovery');
+
+    // Expertise office creation
+    var expertiseOfficeID = $('#expertise_office_id');
+    ajaxCreateCompany(expertiseOfficeID, 'expertise');
 
 
 

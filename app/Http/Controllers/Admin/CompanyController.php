@@ -186,19 +186,19 @@ class CompanyController extends Controller
             switch ($company->company_type) {
                 case 'injury':
 
-                    InjuryOffice::create($office);
+                    $company = InjuryOffice::create($office);
 
                     break;
 
                 case 'recovery':
 
-                    RecoveryOffice::create($office);
+                    $company = RecoveryOffice::create($office);
 
                     break;
 
                 case 'expertise':
 
-                    ExpertiseOffice::create($office);
+                    $company = ExpertiseOffice::create($office);
 
                     break;
 
