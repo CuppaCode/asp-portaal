@@ -13,8 +13,8 @@
     </div>
 
     <div class="card-body">
-        <p>Cupcake ipsum dolor sit amet jelly-o. Topping gingerbread chocolate toffee pudding. Pudding donut marzipan cookie croissant fruitcake.</p>
-        <p>Ice cream jujubes jujubes oat cake tiramisu soufflé sesame snaps jelly. Macaroon wafer jelly beans toffee wafer caramels dragée bonbon. Candy jelly beans caramels dessert marzipan sugar plum sesame snaps jelly-o muffin.</p>
+        <p>Om alle informatie over een dossier overzichtelijk op te slaan en de schade goed af te kunnen wikkelen is het belangrijk om onderstaande gegevens in te vullen.</p>
+        <p>Let op dat veel van deze gegevens gebruikt worden voor het maken van een analyse. Het is noodzakelijk om gegevens in te vullen voor dat het dossier wordt gesloten. Ontbrekende waarden kunnen leiden tot een onjuiste analyse.</p>
     </div>
 </div>
 <form method="POST" action="{{ route("admin.claims.store") }}" enctype="multipart/form-data">

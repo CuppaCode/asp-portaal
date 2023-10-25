@@ -177,6 +177,8 @@ class CompanyController extends Controller
 
             $identifier = str_replace(' ', '_', strtolower($company->company_type . '_' . $company->name));
 
+            $message = 'Bedrijf is succesvol aangemaakt!';
+
             $office = [
                 'company_id' => $company->id,
                 'team_id'    => $team->id,
@@ -187,18 +189,21 @@ class CompanyController extends Controller
                 case 'injury':
 
                     $company = InjuryOffice::create($office);
+                    $message = 'Letselbedrijf is succesvol aangemaakt!';
 
                     break;
 
                 case 'recovery':
 
                     $company = RecoveryOffice::create($office);
+                    $message = 'Herstellerbedrijf is succesvol aangemaakt!';
 
                     break;
 
                 case 'expertise':
 
                     $company = ExpertiseOffice::create($office);
+                    $message = 'Expertisebureau is succesvol aangemaakt!';
 
                     break;
 
@@ -212,7 +217,7 @@ class CompanyController extends Controller
         return response()->json(
             [
                 'company_id' => $company->id,
-                'message' => 'Bedrijf is succesvol aangemaakt!'
+                'message' => $message
             ], 200);
     }
 

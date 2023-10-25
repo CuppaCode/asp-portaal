@@ -88,6 +88,7 @@ $(document).ready(function () {
             obstacle.addClass('d-none');   
         }
     }
+    
 
 
     var expertise_receive_date = $('.expertise-report-show');
@@ -149,6 +150,9 @@ $(document).ready(function () {
     var expertiseOfficeID = $('#expertise_office_id');
     ajaxCreateCompany(expertiseOfficeID, 'expertise');
 
+    // Vehicle creation
+    var vehicleID = $('#vehicle_plates');
+    ajaxCreateVehicle( vehicleID );
 
 
 });
@@ -184,6 +188,14 @@ function ajaxCreateCompany( inputID, typeID = null ) {
         }
 
     });
+}
+
+function ajaxCreateVehicle( inputID ) {
+
+    inputID.select2({
+        tags: true
+    });
+
 }
 
 
