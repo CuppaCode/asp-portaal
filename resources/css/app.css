@@ -44,6 +44,11 @@ table.dataTable thead th {
 }
 
 .select2 {
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3LjIgNC4wMSI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogbm9uZTsKICAgICAgICBzdHJva2U6ICNmZmY7CiAgICAgICAgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsKICAgICAgICBzdHJva2Utd2lkdGg6IC43cHg7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xLTIiIGRhdGEtbmFtZT0iTGF5ZXIgMSI+CiAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iLjM1IC4zNSA2Ljg1IC4zNSAzLjU0IDMuNjYgLjM1IC4zNSIvPgogIDwvZz4KPC9zdmc+) no-repeat 98% 50%;
+    background-size: 10px;
+    -moz-appearance: none; 
+    -webkit-appearance: none; 
+    appearance: none;
     max-width: 100%;
     width: 100% !important;
 }
@@ -309,5 +314,6 @@ div.dt-buttons {
 
 #current-status {
     color: white;
-    background-color: var(--primary);
+    background-color: #344A9B;
+    border: none;
 }
