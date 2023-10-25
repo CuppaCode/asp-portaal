@@ -311,3 +311,7 @@ div.dt-buttons {
     color: white;
     background-color: var(--primary);
 }
+
+.nounderline {
+    text-decoration: none !important;
+}

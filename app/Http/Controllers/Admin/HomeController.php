@@ -25,9 +25,9 @@ class HomeController
 
         $claims = Claim::whereNot('status', 'finished')->with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->paginate(7, ['*'], 'claims');
         $claims_all = Claim::whereNot('status', 'finished')->count();
-        $claims_asp_open = Claim::whereNot('status', 'finished')->where('assign_self', 1)->count();
+        $claims_asp_open = Claim::whereNot('status', 'finished')->where('assign_self', 0)->count();
         $company_claims = Claim::whereNot('status', 'finished')->where('company_id', $user->team_id)->get();
-        $company_claims_open = Claim::where('status', 'finished')->where('company_id', $user->team_id)->where('assign_self', 0)->count();
+        $company_claims_open = Claim::where('status', 'finished')->where('company_id', $user->team_id)->where('assign_self', 1)->count();
         
         $claims_count = [
             'claims_all' => $claims_all,
