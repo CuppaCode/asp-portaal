@@ -158,6 +158,12 @@ $(document).ready(function () {
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
+    if(!isAdmin){
+
+        return;
+        
+    }
+
     inputID.select2({
         tags: true
     });
