@@ -225,7 +225,7 @@
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
                 <select class="form-control select2 {{ $errors->has('vehicle') ? 'is-invalid' : '' }}" name="vehicle_plates" id="vehicle_plates" required>
                     @foreach($vehicle as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('vehicle') ? old('vehicle') : $claim->vehicle->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        <option value="{{ $id }}" {{ (old('vehicle') ? old('vehicle') : $claim->vehicle->plates ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('vehicle'))

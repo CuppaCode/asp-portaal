@@ -226,7 +226,7 @@ class ClaimController extends Controller
 
         $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $vehicle = Vehicle::where('company_id', $claim->company->id)->pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $vehicle = Vehicle::where('company_id', $claim->company->id)->pluck('plates', 'plates')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicle_opposite = VehicleOpposite::pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
 
