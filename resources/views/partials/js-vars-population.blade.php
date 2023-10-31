@@ -1,6 +1,12 @@
-@php 
+@php
 
-    $isAdmin = auth()->user()->roles->contains(1);
+ $isAdmin = 0;
+
+ if(auth()->user()->roles->contains(1)) {
+
+    $isAdmin = 1;
+
+ }
 
 @endphp
 
