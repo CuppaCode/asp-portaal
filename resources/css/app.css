@@ -317,3 +317,7 @@ div.dt-buttons {
     background-color: #344A9B;
     border: none;
 }
+
+.nounderline {
+    text-decoration: none !important;
+}
