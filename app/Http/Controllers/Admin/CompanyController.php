@@ -172,12 +172,12 @@ class CompanyController extends Controller
         $company->team_id = $team->id;
 
         $company->save();
+
+        $message = 'Bedrijf is succesvol aangemaakt!';
         
         if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise') {
 
             $identifier = str_replace(' ', '_', strtolower($company->company_type . '_' . $company->name));
-
-            $message = 'Bedrijf is succesvol aangemaakt!';
 
             $office = [
                 'company_id' => $company->id,

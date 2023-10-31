@@ -152,8 +152,7 @@ $(document).ready(function () {
 
     // Vehicle creation
     var vehicleID = $('#vehicle_plates');
-    ajaxCreateVehicle( vehicleID );
-
+    bindVehicleTags( vehicleID );
 
 });
 
@@ -188,13 +187,18 @@ function ajaxCreateCompany( inputID, typeID = null ) {
         }
 
     });
+
+    return;
+
 }
 
-function ajaxCreateVehicle( inputID ) {
+function bindVehicleTags( inputID ) {
 
     inputID.select2({
         tags: true
     });
+
+    return;
 
 }
 
