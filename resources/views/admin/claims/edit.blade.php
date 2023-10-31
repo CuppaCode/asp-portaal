@@ -210,7 +210,7 @@
         </div>
         <div class="card-body">
             <input type="hidden" name="vehicle_id" value="1"/>
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
                 <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', $claim->vehicle->plates ?? null) }}">
                 @if($errors->has('vehicle_plates'))
@@ -219,7 +219,23 @@
                     </div>
                 @endif
             <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
+            </div> --}}
+            
+            <div class="form-group">
+                <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
+                <select class="form-control select2 {{ $errors->has('vehicle') ? 'is-invalid' : '' }}" name="vehicle_plates" id="vehicle_plates" required>
+                    @foreach($vehicle as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('vehicle') ? old('vehicle') : $claim->vehicle->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('vehicle'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('vehicle') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
             </div>
+
 
             <div class="form-group">
 
@@ -334,7 +350,7 @@
             
             <div class="opposite-vehicle-show d-none">
                 <div class="form-group">
-                    <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
+                    <label for="vehicle_plates_opposite">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
                     <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', $claim->vehicle_opposite->plates ?? null) }}">
                     @if($errors->has('vehicle_plates_opposite'))
                         <div class="invalid-feedback">

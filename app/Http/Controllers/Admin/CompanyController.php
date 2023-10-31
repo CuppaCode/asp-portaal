@@ -150,4 +150,75 @@ class CompanyController extends Controller
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
+
+    public function quickStore(Request $request)
+    {
+        $company = Company::create([
+            'name'          => $request->name,
+            'company_type'  => $request->company_type,
+            'street'        => 'x',
+            'zipcode'       => 'x',
+            'city'          => 'x',
+            'country'       => 'x',
+            'phone'         => 'x',
+            'active'        => true,
+            'description'   => null
+        ]);
+
+        $team = Team::create([
+            'name' => $company->name,
+        ]);
+
+        $company->team_id = $team->id;
+
+        $company->save();
+
+        $message = 'Bedrijf is succesvol aangemaakt!';
+        
+        if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise') {
+
+            $identifier = str_replace(' ', '_', strtolower($company->company_type . '_' . $company->name));
+
+            $office = [
+                'company_id' => $company->id,
+                'team_id'    => $team->id,
+                'identifier' => $identifier
+            ];
+
+            switch ($company->company_type) {
+                case 'injury':
+
+                    $company = InjuryOffice::create($office);
+                    $message = 'Letselbedrijf is succesvol aangemaakt!';
+
+                    break;
+
+                case 'recovery':
+
+                    $company = RecoveryOffice::create($office);
+                    $message = 'Herstellerbedrijf is succesvol aangemaakt!';
+
+                    break;
+
+                case 'expertise':
+
+                    $company = ExpertiseOffice::create($office);
+                    $message = 'Expertisebureau is succesvol aangemaakt!';
+
+                    break;
+
+                default:
+                    // This should not happen
+                    break;
+            }
+
+        }
+
+        return response()->json(
+            [
+                'company_id' => $company->id,
+                'message' => $message
+            ], 200);
+    }
+
 }

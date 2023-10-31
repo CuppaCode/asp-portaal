@@ -92,12 +92,13 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
+
         /* Custom bit */
         $user = auth()->user();
         $isAdmin = $user->roles->contains(1);
 
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
-
+        
         $claim = Claim::create($request->except($multiSelects));
 
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
@@ -154,7 +155,6 @@ class ClaimController extends Controller
 
             }
 
-
             $claim->vehicle_id = $vehicle->id;
         }
 
@@ -210,7 +210,7 @@ class ClaimController extends Controller
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
 
-        return redirect()->route('admin.claims.index');
+        return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
     }
 
     public function edit(Claim $claim)
@@ -226,9 +226,9 @@ class ClaimController extends Controller
 
         $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $vehicles = Vehicle::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $vehicle = Vehicle::where('company_id', $claim->company->id)->pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $vehicle_opposite = VehicleOpposite::pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $recovery_offices = RecoveryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -249,7 +249,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles', 'drivers', 'opposite'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)
@@ -258,8 +258,6 @@ class ClaimController extends Controller
         $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
         $companies = null;
-
-        // dd($request);
         
         if(!$isAdmin) {
             
@@ -413,7 +411,7 @@ class ClaimController extends Controller
             }
         }
 
-        return redirect()->route('admin.claims.show', $claim->id);
+        return redirect()->route('admin.claims.show', $claim->id)->with('message', 'Schadedossier succesvol bijgewerkt');
     }
 
     public function show(Claim $claim)
@@ -465,8 +463,6 @@ class ClaimController extends Controller
 
     public function quickUpdateStatus(Request $request)
     {
-        //dd($request);
-
         $claim = Claim::find($request->claim_id);
 
         $claim->status = $request->new_status;

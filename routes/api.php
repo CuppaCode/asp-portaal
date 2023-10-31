@@ -12,4 +12,5 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
 // Claim API call, to be accessible via JS AKA AJAX calls
 Route::post('claims/update-status', 'Admin\ClaimController@quickUpdateStatus');
+Route::post('companies/quick-store', 'Admin\CompanyController@quickStore');
 
