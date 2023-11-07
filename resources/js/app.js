@@ -154,6 +154,15 @@ $(document).ready(function () {
     var vehicleID = $('#vehicle_plates');
     bindVehicleTags( vehicleID );
 
+    // On editpage leave
+    if(window.location.href.indexOf('edit') !== -1 || window.location.href.indexOf('create') !== -1) {
+
+        $(window).bind('beforeunload', function(){
+            return 'Weet je zeker dat je weg wilt gaan?';
+        });
+
+    }
+
 });
 
 function ajaxCreateCompany( inputID, typeID = null ) {
