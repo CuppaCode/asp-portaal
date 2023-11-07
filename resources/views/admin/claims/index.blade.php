@@ -111,7 +111,7 @@
                                 @unless( !$claim->assign_self && !$isAdmin )
 
                                     @can('claim_edit')
-                                        <a class="btn btn-xs btn-info" href="{{ route('admin.claims.edit', $claim->id) }}">
+                                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                             {{ trans('global.edit') }}
                                         </a>
                                     @endcan
