@@ -378,7 +378,7 @@
                     </div>
                     <div class="col-10 content">
                     <h5> {{ $note->title }}</h5>
-                    {!! $note->description !!}
+                    {!! nl2br($note->description) !!}
                 </div>
             </div>
         </div>
