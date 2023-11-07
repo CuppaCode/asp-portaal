@@ -224,15 +224,15 @@ class ClaimController extends Controller
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicle = Vehicle::where('company_id', $claim->company->id)->pluck('plates', 'plates')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicle_opposite = VehicleOpposite::pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $recovery_offices = RecoveryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $recovery_offices = RecoveryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $expertise_offices = ExpertiseOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 
