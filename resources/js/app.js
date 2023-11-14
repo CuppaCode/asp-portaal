@@ -155,7 +155,7 @@ $(document).ready(function () {
     bindVehicleTags( vehicleID );
 
     // On editpage leave
-    if(window.location.href.indexOf('edit') !== -1 || window.location.href.indexOf('create') !== -1) {
+    if(window.location.href.indexOf('edit') !== -1 || window.location.href.indexOf('create') !== -1  && window.location.href.indexOf('claims/create') == -1) {
 
         $(window).bind('beforeunload', function(){
             return 'Weet je zeker dat je weg wilt gaan?';
@@ -167,7 +167,7 @@ $(document).ready(function () {
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
-    if(!isAdmin){
+    if(isAdmin < 1 || !isAdmin || isAdmin != 1){
 
         return;
         
