@@ -154,12 +154,19 @@ $(document).ready(function () {
     var vehicleID = $('#vehicle_plates');
     bindVehicleTags( vehicleID );
 
+    // Submitted check
+    $('button[type="submit"]').on('click', function() {
+        
+        window.onbeforeunload = null;
+
+    });
+
     // On editpage leave
     if(window.location.href.indexOf('edit') !== -1 || window.location.href.indexOf('create') !== -1  && window.location.href.indexOf('claims/create') == -1) {
 
-        $(window).bind('beforeunload', function(){
+        window.onbeforeunload = function() {
             return 'Weet je zeker dat je weg wilt gaan?';
-        });
+        };
 
     }
 

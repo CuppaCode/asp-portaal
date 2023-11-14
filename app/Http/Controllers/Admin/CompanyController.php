@@ -47,11 +47,15 @@ class CompanyController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $company->id]);
         }
 
-        $team = Team::create([
-            'name' => $company->name,
-        ]);
+        if ($company->company_type != 'injury' && $company->company_type != 'recovery' && $company->company_type != 'expertise') {
 
-        $company->team_id = $team->id;
+            $team = Team::create([
+                'name' => $company->name,
+            ]);
+    
+            $company->team_id = $team->id;
+        }
+        
 
         $company->save();
         
@@ -61,7 +65,7 @@ class CompanyController extends Controller
 
             $office = [
                 'company_id' => $company->id,
-                'team_id'    => $team->id,
+                'team_id'    => NULL,
                 'identifier' => $identifier
             ];
 
@@ -165,11 +169,14 @@ class CompanyController extends Controller
             'description'   => null
         ]);
 
-        $team = Team::create([
-            'name' => $company->name,
-        ]);
+        if ($company->company_type != 'injury' && $company->company_type != 'recovery' && $company->company_type != 'expertise') {
 
-        $company->team_id = $team->id;
+            $team = Team::create([
+                'name' => $company->name,
+            ]);
+    
+            $company->team_id = $team->id;
+        }
 
         $company->save();
 
@@ -181,7 +188,7 @@ class CompanyController extends Controller
 
             $office = [
                 'company_id' => $company->id,
-                'team_id'    => $team->id,
+                'team_id'    => NULL,
                 'identifier' => $identifier
             ];
 
