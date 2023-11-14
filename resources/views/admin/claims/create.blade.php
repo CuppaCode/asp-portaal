@@ -78,6 +78,20 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.invoice_settlement_helper') }}</span>
             </div>
+            
+            <div class="form-group">
+              <div class="form-check {{ $errors->has('assign_self') ? 'is-invalid' : '' }}">
+                <input type="hidden" name="assign_self" value="0">
+                <input class="form-check-input" type="checkbox" name="assign_self" id="assign_self" value="1" {{ old('assign_self', 0) === 1 ? 'checked' : '' }}>
+                <label class="form-check-label" for="assign_self">{{ trans('cruds.claim.fields.assign_self') }}</label>
+              </div>
+              @if($errors->has('assign_self'))
+                  <div class="invalid-feedback">
+                      {{ $errors->first('assign_self') }}
+                  </div>
+              @endif
+              <span class="help-block">{{ trans('cruds.claim.fields.assign_self_helper') }}</span>
+            </div>
 
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
