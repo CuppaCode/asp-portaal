@@ -14,5 +14,5 @@
  
 @endif
 
-<div class="alert alert-success position-fixed custom-alert" id="js-message" role="alert">
+<div class="alert position-fixed custom-alert" id="js-message" role="alert">
 </div>
