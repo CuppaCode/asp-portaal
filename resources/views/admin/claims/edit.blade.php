@@ -210,20 +210,13 @@
         </div>
         <div class="card-body">
             <input type="hidden" name="vehicle_id" value="1"/>
-            {{-- <div class="form-group">
-                <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
-                <input class="form-control {{ $errors->has('vehicle_plates') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates" id="vehicle_plates" value="{{ old('vehicle_plates', $claim->vehicle->plates ?? null) }}">
-                @if($errors->has('vehicle_plates'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('vehicle_plates') }}
-                    </div>
-                @endif
-            <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
-            </div> --}}
             
             <div class="form-group">
+                <small>Gelieve het kenteken in te vullen met streepjes, bijv.: "XX-123-XX"</small>
+                <br/>
                 <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
-                <select class="form-control select2 {{ $errors->has('vehicle') ? 'is-invalid' : '' }}" name="vehicle_plates" id="vehicle_plates" required>
+                
+                <select class="form-control select2 {{ $errors->has('vehicle') ? 'is-invalid' : '' }}" name="vehicle_plates" id="vehicle_plates">
                     @foreach($vehicle as $id => $entry)
                         <option value="{{ $id }}" {{ (old('vehicle') ? old('vehicle') : $claim->vehicle->plates ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach

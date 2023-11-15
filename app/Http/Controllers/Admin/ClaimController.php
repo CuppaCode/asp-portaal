@@ -18,6 +18,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
 use App\Models\Driver;
 use App\Models\Opposite;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -424,9 +425,11 @@ class ClaimController extends Controller
         $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
         // dd($opposite);
 
+        $users = User::get();
+
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
 
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite'));
+        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users'));
     }
 
     public function destroy(Claim $claim)
