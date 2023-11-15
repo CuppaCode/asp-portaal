@@ -34,7 +34,20 @@
 
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        Schadedossier overzicht <div class="btn btn-primary claim-status">{{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}</div>
+        Schadedossier overzicht
+
+        <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
+
+            @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
+
+                <option value="{{ $key }}" {{ $claim->status == $key ? 'selected' : '' }}>{{ $status }}</option>
+
+            @endforeach
+
+        </select>
+
+
+  
     </div>
 
     <div class="card-body">
@@ -69,8 +82,12 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Schademelding
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
 
             <div class="card-body">
@@ -115,8 +132,12 @@
     </div>
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Contactgegevens
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
             <div class="card-body">
                 @isset($contacts) 
@@ -141,8 +162,12 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wagenpark
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
 
             <div class="card-body">
@@ -195,8 +220,12 @@
     </div>
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wederpartij
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
 
             <div class="card-body">
@@ -253,8 +282,12 @@
         </div>
         @if (!empty($opposite))
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Details wederpartij
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
 
             <div class="card-body">
@@ -292,8 +325,12 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Bijlages
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
 
             <div class="card-body">
@@ -353,7 +390,7 @@
 </div>
 
 <div class="card recent-activities">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         Notities / Activiteiten
     </div>
     @foreach ($claim->claimNotes as $note)
@@ -365,7 +402,7 @@
                     </div>
                     <div class="col-10 content">
                     <h5> {{ $note->title }}</h5>
-                    {!! $note->description !!}
+                    {!! nl2br($note->description) !!}
                 </div>
             </div>
         </div>
@@ -433,8 +470,12 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 Kosten Schadedossier
+
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
             </div>
 
             <div class="card-body">
@@ -485,8 +526,12 @@
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     ASP Financieel
+                    
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
                 </div>
 
                 <div class="card-body">

@@ -2,11 +2,62 @@
 @section('content')
 <div class="content">
     <div class="row">
-        <div class="col-md-12 pb-3">
-            <a href="{{ route("admin.claims.create") }}" class="btn btn-success float-right">
-                Schadedossier aanmaken
+        <div class="col-sm-6 col-lg-3">
+            <a href="{{ route("admin.claims.create") }}" class="nounderline" >
+                <div class="card bg-success mb-4">
+                    <div class="card-header position-relative d-flex justify-content-center align-items-center">
+                    <span class="text-white">Schadedossier aanmaken</span>
+                    </div>
+                </div>
             </a>
         </div>
+    </div>
+    <div class="row">
+        @if (auth()->user()->roles->contains(1))
+        <div class="col-sm-6 col-lg-3">
+            <div class="card text-white bg-danger">
+                <div class="card-header">
+                    Alle openstaande dossiers voor ASP
+                </div>
+                <div class="card-body">
+                    <div class="card-title">{{ $claims_count['claims_asp_open'] }}</div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card text-white bg-info">
+                <div class="card-header">
+                    Alle openstaande dossiers
+                </div>
+                <div class="card-body">
+                    <div class="card-title">{{ $claims_count['claims_all'] }}</div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card text-white bg-warning">
+                <div class="card-header">
+                    Meest voorkomende schade
+                </div>
+                <div class="card-body">
+                    <div class="card-title">{{ App\Models\Claim::DAMAGE_ORIGIN[$popular[0]] }}</div> 
+                </div>
+            </div>
+        </div>
+        @else 
+        <div class="col-sm-6 col-lg-3">
+            <div class="card text-white bg-primary">
+                <div class="card-header">
+                    Alle openstaande dossiers
+                </div>
+                <div class="card-body">
+                <div class="card-title">{{ $claims_count['company_claims_open'] }}</div> 
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
+    <div class="row">
         <div class="col-md-6">
             <div class="card">
                 @if (auth()->user()->roles->contains(1))

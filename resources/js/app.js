@@ -1,5 +1,11 @@
 import './bootstrap';
 
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
+
 $(document).ready(function () {
 
     var injury_office = $('.injury-office-show');
@@ -82,6 +88,7 @@ $(document).ready(function () {
             obstacle.addClass('d-none');   
         }
     }
+    
 
 
     var expertise_receive_date = $('.expertise-report-show');
@@ -109,4 +116,129 @@ $(document).ready(function () {
         $('#'+data).val('');
     });
 
+
+    // Claims AJAX requests
+
+    // Status change
+    $('#current-status').on('change', function (e) {
+
+        var claimID = $(this).data('claim-id');
+        var newStatus = $(this).val();
+
+        $.post('/api/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
+
+            sendFlashMessage(res.message);
+
+        });
+
+    });
+
+    // Company creation
+    var companyID = $('#company_id');
+    ajaxCreateCompany(companyID);
+
+
+    // Injury office creation
+    var injuryOfficeID = $('#injury_office_id');
+    ajaxCreateCompany(injuryOfficeID, 'injury');
+
+    // Recovery office creation
+    var recoveryOfficeID = $('#recovery_office_id');
+    ajaxCreateCompany(recoveryOfficeID, 'recovery');
+
+    // Expertise office creation
+    var expertiseOfficeID = $('#expertise_office_id');
+    ajaxCreateCompany(expertiseOfficeID, 'expertise');
+
+    // Vehicle creation
+    var vehicleID = $('#vehicle_plates');
+    bindVehicleTags( vehicleID );
+
+    // Submitted check
+    $('button[type="submit"]').on('click', function() {
+        
+        window.onbeforeunload = null;
+
+    });
+
+    // On editpage leave
+    if(window.location.href.indexOf('edit') !== -1 || window.location.href.indexOf('create') !== -1  && window.location.href.indexOf('claims/create') == -1) {
+
+        window.onbeforeunload = function() {
+            return 'Weet je zeker dat je weg wilt gaan?';
+        };
+
+    }
+
 });
+
+function ajaxCreateCompany( inputID, typeID = null ) {
+
+    if(isAdmin < 1 || !isAdmin || isAdmin != 1){
+
+        return;
+        
+    }
+
+    inputID.select2({
+        tags: true
+    });
+
+    inputID.on('select2:select', function (e) {
+
+        var selected = e.params.data;
+
+        if( !selected.element ) {
+
+            $.post('/api/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
+
+                var newOption = inputID.find('option[value="'+ selected.id +'"]');
+                var inputName = inputID.attr('name');
+
+                sendFlashMessage(res.message);
+                newOption.attr('value', res.company_id);
+                inputID.attr('disabled', 'disabled');
+
+                var newInputID = $(`<input type="hidden" name="${inputName}" value="${inputID.val()}">`);
+
+                inputID.removeAttr('name');
+                inputID.after(newInputID); 
+    
+            });
+
+        }
+
+    });
+
+    return;
+
+}
+
+function bindVehicleTags( inputID ) {
+
+    inputID.select2({
+        tags: true
+    });
+
+    return;
+
+}
+
+
+function sendFlashMessage( message ) {
+
+    var flashMessage = $('#js-message');
+
+    flashMessage.text(message)
+    flashMessage.fadeToggle();
+
+    setTimeout(() => {
+
+        flashMessage.fadeToggle();
+        flashMessage.empty();
+
+    }, 3000);
+
+    return;
+
+}
