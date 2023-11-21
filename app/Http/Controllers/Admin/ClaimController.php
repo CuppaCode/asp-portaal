@@ -465,21 +465,32 @@ class ClaimController extends Controller
     {
         $claim = Claim::find($request->claim_id);
 
+        $new_status = null;
+
+        if( $request->new_status == 'finished' ) {
+
+            if(!isset($claim->damage_costs) || !isset($claim->recovery_costs) || !isset($claim->damage_kind)) {
+    
+                return response()->json(
+                    [
+                        'status' => $claim->status,
+                        'type'  => 'alert-danger',
+                        'message' => 'Status NIET aangepast! U dient eerst financiele gegevens verder in te vullen voordat de claim gesloten kan worden.'
+                    ], 200);
+            }
+
+        }
+
+        
+
         $claim->status = $request->new_status;
 
         $claim->save();
 
-        $new_status = null;
-
-        foreach(Claim::STATUS_SELECT as $key => $status) {
-            if ($key == $claim->status) {
-                $new_status = $status;
-            }
-        }
-
         return response()->json(
             [
-                'status' => $new_status,
+                'status' => $claim->status,
+                'type' => 'alert-success',
                 'message' => 'Status is succesvol aangepast!'
             ], 200);
     }
