@@ -257,7 +257,7 @@ function sendFlashMessage( message, type ) {
         flashMessage.fadeToggle();
         flashMessage.empty();
 
-    }, 3000);
+    }, 10000);
 
     return;
 
