@@ -19,21 +19,6 @@
 
         <div class="card-body">
             @csrf
-            <div class="form-group">
-                <label>Status</label>
-                <select class="form-control {{ $errors->has('injury') ? 'is-invalid' : '' }}" name="status" id="status" required>
-                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', $claim->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('injury'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('injury') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.injury_helper') }}</span>
-            </div>
             @if (auth()->user()->roles->contains(1))
             <div class="form-group">
                 <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
