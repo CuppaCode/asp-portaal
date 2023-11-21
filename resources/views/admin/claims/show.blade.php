@@ -36,7 +36,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         Schadedossier overzicht
         
-        @if( $claim->assign_self )
+        @if( $claim->assign_self || $isAdmin)
         <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
