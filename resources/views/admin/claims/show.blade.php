@@ -35,7 +35,8 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         Schadedossier overzicht
-
+        
+        @if( $claim->assign_self )
         <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
@@ -46,7 +47,11 @@
 
         </select>
 
-
+        @else 
+        <div class="col-md-3 btn btn-info">
+            {{ App\Models\Claim::STATUS_SELECT[$claim->status] }}
+        </div>
+        @endif
   
     </div>
 
@@ -85,9 +90,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Schademelding
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
 
             <div class="card-body">
@@ -135,9 +142,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Contactgegevens
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
             <div class="card-body">
                 @isset($contacts) 
@@ -165,9 +174,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wagenpark
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
 
             <div class="card-body">
@@ -223,9 +234,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wederpartij
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
 
             <div class="card-body">
@@ -285,9 +298,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Details wederpartij
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
 
             <div class="card-body">
@@ -328,9 +343,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Bijlages
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
 
             <div class="card-body">
@@ -473,9 +490,11 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Kosten Schadedossier
 
+                @unless( !$claim->assign_self && !$isAdmin )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
+                @endunless
             </div>
 
             <div class="card-body">
@@ -529,9 +548,11 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     ASP Financieel
                     
+                    @unless( !$claim->assign_self && !$isAdmin )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
+                    @endunless
                 </div>
 
                 <div class="card-body">
