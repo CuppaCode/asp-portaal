@@ -356,11 +356,14 @@
                         <div class="card-title">
                             {{ trans('cruds.claim.fields.damage_files') }}
                         </div>
-                        <p class="card-text">
+                        <p class="card-text media-box">
+
                             @foreach($claim->damage_files as $key => $media)
+                                
                                 <a href="{{ $media->getUrl() }}" target="_blank">
-                                    {{ $media->name }}
+                                    <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}"/>
                                 </a>
+
                             @endforeach
                         </p>
                     </div>
@@ -368,11 +371,13 @@
                         <div class="card-title">
                             {{ trans('cruds.claim.fields.report_files') }}
                         </div>
-                        <p class="card-text">
+                        <p class="card-text media-box">
                             @foreach($claim->report_files as $key => $media)
+                            
                                 <a href="{{ $media->getUrl() }}" target="_blank">
-                                    {{ $media->name }}
+                                    <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}"/>
                                 </a>
+
                             @endforeach
                         </p>
                     </div>
@@ -380,11 +385,13 @@
                         <div class="card-title">
                             {{ trans('cruds.claim.fields.financial_files') }}
                         </div>
-                        <p class="card-text">
+                        <p class="card-text media-box">
                             @foreach($claim->financial_files as $key => $media)
+
                                 <a href="{{ $media->getUrl() }}" target="_blank">
-                                    {{ $media->name }}
+                                    <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}"/>
                                 </a>
+
                             @endforeach
                         </p>
                     </div>
@@ -392,11 +399,13 @@
                         <div class="card-title">
                             {{ trans('cruds.claim.fields.other_files') }}
                         </div>
-                        <p class="card-text">
+                        <p class="card-text media-box">
                             @foreach($claim->other_files as $key => $media)
+
                                 <a href="{{ $media->getUrl() }}" target="_blank">
-                                    {{ $media->name }}
+                                    <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}"/>
                                 </a>
+                                
                             @endforeach
                         </p>
                     </div>
