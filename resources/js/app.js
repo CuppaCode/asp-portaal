@@ -127,7 +127,11 @@ $(document).ready(function () {
 
         $.post('/api/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
 
-            sendFlashMessage(res.message);
+            sendFlashMessage(res.message, res.type);
+            
+            if(newStatus != res.status) {
+                $('#current-status').val(res.status);
+            }
 
         });
 
@@ -195,7 +199,7 @@ function ajaxCreateCompany( inputID, typeID = null ) {
                 var newOption = inputID.find('option[value="'+ selected.id +'"]');
                 var inputName = inputID.attr('name');
 
-                sendFlashMessage(res.message);
+                sendFlashMessage(res.message, res.type);
                 newOption.attr('value', res.company_id);
                 inputID.attr('disabled', 'disabled');
 
@@ -225,9 +229,25 @@ function bindVehicleTags( inputID ) {
 }
 
 
-function sendFlashMessage( message ) {
+function sendFlashMessage( message, type ) {
 
     var flashMessage = $('#js-message');
+
+    flashMessage.removeClass( function (index, className) {
+
+        return (className.match(/(^|\s)alert-\S+/g) || []).join(' ');
+
+    });
+
+    if(!type) {
+
+        flashMessage.addClass('alert-success');
+
+    } else {
+
+        flashMessage.addClass(type);
+
+    }
 
     flashMessage.text(message)
     flashMessage.fadeToggle();
@@ -237,7 +257,7 @@ function sendFlashMessage( message ) {
         flashMessage.fadeToggle();
         flashMessage.empty();
 
-    }, 3000);
+    }, 10000);
 
     return;
 

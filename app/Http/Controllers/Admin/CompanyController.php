@@ -224,6 +224,7 @@ class CompanyController extends Controller
         return response()->json(
             [
                 'company_id' => $company->id,
+                'type' => 'alert-success',
                 'message' => $message
             ], 200);
     }
