@@ -419,7 +419,9 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         Notities / Activiteiten
     </div>
-    @foreach ($claim->claimNotes as $note)
+
+    @foreach ($notesAndTasks as $note)
+        {{ var_dump($note::class) }}
         <div class="item">
             <div class="row">
                 <div class="col-2 date-holder text-right">

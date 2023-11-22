@@ -423,13 +423,16 @@ class ClaimController extends Controller
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
+        $notesAndTasks = $claim->notes->merge($claim->tasks);
+
+        //dd($claim);
         // dd($opposite);
 
         $users = User::get();
 
-        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
+        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users'));
+        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks'));
     }
 
     public function destroy(Claim $claim)

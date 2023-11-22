@@ -49,6 +49,8 @@ class NoteController extends Controller
 
     public function store(StoreNoteRequest $request)
     {
+        //dd($request);
+
         $claim_id = $request->input('claims');
 
         $note = Note::create($request->all());
