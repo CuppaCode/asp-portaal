@@ -321,3 +321,19 @@ div.dt-buttons {
 .nounderline {
     text-decoration: none !important;
 }
+
+.media-box {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.media-box > * {
+    width: calc(50% - 5px);
+}
+
+.media-box > * > img {
+    width: 100%;
+    height: auto;
+}
