@@ -42,9 +42,9 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    public function user(): BelongsTo 
+    public function user() 
     {
-        return $this->belongsTo(User::Class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

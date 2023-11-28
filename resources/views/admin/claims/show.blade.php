@@ -3,6 +3,7 @@
 
 @php
 
+    use Carbon\Carbon;
     $isAdmin = auth()->user()->roles->contains(1);
 
 @endphp
@@ -420,19 +421,99 @@
         Notities / Activiteiten
     </div>
 
-    @foreach ($notesAndTasks as $note)
-        {{ var_dump($note::class) }}
-        <div class="item">
-            <div class="row">
-                <div class="col-2 date-holder text-right">
-                    <div class="icon"><i class="fa fa-user"></i></div>
-                    <div class="date"> <span>{{ $note->user->name }}</span><br><span class="text-info">{{ $note->created_at }}</span></div>
+    @foreach ($notesAndTasks as $item)
+
+        @if ($item::class == 'App\Models\Note')
+
+            @php 
+                $note = $item;
+            @endphp
+
+            <div class="item">
+                <div class="row">
+                    <div class="col-2 date-holder text-right">
+                        <div class="icon"><i class="fa fa-user"></i></div>
+                        <div class="date"> <span>{{ $note->user->name }}</span><br><span class="text-info">{{ $note->created_at }}</span></div>
+                        </div>
+                        <div class="col-10 content">
+                        <h5> {{ $note->title }}</h5>
+                        {!! nl2br($note->description) !!}
+                    {{-- </div>
+                </div>
+            </div> --}}
+
+        @elseif ($item::class == 'App\Models\Task')
+
+            @php
+                $task = $item;
+                $deadline = Carbon::parse($task->deadline_at)->locale('nl_NL')->format('D d F');
+                
+                var_dump($task);
+
+            @endphp
+
+            
+
+            <div class="item task">
+                <div class="row">
+                    <div class="col-2 date-holder text-right">
+                        <div class="icon"><i class="fa fa-calendar-check-o"></i></div>
+
+                        <div class="date">
+
+                            <span class="text-info">{{ $task->created_at }}</span>
+
+                        </div>
                     </div>
+
                     <div class="col-10 content">
-                    <h5> {{ $note->title }}</h5>
-                    {!! nl2br($note->description) !!}
+                        <div class="status">
+                            <span class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+                            <span class="badge bg-primary">{{ $deadline }}</span>
+                            <span class="badge bg-info">{{ $task->user->name }}</span>
+                            
+                        </div>
+                        {!! nl2br($task->description) !!}
+                    {{-- </div>
+                </div>
+            </div> --}}
+
+        @else
+
+            <div class="alert-warning">Er is iets verkeerd gegaan...</div>
+
+        @endif
+                    <a class="add-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                    </a>
                 </div>
             </div>
+
+            @foreach ($item->comments as $comment)
+
+                {{ var_dump($comment)}}
+                <div class="item comment">
+                    <div class="row">
+
+                        <div class="col-2 p-0"></div>
+
+                        <div class="col-2 date-holder text-right">
+                            <div class="icon"><i class="fa fa-commenting-o"></i></div>
+                            <div class="date">
+                                <span>{{ $comment->user }}</span>
+                                <br>
+                                <span class="text-info">{{ $comment->created_at }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            {{ $comment->body }}
+                        </div>
+
+                    </div>
+
+                </div>
+            @endforeach
         </div>
     @endforeach
     
