@@ -235,6 +235,16 @@
                 </a>
             </li>
         @endcan
+        @can('analytics_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.analytics") }}" class="c-sidebar-nav-link {{ request()->is("admin/analytics") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-chart-pie c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.analytics.title') }}
+                </a>
+            </li>
+        @endcan
         @if(\Illuminate\Support\Facades\Schema::hasColumn('teams', 'owner_id') && \App\Models\Team::where('owner_id', auth()->user()->id)->exists())
             <li class="c-sidebar-nav-item">
                 <a class="{{ request()->is("admin/team-members") || request()->is("admin/team-members/*") ? "c-active" : "" }} c-sidebar-nav-link" href="{{ route("admin.team-members.index") }}">
