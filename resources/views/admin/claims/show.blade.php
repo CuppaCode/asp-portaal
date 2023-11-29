@@ -447,9 +447,6 @@
             @php
                 $task = $item;
                 $deadline = Carbon::parse($task->deadline_at)->locale('nl_NL')->format('D d F');
-                
-                var_dump($task);
-
             @endphp
 
             
@@ -491,7 +488,6 @@
 
             @foreach ($item->comments as $comment)
 
-                {{ var_dump($comment)}}
                 <div class="item comment">
                     <div class="row">
 
@@ -500,7 +496,8 @@
                         <div class="col-2 date-holder text-right">
                             <div class="icon"><i class="fa fa-commenting-o"></i></div>
                             <div class="date">
-                                <span>{{ $comment->user }}</span>
+
+                                <span>{{ $comment->user->name }}</span>
                                 <br>
                                 <span class="text-info">{{ $comment->created_at }}</span>
                             </div>
@@ -514,6 +511,39 @@
 
                 </div>
             @endforeach
+
+            <div class="item form">
+                <div class="row">
+
+                    <div class="col-2 p-0"></div>
+
+                    <div class="col-10">
+                        <form method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group">
+                                <label for="body">{{ trans('cruds.comment.fields.body') }}</label>
+                                <textarea class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body">{{ old('body') }}</textarea>
+                                @if($errors->has('body'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('body') }}
+                                    </div>
+                                @endif
+                                <span class="help-block">{{ trans('cruds.comment.fields.body_helper') }}</span>
+                            </div>
+
+                            <input type="hidden" name="commentable" data-id="commentable_{{ $item->id }}" value="{{ $item->id }}"/>
+                            <input type="hidden" name="commentable_type" data-id="commentable_type_{{ $item->id }}" value="{{ $item::class }}"/>
+                            <input type="hidden" name="user_id" data-id="user_id_{{ $item->id }}" value="{{ auth()->user()->id }}" />
+                        
+                            <div class="form-group">
+                                <button class="btn btn-danger" type="submit" data-submit-comment>
+                                    {{ trans('global.save') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     @endforeach
     

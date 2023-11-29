@@ -174,6 +174,24 @@ $(document).ready(function () {
 
     }
 
+
+    // Comments toggle
+    $('.item .add-comment').on('click', function(e) {
+        $(this).closest('.item').find('.item.form').slideToggle();
+    });
+
+    // Comments bind event
+    $('[data-submit-comment]').on('click', function(e) {
+        e.preventDefault();
+
+        var commentableID;
+        var commentableType;
+        var commentableDOM = $(this).closest('.item:not(.form)');
+
+        ajaxCreateComments( commentableID, commentableType, commentableDOM );
+
+    });
+
 });
 
 function ajaxCreateCompany( inputID, typeID = null ) {
@@ -218,6 +236,11 @@ function ajaxCreateCompany( inputID, typeID = null ) {
 
 }
 
+function ajaxCreateComment( commentableID, commentableType, commentableDOM ) {
+
+
+}
+
 function bindVehicleTags( inputID ) {
 
     inputID.select2({
@@ -227,7 +250,6 @@ function bindVehicleTags( inputID ) {
     return;
 
 }
-
 
 function sendFlashMessage( message, type ) {
 

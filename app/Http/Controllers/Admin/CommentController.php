@@ -81,4 +81,17 @@ class CommentController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+    public function quickStore(StoreCommentRequest $request)
+    {
+        $comment = Comment::create($request->all());
+
+        $allComments = $comment->commentable->comments;
+
+        return response()->json([
+            'type'  => 'alert-success',
+            'allComments' => $allComments,
+            'message' => 'Comment successvol geplaatst'
+        ]);
+    }
 }

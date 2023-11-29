@@ -250,8 +250,27 @@ div.dt-buttons {
     color: white;
 }
 
-.recent-activities .item.comment .p-0 {
+.recent-activities .item.comment,
+.recent-activities .item.form {
+    padding: 0;
+    border-bottom: 0;
+    
+}
+
+.recent-activities .item.comment .row,
+.recent-activities .item.form .row {
+    border-top: 1px solid #eee;
+}
+
+
+.recent-activities .item.comment .p-0,
+.recent-activities .item.form .p-0 {
     border-right: 1px solid #eee;
+    background-color: #eee;
+}
+
+.recent-activities .item.form {
+    display: none;
 }
 
 
