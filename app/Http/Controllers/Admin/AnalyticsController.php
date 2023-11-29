@@ -29,16 +29,18 @@ class AnalyticsController extends Controller
         $from = Carbon::parse($request->startdate)->format('Y-m-d');
         $to = Carbon::parse($request->enddate)->format('Y-m-d');
 
-        $claim = Claim::whereBetween('date_accident', [$from, $to])->Where('company_id', $request->company)->get();
+        $claim_kind_a = Claim::whereBetween('date_accident', [$from, $to])->Where('company_id', $request->company)->where('damage_kind', 'transport')->count();
+        $claim_kind_b = Claim::whereBetween('date_accident', [$from, $to])->Where('company_id', $request->company)->where('damage_kind', 'traffic')->count();
+        $claim_kind_c = Claim::whereBetween('date_accident', [$from, $to])->Where('company_id', $request->company)->where('damage_kind', 'other')->count();
         
 
         // dd($claim);
 
         return response()->json(
             [
-                'claim' => $claim,
-                'type' => 'alert-success',
-                'message' => 'Status is succesvol aangepast!'
+                'transport' => $claim_kind_a,
+                'traffic' => $claim_kind_b,
+                'other' => $claim_kind_c,
             ], 200);  
     }
 

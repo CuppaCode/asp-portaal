@@ -50,41 +50,37 @@ $(document).ready(function() {
 
         $.post("/api/analytics/get-data", { company: company, startdate: sdate, enddate: edate } , function(res) {
             console.log(res);
-            alert( "Load was performed." );
+
+            const data = {
+                labels: [
+                  'Tranport',
+                  'Laden',
+                  'Overig'
+                ],
+                datasets: [{
+                //   label: 'My First Dataset',
+                  data: [res.transport, res.traffic, res.other],
+                  backgroundColor: [
+                    'red',
+                    'blue',
+                    'green'
+                  ],
+                  hoverOffset: 4
+                }]
+              };
             
+            const config = {
+                type: 'doughnut',
+                data: data,
+              };
+            
+            const damage_kind = new Chart(
+                document.getElementById('kind_accident'),
+                config
+            );
+
           });
     });
 
 });
 
-
-
-// const labels = [
-//     'January',
-//     'February',
-//     'March',
-//     'April',
-//     'May',
-//     'June',
-// ];
-
-// const data = {
-//     labels: labels,
-//     datasets: [{
-//         label: 'My First dataset',
-//         backgroundColor: 'rgb(255, 99, 132)',
-//         borderColor: 'rgb(255, 99, 132)',
-//         data: [0, 10, 5, 2, 20, 30, 45],
-//     }]
-// };
-
-// const config = {
-//     type: 'line',
-//     data: data,
-//     options: {}
-// };
-
-// new Chart(
-//     document.getElementById('myChart'),
-//     config
-// );

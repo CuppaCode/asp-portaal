@@ -53,6 +53,7 @@
         </div>
     </div>
     <hr class="hr" />
+    <div style="width: 800px;"><canvas id="kind_accident"></canvas></div>
 </div>
 
 @endsection
