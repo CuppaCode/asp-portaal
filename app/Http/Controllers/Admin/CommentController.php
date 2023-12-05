@@ -82,9 +82,14 @@ class CommentController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function quickStore(StoreCommentRequest $request)
+    public function quickStore(Request $request)
     {
-        $comment = Comment::create($request->all());
+        $comment = Comment::create([
+            'body' => $request->body,
+            'commentable_id' => $request->commentableID,
+            'commentable_type' => $request->commentableType,
+            'user_id' => $request->userID
+        ]);
 
         $allComments = $comment->commentable->comments;
 

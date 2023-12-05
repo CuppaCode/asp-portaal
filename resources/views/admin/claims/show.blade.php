@@ -522,7 +522,7 @@
                             @csrf
                             <div class="form-group">
                                 <label for="body">{{ trans('cruds.comment.fields.body') }}</label>
-                                <textarea class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body">{{ old('body') }}</textarea>
+                                <textarea class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body" required>{{ old('body') }}</textarea>
                                 @if($errors->has('body'))
                                     <div class="invalid-feedback">
                                         {{ $errors->first('body') }}

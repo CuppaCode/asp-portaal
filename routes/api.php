@@ -16,3 +16,5 @@ Route::post('companies/quick-store', 'Admin\CompanyController@quickStore');
 
 Route::post('comments/quick-store', 'Admin\CommentController@quickStore');
 
+Route::post('users/get-user-name', 'Admin\UsersController@getUserName');
+
