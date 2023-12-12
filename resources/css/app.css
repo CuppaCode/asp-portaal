@@ -232,6 +232,23 @@ div.dt-buttons {
     align-items: center;
     justify-content: center;
     color: black;
+    z-index: 1;
+}
+
+.recent-activities > .item.collapsed {
+    max-height: 200px;
+    position: relative;
+    overflow:hidden;
+}
+
+.recent-activities > .item.collapsed:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
 }
 
 .recent-activities .add-comment:hover {
@@ -241,6 +258,10 @@ div.dt-buttons {
 
 .recent-activities .item.task .content {
     position: relative;
+}
+
+.recent-activities > .item.task.collapsed .content {
+    position: initial;
 }
 
 .recent-activities .item.task .content .status {

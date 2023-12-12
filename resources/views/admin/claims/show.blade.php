@@ -429,7 +429,7 @@
                 $note = $item;
             @endphp
 
-            <div class="item">
+            <div class="item collapsed">
                 <div class="row">
                     <div class="col-2 date-holder text-right">
                         <div class="icon"><i class="fa fa-user"></i></div>
@@ -451,7 +451,7 @@
 
             
 
-            <div class="item task">
+            <div class="item task collapsed">
                 <div class="row">
                     <div class="col-2 date-holder text-right">
                         <div class="icon"><i class="fa fa-calendar-check-o"></i></div>

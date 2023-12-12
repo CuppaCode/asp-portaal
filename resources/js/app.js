@@ -269,14 +269,6 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
         const commentDOM = res.allComments.map(comment => {
 
-            var userName = '';
-
-            $.post('/api/users/get-user-name', { userID: comment.user_id })
-            .done(res => userName = res.name );
-
-            console.log(userName);
-
-
             return `
                 <div class="item comment">
                     <div class="row">
@@ -287,7 +279,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
                             <div class="icon"><i class="fa fa-commenting-o"></i></div>
                             <div class="date">
 
-                                <span>${userName}</span>
+                                <span id="js-username-${comment.id}"></span>
                                 <br>
                                 <span class="text-info">${comment.created_at}</span>
                             </div>
@@ -305,6 +297,22 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
         });
 
         commentableDOM.find('.row:first').after(commentDOM);
+
+        res.allComments.forEach(comment => {
+
+            const userDOM = $('#js-username-' + comment.id);
+
+            console.log(userDOM);
+            
+
+            $.post('/api/users/get-user-name', { userID: comment.user_id })
+            .done(function(res){
+                console.log(res);
+                userDOM.text(res.name);
+                console.log('after username should be set');
+            });
+
+        });
 
 
         sendFlashMessage(res.message, res.type);
