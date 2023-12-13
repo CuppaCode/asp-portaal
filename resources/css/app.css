@@ -187,9 +187,14 @@ div.dt-buttons {
     padding: 10px 20px;
 }
 
+.recent-activities > .item {
+    transition: height 2s;
+}
+
 .recent-activities .item {
     padding: 0 15px;
-    border-bottom: 1px solid #eee
+    border-bottom: 1px solid #eee;
+    position: relative;
 }
 
 .recent-activities .item div[class*='col-'] {
@@ -220,10 +225,15 @@ div.dt-buttons {
     min-height: 125px;
 }
 
-.recent-activities .item .add-comment {
+.recent-activities .item .action-icons {
     position: absolute;
     right: 15px;
     bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.recent-activities .item .action-icon {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -232,12 +242,22 @@ div.dt-buttons {
     align-items: center;
     justify-content: center;
     color: black;
+}
+
+.recent-activities .item .read-more {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-transform: lowercase;
+    text-decoration: underline;
+    color: var(--primary);
     z-index: 1;
+    cursor: pointer;
 }
 
 .recent-activities > .item.collapsed {
     max-height: 200px;
-    position: relative;
     overflow:hidden;
 }
 
@@ -269,6 +289,11 @@ div.dt-buttons {
     right: 15px;
     top: 15px;
     color: white;
+}
+
+.recent-activities .item.task .js-task-status {
+    color: white;
+    border: 0;
 }
 
 .recent-activities .item.comment,

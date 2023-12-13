@@ -194,6 +194,43 @@ $(document).ready(function () {
         ajaxCreateComment( commentableID, commentableType, commentableDOM, body, userID );
 
     });
+    
+    $('.recent-activities > .item').each(function(index, item) {
+
+        if ($(this).outerHeight() > 200 && !$(this).hasClass('last-form')) {
+
+            $(this).addClass('collapsed');
+
+        } else {
+
+            $(this).find('.js-read-more').remove();
+
+        }
+
+    });
+
+
+
+    $('.js-read-more').on('click', function(e) {
+        e.preventDefault();
+
+        var item = $(this).parent();
+
+        if (item.hasClass('collapsed')) {
+
+            item.removeClass('collapsed');
+            $(this).find('.js-read-more-text').text('Lees minder...');
+
+        } else if (!item.hasClass('collapsed')) {
+
+            item.addClass('collapsed');
+            $(this).find('.js-read-more-text').text('Lees meer...');
+
+        }
+
+
+    });
+
 
 });
 
@@ -300,10 +337,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
         res.allComments.forEach(comment => {
 
-            const userDOM = $('#js-username-' + comment.id);
-
-            console.log(userDOM);
-            
+            const userDOM = $('#js-username-' + comment.id);        
 
             $.post('/api/users/get-user-name', { userID: comment.user_id })
             .done(function(res){

@@ -429,7 +429,7 @@
                 $note = $item;
             @endphp
 
-            <div class="item collapsed">
+            <div class="item">
                 <div class="row">
                     <div class="col-2 date-holder text-right">
                         <div class="icon"><i class="fa fa-user"></i></div>
@@ -451,7 +451,7 @@
 
             
 
-            <div class="item task collapsed">
+            <div class="item task">
                 <div class="row">
                     <div class="col-2 date-holder text-right">
                         <div class="icon"><i class="fa fa-calendar-check-o"></i></div>
@@ -465,7 +465,25 @@
 
                     <div class="col-10 content">
                         <div class="status">
-                            <span class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+
+                            @if (auth()->user()->id == $task->user->id)
+
+                                <select class="js-task-status badge bg-success" data-task-id="{{ $task->id }}">
+
+                                    @foreach (App\Models\Task::STATUS_SELECT as $key => $status)
+                        
+                                        <option value="{{ $key }}" {{ $task->status == $key ? 'selected' : '' }}>{{ $status }}</option>
+                        
+                                    @endforeach
+                        
+                                </select>
+                            
+                            @else
+
+                                <span class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+
+                            @endif
+
                             <span class="badge bg-primary">{{ $deadline }}</span>
                             <span class="badge bg-info">{{ $task->user->name }}</span>
                             
@@ -480,9 +498,14 @@
             <div class="alert-warning">Er is iets verkeerd gegaan...</div>
 
         @endif
-                    <a class="add-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
-                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
-                    </a>
+
+                    <div class="action-icons">
+
+                        <a class="action-icon add-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+                            <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+
                 </div>
             </div>
 
@@ -544,10 +567,24 @@
                     </div>
                 </div>
             </div>
+
+            <a class="js-read-more read-more" href="javascript:;">
+                <span class="js-read-more-text">Lees meer...</span>
+                    
+                @if (count($item->comments) > 0)
+
+                    <span class="comment-total">
+                        ({{ count($item->comments) }})
+                    </span>
+
+                @endif
+                
+            </a>
+
         </div>
     @endforeach
     
-    <div class="item">
+    <div class="item last-form">
         <div class="row">
             <div class="col-2 date-holder text-right">
                 <div class="icon"><i class="fa fa-plus"></i></div>
