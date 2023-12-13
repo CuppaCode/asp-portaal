@@ -10,8 +10,9 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@eonasdan/tempus-dominus": "^6.7.19",
         "alpinejs": "^3.13.2",
         "chart.js": "^4.4.0",
-        "@eonasdan/tempus-dominus": "^6.7.19"
+        "moment": "^2.29.4"
     }
 }

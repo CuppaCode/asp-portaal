@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Claim;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AnalyticsController extends Controller
@@ -33,14 +34,20 @@ class AnalyticsController extends Controller
         $claim_kind_b = Claim::whereBetween('date_accident', [$from, $to])->Where('company_id', $request->company)->where('damage_kind', 'traffic')->count();
         $claim_kind_c = Claim::whereBetween('date_accident', [$from, $to])->Where('company_id', $request->company)->where('damage_kind', 'other')->count();
         
+        $damage_costs = DB::table('claims')
+        ->Where('company_id', $request->company)
+        ->whereBetween('date_accident', [$from, $to])
+        ->select(DB::raw('SUM(damage_costs) as damage_costs, monthname( date_accident ) as month'))
+        ->groupBy('month')->get();
 
-        // dd($claim);
+        // dd($damage_costs);
 
         return response()->json(
             [
                 'transport' => $claim_kind_a,
                 'traffic' => $claim_kind_b,
                 'other' => $claim_kind_c,
+                'damage_costs' => $damage_costs,
             ], 200);  
     }
 

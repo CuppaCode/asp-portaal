@@ -41,7 +41,16 @@ new TempusDominus(document.getElementById('datetimepicker1'), {
 
 $(document).ready(function() {
 
+    var damage_kind;
+
     $("#getAnalData").on("submit", function(e){
+        if (
+            typeof damage_kind === 'object' &&
+            !Array.isArray(damage_kind) &&
+            damage_kind !== null
+        ) {
+            damage_kind.destroy();
+        }
         e.preventDefault(); 
 
         var company = $('#a_company_id').find(":selected").val();
@@ -49,9 +58,19 @@ $(document).ready(function() {
         var edate = $('#datetimepicker2Input').val();
 
         $.post("/api/analytics/get-data", { company: company, startdate: sdate, enddate: edate } , function(res) {
-            console.log(res);
+            console.log(res.damage_costs);
 
-            const data = {
+            var damage_costs_arr = new Array();
+            var damage_months_arr = new Array();
+            const damage_costs = res.damage_costs;
+            damage_costs.forEach(eachDamage);
+             
+            function eachDamage(item) {
+                damage_costs_arr.push(item.damage_costs);
+                damage_months_arr.push(item.month);
+            }
+
+            const data_damage_kind = {
                 labels: [
                   'Tranport',
                   'Laden',
@@ -69,18 +88,66 @@ $(document).ready(function() {
                 }]
               };
             
-            const config = {
+            const config_damage_kind = {
                 type: 'doughnut',
-                data: data,
+                data: data_damage_kind,
               };
             
-            const damage_kind = new Chart(
+            damage_kind = new Chart(
                 document.getElementById('kind_accident'),
-                config
+                config_damage_kind
             );
+
+            const data_damage_costs = {
+            labels: damage_months_arr,
+            datasets: [{
+                label: 'My First Dataset',
+                data: damage_costs_arr,
+                backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+                ],
+                borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
+                ],
+                borderWidth: 1
+            }]
+            };
+
+            const config_damage_costs = {
+                type: 'bar',
+                data: data_damage_costs,
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                    
+
+                  }
+                },
+              };
+
+            damage_costs = new Chart(
+                document.getElementById('damage_costs'),
+                config_damage_costs
+            );
+
 
           });
     });
 
 });
+
 

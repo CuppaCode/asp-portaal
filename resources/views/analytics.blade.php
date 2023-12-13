@@ -29,7 +29,7 @@
                                 <div class="col-md-6">
                                     <label for="datetimepicker1Input" class="form-label">Start</label>       
                                     <div class="input-group log-event" id="datetimepicker1" data-td-target-input="nearest" data-td-target-toggle="nearest">         
-                                        <input id="datetimepicker1Input" type="text" class="form-control" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker"/>         
+                                        <input id="datetimepicker1Input" type="text" class="form-control" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker" value="01-01-2023"/>         
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -53,7 +53,17 @@
         </div>
     </div>
     <hr class="hr" />
-    <div style="width: 800px;"><canvas id="kind_accident"></canvas></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div style="width: 500px;"><canvas id="kind_accident"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div style="width: 500px;"><canvas id="damage_costs"></canvas></div>
+            </div>
+        </div>
 </div>
 
 @endsection
