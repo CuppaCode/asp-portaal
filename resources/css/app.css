@@ -233,6 +233,13 @@ div.dt-buttons {
     gap: 10px;
 }
 
+.recent-activities .item .action-icons.action-icons-bottom {
+    position: relative;
+    float: right;
+    right: unset;
+    bottom: unset;
+}
+
 .recent-activities .item .action-icon {
     width: 40px;
     height: 40px;
@@ -242,6 +249,12 @@ div.dt-buttons {
     align-items: center;
     justify-content: center;
     color: black;
+    gap: 5px;
+}
+
+.recent-activities .item .action-icon:hover {
+    text-decoration: none;
+    filter:brightness(.7);
 }
 
 .recent-activities .item .read-more {
@@ -271,9 +284,8 @@ div.dt-buttons {
     background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
 }
 
-.recent-activities .add-comment:hover {
-    text-decoration: none;
-    filter:brightness(.7);
+.recent-activities .action-icons:not(.action-icons-bottom) .action-icon.hide-comment {
+    display: none;
 }
 
 .recent-activities .item.task .content {

@@ -429,7 +429,7 @@
                 $note = $item;
             @endphp
 
-            <div class="item">
+            <div class="item" data-commentable-id="{{ $note->id }}">
                 <div class="row">
                     <div class="col-2 date-holder text-right">
                         <div class="icon"><i class="fa fa-user"></i></div>
@@ -451,7 +451,7 @@
 
             
 
-            <div class="item task">
+            <div class="item task" data-commentable-id="{{ $task->id }}">
                 <div class="row">
                     <div class="col-2 date-holder text-right">
                         <div class="icon"><i class="fa fa-calendar-check-o"></i></div>
@@ -502,7 +502,15 @@
                     <div class="action-icons">
 
                         <a class="action-icon add-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
-                            <i class="fa fa-commenting-o" aria-hidden="true"></i>
+
+                            <i class="fa fa-reply" aria-hidden="true"></i>
+
+                        </a>
+
+                        <a class="action-icon hide-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+
+                            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+
                         </a>
                     </div>
 
@@ -562,6 +570,16 @@
                                 <button class="btn btn-danger" type="submit" data-submit-comment>
                                     {{ trans('global.save') }}
                                 </button>
+
+                                <div class="action-icons action-icons-bottom">
+
+                                    <a class="action-icon hide-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+
+                                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            
+                                    </a>
+
+                                </div>
                             </div>
                         </form>
                     </div>

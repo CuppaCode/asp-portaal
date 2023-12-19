@@ -63,7 +63,7 @@ class TaskController extends Controller
         }
 
         if($request->input('add-task-dashboard', 'true')) {
-            return redirect()->route("admin.home");
+            return redirect()->back();
         } else {
             return redirect()->route('admin.tasks.index');
         }
@@ -129,5 +129,21 @@ class TaskController extends Controller
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
+    }
+
+    public function quickUpdateStatus(Request $request)
+    {
+        $task = Task::find($request->task_id);
+
+        $task->status = $request->new_status;
+
+        $task->save();
+
+        return response()->json(
+            [
+                'status' => $task->status,
+                'type' => 'alert-success',
+                'message' => 'Taak status is succesvol aangepast!'
+            ], 200);
     }
 }

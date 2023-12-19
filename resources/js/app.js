@@ -119,7 +119,7 @@ $(document).ready(function () {
 
     // Claims AJAX requests
 
-    // Status change
+    // Claim status change
     $('#current-status').on('change', function (e) {
 
         var claimID = $(this).data('claim-id');
@@ -131,6 +131,24 @@ $(document).ready(function () {
             
             if(newStatus != res.status) {
                 $('#current-status').val(res.status);
+            }
+
+        });
+
+    });
+
+    // Task status change
+    $('.js-task-status').on('change', function (e) {
+
+        var taskID = $(this).data('task-id');
+        var newStatus = $(this).val();
+
+        $.post('/api/tasks/update-status', { task_id: taskID, new_status: newStatus } , function(res) {
+
+            sendFlashMessage(res.message, res.type);
+            
+            if(newStatus != res.status) {
+                $('.js-task-status').val(res.status);
             }
 
         });
@@ -175,9 +193,44 @@ $(document).ready(function () {
     }
 
 
-    // Comments toggle
+    // Comments form show
     $('.item .add-comment').on('click', function(e) {
-        $(this).closest('.item').find('.item.form').slideToggle();
+
+        var form = $(this).closest('.item').find('.item.form');
+        var commentID = $(this).data('commentable-id');
+
+        form.slideDown();
+
+        form.find('textarea').focus();
+
+        $('html, body').animate({
+            scrollTop: form.find('textarea').offset().top
+        }, 1000);
+
+        $('.hide-comment[data-commentable-id=' + commentID + ']').show().css('display', 'flex');
+        $(this).hide();
+    });
+
+    // Comments form hide
+    $('.item .hide-comment').on('click', function(e) {
+
+        var commentID = $(this).data('commentable-id');
+        var comment = $('.item[data-commentable-id=' + commentID + ']');
+        var form = comment.find('.item.form');
+
+        form.slideUp();
+
+        $('.add-comment[data-commentable-id=' + commentID + ']').show();
+        $(this).hide();
+        $('.hide-comment[data-commentable-id=' + commentID + ']').hide();
+
+        if(!comment.hasClass('collapsed')){
+
+            comment.addClass('collapsed');
+            $(this).find('.js-read-more-text').text('Lees meer...');
+            
+        }
+
     });
 
     // Comments bind event
@@ -341,9 +394,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
             $.post('/api/users/get-user-name', { userID: comment.user_id })
             .done(function(res){
-                console.log(res);
                 userDOM.text(res.name);
-                console.log('after username should be set');
             });
 
         });
