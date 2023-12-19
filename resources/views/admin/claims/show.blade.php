@@ -37,7 +37,7 @@
         Schadedossier overzicht
         
         @if( $claim->assign_self || $isAdmin)
-        <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
+        <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
 

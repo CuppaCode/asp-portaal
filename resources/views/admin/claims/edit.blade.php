@@ -93,7 +93,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="date_accident">{{ trans('cruds.claim.fields.date_accident') }}</label>
-                <input class="form-control date {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident', $claim->date_accident) }}">
+                <input class="form-control date custom_datepicker {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident', $claim->date_accident) }}">
                 @if($errors->has('date_accident'))
                     <div class="invalid-feedback">
                         {{ $errors->first('date_accident') }}
@@ -476,7 +476,7 @@
             </div>
             <div class="form-group">
                 <label for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
-                <input class="form-control date {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}">
+                <input class="form-control date custom_datepicker {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}">
                 @if($errors->has('requested_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('requested_at') }}
@@ -499,7 +499,7 @@
             </div>
             <div class="form-group expertise-report-show d-none">
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
-                <input class="form-control date {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
+                <input class="form-control date custom_datepicker {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
                 @if($errors->has('report_received_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('report_received_at') }}
