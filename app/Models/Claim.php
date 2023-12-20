@@ -236,9 +236,14 @@ class Claim extends Model implements HasMedia
         $this->addMediaConversion('preview')->fit('crop', 120, 120);
     }
 
-    public function claimNotes()
+    public function notes()
     {
         return $this->belongsToMany(Note::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 
     public function company()

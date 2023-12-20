@@ -495,6 +495,20 @@ return [
             'deleted_at'          => 'Deleted at',
             'deleted_at_helper'   => ' ',
         ],
+    ],
+    'comment' => [
+        'title' => 'Opmerkingen',
+        'title_singular' => 'Opmerking',
+        'fields' => [
+            'id'                => 'ID',
+            'id_helper'         => '',
+            'body'              => 'Opmerking',
+            'body_helper'       => '',
+            'commentable'       => 'Opmerking ID',
+            'commentable_helper' => '',
+            'commentable_type'  => 'Opmerking Type',
+            'commentable_helper' => '',
+        ]
     ]
 
 ];

@@ -187,9 +187,14 @@ div.dt-buttons {
     padding: 10px 20px;
 }
 
+.recent-activities > .item {
+    transition: height 2s;
+}
+
 .recent-activities .item {
     padding: 0 15px;
-    border-bottom: 1px solid #eee
+    border-bottom: 1px solid #eee;
+    position: relative;
 }
 
 .recent-activities .item div[class*='col-'] {
@@ -214,6 +219,116 @@ div.dt-buttons {
 .recent-activities .date-holder {
     padding: 0 !important;
     border-right: 1px solid #eee
+}
+
+.recent-activities .item .content {
+    min-height: 125px;
+}
+
+.recent-activities .item .action-icons {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.recent-activities .item .action-icons.action-icons-bottom {
+    position: relative;
+    float: right;
+    right: unset;
+    bottom: unset;
+}
+
+.recent-activities .item .action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    gap: 5px;
+}
+
+.recent-activities .item .action-icon:hover {
+    text-decoration: none;
+    filter:brightness(.7);
+}
+
+.recent-activities .item .read-more {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-transform: lowercase;
+    text-decoration: underline;
+    color: var(--primary);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.recent-activities > .item.collapsed {
+    max-height: 200px;
+    overflow:hidden;
+}
+
+.recent-activities > .item.collapsed:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+}
+
+.recent-activities .action-icons:not(.action-icons-bottom) .action-icon.hide-comment {
+    display: none;
+}
+
+.recent-activities .item.task .content {
+    position: relative;
+}
+
+.recent-activities > .item.task.collapsed .content {
+    position: initial;
+}
+
+.recent-activities .item.task .content .status {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    color: white;
+}
+
+.recent-activities .item.task .js-task-status {
+    color: white;
+    border: 0;
+}
+
+.recent-activities .item.comment,
+.recent-activities .item.form {
+    padding: 0;
+    border-bottom: 0;
+    
+}
+
+.recent-activities .item.comment .row,
+.recent-activities .item.form .row {
+    border-top: 1px solid #eee;
+}
+
+
+.recent-activities .item.comment .p-0,
+.recent-activities .item.form .p-0 {
+    border-right: 1px solid #eee;
+    background-color: #eee;
+}
+
+.recent-activities .item.form {
+    display: none;
 }
 
 
