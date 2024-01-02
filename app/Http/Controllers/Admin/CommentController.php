@@ -84,11 +84,13 @@ class CommentController extends Controller
 
     public function quickStore(Request $request)
     {
+        
         $comment = Comment::create([
             'body' => $request->body,
             'commentable_id' => $request->commentableID,
             'commentable_type' => $request->commentableType,
-            'user_id' => $request->userID
+            'user_id' => $request->userID,
+            'team_id' => $request->teamID
         ]);
 
         $allComments = $comment->commentable->comments;
