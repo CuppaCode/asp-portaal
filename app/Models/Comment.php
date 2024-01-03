@@ -28,6 +28,7 @@ class Comment extends Model
         'commentable_id',
         'commentable_type',
         'user_id',
+        'team_id',
         'created_at',
         'updated_at',
         'deleted_at',

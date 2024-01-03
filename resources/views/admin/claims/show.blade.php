@@ -536,6 +536,7 @@
 
                         <div class="col-8">
                             {{ $comment->body }}
+                            {{ $comment->team_id }}
                         </div>
 
                     </div>
@@ -565,6 +566,7 @@
                             <input type="hidden" name="commentable" data-id="commentable_{{ $item->id }}" value="{{ $item->id }}"/>
                             <input type="hidden" name="commentable_type" data-id="commentable_type_{{ $item->id }}" value="{{ $item::class }}"/>
                             <input type="hidden" name="user_id" data-id="user_id_{{ $item->id }}" value="{{ auth()->user()->id }}" />
+                            <input type="hidden" name="team_id" data-id="team_id_{{ $item->id }}" value="{{ auth()->user()->team->id }}" />
                         
                             <div class="form-group">
                                 <button class="btn btn-danger" type="submit" data-submit-comment>
