@@ -418,17 +418,21 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        
-        // dd($claim->company->id);
+
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks);
 
-        //dd($claim);
-        // dd($opposite);
+        $users = User::where('team_id', $user->team->id)->get();
 
-        $users = User::get();
+        if($isAdmin) {
+
+            $users = User::get();
+
+        } 
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
