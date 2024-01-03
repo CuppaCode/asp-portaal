@@ -18,6 +18,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
 use App\Models\Driver;
 use App\Models\Opposite;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -417,16 +418,25 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        
-        // dd($claim->company->id);
+
+        $user = auth()->user();
+        $isAdmin = $user->roles->contains(1);
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
-        // dd($opposite);
+        $notesAndTasks = $claim->notes->merge($claim->tasks);
 
-        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
+        $users = User::where('team_id', $user->team->id)->get();
 
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite'));
+        if($isAdmin) {
+
+            $users = User::get();
+
+        } 
+
+        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
+
+        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks'));
     }
 
     public function destroy(Claim $claim)

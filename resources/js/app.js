@@ -119,7 +119,7 @@ $(document).ready(function () {
 
     // Claims AJAX requests
 
-    // Status change
+    // Claim status change
     $('#current-status').on('change', function (e) {
 
         var claimID = $(this).data('claim-id');
@@ -131,6 +131,24 @@ $(document).ready(function () {
             
             if(newStatus != res.status) {
                 $('#current-status').val(res.status);
+            }
+
+        });
+
+    });
+
+    // Task status change
+    $('.js-task-status').on('change', function (e) {
+
+        var taskID = $(this).data('task-id');
+        var newStatus = $(this).val();
+
+        $.post('/api/tasks/update-status', { task_id: taskID, new_status: newStatus } , function(res) {
+
+            sendFlashMessage(res.message, res.type);
+            
+            if(newStatus != res.status) {
+                $('.js-task-status').val(res.status);
             }
 
         });
@@ -173,6 +191,100 @@ $(document).ready(function () {
         };
 
     }
+
+
+    // Comments form show
+    $('.item .add-comment').on('click', function(e) {
+
+        var form = $(this).closest('.item').find('.item.form');
+        var commentID = $(this).data('commentable-id');
+
+        form.slideDown();
+
+        form.find('textarea').focus();
+
+        $('html, body').animate({
+            scrollTop: form.find('textarea').offset().top
+        }, 1000);
+
+        $('.hide-comment[data-commentable-id=' + commentID + ']').show().css('display', 'flex');
+        $(this).hide();
+    });
+
+    // Comments form hide
+    $('.item .hide-comment').on('click', function(e) {
+
+        var commentID = $(this).data('commentable-id');
+        var comment = $('.item[data-commentable-id=' + commentID + ']');
+        var form = comment.find('.item.form');
+
+        form.slideUp();
+
+        $('.add-comment[data-commentable-id=' + commentID + ']').show();
+        $(this).hide();
+        $('.hide-comment[data-commentable-id=' + commentID + ']').hide();
+
+        if(!comment.hasClass('collapsed')){
+
+            comment.addClass('collapsed');
+            $(this).find('.js-read-more-text').text('Lees meer...');
+            
+        }
+
+    });
+
+    // Comments bind event
+    $('[data-submit-comment]').on('click', function(e) {
+        e.preventDefault();
+
+        var commentableID = $(this).parent().parent().find('input[name="commentable"]').val();
+        var commentableType = $(this).parent().parent().find('input[name="commentable_type"]').val();
+        var commentableDOM = $(this).closest('.item:not(.form)');
+
+        var body = $(this).parent().parent().find('textarea[name="body"]').val();
+        var userID = $(this).parent().parent().find('input[name="user_id"]').val();
+        var teamID = $(this).parent().parent().find('input[name="team_id"]').val();
+
+        ajaxCreateComment( commentableID, commentableType, commentableDOM, body, userID, teamID );
+
+    });
+    
+    $('.recent-activities > .item').each(function(index, item) {
+
+        if ($(this).outerHeight() > 200 && !$(this).hasClass('last-form')) {
+
+            $(this).addClass('collapsed');
+
+        } else {
+
+            $(this).find('.js-read-more').remove();
+
+        }
+
+    });
+
+
+
+    $('.js-read-more').on('click', function(e) {
+        e.preventDefault();
+
+        var item = $(this).parent();
+
+        if (item.hasClass('collapsed')) {
+
+            item.removeClass('collapsed');
+            $(this).find('.js-read-more-text').text('Lees minder...');
+
+        } else if (!item.hasClass('collapsed')) {
+
+            item.addClass('collapsed');
+            $(this).find('.js-read-more-text').text('Lees meer...');
+
+        }
+
+
+    });
+
 
 });
 
@@ -218,6 +330,89 @@ function ajaxCreateCompany( inputID, typeID = null ) {
 
 }
 
+function ajaxCreateComment( commentableID, commentableType, commentableDOM, body, userID, teamID ) {
+
+    if(!body || body == '' || body == undefined) {
+
+        sendFlashMessage('Vul eerst een opmerking in voordat je deze verzend.', 'alert-warning');
+
+        return;
+    }
+
+    const data = { 
+        commentableID: commentableID,
+        commentableType: commentableType,
+        body: body,
+        userID: parseInt(userID),
+        teamID: parseInt(teamID)
+    };
+
+    $.post('/api/comments/quick-store', data)
+    .done(res => {
+
+        commentableDOM.find('.item.form textarea[name="body"]').val('');
+        //commentableDOM.find('.item.form').slideToggle();
+
+        commentableDOM.find('.item.comment').each((index, comment) => {
+
+            comment.remove();
+
+        });
+
+        if(res.allComments){
+
+            const commentDOM = res.allComments.map(comment => {
+
+                return `
+                    <div class="item comment">
+                        <div class="row">
+
+                            <div class="col-2 p-0"></div>
+
+                            <div class="col-2 date-holder text-right">
+                                <div class="icon"><i class="fa fa-commenting-o"></i></div>
+                                <div class="date">
+
+                                    <span id="js-username-${comment.id}"></span>
+                                    <br>
+                                    <span class="text-info">${comment.created_at}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-8">
+                                ${comment.body}
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            });
+
+            commentableDOM.find('.row:first').after(commentDOM);
+
+            res.allComments.forEach(comment => {
+
+                const userDOM = $('#js-username-' + comment.id);        
+
+                $.post('/api/users/get-user-name', { userID: comment.user_id })
+                .done(function(res){
+                    userDOM.text(res.name);
+                });
+
+            });
+
+        }
+
+
+        sendFlashMessage(res.message, res.type);
+
+    });
+
+
+}
+
 function bindVehicleTags( inputID ) {
 
     inputID.select2({
@@ -227,7 +422,6 @@ function bindVehicleTags( inputID ) {
     return;
 
 }
-
 
 function sendFlashMessage( message, type ) {
 

@@ -29,9 +29,6 @@ class UpdateClaimRequest extends FormRequest
                 'string',
                 'required',
             ],
-            'status' => [
-                'required',
-            ],
             'date_accident' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
