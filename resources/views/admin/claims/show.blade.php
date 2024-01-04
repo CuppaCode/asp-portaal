@@ -528,7 +528,11 @@
                             <div class="icon"><i class="fa fa-commenting-o"></i></div>
                             <div class="date">
 
-                                <span>{{ $comment->user->name }}</span>
+                                @if ( $comment->user )
+
+                                    <span>{{ $comment->user->name }}</span>
+
+                                @endif
                                 <br>
                                 <span class="text-info">{{ $comment->created_at }}</span>
                             </div>
