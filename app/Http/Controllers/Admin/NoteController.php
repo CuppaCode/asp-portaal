@@ -54,7 +54,6 @@ class NoteController extends Controller
         $claim_id = $request->input('claims');
 
         $note = Note::create($request->all());
-        $comment = new Comment(['body' => 'A new comment.', 'user_id' => '1']);
 
         $note_id = Note::find($note->id);
 
