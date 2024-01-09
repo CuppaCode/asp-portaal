@@ -63,6 +63,9 @@
             <div class="card">
                 <div style="width: 500px;"><canvas id="damage_costs"></canvas></div>
             </div>
+            <div class="card">
+                <div style="width: 500px; height: 300px;"><canvas id="saved_costs"></canvas></div>
+            </div>
         </div>
 </div>
 

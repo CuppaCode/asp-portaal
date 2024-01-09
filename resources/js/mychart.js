@@ -7,7 +7,7 @@ $(document).ready(function() {
     if (!chartdatetimepicker) {
         return;
     }
-    
+
     new TempusDominus(chartdatetimepicker, {
         display: {
             icons: {
@@ -47,6 +47,8 @@ $(document).ready(function() {
     });
 
     var damage_kind;
+	var damage_costs_graph;
+	var saved_costs_graph;
 
     $("#getAnalData").on("submit", function(e){
         if (
@@ -55,7 +57,25 @@ $(document).ready(function() {
             damage_kind !== null
         ) {
             damage_kind.destroy();
-        }
+			
+        } 
+		
+		if (
+			typeof damage_costs_graph === 'object' &&
+            !Array.isArray(damage_costs_graph) &&
+            damage_costs_graph !== null
+		) {
+			damage_costs_graph.destroy();
+		}
+
+		if (
+			typeof saved_costs_graph === 'object' &&
+            !Array.isArray(saved_costs_graph) &&
+            saved_costs_graph !== null
+		) {
+			saved_costs_graph.destroy();
+		}
+
         e.preventDefault(); 
 
         var company = $('#a_company_id').find(":selected").val();
@@ -67,14 +87,19 @@ $(document).ready(function() {
 
             var damage_costs_arr = new Array();
             var damage_months_arr = new Array();
+
             const damage_costs = res.damage_costs;
+
             damage_costs.forEach(eachDamage);
              
             function eachDamage(item) {
+				console.log(item.month);	
+				
                 damage_costs_arr.push(item.damage_costs);
                 damage_months_arr.push(item.month);
             }
 
+			// Table of damage kind
             const data_damage_kind = {
                 labels: [
                   'Tranport',
@@ -103,10 +128,12 @@ $(document).ready(function() {
                 config_damage_kind
             );
 
+
+			// Table of damage costs
             const data_damage_costs = {
             labels: damage_months_arr,
             datasets: [{
-                label: 'My First Dataset',
+                label: 'Schade kosten',
                 data: damage_costs_arr,
                 backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -138,15 +165,54 @@ $(document).ready(function() {
                     y: {
                       beginAtZero: true
                     }
-                    
-
                   }
                 },
               };
 
-            damage_costs = new Chart(
+            damage_costs_graph = new Chart(
                 document.getElementById('damage_costs'),
                 config_damage_costs
+            );
+
+
+			// Table of saving costs
+			const data_saved_costs = {
+				labels: damage_months_arr,
+				datasets: [
+				{
+					label: '1',
+					data: damage_costs_arr,
+					order: 1
+				},
+				{
+					label: '2',
+					data: damage_costs_arr,
+					type: 'line',
+					order: 0
+				},
+				]
+			  };
+
+			const config_saved_costs = {
+				type: 'bar',
+				data: data_saved_costs,
+				options: {
+				  responsive: true,
+				  plugins: {
+					legend: {
+					  position: 'top',
+					},
+					title: {
+					  display: true,
+					  text: 'Chart.js Combined Line/Bar Chart'
+					}
+				  }
+				},
+			  };
+
+			  saved_costs_graph = new Chart(
+                document.getElementById('saved_costs'),
+                config_saved_costs
             );
 
 

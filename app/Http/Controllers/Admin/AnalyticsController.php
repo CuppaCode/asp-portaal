@@ -37,7 +37,8 @@ class AnalyticsController extends Controller
         $damage_costs = DB::table('claims')
         ->Where('company_id', $request->company)
         ->whereBetween('date_accident', [$from, $to])
-        ->select(DB::raw('SUM(damage_costs) as damage_costs, monthname( date_accident ) as month'))
+        ->select(DB::raw('SUM(damage_costs) as damage_costs, monthname(date_accident) as month'))
+        ->orderByRaw('FIELD(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")')
         ->groupBy('month')->get();
 
         // dd($damage_costs);
