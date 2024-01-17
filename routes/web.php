@@ -12,9 +12,7 @@ Route::get('/home', function () {
 Auth::routes();
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
-
     Route::get('/', 'HomeController@index')->name('home');
-
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     Route::resource('permissions', 'PermissionsController');
@@ -86,17 +84,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('notes/ckmedia', 'NoteController@storeCKEditorImages')->name('notes.storeCKEditorImages');
     Route::resource('notes', 'NoteController');
 
-    Route::get('team-members', 'TeamMembersController@index')->name('team-members.index');
-    Route::post('team-members', 'TeamMembersController@invite')->name('team-members.invite');
-
     // Comment
     Route::delete('comments/destroy', 'CommentController@massDestroy')->name('comments.massDestroy');
+    Route::post('comments/media', 'CommentController@storeMedia')->name('comments.storeMedia');
+    Route::post('comments/ckmedia', 'CommentController@storeCKEditorImages')->name('comments.storeCKEditorImages');
     Route::resource('comments', 'CommentController');
 
-});
+    // Mail Template
+    Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
+    Route::post('mail-templates/media', 'MailTemplateController@storeMedia')->name('mail-templates.storeMedia');
+    Route::post('mail-templates/ckmedia', 'MailTemplateController@storeCKEditorImages')->name('mail-templates.storeCKEditorImages');
+    Route::resource('mail-templates', 'MailTemplateController', ['except' => ['show']]);
 
+    Route::get('team-members', 'TeamMembersController@index')->name('team-members.index');
+    Route::post('team-members', 'TeamMembersController@invite')->name('team-members.invite');
+});
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
-    
     // Change password
     if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php'))) {
         Route::get('password', 'ChangePasswordController@edit')->name('password.edit');

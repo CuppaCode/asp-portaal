@@ -42,7 +42,7 @@
                 </thead>
                 <tbody>
                     @foreach($auditLogs as $key => $auditLog)
-                        <tr data-entry-url="{{ route('admin.audit-logs.show', $auditLog->id) }}" data-entry-id="{{ $auditLog->id }}">
+                        <tr data-entry-id="{{ $auditLog->id }}">
                             <td>
 
                             </td>

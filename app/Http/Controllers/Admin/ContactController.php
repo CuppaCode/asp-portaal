@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\TeamMembersController;
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyContactRequest;
 use App\Http\Requests\StoreContactRequest;
@@ -12,7 +10,6 @@ use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\Driver;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,41 +44,7 @@ class ContactController extends Controller
 
     public function store(StoreContactRequest $request)
     {
-        $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
-
         $contact = Contact::create($request->all());
-
-        if(!$isAdmin) {
-            
-            $contact->company_id = $user->contact->company->id;
-
-        }
-
-        $contact->save();
-
-        if(!isset($contact->team_id)){
-
-            $contact->team_id = Company::find($contact->company_id)->team_id;
-            $contact->save();
-
-        }
-
-        if($request->create_user) {
-
-            (new TeamMembersController)->invite($request, $contact);
-
-        }
-
-        if($request->is_driver) {
-
-            Driver::create([
-                'team_id' => $contact->team_id,
-                'company_id' => $contact->company_id,
-                'contact_id' => $contact->id
-            ]);
-
-        }
 
         return redirect()->route('admin.contacts.index');
     }

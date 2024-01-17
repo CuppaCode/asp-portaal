@@ -69,7 +69,7 @@
                 </thead>
                 <tbody>
                     @foreach($notes as $key => $note)
-                        <tr data-entry-url="{{ route('admin.notes.show', $note->id) }}" data-entry-id="{{ $note->id }}">
+                        <tr data-entry-id="{{ $note->id }}">
                             <td>
 
                             </td>

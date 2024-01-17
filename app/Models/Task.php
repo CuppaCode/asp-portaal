@@ -9,11 +9,9 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
 
 class Task extends Model implements HasMedia
 {
@@ -29,13 +27,14 @@ class Task extends Model implements HasMedia
     ];
 
     public const STATUS_SELECT = [
-        'new'         => 'Nieuw',
-        'in_progress' => 'In behandeling',
-        'waiting'     => 'Afwachting',
-        'done'        => 'Afgerond',
+        'new'         => 'New',
+        'in_progress' => 'In Progress',
+        'waiting'     => 'Waiting...',
+        'done'        => 'Done',
     ];
 
     protected $fillable = [
+        'task_number',
         'description',
         'user_id',
         'claim_id',
@@ -70,21 +69,16 @@ class Task extends Model implements HasMedia
 
     public function getDeadlineAtAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
     }
 
     public function setDeadlineAtAttribute($value)
     {
-        $this->attributes['deadline_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['deadline_at'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
-    }
-
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable');
     }
 }

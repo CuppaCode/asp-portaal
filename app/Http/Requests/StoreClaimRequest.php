@@ -32,6 +32,9 @@ class StoreClaimRequest extends FormRequest
             'status' => [
                 'required',
             ],
+            'injury' => [
+                'required',
+            ],
             'date_accident' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
@@ -41,14 +44,23 @@ class StoreClaimRequest extends FormRequest
                 'nullable',
             ],
             'vehicle_id' => [
+                'required',
                 'integer',
             ],
-            'requested_at' => [
-                'date_format:' . config('panel.date_format'),
+            'damage_origin' => [
+                'string',
                 'nullable',
             ],
+            'damage_origin_opposite' => [
+                'string',
+                'nullable',
+            ],
+            'requested_at' => [
+                'required',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            ],
             'report_received_at' => [
-                'date_format:' . config('panel.date_format'),
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
                 'nullable',
             ],
             'damage_files' => [

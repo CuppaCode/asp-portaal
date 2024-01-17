@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                     @foreach($permissions as $key => $permission)
-                        <tr data-entry-url="{{ route('admin.roles.show', $permission->id) }}" data-entry-id="{{ $permission->id }}">
+                        <tr data-entry-id="{{ $permission->id }}">
                             <td>
 
                             </td>

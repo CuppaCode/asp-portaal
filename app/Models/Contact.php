@@ -29,8 +29,6 @@ class Contact extends Model
         'email',
         'created_at',
         'newsletter',
-        'create_user',
-        'is_driver',
         'updated_at',
         'deleted_at',
         'team_id',
@@ -54,10 +52,5 @@ class Contact extends Model
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
-    }
-
-    public function driver()
-    {
-        return $this->hasOne(Driver::class);
     }
 }

@@ -11,21 +11,12 @@ class UsersTableSeeder extends Seeder
     {
         $users = [
             [
-                // 'id'             => 1,
+                'id'             => 1,
                 'name'           => 'Admin',
-                'email'          => 'admin1@admin.com',
+                'email'          => 'admin@admin.com',
                 'password'       => bcrypt('password'),
                 'remember_token' => null,
-                'team_id'        => 1,
             ],
-            [
-                // 'id'             => 2,
-                'name'           => 'User',
-                'email'          => 'user1@user.com',
-                'password'       => bcrypt('password'),
-                'remember_token' => null,
-                'team_id'        => 1,
-            ]
         ];
 
         User::insert($users);

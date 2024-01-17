@@ -22,16 +22,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/css/perfect-scrollbar.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     @yield('styles')
 </head>
 
 <body class="c-app">
     @include('partials.menu')
-    @include('partials.flash-message')
-    @include('partials.js-vars-population')
     <div class="c-wrapper">
         <header class="c-header c-header-fixed px-3">
             <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar" data-class="c-sidebar-show">
@@ -58,26 +53,7 @@
                     </li>
                 @endif
 
-              <li>
-                <div class="dropdown show menu-profile-link">
-                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ Auth::user()->name }}
-                  </a>
-                
-                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                    @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
-                        @can('profile_password_edit')
-                            <a class="dropdown-item" href="{{ route('profile.password.edit') }}">
-                                {{ trans('global.profile_information') }}
-                            </a>
-                        @endcan
-                  @endif
-                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
-                        {{ trans('global.logout') }}    
-                    </a>
-                  </div>
-                </div>  
-              </li>
+
             </ul>
         </header>
 
@@ -86,13 +62,13 @@
 
 
                 <div class="container-fluid">
-                    {{-- @if(session('message'))
+                    @if(session('message'))
                         <div class="row mb-2">
                             <div class="col-lg-12">
                                 <div class="alert alert-success" role="alert">{{ session('message') }}</div>
                             </div>
                         </div>
-                    @endif --}}
+                    @endif
                     @if($errors->count() > 0)
                         <div class="alert alert-danger">
                             <ul class="list-unstyled">
@@ -114,11 +90,10 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"></script>
     <script src="https://unpkg.com/@coreui/coreui@3.2/dist/js/coreui.min.js"></script>
-    {{-- <script src=" https://cdn.jsdelivr.net/npm/@coreui/coreui@4.2.6/dist/js/coreui.bundle.min.js "></script> --}}
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script src="//cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
@@ -172,8 +147,7 @@
     order: [],
     scrollX: true,
     pageLength: 100,
-    dom: '<"dt-search"f>tlp<"dt-c-buttons"B><r><"actions">',
-    //dom: 'lBfrtip<"actions">',
+    dom: 'lBfrtip<"actions">',
     buttons: [
       {
         extend: 'selectAll',

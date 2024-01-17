@@ -96,11 +96,4 @@ class UsersController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
-
-    public function getUserName(Request $request)
-    {
-        return response()->json([
-            'name' => User::find($request->userID)->name
-        ]);
-    }
 }

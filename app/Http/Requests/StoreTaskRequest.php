@@ -17,13 +17,18 @@ class StoreTaskRequest extends FormRequest
     public function rules()
     {
         return [
+            'task_number' => [
+                'string',
+                'required',
+                'unique:tasks',
+            ],
             'user_id' => [
                 'required',
                 'integer',
             ],
             'deadline_at' => [
                 'required',
-                'date_format:' . config('panel.date_format'),
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
             ],
             'status' => [
                 'required',

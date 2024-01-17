@@ -17,14 +17,7 @@ class UpdateCommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'commentable_id' => [
-                'required',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
-            'commentable_type' => [
-                'string',
+            'body' => [
                 'required',
             ],
         ];

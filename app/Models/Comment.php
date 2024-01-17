@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
-use App\Traits\MultiTenantModelTrait;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Comment extends Model
+class Comment extends Model implements HasMedia
 {
-    use SoftDeletes, MultiTenantModelTrait, Auditable, HasFactory;
+    use SoftDeletes, InteractsWithMedia, Auditable, HasFactory;
 
     public $table = 'comments';
 
@@ -25,10 +25,6 @@ class Comment extends Model
 
     protected $fillable = [
         'body',
-        'commentable_id',
-        'commentable_type',
-        'user_id',
-        'team_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -39,14 +35,9 @@ class Comment extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function commentable(): MorphTo
+    public function registerMediaConversions(Media $media = null): void
     {
-        return $this->morphTo();
+        $this->addMediaConversion('thumb')->fit('crop', 50, 50);
+        $this->addMediaConversion('preview')->fit('crop', 120, 120);
     }
-
-    public function user(): belongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
 }

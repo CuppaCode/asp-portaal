@@ -29,6 +29,12 @@ class UpdateClaimRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'status' => [
+                'required',
+            ],
+            'injury' => [
+                'required',
+            ],
             'date_accident' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',
@@ -41,12 +47,20 @@ class UpdateClaimRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'requested_at' => [
+            'damage_origin' => [
+                'string',
                 'nullable',
-                'date_format:' . config('panel.date_format'),
+            ],
+            'damage_origin_opposite' => [
+                'string',
+                'nullable',
+            ],
+            'requested_at' => [
+                'required',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
             ],
             'report_received_at' => [
-                'date_format:' . config('panel.date_format'),
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
                 'nullable',
             ],
             'damage_files' => [

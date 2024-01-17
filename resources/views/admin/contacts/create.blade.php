@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 
-@php
-
-    $isAdmin = auth()->user()->roles->contains(1);
-
-@endphp
-
 <div class="card">
     <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.contact.title_singular') }}
@@ -15,50 +9,34 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.contacts.store") }}" enctype="multipart/form-data">
             @csrf
-
-            @if ($isAdmin)
-
-                <div class="form-group">
-
-                    <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
-                    <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>
-                        @foreach($companies as $id => $entry)
-                            <option value="{{ $id }}" {{ old('company_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                        @endforeach
-                    </select>
-                    @if($errors->has('company'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('company') }}
-                        </div>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.company_helper') }}</span>
-                </div>
-
-            @else
-
-                <input type="hidden" name="company_id" id="company_id" value="1">
-
-            @endif
-            
-            @if ($isAdmin)
-
-                <div class="form-group">
-                    <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>
-                    <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id">
-                        @foreach($users as $id => $entry)
-                            <option value="{{ $id }}" {{ old('user_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                        @endforeach
-                    </select>
-                    @if($errors->has('user'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('user') }}
-                        </div>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.contact.fields.user_helper') }}</span>
-                </div>
-
-            @endif
-
+            <div class="form-group">
+                <label class="required" for="company_id">{{ trans('cruds.contact.fields.company') }}</label>
+                <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>
+                    @foreach($companies as $id => $entry)
+                        <option value="{{ $id }}" {{ old('company_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('company'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('company') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.contact.fields.company_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>
+                <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id">
+                    @foreach($users as $id => $entry)
+                        <option value="{{ $id }}" {{ old('user_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('user'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('user') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.contact.fields.user_helper') }}</span>
+            </div>
             <div class="form-group">
                 <label class="required" for="first_name">{{ trans('cruds.contact.fields.first_name') }}</label>
                 <input class="form-control {{ $errors->has('first_name') ? 'is-invalid' : '' }}" type="text" name="first_name" id="first_name" value="{{ old('first_name', '') }}" required>
@@ -102,35 +80,6 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.newsletter_helper') }}</span>
             </div>
-
-            <div class="form-group">
-                <div class="form-check {{ $errors->has('create_user') ? 'is-invalid' : '' }}">
-                    <input type="hidden" name="create_user" value="0">
-                    <input class="form-check-input" type="checkbox" name="create_user" id="create_user" value="1" {{ old('create_user', 0) == 1 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="create_user">{{ trans('cruds.contact.fields.create_user') }}</label>
-                </div>
-                @if($errors->has('create_user'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('create_user') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.contact.fields.create_user_helper') }}</span>
-            </div>
-
-            <div class="form-group">
-                <div class="form-check {{ $errors->has('is_driver') ? 'is-invalid' : '' }}">
-                    <input type="hidden" name="is_driver" value="0">
-                    <input class="form-check-input" type="checkbox" name="is_driver" id="is_driver" value="1" {{ old('is_driver', 0) == 1 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="is_driver">{{ trans('cruds.contact.fields.is_driver') }}</label>
-                </div>
-                @if($errors->has('is_driver'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('is_driver') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.contact.fields.is_driver_helper') }}</span>
-            </div>
-
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}

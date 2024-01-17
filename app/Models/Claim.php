@@ -26,24 +26,8 @@ class Claim extends Model implements HasMedia
     ];
 
     public const DAMAGED_PART_SELECT = [
-        'backpart'  => 'Achterscherm',
-        'tire'      => 'Band/Velg',
-        'roof'      => 'Dak',
-        'dorpel'    => 'Dorpel',
-        'interior'  => 'Interieur',
-        'motor'     => 'Motor',
-        'portdoor'  => 'Portier',
-        'window'    => 'Ruit',
-        'light'     => 'Verlichting',
-        'carhood'   => 'Motorkap',
-        'trunk'     => 'Achterklep',
-        'exhaust'   => 'Uitlaat',
-        'steeringwheel' => 'Stuurinrichting',
-        'carter'    => 'Carter',
-        'wheel'     => 'Wielophanding',
-        'bumper'    => 'Bumper',
-        'grill'    => 'Grill',
-
+        'transport' => 'Transport',
+        'traffic'   => 'Verkeer',
     ];
 
     public const CONTACT_LAWYER_SELECT = [
@@ -60,46 +44,21 @@ class Claim extends Model implements HasMedia
     ];
 
     public const DAMAGED_PART_OPPOSITE_SELECT = [
-        'backpart'  => 'Achterscherm',
-        'tire'      => 'Band/Velg',
-        'roof'      => 'Dak',
-        'dorpel'    => 'Dorpel',
-        'interior'  => 'Interieur',
-        'motor'     => 'Motor',
-        'portdoor'  => 'Portier',
-        'window'    => 'Ruit',
-        'light'     => 'Verlichting',
-        'carhood'   => 'Motorkap',
-        'trunk'     => 'Achterklep',
-        'exhaust'   => 'Uitlaat',
-        'steeringwheel' => 'Stuurinrichting',
-        'carter'    => 'Carter',
-        'wheel'     => 'Wielophanding',
-        'bumper'    => 'Bumper',
-        'grill'    => 'Grill',
+        'transport' => 'Transport',
+        'traffic'   => 'Verkeer',
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
         'private'  => 'Particulier',
         'business' => 'Zakelijk',
         'unknown'  => 'Onbekend',
-        'obstacle' => 'Obstakel',
     ];
 
     public const STATUS_SELECT = [
-        'new'                       => 'Nieuw',
-        'in_progress'               => 'In behandeling',
-        'requested_info'            => 'Informatie opgevraagd',
-        'damage_estimate_requested' => 'Schadebegroting opgevraagd',
-        'damage_estimate_received'  => 'Schadebegroting ontvangen',
-        'sended_responsible'        => 'Aansprakelijkheid verstuurd',
-        'received_responsible'      => 'Aansprakelijkheid ontvangen',
-        'requested_expert'          => 'Expert aangevraagd',
-        'awaiting_invoice'          => 'Factuur afwachten',
-        'awaiting_report'           => 'Rapport afwachten',
-        'awaiting_approval'         => 'Goedkeuring afwachten',
-        'claim_denied'              => 'Claim afgewezen',
-        'finished'                  => 'Gesloten',
+        'new'      => 'New',
+        'on_hold'  => 'On hold',
+        'ongoing'  => 'Ongoing',
+        'finished' => 'Finished',
     ];
 
     protected $dates = [
@@ -136,49 +95,6 @@ class Claim extends Model implements HasMedia
         'back_side'   => 'Achterzijde',
     ];
 
-    public const DAMAGE_KIND = [
-        'traffic'   => 'Verkeer',
-        'transport' => 'Transport',
-        'other'     => 'Overige'
-    ];
-
-    public const DAMAGE_ORIGIN = [
-        'no_priority'                   => 'Geen voorrang',
-        'parking'                       => 'Parkeren',
-        'backtoopposite'                => 'Achterop tegenpartij',
-        'oppositetoback'                => 'Tegenpartij achterop',
-        'slip'                          => 'Slippen',
-        'special_maneuver'              => 'Bijzondere manoeuvre',
-        'obstacle'                      => 'Tegen opstakel',
-        'loadings'                      => 'Laden',
-        'unloading'                     => 'Lossen',
-        'animal_collision'              => 'Aanrijding dier',
-        'stone_chips'                   => 'Steenslag',
-        'fire'                          => 'Brand',
-        'cyclist_pedestrian_collision'  => 'Aanrijding fietsen/voetganger',
-        'dodge'                         => 'Uitwijken',
-        'transport'                     => 'Tranport'
-
-    ];
-
-    public const DAMAGE_ORIGIN_OPPOSITE = [
-        'no_priority'                   => 'Geen voorrang',
-        'parking'                       => 'Parkeren',
-        'backtoopposite'                => 'Achterop tegenpartij',
-        'oppositetoback'                => 'Tegenpartij achterop',
-        'slip'                          => 'Slippen',
-        'special_maneuver'              => 'Bijzondere manoeuvre',
-        'obstacle'                      => 'Tegen opstakel',
-        'loadings'                      => 'Laden',
-        'unloading'                     => 'Lossen',
-        'animal_collision'              => 'Aanrijding dier',
-        'stone_chips'                   => 'Steenslag',
-        'fire'                          => 'Brand',
-        'cyclist_pedestrian_collision'  => 'Aanrijding fietsen/voetganger',
-        'dodge'                         => 'Uitwijken',
-        'transport'                     => 'Tranport'
-    ];
-
     protected $fillable = [
         'company_id',
         'assign_self',
@@ -193,14 +109,10 @@ class Claim extends Model implements HasMedia
         'injury_office_id',
         'vehicle_id',
         'vehicle_opposite_id',
-        'driver_vehicle',
-        'driver_vehicle_opposite',
         'opposite_type',
-        'obstacle',
         'damaged_part',
         'damage_origin',
         'damaged_area',
-        'damage_kind',
         'damaged_part_opposite',
         'damage_origin_opposite',
         'damaged_area_opposite',
@@ -220,9 +132,6 @@ class Claim extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'team_id',
-        'invoice_settlement_asp',
-        'opposite_claim_no',
-        'invoice_comment',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -236,14 +145,9 @@ class Claim extends Model implements HasMedia
         $this->addMediaConversion('preview')->fit('crop', 120, 120);
     }
 
-    public function notes()
+    public function claimNotes()
     {
         return $this->belongsToMany(Note::class);
-    }
-
-    public function tasks()
-    {
-        return $this->hasMany(Task::class);
     }
 
     public function company()
@@ -288,22 +192,22 @@ class Claim extends Model implements HasMedia
 
     public function getRequestedAtAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
     }
 
     public function setRequestedAtAttribute($value)
     {
-        $this->attributes['requested_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['requested_at'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function getReportReceivedAtAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
     }
 
     public function setReportReceivedAtAttribute($value)
     {
-        $this->attributes['report_received_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['report_received_at'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function getDamageFilesAttribute()

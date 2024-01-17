@@ -5,7 +5,6 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\HtmlString;
 use Illuminate\Notifications\Notification;
 
 class TeamMemberInvite extends Notification
@@ -32,11 +31,13 @@ class TeamMemberInvite extends Notification
     public function getMessage()
     {
         return (new MailMessage)
-            ->subject(config('app.name') . ': Gebruiker aangemaakt ')
-            ->greeting('Hallo,')
-            ->line('Er is zojuist een account aangemaakt voor AutosSchadePlan Portaal')
-            ->line('Klik hier om jouw account te activeren')
-            ->action('Registreren', $this->url)
-            ->salutation(new HtmlString('Bedankt, <br> AutoSchadePlan'));
+            ->subject(config('app.name') . ': invitation ')
+            ->greeting('Hi,')
+            ->line('We invite you to join our team!')
+            ->line('Please click the link bellow.')
+            ->action('Register', $this->url)
+            ->line('Thank you')
+            ->line(config('app.name') . ' Team')
+            ->salutation(' ');
     }
 }

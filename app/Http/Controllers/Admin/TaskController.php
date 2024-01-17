@@ -15,7 +15,6 @@ use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Notification;
 
 class TaskController extends Controller
 {
@@ -44,30 +43,18 @@ class TaskController extends Controller
 
         $claims = Claim::pluck('claim_number', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        
         return view('admin.tasks.create', compact('claims', 'users'));
     }
-    
+
     public function store(StoreTaskRequest $request)
     {
         $task = Task::create($request->all());
-        $user = $task->user;
-        $claim = Claim::where('id', $request->claim_id)->get();
-        
-        $message = new \App\Notifications\TaskCreation($task, $claim, $user);
-        Notification::route('mail', [
-            $task->user->email => $task->user->name])->notify($message);
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $task->id]);
         }
 
-        if($request->input('add-task-dashboard', 'true')) {
-            return redirect()->back();
-        } else {
-            return redirect()->route('admin.tasks.index');
-        }
-        
+        return redirect()->route('admin.tasks.index');
     }
 
     public function edit(Task $task)
@@ -129,21 +116,5 @@ class TaskController extends Controller
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
-    }
-
-    public function quickUpdateStatus(Request $request)
-    {
-        $task = Task::find($request->task_id);
-
-        $task->status = $request->new_status;
-
-        $task->save();
-
-        return response()->json(
-            [
-                'status' => $task->status,
-                'type' => 'alert-success',
-                'message' => 'Taak status is succesvol aangepast!'
-            ], 200);
     }
 }

@@ -9,21 +9,16 @@ use App\Http\Requests\StoreClaimRequest;
 use App\Http\Requests\UpdateClaimRequest;
 use App\Models\Claim;
 use App\Models\Company;
-use App\Models\Contact;
 use App\Models\ExpertiseOffice;
 use App\Models\InjuryOffice;
 use App\Models\RecoveryOffice;
 use App\Models\Team;
 use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
-use App\Models\Driver;
-use App\Models\Opposite;
-use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Notification;
 
 class ClaimController extends Controller
 {
@@ -56,135 +51,24 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
-        $companies = null;
+        $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        if($isAdmin) {
-
-            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
-
-        $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $recovery_offices = RecoveryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        
+        $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicles = Vehicle::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        if($isAdmin) {
+        $recovery_offices = RecoveryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-            $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $expertise_offices = ExpertiseOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        } else {
-
-            $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
-
-
-        return view('admin.claims.create', compact('companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles', 'drivers'));
+        return view('admin.claims.create', compact('companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles'));
     }
 
     public function store(StoreClaimRequest $request)
     {
-
-        /* Custom bit */
-        $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
-
-        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
-        
-        $claim = Claim::create($request->except($multiSelects));
-
-        $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
-        $claim->damaged_part = $request->input('damaged_part') ? json_encode($request->input('damaged_part')) : null;
-        $claim->damage_origin = $request->input('damage_origin') ? json_encode($request->input('damage_origin')) : null;
-        $claim->damaged_part_opposite = $request->input('damaged_part_opposite') ? json_encode($request->input('damaged_part_opposite')) : null;
-        $claim->damage_origin_opposite = $request->input('damage_origin_opposite') ? json_encode($request->input('damage_origin_opposite')) : null;
-        $claim->damaged_area_opposite = $request->input('damaged_area_opposite') ? json_encode($request->input('damaged_area_opposite')) : null;
-
-        $claim->claim_number = date('Y').'-'.str_pad(($claim->id + 99), 5, 0, STR_PAD_LEFT);
-
-        Opposite::create([
-            'name'          => $request->op_name,
-            'street'        => $request->op_street,
-            'zipcode'       => $request->op_zipcode,
-            'city'          => $request->op_city,
-            'country'       => $request->op_country,
-            'phone'         => $request->op_phone,
-            'email'         => $request->op_email,
-            'claim_id'      => $claim->id,
-        ]);
-        
-        if(!$isAdmin) {
-            
-            $claim->company_id = $user->contact->company->id;
-
-        }
-
-        $companyId = $claim->company_id;
-
-        $claim->status = 'new';
-
-        $company = Company::where('id', $companyId)->first();
-
-        $team_id = $company->team_id;
-        
-        // This doesn't work because of the Multitenanti trait.
-        //$claim->team_id = $team_id;
-
-        if(isset($request->vehicle_plates)){
-            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
-
-            if(!isset($vehicle)) {
-
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
-
-                
-                $vehicle = Vehicle::create([
-                    'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates,
-                    'company_id' => $companyId,
-                    'team_id' => $team_id
-                ]);
-
-            }
-
-            $claim->vehicle_id = $vehicle->id;
-        }
-
-        //
-
-        if(isset($request->vehicle_plates_opposite)){
-
-            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
-
-            if(!isset($vehicleOpposite)) {
-
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
-
-                
-                $vehicleOpposite = VehicleOpposite::create([
-                    'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite,
-                    'team_id' => $team_id
-                ]);
-
-            }
-
-            $claim->vehicle_opposite_id = $vehicleOpposite->id;
-        
-        }
-
-        $claim->save();
-        /* end custom bit */
-
+        $claim = Claim::create($request->all());
 
         foreach ($request->input('damage_files', []) as $file) {
             $claim->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('damage_files');
@@ -206,155 +90,33 @@ class ClaimController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $claim->id]);
         }
 
-        $message = new \App\Notifications\ClaimCreation($claim, $user);
-        Notification::route('mail', [
-            'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
-
-
-        return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+        return redirect()->route('admin.claims.index');
     }
 
     public function edit(Claim $claim)
     {
         abort_if(Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $isAdmin = auth()->user()->roles->contains(1);
-        $user = auth()->user();
-
-        abort_if(!$isAdmin && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $injury_offices = InjuryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $vehicle = Vehicle::where('company_id', $claim->company->id)->pluck('plates', 'plates')->prepend(trans('global.pleaseSelect'), '');
+        $vehicles = Vehicle::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $vehicle_opposite = VehicleOpposite::pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $recovery_offices = RecoveryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $recovery_offices = RecoveryOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-
-
-        if($isAdmin) {
-
-            $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        } else {
-            
-            $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
+        $expertise_offices = ExpertiseOffice::pluck('identifier', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposites', 'vehicles'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        
-        $isAdmin = auth()->user()->roles->contains(1);
-        $user = auth()->user();
-        $companies = null;
-        
-        if(!$isAdmin) {
-            
-            $claim->company_id = $user->contact->company->id;
-            
-        }
-        
-        $companyId = $claim->company_id;
-        
-        $company = Company::where('id', $companyId)->first();
-        
-        $team_id = $company->team_id;
-        
-        if(isset($request->vehicle_plates)){
-            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
-            
-            if(!isset($vehicle)) {
-                
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
-                
-                
-                $vehicle = Vehicle::create([
-                    'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates,
-                    'company_id' => $companyId,
-                    'team_id' => $team_id
-                ]);
-                
-            }
-            
-            $claim->vehicle_id = $vehicle->id;
-        }
-        
-        //
-        
-        if(isset($request->vehicle_plates_opposite)){
-            
-            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
-            
-            if(!isset($vehicleOpposite)) {
-                
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
-                
-                
-                $vehicleOpposite = VehicleOpposite::create([
-                    'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite,
-                    'team_id' => $team_id
-                ]);
-                
-            }
-            
-            $claim->vehicle_opposite_id = $vehicleOpposite->id;
-            
-        }
-        
-        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite', 'vehicle_id', 'vehicle_opposite_id'];
-        
-        $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-
-        if(isset($opposite)) {
-            $opposite_val = [
-                'name' => $request->op_name,
-                'street' => $request->op_street,
-                'zipcode' => $request->op_zipcode,
-                'city' => $request->op_city,
-                'country' => $request->op_country,
-                'phone' => $request->op_phone,
-                'email' => $request->op_email,
-            ];
-    
-            $opposite->update($opposite_val);
-        } else {
-            Opposite::create([
-                'name'          => $request->op_name,
-                'street'        => $request->op_street,
-                'zipcode'       => $request->op_zipcode,
-                'city'          => $request->op_city,
-                'country'       => $request->op_country,
-                'phone'         => $request->op_phone,
-                'email'         => $request->op_email,
-                'claim_id'      => $claim->id,
-            ]);
-        }
-        
-        $claim->update($request->except($multiSelects));
-
-        
-        $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
-        $claim->damaged_part = $request->input('damaged_part') ? json_encode($request->input('damaged_part')) : null;
-        $claim->damage_origin = $request->input('damage_origin') ? json_encode($request->input('damage_origin')) : null;
-        $claim->damaged_part_opposite = $request->input('damaged_part_opposite') ? json_encode($request->input('damaged_part_opposite')) : null;
-        $claim->damage_origin_opposite = $request->input('damage_origin_opposite') ? json_encode($request->input('damage_origin_opposite')) : null;
-        $claim->damaged_area_opposite = $request->input('damaged_area_opposite') ? json_encode($request->input('damaged_area_opposite')) : null;
-
-        $claim->save();
+        $claim->update($request->all());
 
         if (count($claim->damage_files) > 0) {
             foreach ($claim->damage_files as $media) {
@@ -412,31 +174,16 @@ class ClaimController extends Controller
             }
         }
 
-        return redirect()->route('admin.claims.show', $claim->id)->with('message', 'Schadedossier succesvol bijgewerkt');
+        return redirect()->route('admin.claims.index');
     }
 
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'claimNotes');
 
-        $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-        $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
-        $notesAndTasks = $claim->notes->merge($claim->tasks);
-
-        $users = User::where('team_id', $user->team->id)->get();
-
-        if($isAdmin) {
-
-            $users = User::get();
-
-        } 
-
-        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
-
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks'));
+        return view('admin.claims.show', compact('claim'));
     }
 
     public function destroy(Claim $claim)
@@ -469,39 +216,5 @@ class ClaimController extends Controller
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
-    }
-
-    public function quickUpdateStatus(Request $request)
-    {
-        $claim = Claim::find($request->claim_id);
-
-        $new_status = null;
-
-        if( $request->new_status == 'finished' ) {
-
-            if(!isset($claim->damage_costs) || !isset($claim->recovery_costs) || !isset($claim->damage_kind)) {
-    
-                return response()->json(
-                    [
-                        'status' => $claim->status,
-                        'type'  => 'alert-danger',
-                        'message' => 'Status NIET aangepast! U dient eerst financiele gegevens verder in te vullen voordat de claim gesloten kan worden.'
-                    ], 200);
-            }
-
-        }
-
-        
-
-        $claim->status = $request->new_status;
-
-        $claim->save();
-
-        return response()->json(
-            [
-                'status' => $claim->status,
-                'type' => 'alert-success',
-                'message' => 'Status is succesvol aangepast!'
-            ], 200);
     }
 }

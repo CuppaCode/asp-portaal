@@ -4,9 +4,6 @@ namespace App\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Claim;
-use App\Models\Company;
-use App\Models\Contact;
 
 trait MultiTenantModelTrait
 {
@@ -19,19 +16,6 @@ trait MultiTenantModelTrait
                 // If required, remove the surrounding IF condition and admins will act as users
                 if (! $isAdmin) {
                     $model->team_id = auth()->user()->team_id;
-                } elseif ($isAdmin) {
-                    if($model->table == 'claims') {
-                        $company = Company::where('id', $model->company_id)->get('team_id')->first();
-                        $model->team_id = $company->team_id;
-                    }
-                    elseif ($model->table == 'tasks'){
-                        $user = Contact::where('user_id', $model->user_id)->get('team_id')->first();
-                        if (isset($user->team_id)) {
-                            $model->team_id = $user->team_id;
-                        } else {
-                            $model->team_id = auth()->user()->team_id;
-                        }
-                    }
                 }
             });
             if (! $isAdmin) {

@@ -28,23 +28,7 @@
                             {{ trans('cruds.comment.fields.body') }}
                         </th>
                         <td>
-                            {{ $comment->body }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.comment.fields.commentable') }}
-                        </th>
-                        <td>
-                            {{ $comment->commentable }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.comment.fields.commentable_type') }}
-                        </th>
-                        <td>
-                            {{ $comment->commentable_type }}
+                            {!! $comment->body !!}
                         </td>
                     </tr>
                 </tbody>

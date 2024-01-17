@@ -38,7 +38,7 @@
                 </thead>
                 <tbody>
                     @foreach($expertiseOffices as $key => $expertiseOffice)
-                        <tr data-entry-url="{{ route('admin.expertise-offices.edit', $expertiseOffice->id) }}" data-entry-id="{{ $expertiseOffice->id }}">
+                        <tr data-entry-id="{{ $expertiseOffice->id }}">
                             <td>
 
                             </td>

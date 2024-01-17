@@ -11,7 +11,6 @@ use App\Models\Claim;
 use App\Models\Note;
 use App\Models\Team;
 use App\Models\User;
-use App\Models\Comment;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -43,27 +42,19 @@ class NoteController extends Controller
         $claims = Claim::pluck('claim_number', 'id');
 
         $users = User::pluck('email', 'id')->prepend(trans('global.pleaseSelect'), '');
-        
+
         return view('admin.notes.create', compact('claims', 'users'));
     }
 
     public function store(StoreNoteRequest $request)
     {
-
-        $claim_id = $request->input('claims');
-
         $note = Note::create($request->all());
-
         $note->claims()->sync($request->input('claims', []));
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $note->id]);
         }
 
-        if($request->input('add-new-note', 'true')) {
-            return redirect()->route('admin.claims.show', $claim_id[0]);
-        } else {
-            return redirect()->route('admin.notes.index');
-        }
+        return redirect()->route('admin.notes.index');
     }
 
     public function edit(Note $note)

@@ -64,7 +64,7 @@
                 </thead>
                 <tbody>
                     @foreach($contacts as $key => $contact)
-                        <tr data-entry-url="{{ route('admin.contacts.show', $contact->id) }}" data-entry-id="{{ $contact->id }}">
+                        <tr data-entry-id="{{ $contact->id }}">
                             <td>
 
                             </td>

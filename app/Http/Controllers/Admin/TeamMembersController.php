@@ -23,30 +23,14 @@ class TeamMembersController extends Controller
         return view('admin.team-members.index', compact('team', 'users', 'roles'));
     }
 
-    public function invite(Request $request, $contact = false)
+    public function invite(Request $request)
     {
         $request->validate(['email' => 'email']);
         $team    = Team::where('owner_id', auth()->user()->id)->first();
-
-        if(!isset($team)){
-
-            $team = Team::find($contact->team_id);
-            
-        }
-
-        if($contact){
-
-            $url     = URL::signedRoute('register', ['team' => $team->id, 'contact' => $contact->id, 'first_name' => $contact->first_name, 'last_name' => $contact->last_name, 'email' => $contact->email]);
-
-        } else {
-
-            $url     = URL::signedRoute('register', ['team' => $team->id]);
-
-        }
-        
+        $url     = URL::signedRoute('register', ['team' => $team->id]);
         $message = new \App\Notifications\TeamMemberInvite($url);
         Notification::route('mail', $request->input('email'))->notify($message);
 
-        return redirect()->back()->with('message', 'Gebruiker is uitgenodigd.');
+        return redirect()->back()->with('message', 'Invite sent.');
     }
 }
