@@ -49,16 +49,10 @@ class NoteController extends Controller
 
     public function store(StoreNoteRequest $request)
     {
-        //dd($request);
 
         $claim_id = $request->input('claims');
 
         $note = Note::create($request->all());
-        $comment = new Comment(['body' => 'A new comment.', 'user_id' => '1']);
-
-        $note_id = Note::find($note->id);
-
-        $note_id->comments()->save($comment);
 
         $note->claims()->sync($request->input('claims', []));
         if ($media = $request->input('ck-media', false)) {
