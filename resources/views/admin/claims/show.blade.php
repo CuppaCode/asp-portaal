@@ -584,6 +584,15 @@
                         {{ $claim->invoice_comment }}
                     </p>
                     @endif
+
+                    @if ($claim->invoice_amount)
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.invoice_amount') }}
+                    </div>
+                    <p class="card-text">
+                        &euro; {{ $claim->invoice_amount }}
+                    </p>
+                    @endif
                 </div>
             </div>
         </div>

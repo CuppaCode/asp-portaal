@@ -345,3 +345,29 @@ div.dt-buttons {
     width: 100%;
     height: auto;
 }
+
+.kind_accident_legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.legend_transportation, .legend_traffic, .legend_other {
+    color: #fff;
+    padding: 7px 10px;
+    display:block;
+    font-size: 12px;
+}
+
+.legend_transportation {
+    background-color: #344A9B;
+}
+
+.legend_traffic {
+    background-color: #2eb85c;
+}
+
+.legend_other {
+    background-color: #000;
+}

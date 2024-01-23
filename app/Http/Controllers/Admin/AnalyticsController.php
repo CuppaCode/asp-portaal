@@ -41,7 +41,14 @@ class AnalyticsController extends Controller
         ->orderByRaw('FIELD(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")')
         ->groupBy('month')->get();
 
-        // dd($damage_costs);
+        $saved_costs = DB::table('claims')
+        ->Where('company_id', $request->company)
+        ->whereBetween('date_accident', [$from, $to])
+        ->select(DB::raw('SUM(recovery_costs + replacement_vehicle_costs + expert_costs + other_costs + deductible_excess_costs + insurance_costs + invoice_amount) as saved_costs, monthname(date_accident) as month'))
+        ->orderByRaw('FIELD(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")')
+        ->groupBy('month')->get();
+
+        // dd($saved_costs); - "replacement_vehicle_costs" - "expert_costs" - "other_costs" - "deductible_excess_costs" - "insurance_costs"
 
         return response()->json(
             [
@@ -49,7 +56,15 @@ class AnalyticsController extends Controller
                 'traffic' => $claim_kind_b,
                 'other' => $claim_kind_c,
                 'damage_costs' => $damage_costs,
+                'saved_costs' => $saved_costs,
             ], 200);  
+    }
+
+    public function invoices()
+    {
+        $claims = Claim::where('invoice_settlement_asp', 0)->orWhere('invoice_settlement_asp', NULL)->get();
+
+        return view('invoices', compact('claims'));
     }
 
 }

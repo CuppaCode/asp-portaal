@@ -90,6 +90,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('team-members', 'TeamMembersController@invite')->name('team-members.invite');
 
     Route::get('analytics', 'AnalyticsController@index')->name('analytics');
+    Route::get('invoices', 'AnalyticsController@invoices')->name('invoices');
 
 });
 

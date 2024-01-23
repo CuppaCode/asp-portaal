@@ -516,12 +516,22 @@
         <div class="card-body">
             <div class="form-row">
                 @if ($isAdmin)
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label>{{ trans('cruds.claim.fields.invoice_settlement') }}</label>
                     <input type="hidden" name="invoice_settlement_asp" value="0">
                     <input class="form-control {{ $errors->has('invoice_settlement_asp') ? 'is-invalid' : '' }}" type="checkbox" name="invoice_settlement_asp" id="invoice_settlement_asp" value="1" {{ $claim->invoice_settlement_asp || old('invoice_settlement_asp', 0) === 1 ? 'checked' : '' }}>
                 </div>
-                <div class="form-group col-md-9">
+                <div class="form-group col-md-2">
+                    <label for="invoice_amount">{{ trans('cruds.claim.fields.invoice_amount') }}</label>
+                    <input class="form-control {{ $errors->has('invoice_amount') ? 'is-invalid' : '' }}" type="number" name="invoice_amount" id="invoice_amount" value="{{ old('invoice_amount', $claim->invoice_amount ) }}">
+                    @if($errors->has('invoice_amount'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('invoice_amount') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.invoice_comment_helper') }}</span>
+                </div>
+                <div class="form-group col-md-8">
                     <label for="invoice_comment">{{ trans('cruds.claim.fields.invoice_comment') }}</label>
                     <input class="form-control {{ $errors->has('invoice_comment') ? 'is-invalid' : '' }}" type="text" name="invoice_comment" id="invoice_comment" value="{{ old('invoice_comment', $claim->invoice_comment ) }}">
                     @if($errors->has('invoice_comment'))

@@ -167,7 +167,9 @@ return [
             'invoice_settlement'               => 'Factuur afgewikkeld',
             'invoice_settlement_helper'        => ' ',
             'invoice_comment'                  => 'Factuur opmerking',
-            'invoice_comment_helper'                  => '',
+            'invoice_comment_helper'           => '',
+            'invoice_amount'                   => 'Factuur bedrag',
+            'invoice_amount_helper'            => '',
             'opposite_claim_no'                => 'Schadedossier nr. wederpartij',
             'opposite_claim_no_helper'         => '',
         ],
@@ -495,6 +497,15 @@ return [
             'deleted_at'          => 'Deleted at',
             'deleted_at_helper'   => ' ',
         ],
-    ]
+    ],
+    'analytics' => [
+        'title'          => 'Statistieken',
+        'title_report'   => 'Statistiek report',
+        'title_singular' => 'Statistiek',
+    ],
+    'invoices' => [
+        'title'          => 'Facturatie',
+        'title_singular' => 'Facturatie',
+    ],
 
 ];

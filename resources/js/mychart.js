@@ -46,11 +46,12 @@ $(document).ready(function() {
           },
     });
 
-    var damage_kind;
+  var damage_kind;
 	var damage_costs_graph;
 	var saved_costs_graph;
 
     $("#getAnalData").on("submit", function(e){
+      $("#analytics-area").removeClass('d-none');
         if (
             typeof damage_kind === 'object' &&
             !Array.isArray(damage_kind) &&
@@ -83,36 +84,48 @@ $(document).ready(function() {
         var edate = $('#datetimepicker2Input').val();
 
         $.post("/api/analytics/get-data", { company: company, startdate: sdate, enddate: edate } , function(res) {
-            console.log(res.damage_costs);
+            console.log(res);
 
             var damage_costs_arr = new Array();
             var damage_months_arr = new Array();
+            var saved_costs_arr = new Array();
 
+            const saved_costs = res.saved_costs;
             const damage_costs = res.damage_costs;
 
             damage_costs.forEach(eachDamage);
              
             function eachDamage(item) {
-				console.log(item.month);	
+				        console.log(item.month);	
 				
                 damage_costs_arr.push(item.damage_costs);
                 damage_months_arr.push(item.month);
             }
 
+            saved_costs.forEach(eachSavedCost);
+            
+            function eachSavedCost(item) {
+              saved_costs_arr.push(item.saved_costs);
+            }
+
+            $('.legend_transportation').text('Transport: '+ res.transport);
+            $('.legend_traffic').text('Verkeer: '+ res.traffic);
+            $('.legend_other').text('Overig: '+ res.other);
+
 			// Table of damage kind
             const data_damage_kind = {
                 labels: [
-                  'Tranport',
-                  'Laden',
+                  'Transport',
+                  'Verkeer',
                   'Overig'
                 ],
                 datasets: [{
                 //   label: 'My First Dataset',
                   data: [res.transport, res.traffic, res.other],
                   backgroundColor: [
-                    'red',
-                    'blue',
-                    'green'
+                    'rgb(52, 74, 155)',
+                    'rgb(40, 161, 81)',
+                    'black'
                   ],
                   hoverOffset: 4
                 }]
@@ -121,6 +134,13 @@ $(document).ready(function() {
             const config_damage_kind = {
                 type: 'doughnut',
                 data: data_damage_kind,
+                options: {
+                  plugins: {
+                    legend: {
+                      display: false,
+                    }
+                  }
+                },
               };
             
             damage_kind = new Chart(
@@ -136,22 +156,36 @@ $(document).ready(function() {
                 label: 'Schade kosten',
                 data: damage_costs_arr,
                 backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)'
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
                 ],
                 borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)'
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
+                  'rgb(52, 74, 155)',
+                  'rgb(40, 161, 81)',
                 ],
                 borderWidth: 1
             }]
@@ -165,7 +199,12 @@ $(document).ready(function() {
                     y: {
                       beginAtZero: true
                     }
-                  }
+                  },
+                  plugins: {
+                    legend: {
+                      display: false,
+                    }
+                  },
                 },
               };
 
@@ -179,33 +218,36 @@ $(document).ready(function() {
 			const data_saved_costs = {
 				labels: damage_months_arr,
 				datasets: [
-				{
-					label: '1',
-					data: damage_costs_arr,
-					order: 1
-				},
-				{
-					label: '2',
-					data: damage_costs_arr,
-					type: 'line',
-					order: 0
-				},
-				]
-			  };
+          {
+            label: 'Schade kosten',
+            data: damage_costs_arr,
+            type: 'line',
+            order: 1,
+            backgroundColor: 'rgb(52, 74, 155)',
+            borderColor: 'rgb(52, 74, 155)',
+          },
+          {
+            label: 'Besparing ',
+            data: saved_costs_arr,
+            type: 'line',
+            order: 0,
+            backgroundColor: 'rgb(40, 161, 81)',
+            borderColor: 'rgb(40, 161, 81)',
+          },
+        ]
+      };
 
 			const config_saved_costs = {
-				type: 'bar',
 				data: data_saved_costs,
 				options: {
 				  responsive: true,
 				  plugins: {
-					legend: {
-					  position: 'top',
-					},
-					title: {
-					  display: true,
-					  text: 'Chart.js Combined Line/Bar Chart'
-					}
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: false,
+            }
 				  }
 				},
 			  };
@@ -214,8 +256,6 @@ $(document).ready(function() {
                 document.getElementById('saved_costs'),
                 config_saved_costs
             );
-
-
           });
     });
 
