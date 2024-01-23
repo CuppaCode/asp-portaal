@@ -2,66 +2,93 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\MediaUploadingTrait;
+use App\Http\Requests\MassDestroyMailTemplateRequest;
+use App\Http\Requests\StoreMailTemplateRequest;
+use App\Http\Requests\UpdateMailTemplateRequest;
 use App\Models\MailTemplate;
 use Gate;
 use Illuminate\Http\Request;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 
 class MailTemplateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use MediaUploadingTrait;
+
     public function index()
     {
-        //
+        abort_if(Gate::denies('mail_template_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $mailTemplates = MailTemplate::with(['team'])->get();
+
+        return view('admin.mailTemplates.index', compact('mailTemplates'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        abort_if(Gate::denies('mail_template_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        return view('admin.mailTemplates.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreMailTemplateRequest $request)
     {
-        
+        $mailTemplate = MailTemplate::create($request->all());
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $mailTemplate->id]);
+        }
+
+        return redirect()->route('admin.mail-templates.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(MailTemplate $mailTemplate)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(MailTemplate $mailTemplate)
     {
-        //
+        abort_if(Gate::denies('mail_template_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $mailTemplate->load('team');
+
+        return view('admin.mailTemplates.edit', compact('mailTemplate'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, MailTemplate $mailTemplate)
+    public function update(UpdateMailTemplateRequest $request, MailTemplate $mailTemplate)
     {
-        //
+        $mailTemplate->update($request->all());
+
+        return redirect()->route('admin.mail-templates.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(MailTemplate $mailTemplate)
     {
-        //
+        abort_if(Gate::denies('mail_template_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $mailTemplate->delete();
+
+        return back();
+    }
+
+    public function massDestroy(MassDestroyMailTemplateRequest $request)
+    {
+        $mailTemplates = MailTemplate::find(request('ids'));
+
+        foreach ($mailTemplates as $mailTemplate) {
+            $mailTemplate->delete();
+        }
+
+        return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function storeCKEditorImages(Request $request)
+    {
+        abort_if(Gate::denies('mail_template_create') && Gate::denies('mail_template_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $model         = new MailTemplate();
+        $model->id     = $request->input('crud_id', 0);
+        $model->exists = true;
+        $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
+
+        return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
 }
