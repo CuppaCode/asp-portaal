@@ -93,6 +93,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('comments/destroy', 'CommentController@massDestroy')->name('comments.massDestroy');
     Route::resource('comments', 'CommentController');
 
+    // Mail Templates
+
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {

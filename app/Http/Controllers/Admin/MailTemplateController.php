@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\MailTemplate;
+use Gate;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class MailTemplateController extends Controller
 {
@@ -28,7 +30,7 @@ class MailTemplateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
