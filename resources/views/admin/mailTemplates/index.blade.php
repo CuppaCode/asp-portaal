@@ -11,7 +11,7 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.mail-templates.create') }}">
-                {{ trans('cruds.claim.title_singular') }} aanmaken
+                {{ trans('cruds.mail-templates.title_singular') }} aanmaken
             </a>
         </div>
     </div>

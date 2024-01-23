@@ -254,6 +254,14 @@
                 </a>
             </li>
         @endif
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailTemplates") || request()->is("admin/mailTemplates/*") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-paperclip c-sidebar-nav-icon">
+
+                </i>
+                {{ trans('cruds.mail-templates.title') }}
+            </a>
+        </li>
     </ul>
 
 </div>

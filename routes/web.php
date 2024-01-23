@@ -94,6 +94,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('comments', 'CommentController');
 
     // Mail Templates
+    Route::get('mail-templates', 'MailTemplateController@index')->name('mail-templates.index');
 
 });
 

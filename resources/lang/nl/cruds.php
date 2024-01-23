@@ -509,6 +509,10 @@ return [
             'commentable_type'  => 'Opmerking Type',
             'commentable_helper' => '',
         ]
+    ],
+    'mailTemplates' => [
+        'title' => 'Mail Sjablonen',
+        'title_singular' => 'Mail Sjabloon',
     ]
 
 ];
