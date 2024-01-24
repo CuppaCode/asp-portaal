@@ -11,38 +11,29 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.mail-templates.create') }}">
-                {{ trans('cruds.mail-templates.title_singular') }} aanmaken
+                {{ trans('cruds.mailTemplates.title_singular') }} aanmaken
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.claim.title_singular') }} {{ trans('global.list') }}
+        {{ trans('cruds.mailTemplates.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table id="Claim-Dtable" class="table table-bordered table-striped table-hover datatable datatable-Claim">
+            <table id="mailTemplate-Dtable" class="table table-bordered table-striped table-hover datatable datatable-mailTemplate">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            {{ trans('cruds.claim.fields.id') }}
+                            {{ trans('cruds.mailTemplates.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.claim.fields.company') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.claim.fields.subject') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.claim.fields.claim_number') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.claim.fields.status') }}
+                            {{ trans('cruds.mailTemplates.fields.name') }}
                         </th>
                         <th>
                             &nbsp;
@@ -55,76 +46,45 @@
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
                         <td>
-                            <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($companies as $key => $item)
-                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
                         <td>
-                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            <select class="search" strict="true">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach(App\Models\Claim::STATUS_SELECT as $key => $item)
-                                    <option value="{{ $item }}">{{ $item }}</option>
-                                @endforeach
-                            </select>
-                        </td>
-                        <td>
+                            
                         </td>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($claims as $key => $claim)
-                        <tr data-entry-url="{{ route('admin.claims.show', $claim->id) }}" data-entry-id="{{ $claim->id }}">
+                    @foreach($mailTemplates as $key => $mailTemplate)
+                        <tr data-entry-url="{{ route('admin.mail-templates.edit', $mailTemplate->id) }}" data-entry-id="{{ $mailTemplate->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $claim->id ?? '' }}
+                                {{ $mailTemplate->id ?? '' }}
                             </td>
                             <td>
-                                {{ $claim->company->name ?? '' }}
+                                {{ $mailTemplate->name ?? '' }}
                             </td>
-                            <td>
-                                {{ $claim->subject ?? '' }}
-                            </td>
-                            <td>
-                                {{ $claim->claim_number ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
-                            </td>
-                            <td class="edits-td">
-                                @can('claim_show')
-                                    <a id="view-row-datatable" class="btn btn-xs btn-primary" href="{{ route('admin.claims.show', $claim->id) }}">
-                                        {{ trans('global.view') }}
+                
+                            <td class="edits-td">                        
+
+                                @can('mail_template_edit')
+                                    <a class="btn btn-xs btn-success" href="{{ route('admin.mail-templates.edit', $mailTemplate->id) }}">
+                                        {{ trans('global.edit') }}
                                     </a>
                                 @endcan
-                                    
-                                @unless( !$claim->assign_self && !$isAdmin )
 
-                                    @can('claim_edit')
-                                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                                            {{ trans('global.edit') }}
-                                        </a>
-                                    @endcan
-
-                                @can('claim_delete')
-                                    <form action="{{ route('admin.claims.destroy', $claim->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                @can('mail_template_delete')
+                                    <form action="{{ route('admin.mail-templates.destroy', $mailTemplate->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                     </form>
                                 @endcan
 
-                                @endunless
+                                
+                            </td>
+                            <td>
                             </td>
 
                         </tr>
@@ -143,11 +103,11 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('claim_delete')
+@can('mail_template_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.claims.massDestroy') }}",
+    url: "{{ route('admin.mail-templates.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -178,7 +138,7 @@
     order: [[ 1, 'asc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Claim:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  let table = $('.datatable-mailTemplate:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

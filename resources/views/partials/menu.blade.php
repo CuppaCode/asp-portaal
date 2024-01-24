@@ -259,7 +259,7 @@
                 <i class="fa-fw fas fa-paperclip c-sidebar-nav-icon">
 
                 </i>
-                {{ trans('cruds.mail-templates.title') }}
+                {{ trans('cruds.mailTemplates.title') }}
             </a>
         </li>
     </ul>

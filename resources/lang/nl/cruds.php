@@ -513,6 +513,13 @@ return [
     'mailTemplates' => [
         'title' => 'Mail Sjablonen',
         'title_singular' => 'Mail Sjabloon',
+        'fields' => [
+            'id' => 'ID',
+            'name' => 'Naam',
+            'name_helper' => '',
+            'body' => 'Sjabloon',
+            'body_helper' => ''
+        ]
     ]
 
 ];
