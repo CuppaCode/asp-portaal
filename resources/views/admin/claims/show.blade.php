@@ -58,7 +58,7 @@
 
     <div class="card-body">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.claim_number') }}
                 </div>
@@ -75,10 +75,17 @@
                 {{ $claim->subject }}
             </div>
             @if ($claim->opposite_claim_no)
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.opposite_claim_no') }}</div>
                 {{ $claim->opposite_claim_no }}
+            </div>
+            @endif
+            @if ($claim->assignee_id)
+            <div class="col-md-2">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.assignee') }}</div>
+                {{ $assignee_name->first_name . ' ' . $assignee_name->last_name }}
             </div>
             @endif
         </div>

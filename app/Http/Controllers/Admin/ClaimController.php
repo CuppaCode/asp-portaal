@@ -428,6 +428,8 @@ class ClaimController extends Controller
 
         $users = User::where('team_id', $user->team->id)->get();
 
+        $assignee_name = contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
+
         if($isAdmin) {
 
             $users = User::get();
@@ -436,7 +438,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks'));
+        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks', 'assignee_name'));
     }
 
     public function destroy(Claim $claim)
