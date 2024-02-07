@@ -11,6 +11,7 @@ use App\Models\Claim;
 use App\Models\Note;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Comment;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -48,9 +49,11 @@ class NoteController extends Controller
 
     public function store(StoreNoteRequest $request)
     {
+
         $claim_id = $request->input('claims');
 
         $note = Note::create($request->all());
+
         $note->claims()->sync($request->input('claims', []));
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $note->id]);

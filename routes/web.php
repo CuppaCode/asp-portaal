@@ -92,6 +92,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('analytics', 'AnalyticsController@index')->name('analytics');
     Route::get('invoices', 'AnalyticsController@invoices')->name('invoices');
 
+    // Comment
+    Route::delete('comments/destroy', 'CommentController@massDestroy')->name('comments.massDestroy');
+    Route::resource('comments', 'CommentController');
+
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {

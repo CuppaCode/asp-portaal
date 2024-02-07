@@ -3,6 +3,7 @@
 
 @php
 
+    use Carbon\Carbon;
     $isAdmin = auth()->user()->roles->contains(1);
 
 @endphp
@@ -419,79 +420,341 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         Notities / Activiteiten
     </div>
-    @foreach ($claim->claimNotes as $note)
-        <div class="item">
-            <div class="row">
-                <div class="col-2 date-holder text-right">
-                    <div class="icon"><i class="fa fa-user"></i></div>
-                    <div class="date"> <span>{{ $note->user->name }}</span><br><span class="text-info">{{ $note->created_at }}</span></div>
+
+    @foreach ($notesAndTasks as $item)
+
+        @if ($item::class == 'App\Models\Note')
+
+            @php 
+                $note = $item;
+            @endphp
+
+            <div class="item" data-commentable-id="{{ $note->id }}">
+                <div class="row">
+                    <div class="col-2 date-holder text-right">
+                        <div class="icon"><i class="fa fa-user"></i></div>
+                        <div class="date"> <span>{{ $note->user->name }}</span><br><span class="text-info">{{ $note->created_at }}</span></div>
+                        </div>
+                        <div class="col-10 content">
+                        <h5> {{ $note->title }}</h5>
+                        {!! nl2br($note->description) !!}
+                    {{-- </div>
+                </div>
+            </div> --}}
+
+        @elseif ($item::class == 'App\Models\Task')
+
+            @php
+                $task = $item;
+                $deadline = Carbon::parse($task->deadline_at)->locale('nl_NL')->format('D d F');
+            @endphp
+
+            
+
+            <div class="item task" data-commentable-id="{{ $task->id }}">
+                <div class="row">
+                    <div class="col-2 date-holder text-right">
+                        <div class="icon"><i class="fa fa-calendar-check-o"></i></div>
+
+                        <div class="date">
+
+                            <span class="text-info">{{ $task->created_at }}</span>
+
+                        </div>
                     </div>
+
                     <div class="col-10 content">
-                    <h5> {{ $note->title }}</h5>
-                    {!! nl2br($note->description) !!}
+                        <div class="status">
+
+                            @if (auth()->user()->id == $task->user->id)
+
+                                <select class="js-task-status badge bg-success" data-task-id="{{ $task->id }}">
+
+                                    @foreach (App\Models\Task::STATUS_SELECT as $key => $status)
+                        
+                                        <option value="{{ $key }}" {{ $task->status == $key ? 'selected' : '' }}>{{ $status }}</option>
+                        
+                                    @endforeach
+                        
+                                </select>
+                            
+                            @else
+
+                                <span class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+
+                            @endif
+
+                            <span class="badge bg-primary">{{ $deadline }}</span>
+                            <span class="badge bg-info">{{ $task->user->name }}</span>
+                            
+                        </div>
+                        {!! nl2br($task->description) !!}
+                    {{-- </div>
+                </div>
+            </div> --}}
+
+        @else
+
+            <div class="alert-warning">Er is iets verkeerd gegaan...</div>
+
+        @endif
+
+                    <div class="action-icons">
+
+                        <a class="action-icon add-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+
+                            <i class="fa fa-reply" aria-hidden="true"></i>
+
+                        </a>
+
+                        <a class="action-icon hide-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+
+                            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+
+                        </a>
+                    </div>
+
                 </div>
             </div>
+
+            @foreach ($item->comments as $comment)
+
+                <div class="item comment">
+                    <div class="row">
+
+                        <div class="col-2 p-0"></div>
+
+                        <div class="col-2 date-holder text-right">
+                            <div class="icon"><i class="fa fa-commenting-o"></i></div>
+                            <div class="date">
+
+                                @if ( $comment->user )
+
+                                    <span>{{ $comment->user->name }}</span>
+
+                                @endif
+                                <br>
+                                <span class="text-info">{{ $comment->created_at }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-8">
+                            {{ $comment->body }}
+                            {{ $comment->team_id }}
+                        </div>
+
+                    </div>
+
+                </div>
+            @endforeach
+
+            <div class="item form">
+                <div class="row">
+
+                    <div class="col-2 p-0"></div>
+
+                    <div class="col-10">
+                        <form method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group">
+                                <label for="body">{{ trans('cruds.comment.fields.body') }}</label>
+                                <textarea class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body" required>{{ old('body') }}</textarea>
+                                @if($errors->has('body'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('body') }}
+                                    </div>
+                                @endif
+                                <span class="help-block">{{ trans('cruds.comment.fields.body_helper') }}</span>
+                            </div>
+
+                            <input type="hidden" name="commentable" data-id="commentable_{{ $item->id }}" value="{{ $item->id }}"/>
+                            <input type="hidden" name="commentable_type" data-id="commentable_type_{{ $item->id }}" value="{{ $item::class }}"/>
+                            <input type="hidden" name="user_id" data-id="user_id_{{ $item->id }}" value="{{ auth()->user()->id }}" />
+                            <input type="hidden" name="team_id" data-id="team_id_{{ $item->id }}" value="{{ auth()->user()->team->id }}" />
+                        
+                            <div class="form-group">
+                                <button class="btn btn-danger" type="submit" data-submit-comment>
+                                    {{ trans('global.save') }}
+                                </button>
+
+                                <div class="action-icons action-icons-bottom">
+
+                                    <a class="action-icon hide-comment" href="javascript:;" data-commentable-id="{{ $item->id }}" data-commentable-type="{{ $item::class }}">
+
+                                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            
+                                    </a>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <a class="js-read-more read-more" href="javascript:;">
+                <span class="js-read-more-text">Lees meer...</span>
+                    
+                @if (count($item->comments) > 0)
+
+                    <span class="comment-total">
+                        ({{ count($item->comments) }})
+                    </span>
+
+                @endif
+                
+            </a>
+
         </div>
     @endforeach
     
-    <div class="item">
+    <div class="item last-form">
         <div class="row">
             <div class="col-2 date-holder text-right">
                 <div class="icon"><i class="fa fa-plus"></i></div>
                 <div class="date">Nieuwe notitie<span></span><br><span class="text-info"></span></div>
                 </div>
                 <div class="col-10 content">
-                    <form method="POST" action="{{ route("admin.notes.store") }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label class="required" for="title">{{ trans('cruds.note.fields.title') }}</label>
-                            <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', '') }}" required>
-                            @if($errors->has('title'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('title') }}
+                    <ul class="nav nav-tabs" id="notes" role="tablist">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="note-tab" data-toggle="tab" href="#noteSection" role="tab" aria-controls="note-tab" aria-selected="true">Notitie</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="task-tab" data-toggle="tab" href="#taskSection" role="tab" aria-controls="task-tab" aria-selected="false">Taak</a>
+                        </li>
+                      </ul>
+                      
+                      <!-- Tab panes -->
+                      <div class="tab-content">
+                        <div class="tab-pane active pt-3" id="noteSection" role="tabpanel" aria-labelledby="note-tab">
+                            <form method="POST" action="{{ route("admin.notes.store") }}" enctype="multipart/form-data">
+                            @csrf
+                                <div class="form-group">
+                                    <label class="required" for="title">{{ trans('cruds.note.fields.title') }}</label>
+                                    <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', '') }}" required>
+                                    @if($errors->has('title'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('title') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.note.fields.title_helper') }}</span>
                                 </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.note.fields.title_helper') }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="description">{{ trans('cruds.note.fields.description') }}</label>
-                            <textarea class="form-control ckeditor {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
-                            @if($errors->has('description'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('description') }}
+                                <div class="form-group">
+                                    <label for="description">{{ trans('cruds.note.fields.description') }}</label>
+                                    <textarea class="form-control ckeditor {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
+                                    @if($errors->has('description'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('description') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.note.fields.description_helper') }}</span>
                                 </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.note.fields.description_helper') }}</span>
+                                <div class="form-group d-none">
+                                    <select class="form-control select2 {{ $errors->has('claims') ? 'is-invalid' : '' }}" name="claims[]" id="claims" multiple required>
+                                        <option value="{{ $claim->id }}" selected>{{ $claim->id }}</option>
+                                    </select>
+                                </div>
+                        
+                                @if (auth()->user()->roles->contains(1))
+                                <div class="form-group d-none">
+                                    <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id" required>
+                                        <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
+                                    </select>
+                                </div>
+                                @else
+                        
+                                <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
+                                
+                                @endif
+                        
+                                <div class="form-group">
+                                    <button class="btn btn-danger" type="submit" name="add-new-note" value='true'>
+                                        {{ trans('global.save') }}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-group d-none">
-                            <select class="form-control select2 {{ $errors->has('claims') ? 'is-invalid' : '' }}" name="claims[]" id="claims" multiple required>
-                                <option value="{{ $claim->id }}" selected>{{ $claim->id }}</option>
-                            </select>
-            
+                        
+                        <div class="tab-pane pt-3" id="taskSection" role="tabpanel" aria-labelledby="task-tab">
+                            <form method="POST" action="{{ route("admin.tasks.store") }}" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label class="required" for="user_id">Toewijzen aan</label>
+                                        <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id" required>
+                                            <option selected disabled>{{ trans('global.pleaseSelect') }}</option>
+                                            @foreach($users as $user)
+                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @if($errors->has('user'))
+                                            <div class="invalid-feedback">
+                                                {{ $errors->first('user') }}
+                                            </div>
+                                        @endif
+                                        <span class="help-block">{{ trans('cruds.task.fields.user_helper') }}</span>
+                                    </div>
+                                    <label for="description">{{ trans('cruds.task.fields.description') }}</label>
+                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
+                                    @if($errors->has('description'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('description') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.description_helper') }}</span>
+                                </div>
+                                <div class="form-group d-none">
+                                    <label for="claim_id">{{ trans('cruds.task.fields.claim') }}</label>
+                                    <select class="form-control select2 {{ $errors->has('claim') ? 'is-invalid' : '' }}" name="claim_id" id="claim_id">
+                                            <option value="{{ $claim->id }}">{{ $claim->claim_number }}</option>
+                                    </select>
+                                    @if($errors->has('claim'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('claim') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.claim_helper') }}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="required" for="deadline_at">{{ trans('cruds.task.fields.deadline_at') }}</label>
+                                    <input class="form-control date {{ $errors->has('deadline_at') ? 'is-invalid' : '' }}" type="text" name="deadline_at" id="deadline_at" value="{{ old('deadline_at') }}" required>
+                                    @if($errors->has('deadline_at'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('deadline_at') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.deadline_at_helper') }}</span>
+                                </div>
+                                <div class="form-group d-none">
+                                    <label class="required">{{ trans('cruds.task.fields.status') }}</label>
+                                    <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
+                                        <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                                        @foreach(App\Models\Task::STATUS_SELECT as $key => $label)
+                                            <option value="{{ $key }}" {{ old('status', 'new') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if($errors->has('status'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('status') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.status_helper') }}</span>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>
+                                        {{ trans('global.save') }}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                
-                        @if (auth()->user()->roles->contains(1))
-                          <div class="form-group d-none">
-                              <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id" required>
-                                <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
-                              </select>
-                          </div>
-                        @else
-                
-                          <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
-                          
-                        @endif
-                
-                        <div class="form-group">
-                            <button class="btn btn-danger" type="submit" name="add-new-note" value='true'>
-                                {{ trans('global.save') }}
-                            </button>
-                        </div>
-                    </form>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>    
-</div>
+        </div>    
+    </div>
+
+    
+
 @if (auth()->user()->roles->contains(1))
 <div class="row">
     <div class="col-md-6">
