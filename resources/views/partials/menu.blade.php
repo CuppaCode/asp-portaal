@@ -235,6 +235,35 @@
                 </a>
             </li>
         @endcan
+        @can('analytics_access')
+            <li class="c-sidebar-nav-dropdown">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-folder c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.analytics.title') }}
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.analytics") }}" class="c-sidebar-nav-link {{ request()->is("admin/analytics") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-chart-pie c-sidebar-nav-icon">
+        
+                            </i>
+                            {{ trans('cruds.analytics.title_report') }} (beta)
+                        </a>
+                    </li>
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.invoices") }}" class="c-sidebar-nav-link {{ request()->is("admin/invoices") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-file c-sidebar-nav-icon">
+        
+                            </i>
+                            {{ trans('cruds.invoices.title') }}
+                        </a>
+                    </li>
+                        
+                </ul>
+          </li>
+        @endcan
         @can('comment_access')
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.comments.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/comments") || request()->is("admin/comments/*") ? "c-active" : "" }}">

@@ -38,7 +38,7 @@
         Schadedossier overzicht
         
         @if( $claim->assign_self || $isAdmin)
-        <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
+        <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
 
@@ -845,6 +845,15 @@
                     </div>
                     <p class="card-text">
                         {{ $claim->invoice_comment }}
+                    </p>
+                    @endif
+
+                    @if ($claim->invoice_amount)
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.invoice_amount') }}
+                    </div>
+                    <p class="card-text">
+                        &euro; {{ $claim->invoice_amount }}
                     </p>
                     @endif
                 </div>

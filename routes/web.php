@@ -89,6 +89,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('team-members', 'TeamMembersController@index')->name('team-members.index');
     Route::post('team-members', 'TeamMembersController@invite')->name('team-members.invite');
 
+    Route::get('analytics', 'AnalyticsController@index')->name('analytics');
+    Route::get('invoices', 'AnalyticsController@invoices')->name('invoices');
+
     // Comment
     Route::delete('comments/destroy', 'CommentController@massDestroy')->name('comments.massDestroy');
     Route::resource('comments', 'CommentController');
