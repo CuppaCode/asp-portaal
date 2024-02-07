@@ -237,6 +237,8 @@ class ClaimController extends Controller
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 
+        $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
+
 
         if($isAdmin) {
 
@@ -250,12 +252,13 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite', 'assignee_options'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        
+        // dd($request);
+
         $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
         $companies = null;
@@ -429,6 +432,8 @@ class ClaimController extends Controller
         $users = User::where('team_id', $user->team->id)->get();
 
         $assignee_name = contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
+
+        // dd($assignee_name);
 
         if($isAdmin) {
 

@@ -68,6 +68,19 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.opposite_claim_no_helper') }}</span>
             </div>
+            <label>{{ trans('cruds.claim.fields.assignee') }}</label>
+                <select class="form-control {{ $errors->has('assignee_id') ? 'is-invalid' : '' }}" name="assignee_id" id="assignee_id">
+                    <option value disabled {{ old('assignee_id', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach($assignee_options as $assignee)
+                        <option value="{{ $assignee->id }}" {{ (old('assignee_id') ? old('assignee_id') : $claim->assignee_id ?? '') == $assignee->id ? 'selected' : '' }}>{{ $assignee->name }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('assignee'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('assignee') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.assignee_helper') }}</span>
         </div>
     </div>
 
