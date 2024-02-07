@@ -6,6 +6,8 @@
     use Carbon\Carbon;
     $isAdmin = auth()->user()->roles->contains(1);
 
+    //dd($contacts)
+
 @endphp
 
 <div class="top-bar-claims form-group d-flex justify-content-between align-items-center">
@@ -150,17 +152,17 @@
                 @endunless
             </div>
             <div class="card-body">
-                @isset($contacts) 
+                @isset($firstContact) 
                 <div class="card-title">
                     Naam
                 </div>
                 <p class="card-text">
-                    {{ $contacts->first_name}} {{ $contacts->last_name}}   
+                    {{ $firstContact->first_name}} {{ $firstContact->last_name}}   
                 </p>
                 <div class="card-title">
                     Email
                 </div>
-                <p class="card-text"><a href="mailto:{{ $contacts->email}}">{{ $contacts->email}}   </a> </p>
+                <p class="card-text"><a href="mailto:{{ $firstContact->email}}">{{ $firstContact->email}}   </a> </p>
                 @else
                     Nog geen contactpersoon bekend.
                 @endisset 
@@ -622,6 +624,9 @@
                         <li class="nav-item">
                           <a class="nav-link" id="task-tab" data-toggle="tab" href="#taskSection" role="tab" aria-controls="task-tab" aria-selected="false">Taak</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="task-tab" data-toggle="tab" href="#mailSection" role="tab" aria-controls="task-tab" aria-selected="false">Mail</a>
+                        </li>
                       </ul>
                       
                       <!-- Tab panes -->
@@ -695,6 +700,74 @@
                                         <span class="help-block">{{ trans('cruds.task.fields.user_helper') }}</span>
                                     </div>
                                     <label for="description">{{ trans('cruds.task.fields.description') }}</label>
+                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
+                                    @if($errors->has('description'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('description') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.description_helper') }}</span>
+                                </div>
+                                <div class="form-group d-none">
+                                    <label for="claim_id">{{ trans('cruds.task.fields.claim') }}</label>
+                                    <select class="form-control select2 {{ $errors->has('claim') ? 'is-invalid' : '' }}" name="claim_id" id="claim_id">
+                                            <option value="{{ $claim->id }}">{{ $claim->claim_number }}</option>
+                                    </select>
+                                    @if($errors->has('claim'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('claim') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.claim_helper') }}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="required" for="deadline_at">{{ trans('cruds.task.fields.deadline_at') }}</label>
+                                    <input class="form-control date {{ $errors->has('deadline_at') ? 'is-invalid' : '' }}" type="text" name="deadline_at" id="deadline_at" value="{{ old('deadline_at') }}" required>
+                                    @if($errors->has('deadline_at'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('deadline_at') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.deadline_at_helper') }}</span>
+                                </div>
+                                <div class="form-group d-none">
+                                    <label class="required">{{ trans('cruds.task.fields.status') }}</label>
+                                    <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
+                                        <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                                        @foreach(App\Models\Task::STATUS_SELECT as $key => $label)
+                                            <option value="{{ $key }}" {{ old('status', 'new') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                    @if($errors->has('status'))
+                                        <div class="invalid-feedback">
+                                            {{ $errors->first('status') }}
+                                        </div>
+                                    @endif
+                                    <span class="help-block">{{ trans('cruds.task.fields.status_helper') }}</span>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>
+                                        {{ trans('global.save') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane pt-3" id="mailSection" role="tabpanel" aria-labelledby="mail-tab">
+                            <form method="POST" action="{{ route("admin.claims.sendMail") }}" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label class="required" for="receiver">Ontvanger</label>
+                                        <select class="form-control select2" name="receiver" id="receiver" required>
+
+                                            @foreach($allContactsInCompany as $id => $entry)
+                                                <option value="{{ $entry->email }}" {{ old('receiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
+                                            @endforeach
+                                        </select>
+                                
+                                    </div>
+                                    <label for="body"></label>
                                     <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
                                     @if($errors->has('description'))
                                         <div class="invalid-feedback">

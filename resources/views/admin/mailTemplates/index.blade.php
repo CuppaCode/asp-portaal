@@ -152,10 +152,10 @@
             }
         }
         
-        if ($.urlParam('status') != null) {
-            param = $.urlParam('status')
-            table.column(5).search(param, 'strict').draw();
-        }
+        // if ($.urlParam('status') != null) {
+        //     param = $.urlParam('status')
+        //     table.column(5).search(param, 'strict').draw();
+        // }
 
         table.column( 1 ).visible( false );
     });
