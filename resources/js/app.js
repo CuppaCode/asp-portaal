@@ -173,8 +173,8 @@ $(document).ready(function () {
     ajaxCreateCompany(expertiseOfficeID, 'expertise');
 
     // Vehicle creation
-    var vehicleID = $('#vehicle_plates');
-    bindVehicleTags( vehicleID );
+    var vehicleID = $('#vehicle_pFlates');
+    bindTags( vehicleID );
 
     // Submitted check
     $('button[type="submit"]').on('click', function() {
@@ -284,6 +284,35 @@ $(document).ready(function () {
 
 
     });
+
+    // Bind mailreceiver
+    const mailReceiver = $('#mailReceiver');
+    bindTags(mailReceiver);
+
+    // Handle template change
+    const mailTemplate = $('#mailTemplate');
+    const mailBody = $('#mailBody');
+    const claimJson = JSON.parse($('#claimJson').text());
+
+    console.log(claimJson);
+
+    let find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
+    let replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
+
+    let finalBody = mailTemplate.val().replace(find, replace);
+    mailBody.html(finalBody);
+
+    mailTemplate.on('change', function (e) {
+
+        let find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
+        let replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
+
+        let finalBody = $(this).val().replace(find, replace);
+
+        mailBody.html(finalBody);
+
+    });
+
 
 
 });
@@ -413,7 +442,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
 }
 
-function bindVehicleTags( inputID ) {
+function bindTags( inputID ) {
 
     inputID.select2({
         tags: true

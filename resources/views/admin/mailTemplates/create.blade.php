@@ -16,7 +16,7 @@
     <div class="card">
 
         <div class="card-header">
-            Gebruik de volgende tags: <pre>[test] [test]</pre>
+            Gebruik de volgende tags: <pre>[bedrijf] [onderwerp] [dossiernr] [status] [datumschade]</pre>
         </div>
 
         <div class="card-body">

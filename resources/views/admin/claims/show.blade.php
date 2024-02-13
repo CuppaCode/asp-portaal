@@ -758,64 +758,48 @@
                                 @csrf
                                 <div class="form-group">
                                     <div class="form-group">
-                                        <label class="required" for="receiver">Ontvanger</label>
-                                        <select class="form-control select2" name="receiver" id="receiver" required>
+                                        <label class="required" for="mailReceiver">Ontvanger</label>
+                                        <select class="form-control select2" name="mailReceiver" id="mailReceiver" required>
 
                                             @foreach($allContactsInCompany as $id => $entry)
-                                                <option value="{{ $entry->email }}" {{ old('receiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
+                                                <option value="{{ $entry->email }}" {{ old('mailReceiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
                                             @endforeach
                                         </select>
                                 
                                     </div>
-                                    <label for="body"></label>
-                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description" id="description">{!! old('description') !!}</textarea>
-                                    @if($errors->has('description'))
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('description') }}
-                                        </div>
-                                    @endif
-                                    <span class="help-block">{{ trans('cruds.task.fields.description_helper') }}</span>
-                                </div>
-                                <div class="form-group d-none">
-                                    <label for="claim_id">{{ trans('cruds.task.fields.claim') }}</label>
-                                    <select class="form-control select2 {{ $errors->has('claim') ? 'is-invalid' : '' }}" name="claim_id" id="claim_id">
-                                            <option value="{{ $claim->id }}">{{ $claim->claim_number }}</option>
-                                    </select>
-                                    @if($errors->has('claim'))
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('claim') }}
-                                        </div>
-                                    @endif
-                                    <span class="help-block">{{ trans('cruds.task.fields.claim_helper') }}</span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="required" for="deadline_at">{{ trans('cruds.task.fields.deadline_at') }}</label>
-                                    <input class="form-control date {{ $errors->has('deadline_at') ? 'is-invalid' : '' }}" type="text" name="deadline_at" id="deadline_at" value="{{ old('deadline_at') }}" required>
-                                    @if($errors->has('deadline_at'))
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('deadline_at') }}
-                                        </div>
-                                    @endif
-                                    <span class="help-block">{{ trans('cruds.task.fields.deadline_at_helper') }}</span>
-                                </div>
-                                <div class="form-group d-none">
-                                    <label class="required">{{ trans('cruds.task.fields.status') }}</label>
-                                    <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
-                                        <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                                        @foreach(App\Models\Task::STATUS_SELECT as $key => $label)
-                                            <option value="{{ $key }}" {{ old('status', 'new') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                                        @endforeach
-                                    </select>
-                                    @if($errors->has('status'))
-                                        <div class="invalid-feedback">
-                                            {{ $errors->first('status') }}
-                                        </div>
-                                    @endif
-                                    <span class="help-block">{{ trans('cruds.task.fields.status_helper') }}</span>
+                                    <div class="form-group">
+                                        <label for="template">Template</label>
+                                        <select class="form-control select2" name="mailTemplate" id="mailTemplate">
+
+                                            <option selected disabled>{{ trans('global.pleaseSelect') }}</option>
+
+                                            @foreach($mailTemplates as $id => $entry)
+                                                <option value="{{ $entry->body }}">{{ $entry->name ?? '' }}</option>
+                                            @endforeach
+                                        </select>
+                                
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label for="mailSubject" class="required">Onderwerp</label>
+                                        <input type="text" class="form-control" name="mailSubject" id="mailSubject" value="Betreft: {{ $claim->subject }}" required>
+
+                                    </div>
+
+                                    <label class="required" for="mailBody">Bericht</label>
+                                    <textarea class="form-control" name="mailBody" id="mailBody" required>{!! old('mailBody') !!}</textarea>
+
+                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                    <div class="form-group d-none">
+                                        <select class="form-control select2 {{ $errors->has('claims') ? 'is-invalid' : '' }}" name="claims[]" id="claims" multiple required>
+                                            <option value="{{ $claim->id }}" selected>{{ $claim->id }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-none" id="claimJson">{{ json_encode($claim) }}</div>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>
-                                        {{ trans('global.save') }}
+                                        {{ trans('global.send') }}
                                     </button>
                                 </div>
                             </form>
