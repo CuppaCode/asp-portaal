@@ -294,26 +294,39 @@ $(document).ready(function () {
     const mailBody = $('#mailBody');
     const claimJson = JSON.parse($('#claimJson').text());
 
-    console.log(claimJson);
+    //console.log(claimJson);
 
-    let find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
-    let replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
+    var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
+    var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
 
-    let finalBody = mailTemplate.val().replace(find, replace);
+    var finalBody = mailTemplate.val() ?? '';
+
+    if (finalBody != '') {
+
+        $.each(find, (index, item) => {
+            
+            finalBody = finalBody.replace(item, replace[index]);
+
+        });
+
+    }
+
     mailBody.html(finalBody);
 
     mailTemplate.on('change', function (e) {
 
-        let find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
-        let replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
 
-        let finalBody = $(this).val().replace(find, replace);
+        var finalBody = $(this).val();
+
+        $.each(find, (index, item) => {
+            
+            finalBody = finalBody.replace(item, replace[index]);
+
+        });
 
         mailBody.html(finalBody);
 
     });
-
-
 
 });
 
