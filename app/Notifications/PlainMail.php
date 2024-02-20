@@ -37,10 +37,8 @@ class PlainMail extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject(config('app.name') . ':' . $this->subject)
-                    ->greeting('Beste,')
-                    ->line($this->message)
-                    ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
+                    ->view('emails.plain-email', ['body' => $this->message])
+                    ->subject(config('app.name') . ':' . $this->subject);
     }
 
     /**
