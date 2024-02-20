@@ -90,6 +90,22 @@
                                 </i>
                                 {{ trans('cruds.claim.title') }} aanmaken
                             </a>
+                        </li>                       
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.open") }}" class="c-sidebar-nav-link {{ request()->is("openclaims", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                 Open {{ trans('cruds.claim.title') }}s
+                            </a>
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.closed") }}" class="c-sidebar-nav-link {{ request()->is("closedclaims", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                 Gesloten {{ trans('cruds.claim.title') }}s
+                            </a>
                         </li>
                         <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.claims.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims", '') ? "c-active" : "" }}">
@@ -97,14 +113,6 @@
 
                                 </i>
                                 Alle {{ trans('cruds.claim.title') }}s
-                            </a>
-                        </li>
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.claims.index") }}?status=nieuw" class="c-sidebar-nav-link {{ request()->is("admin/claims", '?status=nieuw') ? "c-active" : "" }}">
-                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
-
-                                </i>
-                                 Nieuwe {{ trans('cruds.claim.title') }}s
                             </a>
                         </li>
                     @endcan

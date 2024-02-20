@@ -33,6 +33,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('claims/ckmedia', 'ClaimController@storeCKEditorImages')->name('claims.storeCKEditorImages');
     Route::resource('claims', 'ClaimController');
 
+    Route::get('openclaims', 'ClaimController@open')->name('claims.open');
+    Route::get('closedclaims', 'ClaimController@closed')->name('claims.closed');
+
     // Company
     Route::delete('companies/destroy', 'CompanyController@massDestroy')->name('companies.massDestroy');
     Route::post('companies/media', 'CompanyController@storeMedia')->name('companies.storeMedia');
