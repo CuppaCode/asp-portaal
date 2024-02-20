@@ -211,7 +211,12 @@ class ClaimController extends Controller
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
 
-        return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+        if ($claim->assign_self == 1) {
+            return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+    }
+        else {
+            return redirect()->route('admin.claims.index')->with('message', 'Schadedossier: Stap 1 voltooid');
+        }
     }
 
     public function edit(Claim $claim)
