@@ -223,6 +223,7 @@ class Claim extends Model implements HasMedia
         'invoice_settlement_asp',
         'opposite_claim_no',
         'invoice_comment',
+        'invoice_amount',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

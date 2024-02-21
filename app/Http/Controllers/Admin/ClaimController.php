@@ -52,6 +52,24 @@ class ClaimController extends Controller
         return view('admin.claims.index', compact('claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles'));
     }
 
+    public function open()
+    {
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
+
+        $companies = Company::get();
+
+        return view('admin.claims.index', compact('claims', 'companies'));
+    }
+
+    public function closed()
+    {
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('status', 'finished')->get();
+
+        $companies = Company::get();
+
+        return view('admin.claims.index', compact('claims', 'companies'));
+    }
+
     public function create()
     {
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -211,7 +229,12 @@ class ClaimController extends Controller
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
 
-        return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+        if ($claim->assign_self == 1) {
+            return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+    }
+        else {
+            return redirect()->route('admin.claims.index')->with('message', 'Schadedossier: Stap 1 voltooid');
+        }
     }
 
     public function edit(Claim $claim)
@@ -237,6 +260,8 @@ class ClaimController extends Controller
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 
+        $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
+
 
         if($isAdmin) {
 
@@ -250,12 +275,13 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite', 'assignee_options'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        
+        // dd($request);
+
         $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
         $companies = null;
@@ -428,6 +454,10 @@ class ClaimController extends Controller
 
         $users = User::where('team_id', $user->team->id)->get();
 
+        $assignee_name = contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
+
+        // dd($assignee_name);
+
         if($isAdmin) {
 
             $users = User::get();
@@ -436,7 +466,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks'));
+        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks', 'assignee_name'));
     }
 
     public function destroy(Claim $claim)
