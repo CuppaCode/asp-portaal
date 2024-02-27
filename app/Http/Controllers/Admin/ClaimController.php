@@ -524,7 +524,7 @@ class ClaimController extends Controller
         Bericht: {$request->mailBody}";
 
         $note = Note::create([
-            'title' => 'Mail verstuurd',
+            'title' => 'Mail:'. $request->mailSubject,
             'user_id' => $request->input('user_id'),
             'description' => $noteDescription,
             'team_id' => auth()->user()->team->id

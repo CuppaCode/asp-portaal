@@ -98,6 +98,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
     Route::resource('mail-templates', 'MailTemplateController');
 
+    // Mail examples
+    Route::get('preview-notification', function () {
+        $markdown = new \Illuminate\Mail\Markdown(view(), config('mail.markdown'));   
+        $data = 'Beste BezorgenZonderZorgen,
+
+        Op 05-07-2023 gebeurde er iets.
+        
+        Bednakt voor het wachten voor Schade met Hek.
+        
+        Test123
+        
+        Groet,
+        Jemoeder';
+        return $markdown->render("emails.plain-email", ['body' => $data]);
+    }); 
+
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
