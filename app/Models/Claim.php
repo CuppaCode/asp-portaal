@@ -147,7 +147,6 @@ class Claim extends Model implements HasMedia
     public const DAMAGE_KIND = [
         'traffic'   => 'Verkeer',
         'transport' => 'Transport',
-        'other'     => 'Overige'
     ];
 
     public const DAMAGE_ORIGIN = [

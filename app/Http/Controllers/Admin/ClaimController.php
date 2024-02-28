@@ -150,6 +150,10 @@ class ClaimController extends Controller
 
         $claim->status = 'new';
 
+        // Standard values claim creation
+        $claim->injury = 'no';
+        $claim->recoverable_claim = 'no';
+
         $company = Company::where('id', $companyId)->first();
 
         $team_id = $company->team_id;
@@ -176,8 +180,6 @@ class ClaimController extends Controller
 
             $claim->vehicle_id = $vehicle->id;
         }
-
-        //
 
         if(isset($request->vehicle_plates_opposite)){
 

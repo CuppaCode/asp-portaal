@@ -144,21 +144,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>{{ trans('cruds.claim.fields.contact_lawyer') }}</label>
-                <select class="form-control {{ $errors->has('contact_lawyer') ? 'is-invalid' : '' }}" name="contact_lawyer" id="contact_lawyer">
-                    <option value disabled {{ old('contact_lawyer', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::CONTACT_LAWYER_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('contact_lawyer', $claim->contact_lawyer) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('contact_lawyer'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('contact_lawyer') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.contact_lawyer_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label>{{ trans('cruds.claim.fields.recoverable_claim') }}</label>
                 <select class="form-control {{ $errors->has('recoverable_claim') ? 'is-invalid' : '' }}" name="recoverable_claim" id="recoverable_claim">
                     <option value disabled {{ old('recoverable_claim', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
