@@ -229,7 +229,7 @@ class ClaimController extends Controller
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
 
-        if ($claim->assign_self == 1) {
+        if ($claim->assign_self == 1 || auth()->user()->roles->doesntContain(2) == true) {
             return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
     }
         else {
