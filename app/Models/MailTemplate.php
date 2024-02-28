@@ -26,6 +26,7 @@ class MailTemplate extends Model
 
     protected $fillable = [
         'name',
+        'subject',
         'body',
         'created_at',
         'updated_at',

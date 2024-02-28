@@ -774,7 +774,7 @@
                                             <option selected disabled>{{ trans('global.pleaseSelect') }}</option>
 
                                             @foreach($mailTemplates as $id => $entry)
-                                                <option value="{{ $entry->body }}">{{ $entry->name ?? '' }}</option>
+                                                <option value="{{ $entry->body }}" data-subject="{{ $entry->subject ?? '' }}">{{ $entry->name ?? '' }}</option>
                                             @endforeach
                                         </select>
                                 
@@ -782,7 +782,7 @@
                                     <div class="form-group">
 
                                         <label for="mailSubject" class="required">Onderwerp</label>
-                                        <input type="text" class="form-control" name="mailSubject" id="mailSubject" value="Betreft: {{ $claim->subject }}" required>
+                                        <input type="text" class="form-control" name="mailSubject" id="mailSubject" value="" required>
 
                                     </div>
 

@@ -34,6 +34,16 @@
                 <span class="help-block">{{ trans('cruds.mailTemplates.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="subject">{{ trans('cruds.mailTemplates.fields.subject') }}</label>
+                <input class="form-control {{ $errors->has('subject') ? 'is-invalid' : '' }}" type="text" name="subject" id="subject" value="{{ old('subject', $mailTemplate->subject) }}" required>
+                @if($errors->has('subject'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('subject') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.subject_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="body">{{ trans('cruds.mailTemplates.fields.body') }}</label>
                 <textarea class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body">{{ old('body', $mailTemplate->body) }}</textarea>
                 @if($errors->has('body'))

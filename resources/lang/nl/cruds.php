@@ -517,6 +517,8 @@ return [
             'id' => 'ID',
             'name' => 'Naam',
             'name_helper' => '',
+            'subject' => 'Onderwerp',
+            'subject_helper' => '',
             'body' => 'Sjabloon',
             'body_helper' => ''
         ]

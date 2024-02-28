@@ -291,6 +291,7 @@ $(document).ready(function () {
 
     // Handle template change
     const mailTemplate = $('#mailTemplate');
+    const mailSubject = $('#mailSubject');
     const mailBody = $('#mailBody');
     const claimJson = JSON.parse($('#claimJson').text());
 
@@ -300,6 +301,7 @@ $(document).ready(function () {
     var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
 
     var finalBody = mailTemplate.val() ?? '';
+    var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
 
     if (finalBody != '') {
 
@@ -311,20 +313,34 @@ $(document).ready(function () {
 
     }
 
+    if (finalSubject != '') {
+
+        $.each(find, (index, item) => {
+
+            finalSubject = finalSubject.replace(item, replace[index]);
+
+        })
+
+    }
+
     mailBody.html(finalBody);
+    mailSubject.val(finalSubject);
 
     mailTemplate.on('change', function (e) {
 
-
-        var finalBody = $(this).val();
+        var finalSubject = $('option:selected', this).data('subject') ?? '';
+        console.log(finalSubject);
+        var finalBody = $(this).val() ?? '';
 
         $.each(find, (index, item) => {
             
             finalBody = finalBody.replace(item, replace[index]);
+            finalSubject = finalSubject.replace(item, replace[index]);
 
         });
 
         mailBody.html(finalBody);
+        mailSubject.val(finalSubject);
 
     });
 
