@@ -285,6 +285,9 @@ $(document).ready(function () {
 
     });
 
+    //Create wysiwyg elements
+    createWysiwyg(document.querySelectorAll('.ckeditor'));
+
     // Bind mailreceiver
     const mailReceiver = $('#mailReceiver');
     bindTags(mailReceiver);
@@ -293,56 +296,63 @@ $(document).ready(function () {
     const mailTemplate = $('#mailTemplate');
     const mailSubject = $('#mailSubject');
     const mailBody = $('#mailBody');
-    const claimJson = JSON.parse($('#claimJson').text());
 
-    //console.log(claimJson);
+    const claimText = $('#claimJson');
 
-    var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
-    var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
+    if(claimText.length > 0) {
 
-    var finalBody = mailTemplate.val() ?? '';
-    var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
+        const claimJson = JSON.parse(claimText.text());
 
-    if (finalBody != '') {
+        var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
+        var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
 
-        $.each(find, (index, item) => {
-            
-            finalBody = finalBody.replace(item, replace[index]);
+        var finalBody = mailTemplate.val() ?? '';
+        var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
 
-        });
+        if (finalBody != '') {
 
-    }
+            $.each(find, (index, item) => {
+                
+                finalBody = finalBody.replace(item, replace[index]);
 
-    if (finalSubject != '') {
+            });
 
-        $.each(find, (index, item) => {
+        }
 
-            finalSubject = finalSubject.replace(item, replace[index]);
+        if (finalSubject != '') {
 
-        })
+            $.each(find, (index, item) => {
 
-    }
+                finalSubject = finalSubject.replace(item, replace[index]);
 
-    mailBody.html(finalBody);
-    mailSubject.val(finalSubject);
+            })
 
-    mailTemplate.on('change', function (e) {
+        }
 
-        var finalSubject = $('option:selected', this).data('subject') ?? '';
-        console.log(finalSubject);
-        var finalBody = $(this).val() ?? '';
-
-        $.each(find, (index, item) => {
-            
-            finalBody = finalBody.replace(item, replace[index]);
-            finalSubject = finalSubject.replace(item, replace[index]);
-
-        });
+        console.log(mailBody.closest('.ck-editor__main'));
 
         mailBody.html(finalBody);
         mailSubject.val(finalSubject);
 
-    });
+        mailTemplate.on('change', function (e) {
+
+            var finalSubject = $('option:selected', this).data('subject') ?? '';
+            console.log(finalSubject);
+            var finalBody = $(this).val() ?? '';
+
+            $.each(find, (index, item) => {
+                
+                finalBody = finalBody.replace(item, replace[index]);
+                finalSubject = finalSubject.replace(item, replace[index]);
+
+            });
+
+            mailBody.html(finalBody);
+            mailSubject.val(finalSubject);
+
+        });
+
+    }
 
 });
 
@@ -513,4 +523,19 @@ function sendFlashMessage( message, type ) {
 
     return;
 
+}
+
+async function createWysiwyg( textareaCollection ) {
+    
+    if (textareaCollection.length < 1) {
+        return;
+    }
+
+    textareaCollection.forEach(async item => {
+
+        const editior = await ClassicEditor.create(item);
+        editior.setData('test123');
+
+    });
+    
 }
