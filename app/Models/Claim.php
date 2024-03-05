@@ -27,22 +27,26 @@ class Claim extends Model implements HasMedia
 
     public const DAMAGED_PART_SELECT = [
         'backpart'  => 'Achterscherm',
+        'trunk'     => 'Achterklep',
         'tire'      => 'Band/Velg',
+        'bumper'    => 'Bumper',
+        'carter'    => 'Carter',
         'roof'      => 'Dak',
+        'doormolding'   => 'Deurrubber',
+        'supportarm' => 'Draagarm',
         'dorpel'    => 'Dorpel',
         'interior'  => 'Interieur',
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
-        'light'     => 'Verlichting',
         'carhood'   => 'Motorkap',
-        'trunk'     => 'Achterklep',
-        'exhaust'   => 'Uitlaat',
+        'grill'     => 'Grill',
         'steeringwheel' => 'Stuurinrichting',
-        'carter'    => 'Carter',
+        'mirror'    => 'Spiegel',
+        'screen' => 'Scherm',
+        'exhaust'   => 'Uitlaat',
+        'light'     => 'Verlichting',
         'wheel'     => 'Wielophanding',
-        'bumper'    => 'Bumper',
-        'grill'    => 'Grill',
 
     ];
 
@@ -61,22 +65,26 @@ class Claim extends Model implements HasMedia
 
     public const DAMAGED_PART_OPPOSITE_SELECT = [
         'backpart'  => 'Achterscherm',
+        'trunk'     => 'Achterklep',
         'tire'      => 'Band/Velg',
+        'bumper'    => 'Bumper',
+        'carter'    => 'Carter',
         'roof'      => 'Dak',
+        'doormolding'   => 'Deurrubber',
+        'supportarm' => 'Draagarm',
         'dorpel'    => 'Dorpel',
         'interior'  => 'Interieur',
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
-        'light'     => 'Verlichting',
         'carhood'   => 'Motorkap',
-        'trunk'     => 'Achterklep',
-        'exhaust'   => 'Uitlaat',
+        'grill'     => 'Grill',
         'steeringwheel' => 'Stuurinrichting',
-        'carter'    => 'Carter',
+        'mirror'    => 'Spiegel',
+        'screen' => 'Scherm',
+        'exhaust'   => 'Uitlaat',
+        'light'     => 'Verlichting',
         'wheel'     => 'Wielophanding',
-        'bumper'    => 'Bumper',
-        'grill'    => 'Grill',
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
@@ -223,7 +231,8 @@ class Claim extends Model implements HasMedia
         'invoice_settlement_asp',
         'opposite_claim_no',
         'invoice_comment',
-        'assignee_id'
+        'assignee_id',
+        'invoice_amount',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

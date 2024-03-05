@@ -1,4 +1,6 @@
 import './bootstrap';
+import './mychart.js';
+import { TempusDominus } from '@eonasdan/tempus-dominus';
 
 import Alpine from 'alpinejs';
 
@@ -7,6 +9,51 @@ window.Alpine = Alpine;
 Alpine.start();
 
 $(document).ready(function () {
+
+    var array = document.querySelectorAll('.custom_datepicker');
+    
+    array.forEach(function (datepicker) {
+        new TempusDominus(datepicker, {
+            display: {
+                icons: {
+                  time: 'fa fa-clock',
+                  date: 'fa fa-calendar',
+                  up: 'fa fa-arrow-up',
+                  down: 'fa fa-arrow-down',
+                  previous: 'fa fa-chevron-left',
+                  next: 'fa fa-chevron-right',
+                  today: 'fa fa-calendar-check',
+                  clear: 'fa fa-trash',
+                  close: 'fa fa-x',
+                },
+                buttons: {
+                  today: true,
+                  clear: false,
+                  close: true,
+                },
+                components: {
+                    clock: false,
+                },
+              },
+              useCurrent: true,
+              localization: {
+                locale: 'nl',
+                dateFormats: {
+                    LTS: 'h:mm:ss T',
+                    LT: 'h:mm T',
+                    L: 'dd-MM-yyyy',
+                    LL: 'MMMM d, yyyy',
+                    LLL: 'MMMM d, yyyy h:mm T',
+                    LLLL: 'dddd, MMMM d, yyyy h:mm T'
+                  },
+                  ordinal: (n) => n,
+                  format: 'L'
+              },
+        });
+    });
+
+
+    
 
     var injury_office = $('.injury-office-show');
     var injury_other = $('.injury-other-show');

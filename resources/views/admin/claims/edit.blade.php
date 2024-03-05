@@ -106,7 +106,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="date_accident">{{ trans('cruds.claim.fields.date_accident') }}</label>
-                <input class="form-control date {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident', $claim->date_accident) }}">
+                <input class="form-control date custom_datepicker {{ $errors->has('date_accident') ? 'is-invalid' : '' }}" type="text" name="date_accident" id="date_accident" value="{{ old('date_accident', $claim->date_accident) }}">
                 @if($errors->has('date_accident'))
                     <div class="invalid-feedback">
                         {{ $errors->first('date_accident') }}
@@ -489,7 +489,7 @@
             </div>
             <div class="form-group">
                 <label for="requested_at">{{ trans('cruds.claim.fields.requested_at') }}</label>
-                <input class="form-control date {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}">
+                <input class="form-control date custom_datepicker {{ $errors->has('requested_at') ? 'is-invalid' : '' }}" type="text" name="requested_at" id="requested_at" value="{{ old('requested_at', $claim->requested_at) }}">
                 @if($errors->has('requested_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('requested_at') }}
@@ -512,7 +512,7 @@
             </div>
             <div class="form-group expertise-report-show d-none">
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
-                <input class="form-control date {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
+                <input class="form-control date custom_datepicker {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
                 @if($errors->has('report_received_at'))
                     <div class="invalid-feedback">
                         {{ $errors->first('report_received_at') }}
@@ -529,12 +529,22 @@
         <div class="card-body">
             <div class="form-row">
                 @if ($isAdmin)
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label>{{ trans('cruds.claim.fields.invoice_settlement') }}</label>
                     <input type="hidden" name="invoice_settlement_asp" value="0">
                     <input class="form-control {{ $errors->has('invoice_settlement_asp') ? 'is-invalid' : '' }}" type="checkbox" name="invoice_settlement_asp" id="invoice_settlement_asp" value="1" {{ $claim->invoice_settlement_asp || old('invoice_settlement_asp', 0) === 1 ? 'checked' : '' }}>
                 </div>
-                <div class="form-group col-md-9">
+                <div class="form-group col-md-2">
+                    <label for="invoice_amount">{{ trans('cruds.claim.fields.invoice_amount') }}</label>
+                    <input class="form-control {{ $errors->has('invoice_amount') ? 'is-invalid' : '' }}" type="number" name="invoice_amount" id="invoice_amount" value="{{ old('invoice_amount', $claim->invoice_amount ) }}">
+                    @if($errors->has('invoice_amount'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('invoice_amount') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.claim.fields.invoice_comment_helper') }}</span>
+                </div>
+                <div class="form-group col-md-8">
                     <label for="invoice_comment">{{ trans('cruds.claim.fields.invoice_comment') }}</label>
                     <input class="form-control {{ $errors->has('invoice_comment') ? 'is-invalid' : '' }}" type="text" name="invoice_comment" id="invoice_comment" value="{{ old('invoice_comment', $claim->invoice_comment ) }}">
                     @if($errors->has('invoice_comment'))

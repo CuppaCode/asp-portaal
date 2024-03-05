@@ -52,6 +52,24 @@ class ClaimController extends Controller
         return view('admin.claims.index', compact('claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles'));
     }
 
+    public function open()
+    {
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
+
+        $companies = Company::get();
+
+        return view('admin.claims.index', compact('claims', 'companies'));
+    }
+
+    public function closed()
+    {
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('status', 'finished')->get();
+
+        $companies = Company::get();
+
+        return view('admin.claims.index', compact('claims', 'companies'));
+    }
+
     public function create()
     {
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -211,7 +229,12 @@ class ClaimController extends Controller
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
 
-        return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+        if ($claim->assign_self == 1) {
+            return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
+    }
+        else {
+            return redirect()->route('admin.claims.index')->with('message', 'Schadedossier: Stap 1 voltooid');
+        }
     }
 
     public function edit(Claim $claim)
