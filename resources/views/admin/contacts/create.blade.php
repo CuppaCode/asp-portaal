@@ -42,7 +42,7 @@
             
             @if ($isAdmin)
 
-                <div class="form-group">
+                <div class="form-group d-none">
                     <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>
                     <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id">
                         @foreach($users as $id => $entry)

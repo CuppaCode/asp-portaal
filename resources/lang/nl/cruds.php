@@ -172,6 +172,8 @@ return [
             'invoice_amount_helper'            => '',
             'opposite_claim_no'                => 'Schadedossier nr. wederpartij',
             'opposite_claim_no_helper'         => '',
+            'assignee'                         => 'Behandelaar dossier',
+            'assignee_helper'                  => '',
         ],
     ],
     'company' => [
