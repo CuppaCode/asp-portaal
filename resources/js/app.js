@@ -285,74 +285,14 @@ $(document).ready(function () {
 
     });
 
-    //Create wysiwyg elements
-    createWysiwyg(document.querySelectorAll('.ckeditor'));
-
     // Bind mailreceiver
     const mailReceiver = $('#mailReceiver');
     bindTags(mailReceiver);
 
     // Handle template change
-    const mailTemplate = $('#mailTemplate');
-    const mailSubject = $('#mailSubject');
-    const mailBody = $('#mailBody');
+    setupMailBody();
 
-    const claimText = $('#claimJson');
-
-    if(claimText.length > 0) {
-
-        const claimJson = JSON.parse(claimText.text());
-
-        var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
-        var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
-
-        var finalBody = mailTemplate.val() ?? '';
-        var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
-
-        if (finalBody != '') {
-
-            $.each(find, (index, item) => {
-                
-                finalBody = finalBody.replace(item, replace[index]);
-
-            });
-
-        }
-
-        if (finalSubject != '') {
-
-            $.each(find, (index, item) => {
-
-                finalSubject = finalSubject.replace(item, replace[index]);
-
-            })
-
-        }
-
-        console.log(mailBody.closest('.ck-editor__main'));
-
-        mailBody.html(finalBody);
-        mailSubject.val(finalSubject);
-
-        mailTemplate.on('change', function (e) {
-
-            var finalSubject = $('option:selected', this).data('subject') ?? '';
-            console.log(finalSubject);
-            var finalBody = $(this).val() ?? '';
-
-            $.each(find, (index, item) => {
-                
-                finalBody = finalBody.replace(item, replace[index]);
-                finalSubject = finalSubject.replace(item, replace[index]);
-
-            });
-
-            mailBody.html(finalBody);
-            mailSubject.val(finalSubject);
-
-        });
-
-    }
+    createWysiwyg(document.querySelectorAll('.ckeditor'));
 
 });
 
@@ -525,17 +465,87 @@ function sendFlashMessage( message, type ) {
 
 }
 
-async function createWysiwyg( textareaCollection ) {
-    
-    if (textareaCollection.length < 1) {
+async function setupMailBody() {
+
+    const nativeMailBody = document.querySelector('#mailBody');
+
+    const mailSubject = $('#mailSubject');
+
+    const mailTemplate = $('#mailTemplate');
+
+    const claimText = $('#claimJson');
+
+    // Check if claimJSON is available
+    if(claimText.length < 1) {
         return;
     }
 
-    textareaCollection.forEach(async item => {
+    const claimJson = JSON.parse(claimText.text());
 
-        const editior = await ClassicEditor.create(item);
-        editior.setData('test123');
+    var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
+    var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
+
+    var finalBody = mailTemplate.val() ?? '';
+    var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
+
+    if (finalBody != '') {
+
+        $.each(find, (index, item) => {
+            
+            finalBody = finalBody.replace(item, replace[index]);
+
+        });
+
+    }
+
+    if (finalSubject != '') {
+
+        $.each(find, (index, item) => {
+
+            finalSubject = finalSubject.replace(item, replace[index]);
+
+        })
+
+    }
+        
+    const ckeditor = await ClassicEditor.create(nativeMailBody);
+
+    ckeditor.setData(finalBody);
+    mailSubject.val(finalSubject);
+
+    mailTemplate.on('change', function (e) {
+
+        var finalSubject = $('option:selected', this).data('subject') ?? '';
+        var finalBody = $(this).val() ?? '';
+
+        $.each(find, (index, item) => {
+            
+            finalBody = finalBody.replace(item, replace[index]);
+            finalSubject = finalSubject.replace(item, replace[index]);
+
+        });
+
+        ckeditor.setData(finalBody);
+        mailSubject.val(finalSubject);
 
     });
+
+   
     
+}
+
+async function createWysiwyg( textareaCollection ){
+
+    if(textareaCollection.length < 1){
+        return;
+    }
+
+    textareaCollection.forEach(async (item) => {
+
+        const wysiwyg = ClassicEditor.create(item);
+
+        // we could manipulate wysiwyg from here using methods within the wysiwyg const
+
+    });
+
 }

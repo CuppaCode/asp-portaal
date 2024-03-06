@@ -787,7 +787,7 @@
                                     </div>
 
                                     <label class="required" for="mailBody">Bericht</label>
-                                    <textarea class="form-control ckeditor" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+                                    <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
 
                                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                     <div class="form-group d-none">
