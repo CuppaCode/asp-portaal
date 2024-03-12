@@ -64,4 +64,9 @@ class Company extends Model implements HasMedia
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
 }

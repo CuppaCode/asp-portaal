@@ -482,13 +482,57 @@ async function setupMailBody() {
 
     const claimJson = JSON.parse(claimText.text());
 
-    const contactJson = JSON.parse($('#contactJson').text());
 
-    console.log(claimJson);
-    console.log(contactJson);
+    const damagedPartTranslations = [
+        { 'backpart': 'Achterscherm' },
+        { 'tire': 'Band/Velg' },
+        { 'roof': 'Dak' },
+        { 'dorpel': 'Dorpel' },
+        { 'interior': 'Interieur' },
+        { 'motor': 'Motor' },
+        { 'portdoor': 'Portier' },
+        { 'window': 'Ruit' },
+        { 'light': 'Verlichting' },
+        { 'carhood': 'Motorkap' },
+        { 'trunk': 'Achterklep' },
+        { 'exhaust': 'Uitlaat' },
+        { 'steeringwheel': 'Stuurinrichting' },
+        { 'carter': 'Carter' },
+        { 'wheel': 'Wielophanding' },
+        { 'bumper': 'Bumper' },
+        { 'grill': 'Grill' }
+    ];
 
-    var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[contact_naam]', '[contact_email]'];
-    var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle.plates, contactJson.first_name + ' ' + contactJson.last_name, contactJson.email];
+    console.log(damagedPartTranslations);
+
+    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]'];
+    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', claimJson.damaged_part, claimJson.damaged_area, claimJson.damage_origin, claimJson.damage_costs];
+
+    const contactText = $('#contactJson');
+
+    if(contactText.length > 0) {
+        
+        const contactJson = JSON.parse(contactText.text());
+
+        console.log(contactJson);
+
+        var find = find.concat(['[contact_naam]', '[contact_email]']);
+        var replace = replace.concat([contactJson.first_name + ' ' + contactJson.last_name, '<a href="mailto:'+ contactJson.email +'" target="_blank">' + contactJson.email + "</a>"]);
+
+    }
+
+    const recoveryText = $('#recoveryJson');
+
+    if(recoveryText.length > 0) {
+        
+        const recoveryJson = JSON.parse(recoveryText.text());
+        const recoveryContactJson = JSON.parse($('#recoveryContactJson').text());
+
+        var find = find.concat(['[herstel_adres]', '[herstel_postcode]', '[herstel_telnr]', '[herstel_contact_naam]', '[herstel_email]']);
+        var replace = replace.concat([recoveryJson.street + ' ' + recoveryJson.city, recoveryJson.zipcode, '<a href="tel:' + recoveryJson.phone + '" target="_blank">' + recoveryJson.phone + '</a>', recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
+
+    }
+
 
     var finalBody = mailTemplate.val() ?? '';
     var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';

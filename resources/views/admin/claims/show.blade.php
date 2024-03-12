@@ -796,7 +796,26 @@
                                         </select>
                                     </div>
                                     <div class="d-none" id="claimJson">{{ json_encode($claim) }}</div>
-                                    <div class="" id="contactJson">{{ json_encode(App\Models\Contact::find(App\Models\Driver::find($claim->driver_vehicle)->contact_id)) }}</div>
+
+                                    @if (App\Models\Driver::find($claim->driver_vehicle))
+
+                                        <div class="d-none" id="contactJson">{{ json_encode(App\Models\Contact::find(App\Models\Driver::find($claim->driver_vehicle)->contact_id)) }}</div>
+
+                                    @endif
+
+                                    @if (isset($claim->recovery_office))
+
+                                        @php
+
+                                            $recoveryOffice = App\Models\Company::find($claim->recovery_office->company_id);
+
+                                        @endphp
+
+                                        <div class="d-none" id="recoveryJson">{{ json_encode($recoveryOffice) }}</div>
+                                        <div class="d-none" id="recoveryContactJson">{{ json_encode($recoveryOffice->contacts) }}</div>
+
+                                    @endif
+
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>

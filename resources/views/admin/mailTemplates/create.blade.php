@@ -16,7 +16,9 @@
     <div class="card">
 
         <div class="card-header">
-            Gebruik de volgende tags: <pre>[bedrijf] [onderwerp] [dossiernr] [status] [datumschade]</pre>
+          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag]</pre>
+          <pre>[contact_naam] [contact_email]</pre>
+          <pre>[herstel_adres] [herstel_postcode] [herstel_telnr] [herstel_contact_naam] [herstel_email]</pre>
         </div>
 
         <div class="card-body">
