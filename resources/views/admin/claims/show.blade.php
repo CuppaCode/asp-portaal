@@ -796,6 +796,7 @@
                                         </select>
                                     </div>
                                     <div class="d-none" id="claimJson">{{ json_encode($claim) }}</div>
+                                    <div class="" id="contactJson">{{ json_encode(App\Models\Contact::find(App\Models\Driver::find($claim->driver_vehicle)->contact_id)) }}</div>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>

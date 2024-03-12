@@ -482,8 +482,13 @@ async function setupMailBody() {
 
     const claimJson = JSON.parse(claimText.text());
 
-    var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]'];
-    var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident];
+    const contactJson = JSON.parse($('#contactJson').text());
+
+    console.log(claimJson);
+    console.log(contactJson);
+
+    var find = ['[bedrijf]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[contact_naam]', '[contact_email]'];
+    var replace = [claimJson.company.name, claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle.plates, contactJson.first_name + ' ' + contactJson.last_name, contactJson.email];
 
     var finalBody = mailTemplate.val() ?? '';
     var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
