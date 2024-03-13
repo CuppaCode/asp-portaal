@@ -859,7 +859,12 @@
                                         @endphp
 
                                         <div class="d-none" id="recoveryJson">{{ json_encode($recoveryOffice) }}</div>
-                                        <div class="d-none" id="recoveryContactJson">{{ json_encode($recoveryOffice->contacts) }}</div>
+
+                                        @if (!empty($recoveryOffice->contacts))
+
+                                            <div class="d-none" id="recoveryContactJson">{{ json_encode($recoveryOffice->contacts) }}</div>
+                                            
+                                        @endif
 
                                     @endif
 
