@@ -19,6 +19,8 @@ use App\Models\VehicleOpposite;
 use App\Models\Driver;
 use App\Models\Opposite;
 use App\Models\User;
+use App\Models\MailTemplate;
+use App\Models\Note;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -451,14 +453,15 @@ class ClaimController extends Controller
         $isAdmin = $user->roles->contains(1);
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-        $contacts = Contact::where('company_id', $claim->company->id)->get()->first();
-        $notesAndTasks = $claim->notes->merge($claim->tasks);
+        $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
+        $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
 
         $users = User::where('team_id', $user->team->id)->get();
 
-        $assignee_name = contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
-
-        // dd($assignee_name);
+        $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
+        $mailTemplates = MailTemplate::all();
+      
+        $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
 
         if($isAdmin) {
 
@@ -468,7 +471,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'contacts', 'opposite', 'users', 'notesAndTasks', 'assignee_name'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name'));
     }
 
     public function destroy(Claim $claim)
@@ -535,5 +538,31 @@ class ClaimController extends Controller
                 'type' => 'alert-success',
                 'message' => 'Status is succesvol aangepast!'
             ], 200);
+    }
+
+    public function sendMail(Request $request)
+    {
+        abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '');
+        Notification::route('mail', [
+            $request->mailReceiver ?? '' => ''])->notify($message);
+
+        $noteDescription = "Ontvanger: {$request->mailReceiver}<br/>
+        Onderwerp: {$request->mailSubject}<br/>
+        Bericht: {$request->mailBody}";
+
+        $note = Note::create([
+            'title' => 'Mail:'. $request->mailSubject,
+            'user_id' => $request->input('user_id'),
+            'description' => $noteDescription,
+            'team_id' => auth()->user()->team->id
+        ]);
+
+        $note->claims()->sync($request->input('claims', []));
+
+
+        return redirect()->back()->with('message', 'Mail is verstuurd en gelogd in dossier');
+
     }
 }

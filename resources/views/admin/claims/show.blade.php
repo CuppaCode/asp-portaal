@@ -6,6 +6,8 @@
     use Carbon\Carbon;
     $isAdmin = auth()->user()->roles->contains(1);
 
+    //dd($contacts)
+
 @endphp
 
 <div class="top-bar-claims form-group d-flex justify-content-between align-items-center">
@@ -106,20 +108,26 @@
             </div>
 
             <div class="card-body">
+
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.created_at') }}
                 </div>
                 <p class="card-text">{{ $claim->created_at }}</p>
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.date_accident') }}
-                </div>
-                <p class="card-text">{{ $claim->date_accident }}</p>
-            
+                
+                @if (!empty($claim->date_accident))
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.date_accident') }}
+                    </div>
+                    <p class="card-text">{{ $claim->date_accident }}</p>
+                @endif
+
+                @if (!empty($claim->injury))
+
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.injury') }}
                 </div>
                 <p class="card-text">{{ App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' }}</p>
-                            
+                @endif        
                 @if ($claim->injury == 'yes')
                     <div class="card-title">
                         {{ trans('cruds.claim.fields.injury_office') }}
@@ -141,11 +149,12 @@
                     {{ trans('cruds.claim.fields.recoverable_claim') }}
                 </div>
                 <p class="card-text">{{ App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$claim->recoverable_claim] ?? '' }}</p>
-                
+                @if (!empty($claim->damage_kind))
                 <div class="card-title">
                     Soort schade
                 </div>
                 <p class="card-text">{{ App\Models\Claim::DAMAGE_KIND[$claim->damage_kind] ?? '' }}</p>
+                @endif
             </div>
         </div>
     </div>
@@ -161,17 +170,17 @@
                 @endunless
             </div>
             <div class="card-body">
-                @isset($contacts) 
+                @isset($firstContact) 
                 <div class="card-title">
                     Naam
                 </div>
                 <p class="card-text">
-                    {{ $contacts->first_name}} {{ $contacts->last_name}}   
+                    {{ $firstContact->first_name}} {{ $firstContact->last_name}}   
                 </p>
                 <div class="card-title">
                     Email
                 </div>
-                <p class="card-text"><a href="mailto:{{ $contacts->email}}">{{ $contacts->email}}   </a> </p>
+                <p class="card-text"><a href="mailto:{{ $firstContact->email}}">{{ $firstContact->email}}   </a> </p>
                 @else
                     Nog geen contactpersoon bekend.
                 @endisset 
@@ -182,66 +191,79 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                Gegevens wagenpark
+        @if (!empty($claim->vehicle->name) || !empty($claim->damaged_part) || !empty($claim->damage_origin) || !empty($claim->damaged_area) || !empty($claim->driver_vehicle ))
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Gegevens wagenpark
 
-                @unless( !$claim->assign_self && !$isAdmin )
-                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                    {{ trans('global.edit') }}
-                </a>
-                @endunless
-            </div>
+                    @unless( !$claim->assign_self && !$isAdmin )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+                    @endunless
+                </div>
 
-            <div class="card-body">
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.vehicle') }}
-                </div>
-                <p class="card-text">{{ $claim->vehicle->name ?? '' }}</p>
-            
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damaged_part') }}
-                </div>
+                <div class="card-body">
+                    @if (!empty($claim->vehicle->name))
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.vehicle') }}
+                    </div>
+                    <p class="card-text">{{ $claim->vehicle->name ?? '' }}</p>
+                    @endif
+                    @if (!empty($claim->damaged_part))
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.damaged_part') }}
+                    </div>
+                        <p class="card-text">
+                            @if ( $claim->damaged_part !== null )
+                                @foreach(json_decode( $claim->damaged_part ) as $part)
+                                    <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_PART_SELECT[$part] }}</span>
+                                @endforeach
+                            @endif
+                        </p>
+                    @endif
+
+                    @if (!empty($claim->damage_origin))
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.damage_origin') }}
+                    </div>
                     <p class="card-text">
-                        @if ( $claim->damaged_part !== null )
-                            @foreach(json_decode( $claim->damaged_part ) as $part)
-                                <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_PART_SELECT[$part] }}</span>
+                        @if ( $claim->damage_origin !== null )
+                            @foreach(json_decode( $claim->damage_origin ) as $origin)
+                                <span class="badge badge-success">{{ App\Models\Claim::DAMAGE_ORIGIN[$origin] }}</span>
                             @endforeach
                         @endif
                     </p>
-            
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damage_origin') }}
-                </div>
-                <p class="card-text">
-                    @if ( $claim->damage_origin !== null )
-                        @foreach(json_decode( $claim->damage_origin ) as $origin)
-                            <span class="badge badge-success">{{ App\Models\Claim::DAMAGE_ORIGIN[$origin] }}</span>
-                        @endforeach
                     @endif
-                </p>
 
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damaged_area') }}
-                </div>
-                
-                <p class="card-text">
-                    @if ( $claim->damaged_area !== null )
-                        @foreach(json_decode( $claim->damaged_area ) as $area)
-                            <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_AREA_SELECT[$area] }}</span>
-                        @endforeach
+                    @if (!empty( $claim->damaged_area ))
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.damaged_area') }}
+                    </div>
+                    
+                    <p class="card-text">
+                        @if ( $claim->damaged_area !== null )
+                            @foreach(json_decode( $claim->damaged_area ) as $area)
+                                <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_AREA_SELECT[$area] }}</span>
+                            @endforeach
+                        @endif
+                    </p>
+                    <p class="card-text">{{ App\Models\Claim::DAMAGED_AREA_SELECT[$claim->damaged_area] ?? '' }}</p>
                     @endif
-                </p>
-                <p class="card-text">{{ App\Models\Claim::DAMAGED_AREA_SELECT[$claim->damaged_area] ?? '' }}</p>
 
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.driver_vehicle') }}
+                    @if (!empty($claim->driver_vehicle))
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.driver_vehicle') }}
+                    </div>
+                    <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle)->driver_full_name ?? '' }}</p>
+                    @endif
                 </div>
-                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle)->driver_full_name ?? '' }}</p>
             </div>
-        </div>
+        @endif
     </div>
     <div class="col-md-6">
+        @if (!empty($claim->vehicle_opposite) || !empty($claim->damaged_part_opposite) || !empty($claim->damage_origin_opposite) || !empty($claim->damaged_area_opposite) || !empty($claim->driver_vehicle_opposite))
+
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wederpartij
@@ -255,47 +277,54 @@
 
             <div class="card-body">
                 @if ($claim->opposite_type != 'obstacle')
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.vehicle_opposite') }}
-                </div>
-                <p class="card-text">{{ $claim->vehicle_opposite->name ?? '' }}</p>
-            
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damaged_part_opposite') }}
-                </div>
-                    <p class="card-text">
-                        @if ( $claim->damaged_part_opposite !== null )
-                            @foreach(json_decode( $claim->damaged_part_opposite ) as $part)
-                                <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_PART_SELECT[$part] }}</span>
-                            @endforeach
-                        @endif
-                    </p>
-            
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damage_origin_opposite') }}
-                </div>
-                <p class="card-text">
-                    @if ( $claim->damage_origin_opposite !== null )
-                        @foreach(json_decode( $claim->damage_origin_opposite ) as $origin)
-                            <span class="badge badge-success">{{ App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE[$origin] }} </span>
-                        @endforeach
+                    @if (!empty($claim->vehicle_opposite) )
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.vehicle_opposite') }}
+                        </div>
+                        <p class="card-text">{{ $claim->vehicle_opposite->name ?? '' }}</p>
                     @endif
-                </p>
-
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.damaged_area_opposite') }}
-                </div>
-                <p class="card-text">
-                    @if ( $claim->damaged_area_opposite !== null )
-                        @foreach(json_decode( $claim->damaged_area_opposite ) as $area)
-                            <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$area] }} </span>
-                        @endforeach
+                    @if (!empty($claim->damaged_part_opposite))
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.damaged_part_opposite') }}
+                        </div>
+                        <p class="card-text">
+                            @if ( $claim->damaged_part_opposite !== null )
+                                @foreach(json_decode( $claim->damaged_part_opposite ) as $part)
+                                    <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_PART_SELECT[$part] }}</span>
+                                @endforeach
+                            @endif
+                        </p>
                     @endif
-                </p>
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
-                </div>
-                <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}</p>
+                    @if(!empty($claim->damage_origin_opposite))
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.damage_origin_opposite') }}
+                        </div>
+                        <p class="card-text">
+                            @if ( $claim->damage_origin_opposite !== null )
+                                @foreach(json_decode( $claim->damage_origin_opposite ) as $origin)
+                                    <span class="badge badge-success">{{ App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE[$origin] }} </span>
+                                @endforeach
+                            @endif
+                        </p>
+                    @endif
+                    @if (!empty($claim->damaged_area_opposite))
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.damaged_area_opposite') }}
+                        </div>
+                        <p class="card-text">
+                            @if ( $claim->damaged_area_opposite !== null )
+                                @foreach(json_decode( $claim->damaged_area_opposite ) as $area)
+                                    <span class="badge badge-success">{{ App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$area] }} </span>
+                                @endforeach
+                            @endif
+                        </p>
+                    @endif
+                    @if (!empty($claim->driver_vehicle_opposite))
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
+                        </div>
+                        <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}</p>
+                    @endif
 
                 @else
                 <div class="card-title">
@@ -305,46 +334,55 @@
                 @endif
             </div>
         </div>
+        @endif
         @if (!empty($opposite))
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                Details wederpartij
+            @if (!empty($opposite->name) || !empty($opposite->street) || !empty($opposite->phone) || !empty($opposite->email)   )
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Details wederpartij
 
-                @unless( !$claim->assign_self && !$isAdmin )
-                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                    {{ trans('global.edit') }}
-                </a>
-                @endunless
+                    @unless( !$claim->assign_self && !$isAdmin )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+                    @endunless
+                </div>
+
+                <div class="card-body">
+                    @if (!empty($opposite->name))
+                        <div class="card-title">
+                            {{ trans('cruds.opposite.fields.name') }}
+                        </div>
+                        <p class="card-text">{{ $opposite->name ?? '' }}</p>
+                    @endif
+                    @if (!empty($opposite->street))
+                        <div class="card-title">
+                            {{ trans('cruds.opposite.fields.street') }}
+                        </div>
+                        <p class="card-text">{{ $opposite->street ?? '' }}</p>
+                    @endif
+                    @if (!empty($opposite->zipcode))
+                        <div class="card-title">
+                            {{ trans('cruds.opposite.fields.zipcode') }} + {{ trans('cruds.opposite.fields.city') }}
+                        </div>
+                        <p class="card-text">{{ $opposite->zipcode ?? '' }} {{ $opposite->city ?? '' }}</p>
+                    @endif
+                    @if (!empty($opposite->phone))
+                        <div class="card-title">
+                            {{ trans('cruds.opposite.fields.phone') }}
+                        </div>
+                        <p class="card-text">{{ $opposite->phone ?? '' }}</p>
+                    @endif
+                    @if (!empty($opposite->email))
+                        <div class="card-title">
+                            {{ trans('cruds.opposite.fields.email') }}
+                        </div>
+                        <p class="card-text"><a href="mailto:{{ $opposite->email ?? '' }}">{{ $opposite->email ?? '' }}</a></p>
+                    @endif
+                
+                </div>
             </div>
-
-            <div class="card-body">
-                <div class="card-title">
-                    {{ trans('cruds.opposite.fields.name') }}
-                </div>
-                <p class="card-text">{{ $opposite->name ?? '' }}</p>
-
-                <div class="card-title">
-                    {{ trans('cruds.opposite.fields.street') }}
-                </div>
-                <p class="card-text">{{ $opposite->street ?? '' }}</p>
-
-                <div class="card-title">
-                    {{ trans('cruds.opposite.fields.zipcode') }} + {{ trans('cruds.opposite.fields.city') }}
-                </div>
-                <p class="card-text">{{ $opposite->zipcode ?? '' }} {{ $opposite->city ?? '' }}</p>
-
-                <div class="card-title">
-                    {{ trans('cruds.opposite.fields.phone') }}
-                </div>
-                <p class="card-text">{{ $opposite->phone ?? '' }}</p>
-
-                <div class="card-title">
-                    {{ trans('cruds.opposite.fields.email') }}
-                </div>
-                <p class="card-text"><a href="mailto:{{ $opposite->email ?? '' }}">{{ $opposite->email ?? '' }}</a></p>
-            
-            </div>
-        </div>
+            @endif
         @endif
     </div>
 </div>
@@ -633,6 +671,9 @@
                         <li class="nav-item">
                           <a class="nav-link" id="task-tab" data-toggle="tab" href="#taskSection" role="tab" aria-controls="task-tab" aria-selected="false">Taak</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="task-tab" data-toggle="tab" href="#mailSection" role="tab" aria-controls="task-tab" aria-selected="false">Mail</a>
+                        </li>
                       </ul>
                       
                       <!-- Tab panes -->
@@ -754,6 +795,83 @@
                                 <div class="form-group">
                                     <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>
                                         {{ trans('global.save') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane pt-3" id="mailSection" role="tabpanel" aria-labelledby="mail-tab">
+                            <form method="POST" action="{{ route("admin.claims.sendMail") }}" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label class="required" for="mailReceiver">Ontvanger</label>
+                                        <select class="form-control select2" name="mailReceiver" id="mailReceiver" required>
+
+                                            @foreach($allContactsInCompany as $id => $entry)
+                                                <option value="{{ $entry->email }}" {{ old('mailReceiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
+                                            @endforeach
+                                        </select>
+                                
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="template">Template</label>
+                                        <select class="form-control select2" name="mailTemplate" id="mailTemplate">
+
+                                            <option selected disabled>{{ trans('global.pleaseSelect') }}</option>
+
+                                            @foreach($mailTemplates as $id => $entry)
+                                                <option value="{{ $entry->body }}" data-subject="{{ $entry->subject ?? '' }}">{{ $entry->name ?? '' }}</option>
+                                            @endforeach
+                                        </select>
+                                
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label for="mailSubject" class="required">Onderwerp</label>
+                                        <input type="text" class="form-control" name="mailSubject" id="mailSubject" value="" required>
+
+                                    </div>
+
+                                    <label class="required" for="mailBody">Bericht</label>
+                                    <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+
+                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                    <div class="form-group d-none">
+                                        <select class="form-control select2 {{ $errors->has('claims') ? 'is-invalid' : '' }}" name="claims[]" id="claims" multiple required>
+                                            <option value="{{ $claim->id }}" selected>{{ $claim->id }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-none" id="claimJson">{{ json_encode($claim) }}</div>
+
+                                    @if (App\Models\Driver::find($claim->driver_vehicle))
+
+                                        <div class="d-none" id="contactJson">{{ json_encode(App\Models\Contact::find(App\Models\Driver::find($claim->driver_vehicle)->contact_id)) }}</div>
+
+                                    @endif
+
+                                    @if (isset($claim->recovery_office))
+
+                                        @php
+
+                                            $recoveryOffice = App\Models\Company::find($claim->recovery_office->company_id);
+
+                                        @endphp
+
+                                        <div class="d-none" id="recoveryJson">{{ json_encode($recoveryOffice) }}</div>
+                                        <div class="d-none" id="recoveryContactJson">{{ json_encode($recoveryOffice->contacts) }}</div>
+
+                                    @endif
+
+                                    <div class="d-none" id="statusSelectJson">{{ json_encode(App\Models\Claim::STATUS_SELECT) }}</div>
+                                    <div class="d-none" id="damagePartSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_PART_SELECT) }}</div>
+                                    <div class="d-none" id="damageAreaSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_AREA_SELECT) }}</div>
+                                    <div class="d-none" id="damageOriginJson">{{ json_encode(App\Models\Claim::DAMAGE_ORIGIN) }}</div>
+
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>
+                                        {{ trans('global.send') }}
                                     </button>
                                 </div>
                             </form>

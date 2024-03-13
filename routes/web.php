@@ -32,6 +32,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('claims/media', 'ClaimController@storeMedia')->name('claims.storeMedia');
     Route::post('claims/ckmedia', 'ClaimController@storeCKEditorImages')->name('claims.storeCKEditorImages');
     Route::resource('claims', 'ClaimController');
+    Route::post('claims/send-mail', 'ClaimController@sendMail')->name('claims.sendMail');
 
     Route::get('openclaims', 'ClaimController@open')->name('claims.open');
     Route::get('closedclaims', 'ClaimController@closed')->name('claims.closed');
@@ -98,6 +99,26 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Comment
     Route::delete('comments/destroy', 'CommentController@massDestroy')->name('comments.massDestroy');
     Route::resource('comments', 'CommentController');
+
+    // Mail Templates
+    Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
+    Route::resource('mail-templates', 'MailTemplateController');
+
+    // Mail examples
+    Route::get('preview-notification', function () {
+        $markdown = new \Illuminate\Mail\Markdown(view(), config('mail.markdown'));   
+        $data = 'Beste BezorgenZonderZorgen,
+
+        Op 05-07-2023 gebeurde er iets.
+        
+        Bednakt voor het wachten voor Schade met Hek.
+        
+        Test123
+        
+        Groet,
+        Jemoeder';
+        return $markdown->render("emails.plain-email", ['body' => $data]);
+    }); 
 
 });
 

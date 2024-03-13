@@ -12,11 +12,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Company extends Model implements HasMedia
+class MailTemplate extends Model
 {
     use SoftDeletes, MultiTenantModelTrait, InteractsWithMedia, Auditable, HasFactory;
 
-    public $table = 'companies';
+    public $table = 'mail_templates';
 
     protected $dates = [
         'created_at',
@@ -24,25 +24,10 @@ class Company extends Model implements HasMedia
         'deleted_at',
     ];
 
-    public const COMPANY_TYPE_SELECT = [
-        'injury'     => 'Letsel',
-        'transport'  => 'Transport',
-        'touringcar' => 'Touringcar',
-        'salvage'    => 'Berging',
-        'recovery'   => 'Hersteller',
-        'expertise'  => 'Expertise',
-    ];
-
     protected $fillable = [
         'name',
-        'company_type',
-        'street',
-        'zipcode',
-        'city',
-        'country',
-        'phone',
-        'active',
-        'description',
+        'subject',
+        'body',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -54,19 +39,8 @@ class Company extends Model implements HasMedia
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')->fit('crop', 50, 50);
-        $this->addMediaConversion('preview')->fit('crop', 120, 120);
-    }
-
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
-    }
-
-    public function contacts()
-    {
-        return $this->hasMany(Contact::class);
     }
 }
