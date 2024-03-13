@@ -63,8 +63,9 @@ class AnalyticsController extends Controller
     public function invoices()
     {
         $claims = Claim::where('invoice_settlement_asp', 0)->orWhere('invoice_settlement_asp', NULL)->get();
+        $companies = Company::get();
 
-        return view('invoices', compact('claims'));
+        return view('invoices', compact('claims', 'companies'));
     }
 
 }
