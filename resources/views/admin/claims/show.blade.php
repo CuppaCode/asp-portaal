@@ -816,6 +816,11 @@
 
                                     @endif
 
+                                    <div class="d-none" id="statusSelectJson">{{ json_encode(App\Models\Claim::STATUS_SELECT) }}</div>
+                                    <div class="d-none" id="damagePartSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_PART_SELECT) }}</div>
+                                    <div class="d-none" id="damageAreaSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_AREA_SELECT) }}</div>
+                                    <div class="d-none" id="damageOriginJson">{{ json_encode(App\Models\Claim::DAMAGE_ORIGIN) }}</div>
+
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-danger" type="submit" name="add-task-dashboard" value='true'>
