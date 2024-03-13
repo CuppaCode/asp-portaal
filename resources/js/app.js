@@ -173,7 +173,7 @@ $(document).ready(function () {
     ajaxCreateCompany(expertiseOfficeID, 'expertise');
 
     // Vehicle creation
-    var vehicleID = $('#vehicle_pFlates');
+    var vehicleID = $('#vehicle_plates');
     bindTags( vehicleID );
 
     // Submitted check
