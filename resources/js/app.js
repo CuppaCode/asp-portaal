@@ -559,10 +559,19 @@ async function setupMailBody() {
     if(recoveryText.length > 0) {
         
         const recoveryJson = JSON.parse(recoveryText.text());
-        const recoveryContactJson = JSON.parse($('#recoveryContactJson').text());
 
-        var find = find.concat(['[herstel_adres]', '[herstel_postcode]', '[herstel_telnr]', '[herstel_contact_naam]', '[herstel_email]']);
-        var replace = replace.concat([recoveryJson.street + ' ' + recoveryJson.city, recoveryJson.zipcode, '<a href="tel:' + recoveryJson.phone + '" target="_blank">' + recoveryJson.phone + '</a>', recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
+        var find = find.concat(['[herstel_adres]', '[herstel_postcode]', '[herstel_telnr]']);
+        var replace = replace.concat([recoveryJson.street + ' ' + recoveryJson.city, recoveryJson.zipcode, '<a href="tel:' + recoveryJson.phone + '" target="_blank">' + recoveryJson.phone + '</a>']);
+
+        const recoveryContactText = $('#recoveryContactJson');
+
+        if (recoveryContactText.length > 0) {
+
+            const recoveryContactJson = JSON.parse(recoveryContactText.text());
+            
+            var find = find.concat(['[herstel_contact_naam]', '[herstel_email]']);
+            var replace = replace.concat([recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
+        }
 
     }
 
