@@ -860,10 +860,10 @@
 
                                         <div class="d-none" id="recoveryJson">{{ json_encode($recoveryOffice) }}</div>
 
-                                        @if (!empty($recoveryOffice->contacts))
+                                        @if (!$recoveryOffice->contacts->isEmpty())
 
                                             <div class="d-none" id="recoveryContactJson">{{ json_encode($recoveryOffice->contacts) }}</div>
-                                            
+
                                         @endif
 
                                     @endif
