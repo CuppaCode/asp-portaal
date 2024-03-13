@@ -81,7 +81,7 @@ return [
             'claim_number_helper'              => ' ',
             'status'                           => 'Status',
             'status_helper'                    => ' ',
-            'created_at'                       => 'Created at',
+            'created_at'                       => 'Aangemaakt op',
             'created_at_helper'                => ' ',
             'updated_at'                       => 'Updated at',
             'updated_at_helper'                => ' ',
