@@ -34,6 +34,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('claims', 'ClaimController');
     Route::post('claims/send-mail', 'ClaimController@sendMail')->name('claims.sendMail');
 
+    Route::get('openclaims', 'ClaimController@open')->name('claims.open');
+    Route::get('closedclaims', 'ClaimController@closed')->name('claims.closed');
+
     // Company
     Route::delete('companies/destroy', 'CompanyController@massDestroy')->name('companies.massDestroy');
     Route::post('companies/media', 'CompanyController@storeMedia')->name('companies.storeMedia');
@@ -89,6 +92,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('team-members', 'TeamMembersController@index')->name('team-members.index');
     Route::post('team-members', 'TeamMembersController@invite')->name('team-members.invite');
+
+    Route::get('analytics', 'AnalyticsController@index')->name('analytics');
+    Route::get('invoices', 'AnalyticsController@invoices')->name('invoices');
 
     // Comment
     Route::delete('comments/destroy', 'CommentController@massDestroy')->name('comments.massDestroy');

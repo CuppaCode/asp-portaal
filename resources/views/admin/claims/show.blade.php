@@ -40,7 +40,7 @@
         Schadedossier overzicht
         
         @if( $claim->assign_self || $isAdmin)
-        <select class="form-control select2 col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
+        <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
 
@@ -60,7 +60,7 @@
 
     <div class="card-body">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.claim_number') }}
                 </div>
@@ -77,10 +77,17 @@
                 {{ $claim->subject }}
             </div>
             @if ($claim->opposite_claim_no)
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.opposite_claim_no') }}</div>
                 {{ $claim->opposite_claim_no }}
+            </div>
+            @endif
+            @if ($claim->assignee_id)
+            <div class="col-md-2">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.assignee') }}</div>
+                {{ $assignee_name->first_name . ' ' . $assignee_name->last_name }}
             </div>
             @endif
         </div>
@@ -927,6 +934,15 @@
                     </div>
                     <p class="card-text">
                         {{ $claim->invoice_comment }}
+                    </p>
+                    @endif
+
+                    @if ($claim->invoice_amount)
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.invoice_amount') }}
+                    </div>
+                    <p class="card-text">
+                        &euro; {{ $claim->invoice_amount }}
                     </p>
                     @endif
                 </div>
