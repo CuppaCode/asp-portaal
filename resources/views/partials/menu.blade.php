@@ -90,6 +90,22 @@
                                 </i>
                                 {{ trans('cruds.claim.title') }} aanmaken
                             </a>
+                        </li>                       
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.open") }}" class="c-sidebar-nav-link {{ request()->is("openclaims", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                 Open {{ trans('cruds.claim.title') }}s
+                            </a>
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.closed") }}" class="c-sidebar-nav-link {{ request()->is("closedclaims", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                                </i>
+                                 Gesloten {{ trans('cruds.claim.title') }}s
+                            </a>
                         </li>
                         <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.claims.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/claims", '') ? "c-active" : "" }}">
@@ -97,14 +113,6 @@
 
                                 </i>
                                 Alle {{ trans('cruds.claim.title') }}s
-                            </a>
-                        </li>
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.claims.index") }}?status=nieuw" class="c-sidebar-nav-link {{ request()->is("admin/claims", '?status=nieuw') ? "c-active" : "" }}">
-                                <i class="fa-fw fas fa-building c-sidebar-nav-icon">
-
-                                </i>
-                                 Nieuwe {{ trans('cruds.claim.title') }}s
                             </a>
                         </li>
                     @endcan
@@ -234,6 +242,35 @@
                     {{ trans('cruds.note.title') }}
                 </a>
             </li>
+        @endcan
+        @can('analytics_access')
+            <li class="c-sidebar-nav-dropdown">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-folder c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.analytics.title') }}
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.analytics") }}" class="c-sidebar-nav-link {{ request()->is("admin/analytics") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-chart-pie c-sidebar-nav-icon">
+        
+                            </i>
+                            {{ trans('cruds.analytics.title_report') }} (beta)
+                        </a>
+                    </li>
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.invoices") }}" class="c-sidebar-nav-link {{ request()->is("admin/invoices") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-file c-sidebar-nav-icon">
+        
+                            </i>
+                            {{ trans('cruds.invoices.title') }}
+                        </a>
+                    </li>
+                        
+                </ul>
+          </li>
         @endcan
         @can('comment_access')
             <li class="c-sidebar-nav-item">
