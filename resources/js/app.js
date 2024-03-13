@@ -541,9 +541,13 @@ async function setupMailBody() {
 
     const contactText = $('#contactJson');
 
+    console.log(claimJson);
+
     if(contactText.length > 0) {
         
         const contactJson = JSON.parse(contactText.text());
+
+        console.log(contactJson);
 
         var find = find.concat(['[contact_naam]', '[contact_email]']);
         var replace = replace.concat([contactJson.first_name + ' ' + contactJson.last_name, '<a href="mailto:'+ contactJson.email +'" target="_blank">' + contactJson.email + "</a>"]);

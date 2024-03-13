@@ -844,9 +844,9 @@
                                     </div>
                                     <div class="d-none" id="claimJson">{{ json_encode($claim) }}</div>
 
-                                    @if (App\Models\Driver::find($claim->driver_vehicle))
+                                    @if ($firstContact)
 
-                                        <div class="d-none" id="contactJson">{{ json_encode(App\Models\Contact::find(App\Models\Driver::find($claim->driver_vehicle)->contact_id)) }}</div>
+                                        <div class="d-none" id="contactJson">{{ json_encode($firstContact) }}</div>
 
                                     @endif
 

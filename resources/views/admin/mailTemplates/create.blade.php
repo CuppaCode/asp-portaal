@@ -48,7 +48,7 @@
 
             <div class="form-group">
                 <label for="body">{{ trans('cruds.mailTemplates.fields.body') }}</label>
-                <textarea class="form-control {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body" value="{{ old('body', '') }}"></textarea>
+                <textarea class="form-control ckeditor {{ $errors->has('body') ? 'is-invalid' : '' }}" name="body" id="body" value="{{ old('body', '') }}"></textarea>
                 @if($errors->has('body'))
                     <div class="invalid-feedback">
                         {{ $errors->first('body') }}
