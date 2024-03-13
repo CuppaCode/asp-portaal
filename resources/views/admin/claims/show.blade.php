@@ -107,6 +107,10 @@
 
             <div class="card-body">
                 <div class="card-title">
+                    {{ trans('cruds.claim.fields.created_at') }}
+                </div>
+                <p class="card-text">{{ $claim->created_at }}</p>
+                <div class="card-title">
                     {{ trans('cruds.claim.fields.date_accident') }}
                 </div>
                 <p class="card-text">{{ $claim->date_accident }}</p>
