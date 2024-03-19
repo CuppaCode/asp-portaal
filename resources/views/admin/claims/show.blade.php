@@ -769,7 +769,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="required" for="deadline_at">{{ trans('cruds.task.fields.deadline_at') }}</label>
-                                    <input class="form-control date {{ $errors->has('deadline_at') ? 'is-invalid' : '' }}" type="text" name="deadline_at" id="deadline_at" value="{{ old('deadline_at') }}" required>
+                                    <input class="form-control date custom_datepicker {{ $errors->has('deadline_at') ? 'is-invalid' : '' }}" type="text" name="deadline_at" id="deadline_at" value="{{ old('deadline_at') }}" required>
                                     @if($errors->has('deadline_at'))
                                         <div class="invalid-feedback">
                                             {{ $errors->first('deadline_at') }}
