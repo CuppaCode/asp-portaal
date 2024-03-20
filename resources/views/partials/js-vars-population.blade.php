@@ -2,7 +2,7 @@
 
  $isAdmin = 0;
 
- if(auth()->user()->roles->contains(1)) {
+ if(auth()->user()->can('financial_access')) {
 
     $isAdmin = 1;
 

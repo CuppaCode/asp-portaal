@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 
-@php
-
-    $isAdmin = auth()->user()->roles->contains(1);
-
-@endphp
-
 <div class="card">
     <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.mailTemplates.title_singular') }}

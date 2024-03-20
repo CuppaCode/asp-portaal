@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 
-@php
-    
-    $isAdmin = auth()->user()->roles->contains(1);
-    
-@endphp
-
 @can('claim_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
