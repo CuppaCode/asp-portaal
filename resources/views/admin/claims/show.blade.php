@@ -4,9 +4,8 @@
 @php
 
     use Carbon\Carbon;
-    $isAdmin = auth()->user()->roles->contains(1);
-
-    //dd($contacts)
+    $user = auth()->user();
+    $isAdmin = $user->can('financial_access');
 
 @endphp
 
@@ -889,65 +888,64 @@
 
     
 
-@if (auth()->user()->roles->contains(1))
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                Kosten Schadedossier
+@can ('financial_access')
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Kosten Schadedossier
 
-                @unless( !$claim->assign_self && !$isAdmin )
-                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                    {{ trans('global.edit') }}
-                </a>
-                @endunless
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.damage_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->damage_costs }}</p>
-                    
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.recovery_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->recovery_costs }}</p>
-                    
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.replacement_vehicle_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->replacement_vehicle_costs }}</p>
-                        
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.expert_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->expert_costs }}</p>
-                    </div>
-                    <div class="col-md-6">    
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.other_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->other_costs }}</p>
-                        
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.deductible_excess_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->deductible_excess_costs }}</p>
-                        
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.insurance_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->insurance_costs }}</p>
-                    </div>
+                    @unless( !$claim->assign_self && !$isAdmin )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+                    @endunless
                 </div>
-            
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.damage_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->damage_costs }}</p>
+                        
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.recovery_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->recovery_costs }}</p>
+                        
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.replacement_vehicle_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->replacement_vehicle_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.expert_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->expert_costs }}</p>
+                        </div>
+                        <div class="col-md-6">    
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.other_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->other_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.deductible_excess_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->deductible_excess_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.insurance_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->insurance_costs }}</p>
+                        </div>
+                    </div>
+                
+                </div>
             </div>
         </div>
-    </div>
-    @if ($isAdmin)
 
         <div class="col-md-6">
             <div class="card">
@@ -994,8 +992,7 @@
             </div>
         </div>
 
-    @endif
-</div>
-@endif
+    </div>
+@endcan
 
 @endsection

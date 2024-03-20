@@ -345,6 +345,10 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => 84,
                 'title' => 'analytics_access',
+            ],
+            [
+                'id'    => 85,
+                'title' => 'financial_access'
             ]
         ];
 

@@ -3,7 +3,7 @@
 
 @php
 
-    $isAdmin = auth()->user()->roles->contains(1);
+    $isAdmin = auth()->user()->can('financial_access');
 
 @endphp
 

@@ -77,7 +77,7 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdmin = $user->can('finanical_access');
         $companies = null;
 
         if($isAdmin) {
@@ -116,7 +116,7 @@ class ClaimController extends Controller
 
         /* Custom bit */
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdmin = $user->can('financial_access');
 
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
         
@@ -245,8 +245,8 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
+        $isAdmin = $user->can('financial_access');
 
         abort_if(!$isAdmin && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -286,8 +286,8 @@ class ClaimController extends Controller
     {
         // dd($request);
 
-        $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
+        $isAdmin = $user->can('financial_access');
         $companies = null;
         
         if(!$isAdmin) {
@@ -450,7 +450,7 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdmin = $user->can('financial_access');
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();

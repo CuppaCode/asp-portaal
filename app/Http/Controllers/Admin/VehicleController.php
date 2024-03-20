@@ -38,7 +38,7 @@ class VehicleController extends Controller
     public function store(StoreVehicleRequest $request)
     {
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdmin = $user->can('financial_access');
 
         $vehicle = Vehicle::create($request->all());
         $vehicle->drivers()->sync($request->input('drivers', []));
