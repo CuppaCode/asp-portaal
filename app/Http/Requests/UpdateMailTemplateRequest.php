@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Models\InjuryOffice;
+use App\Models\MailTemplate;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 
-class UpdateInjuryOfficeRequest extends FormRequest
+class UpdateMailTemplateRequest extends FormRequest
 {
     public function authorize()
     {
@@ -17,14 +17,12 @@ class UpdateInjuryOfficeRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => [
-                'required',
-                'integer',
+            'name' => [
+                'required'
             ],
-            'identifier' => [
-                'string',
-                'nullable',
-            ],
+            'body' => [
+                'required'
+            ]
         ];
     }
 }

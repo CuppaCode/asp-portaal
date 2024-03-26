@@ -68,6 +68,19 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.opposite_claim_no_helper') }}</span>
             </div>
+            <label>{{ trans('cruds.claim.fields.assignee') }}</label>
+                <select class="form-control {{ $errors->has('assignee_id') ? 'is-invalid' : '' }}" name="assignee_id" id="assignee_id">
+                    <option value disabled {{ old('assignee_id', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach($assignee_options as $assignee)
+                        <option value="{{ $assignee->id }}" {{ (old('assignee_id') ? old('assignee_id') : $claim->assignee_id ?? '') == $assignee->id ? 'selected' : '' }}>{{ $assignee->name }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('assignee'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('assignee') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.assignee_helper') }}</span>
         </div>
     </div>
 
@@ -142,21 +155,6 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.injury_other_helper') }}</span>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>{{ trans('cruds.claim.fields.contact_lawyer') }}</label>
-                <select class="form-control {{ $errors->has('contact_lawyer') ? 'is-invalid' : '' }}" name="contact_lawyer" id="contact_lawyer">
-                    <option value disabled {{ old('contact_lawyer', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Claim::CONTACT_LAWYER_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('contact_lawyer', $claim->contact_lawyer) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('contact_lawyer'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('contact_lawyer') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.contact_lawyer_helper') }}</span>
             </div>
             <div class="form-group">
                 <label>{{ trans('cruds.claim.fields.recoverable_claim') }}</label>

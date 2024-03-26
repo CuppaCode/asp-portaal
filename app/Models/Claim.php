@@ -147,7 +147,6 @@ class Claim extends Model implements HasMedia
     public const DAMAGE_KIND = [
         'traffic'   => 'Verkeer',
         'transport' => 'Transport',
-        'other'     => 'Overige'
     ];
 
     public const DAMAGE_ORIGIN = [
@@ -231,6 +230,7 @@ class Claim extends Model implements HasMedia
         'invoice_settlement_asp',
         'opposite_claim_no',
         'invoice_comment',
+        'assignee_id',
         'invoice_amount',
     ];
 

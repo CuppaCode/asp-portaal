@@ -81,7 +81,7 @@ return [
             'claim_number_helper'              => ' ',
             'status'                           => 'Status',
             'status_helper'                    => ' ',
-            'created_at'                       => 'Created at',
+            'created_at'                       => 'Aangemaakt op',
             'created_at_helper'                => ' ',
             'updated_at'                       => 'Updated at',
             'updated_at_helper'                => ' ',
@@ -172,6 +172,8 @@ return [
             'invoice_amount_helper'            => '',
             'opposite_claim_no'                => 'Schadedossier nr. wederpartij',
             'opposite_claim_no_helper'         => '',
+            'assignee'                         => 'Behandelaar dossier',
+            'assignee_helper'                  => '',
         ],
     ],
     'company' => [
@@ -519,6 +521,19 @@ return [
             'commentable_helper' => '',
             'commentable_type'  => 'Opmerking Type',
             'commentable_helper' => '',
+        ]
+    ],
+    'mailTemplates' => [
+        'title' => 'Mail Sjablonen',
+        'title_singular' => 'Mail Sjabloon',
+        'fields' => [
+            'id' => 'ID',
+            'name' => 'Naam',
+            'name_helper' => '',
+            'subject' => 'Onderwerp',
+            'subject_helper' => '',
+            'body' => 'Sjabloon',
+            'body_helper' => ''
         ]
     ]
 ];

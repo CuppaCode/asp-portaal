@@ -221,7 +221,7 @@ $(document).ready(function () {
 
     // Vehicle creation
     var vehicleID = $('#vehicle_plates');
-    bindVehicleTags( vehicleID );
+    bindTags( vehicleID );
 
     // Submitted check
     $('button[type="submit"]').on('click', function() {
@@ -332,6 +332,14 @@ $(document).ready(function () {
 
     });
 
+    // Bind mailreceiver
+    const mailReceiver = $('#mailReceiver');
+    bindTags(mailReceiver);
+
+    // Handle template change
+    setupMailBody();
+
+    createWysiwyg(document.querySelectorAll('.ckeditor'));
 
 });
 
@@ -460,7 +468,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
 }
 
-function bindVehicleTags( inputID ) {
+function bindTags( inputID ) {
 
     inputID.select2({
         tags: true
@@ -501,5 +509,152 @@ function sendFlashMessage( message, type ) {
     }, 10000);
 
     return;
+
+}
+
+async function setupMailBody() {
+
+    const nativeMailBody = document.querySelector('#mailBody');
+
+    const mailSubject = $('#mailSubject');
+
+    const mailTemplate = $('#mailTemplate');
+
+    const claimText = $('#claimJson');
+
+    // Check if claimJSON is available
+    if(claimText.length < 1) {
+        return;
+    }
+
+    const claimJson = JSON.parse(claimText.text());
+
+    const statusSelectJson = JSON.parse($('#statusSelectJson').text());
+    const damagedPartTranslationsJson = JSON.parse($('#damagePartSelectJson').text());
+    const damageAreaSelectJson = JSON.parse($('#damageAreaSelectJson').text());
+    const damageOriginJson = JSON.parse($('#damageOriginJson').text());
+
+    const allMailTranslations = Object.assign({}, statusSelectJson, damagedPartTranslationsJson, damageAreaSelectJson, damageOriginJson);
+
+    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]'];
+    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', claimJson.damaged_part, claimJson.damaged_area, claimJson.damage_origin, claimJson.damage_costs];
+
+    const contactText = $('#contactJson');
+
+    console.log(claimJson);
+
+    if(contactText.length > 0) {
+        
+        const contactJson = JSON.parse(contactText.text());
+
+        console.log(contactJson);
+
+        var find = find.concat(['[contact_naam]', '[contact_email]']);
+        var replace = replace.concat([contactJson.first_name + ' ' + contactJson.last_name, '<a href="mailto:'+ contactJson.email +'" target="_blank">' + contactJson.email + "</a>"]);
+
+    }
+
+    const recoveryText = $('#recoveryJson');
+
+    if(recoveryText.length > 0) {
+        
+        const recoveryJson = JSON.parse(recoveryText.text());
+
+        var find = find.concat(['[herstel_adres]', '[herstel_postcode]', '[herstel_telnr]']);
+        var replace = replace.concat([recoveryJson.street + ' ' + recoveryJson.city, recoveryJson.zipcode, '<a href="tel:' + recoveryJson.phone + '" target="_blank">' + recoveryJson.phone + '</a>']);
+
+        const recoveryContactText = $('#recoveryContactJson');
+
+        if (recoveryContactText.length > 0) {
+
+            const recoveryContactJson = JSON.parse(recoveryContactText.text());
+            
+            var find = find.concat(['[herstel_contact_naam]', '[herstel_email]']);
+            var replace = replace.concat([recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
+        }
+
+    }
+
+    var finalBody = mailTemplate.val() ?? '';
+    var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
+
+    if (finalBody != '') {
+
+        $.each(find, (index, item) => {
+            
+            finalBody = finalBody.replace(item, replace[index]);
+
+        });
+
+        $.each(allMailTranslations, (index, item) => {
+
+            finalBody = finalBody.replace(index, item);
+
+        });
+
+    }
+
+    if (finalSubject != '') {
+
+        $.each(find, (index, item) => {
+
+            finalSubject = finalSubject.replace(item, replace[index]);
+
+        });
+
+        $.each(allMailTranslations, (index, item) => {
+
+            finalSubject = finalSubject.replace(index, item);
+
+        });
+
+    }
+        
+    const ckeditor = await ClassicEditor.create(nativeMailBody);
+
+    ckeditor.setData(finalBody);
+    mailSubject.val(finalSubject);
+
+    mailTemplate.on('change', function (e) {
+
+        var finalSubject = $('option:selected', this).data('subject') ?? '';
+        var finalBody = $(this).val() ?? '';
+
+        $.each(find, (index, item) => {
+            
+            finalBody = finalBody.replace(item, replace[index]);
+            finalSubject = finalSubject.replace(item, replace[index]);
+
+        });
+
+        $.each(allMailTranslations, (index, item) => {
+
+            finalBody = finalBody.replace(index, item);
+            finalSubject = finalSubject.replace(index, item);
+
+        });
+
+        ckeditor.setData(finalBody);
+        mailSubject.val(finalSubject);
+
+    });
+
+   
+    
+}
+
+async function createWysiwyg( textareaCollection ){
+
+    if(textareaCollection.length < 1){
+        return;
+    }
+
+    textareaCollection.forEach(async (item) => {
+
+        const wysiwyg = ClassicEditor.create(item);
+
+        // we could manipulate wysiwyg from here using methods within the wysiwyg const
+
+    });
 
 }
