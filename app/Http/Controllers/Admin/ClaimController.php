@@ -456,6 +456,13 @@ class ClaimController extends Controller
         $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
 
+        $parentMediaArray = [
+            trans('cruds.claim.fields.damage_files') => $claim->damage_files,
+            trans('cruds.claim.fields.report_files') => $claim->report_files,
+            trans('cruds.claim.fields.financial_files') => $claim->financial_files,
+            trans('cruds.claim.fields.other_files') => $claim->other_files
+        ];
+
         $users = User::where('team_id', $user->team->id)->get();
 
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
@@ -471,7 +478,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray'));
     }
 
     public function destroy(Claim $claim)
