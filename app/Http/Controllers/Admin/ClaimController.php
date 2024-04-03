@@ -144,8 +144,6 @@ class ClaimController extends Controller
         
         if(!$isAdmin) {
             
-
-            dd($user);
             $claim->company_id = $user->contact->company->id;
 
         }
