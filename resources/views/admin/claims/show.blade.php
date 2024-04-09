@@ -83,7 +83,7 @@
                 {{ $claim->opposite_claim_no }}
             </div>
             @endif
-            @if ($claim->assignee_id)
+            @if ($claim->assignee_id && isset($assignee_name))
             <div class="col-md-2">
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.assignee') }}</div>
