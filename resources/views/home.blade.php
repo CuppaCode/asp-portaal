@@ -3,6 +3,12 @@
 <div class="content">
     <div class="row">
         <div class="col-sm-6 col-lg-3">
+            Hier onder komen tokens <br/>
+            @foreach(auth()->user()->tokens as $token)
+test
+        <h1>{{ dump($token) }}</h1>
+
+    @endforeach
             <a href="{{ route("admin.claims.create") }}" class="nounderline" >
                 <div class="card bg-success mb-4">
                     <div class="card-header position-relative d-flex justify-content-center align-items-center">

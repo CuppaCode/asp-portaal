@@ -1,19 +1,24 @@
 <?php
 
+use Illuminate\Http\Request;
+
 Route::group([
     'prefix' => 'v1',
     'as' => 'api.',
-    'namespace' => 'Api\V1\Admin',
+    'namespace' => 'Admin',
     'middleware' => ['auth:sanctum']
 ], function () {
     
+    Route::post('users/get-user-name', 'UsersController@getUserName');
     
 });
 
+// Route::post('tokens/create', function (Request $request) {
 
-//Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
-
-//});
+//     $token = $request->user()->createToken($request->token_name);
+ 
+//     return ['token' => $token->plainTextToken];
+// })->middleware('auth');
 
 // Claim API call, to be accessible via JS AKA AJAX calls
 Route::post('claims/update-status', 'Admin\ClaimController@quickUpdateStatus');
