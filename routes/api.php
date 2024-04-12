@@ -27,7 +27,7 @@ Route::post('tasks/update-status', 'Admin\TaskController@quickUpdateStatus');
 Route::post('companies/quick-store', 'Admin\CompanyController@quickStore');
 Route::post('comments/quick-store', 'Admin\CommentController@quickStore');
 
-Route::post('users/get-user-name', 'Admin\UsersController@getUserName');
+//Route::post('users/get-user-name', 'Admin\UsersController@getUserName');
 
 Route::post('analytics/get-data', 'Admin\AnalyticsController@getData');
 
