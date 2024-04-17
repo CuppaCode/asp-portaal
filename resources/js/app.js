@@ -406,7 +406,6 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
     .done(res => {
 
         commentableDOM.find('.item.form textarea[name="body"]').val('');
-        //commentableDOM.find('.item.form').slideToggle();
 
         commentableDOM.find('.item.comment').each((index, comment) => {
 
