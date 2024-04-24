@@ -104,14 +104,4 @@ class UsersController extends Controller
         ]);
     }
 
-    public function createAccesToken(Request $request)
-    {
-
-        return response()->json(['access_token' => auth()->user()->createToken(
-                'temp-access',
-                ['*'],
-                now()->addMinutes(5)
-            )->plainTextToken]);
-
-    }
 }

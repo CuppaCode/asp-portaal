@@ -83,7 +83,7 @@ $(document).ready(function() {
         var sdate = $('#datetimepicker1Input').val();
         var edate = $('#datetimepicker2Input').val();
 
-        $.post("/api/analytics/get-data", { company: company, startdate: sdate, enddate: edate } , function(res) {
+        $.post("/admin/analytics/get-data", { company: company, startdate: sdate, enddate: edate } , function(res) {
             console.log(res);
 
             var damage_costs_arr = new Array();

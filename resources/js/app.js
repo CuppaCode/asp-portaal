@@ -10,6 +10,13 @@ Alpine.start();
 
 $(document).ready(function () {
 
+    //Setup headers for AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     var array = document.querySelectorAll('.custom_datepicker');
     
     array.forEach(function (datepicker) {
@@ -172,7 +179,7 @@ $(document).ready(function () {
         var claimID = $(this).data('claim-id');
         var newStatus = $(this).val();
 
-        $.post('/api/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
+        $.post('/admin/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
             
@@ -190,7 +197,7 @@ $(document).ready(function () {
         var taskID = $(this).data('task-id');
         var newStatus = $(this).val();
 
-        $.post('/api/tasks/update-status', { task_id: taskID, new_status: newStatus } , function(res) {
+        $.post('/admin/tasks/update-status', { task_id: taskID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
             
@@ -361,7 +368,7 @@ function ajaxCreateCompany( inputID, typeID = null ) {
 
         if( !selected.element ) {
 
-            $.post('/api/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
+            $.post('/admin/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
 
                 var newOption = inputID.find('option[value="'+ selected.id +'"]');
                 var inputName = inputID.attr('name');
@@ -402,7 +409,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
         teamID: parseInt(teamID)
     };
 
-    $.post('/api/comments/quick-store', data)
+    $.post('/admin/comments/quick-store', data)
     .done(res => {
 
         commentableDOM.find('.item.form textarea[name="body"]').val('');
@@ -450,7 +457,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
                 const userDOM = $('#js-username-' + comment.id);        
 
-                $.post('/api/users/get-user-name', { userID: comment.user_id })
+                $.post('/admin/users/get-user-name', { userID: comment.user_id })
                 .done(function(res){
                     userDOM.text(res.name);
                 });
