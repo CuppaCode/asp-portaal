@@ -284,7 +284,7 @@ class ClaimController extends Controller
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        // dd($request);
+        dd($request->all());
 
         $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
@@ -448,7 +448,7 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        
         $user = auth()->user();
         $isAdmin = $user->roles->contains(1);
 

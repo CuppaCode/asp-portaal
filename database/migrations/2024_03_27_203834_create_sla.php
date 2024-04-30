@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('label')->nullable();
             $table->float('max_amount')->nullable();
             $table->string('reports')->nullable();
-            $table->string('analtyics_options')->nullable();
+            $table->string('analytics_options')->nullable();
             $table->foreignId('company_id')->nullable();
             $table->timestamps();
         });

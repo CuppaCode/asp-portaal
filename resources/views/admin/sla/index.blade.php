@@ -3,7 +3,7 @@
 @can('user_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.users.create') }}">
+            <a class="btn btn-success" href="{{ route('admin.sla.create') }}">
                 {{ trans('global.add') }} {{ trans('cruds.sla.title_singular') }}
             </a>
         </div>
@@ -29,15 +29,6 @@
                             {{ trans('cruds.user.fields.name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.user.fields.email') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.user.fields.roles') }}
-                        </th>
-                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -51,61 +42,36 @@
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
                         <td>
-                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
-                        </td>
-                        <td>
-                            {{-- <select class="search">
-                                <option value>{{ trans('global.all') }}</option>
-                                @foreach($roles as $key => $item)
-                                    <option value="{{ $item->title }}">{{ $item->title }}</option>
-                                @endforeach
-                            </select> --}}
-                        </td>
-                        <td>
                         </td>
                     </tr>
                 </thead>
-                {{-- <tbody>
-                    @foreach($users as $key => $user)
-                        <tr data-entry-url="{{ route('admin.users.show', $user->id) }}" data-entry-id="{{ $user->id }}">
+                <tbody>
+                    @foreach($SLA as $key => $SLAItem)
+                        <tr data-entry-url="{{ route('admin.sla.show', $SLAItem->id) }}" data-entry-id="{{ $SLAItem->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $user->id ?? '' }}
+                                {{ $SLAItem->id ?? '' }}
                             </td>
                             <td>
-                                {{ $user->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $user->email ?? '' }}
-                            </td>
-                            <td>
-                                {{ $user->email_verified_at ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($user->roles as $key => $item)
-                                    <span class="badge badge-info">{{ $item->title }}</span>
-                                @endforeach
+                                {{ $SLAItem->company->name ?? '' }}
                             </td>
                             <td>
                                 @can('user_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $user->id) }}">
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.sla.show', $SLAItem->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
                                 @can('user_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.sla.edit', $SLAItem->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 
                                 @can('user_delete')
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('admin.users.destroy', $SLAItem->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -116,7 +82,7 @@
 
                         </tr>
                     @endforeach
-                </tbody> --}}
+                </tbody>
             </table>
         </div>
     </div>
