@@ -48,7 +48,7 @@ class ContactController extends Controller
     public function store(StoreContactRequest $request)
     {
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdmin = $user->can('financial_access');
 
         $contact = Contact::create($request->all());
 
