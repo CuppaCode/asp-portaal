@@ -77,14 +77,9 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $isAdmin = $user->can('financial_access');
-        $companies = null;
+        $canAssignCompany = $user->can('assign_company');
 
-        if($isAdmin) {
-
-            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
+        $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -97,7 +92,7 @@ class ClaimController extends Controller
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        if($isAdmin) {
+        if($canAssignCompany) {
 
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
