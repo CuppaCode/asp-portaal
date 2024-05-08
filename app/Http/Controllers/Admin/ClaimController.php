@@ -77,7 +77,7 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $isAdmin = $user->can('finanical_access');
+        $isAdmin = $user->can('financial_access');
         $companies = null;
 
         if($isAdmin) {
