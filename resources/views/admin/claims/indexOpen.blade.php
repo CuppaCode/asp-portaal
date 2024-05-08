@@ -3,7 +3,9 @@
 
 @php
     
-    $isAdmin = auth()->user()->can('financial_access');
+    $user = auth()->user();
+    $isAdmin = $user->can('financial_access');
+    $canAssignCompany = $user->can('assign_company');
     
 @endphp
 
@@ -108,7 +110,7 @@
                                     </a>
                                 @endcan
                                     
-                                @unless( !$claim->assign_self && !$isAdmin )
+                                @unless( !$claim->assign_self && !$canAssignCompany )
 
                                     @can('claim_edit')
                                         <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">

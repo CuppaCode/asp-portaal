@@ -3,7 +3,9 @@
 
 @php
 
-    $isAdmin = auth()->user()->can('financial_access');
+    $user = auth()->user();
+    $isAdmin = $user->can('financial_access');
+    $canAssignCompany = $user->can('assign_company');
 
 @endphp
 
@@ -16,7 +18,7 @@
         <form method="POST" action="{{ route("admin.contacts.store") }}" enctype="multipart/form-data">
             @csrf
 
-            @if ($isAdmin)
+            @if ($canAssignCompany)
 
                 <div class="form-group">
 
@@ -40,7 +42,7 @@
 
             @endif
             
-            @if ($isAdmin)
+            @if ($canAssignCompany)
 
                 <div class="form-group d-none">
                     <label for="user_id">{{ trans('cruds.contact.fields.user') }}</label>

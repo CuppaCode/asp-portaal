@@ -352,7 +352,7 @@ $(document).ready(function () {
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
-    if(isAdmin < 1 || !isAdmin || isAdmin != 1){
+    if(canAssignCompany < 1 || !canAssignCompany || canAssignCompany != 1){
 
         return;
         

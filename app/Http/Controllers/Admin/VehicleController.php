@@ -38,12 +38,12 @@ class VehicleController extends Controller
     public function store(StoreVehicleRequest $request)
     {
         $user = auth()->user();
-        $isAdmin = $user->can('financial_access');
+        $canAssignCompany = $user->can('assign_company');
 
         $vehicle = Vehicle::create($request->all());
         $vehicle->drivers()->sync($request->input('drivers', []));
 
-        if(!$isAdmin) {
+        if(!$canAssignCompany) {
             
             $vehicle->company_id = $user->contact->company->id;
 

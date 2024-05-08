@@ -1,10 +1,10 @@
 @php
 
- $isAdmin = 0;
+ $canAssignCompany = 0;
 
- if(auth()->user()->can('financial_access')) {
+ if(auth()->user()->can('assign_company')) {
 
-    $isAdmin = 1;
+    $canAssignCompany = 1;
 
  }
 
@@ -12,6 +12,6 @@
 
 <script type="text/javascript">
 
-    var isAdmin = {{ $isAdmin }};
+    var canAssignCompany = {{ $canAssignCompany }};
 
 </script>
