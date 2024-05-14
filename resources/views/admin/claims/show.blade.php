@@ -832,10 +832,36 @@
 
                                     @endif
 
+                                    @if (isset($claim->driver_vehicle))
+
+                                        @php
+
+                                            $driver = App\Models\Driver::find($claim->driver_vehicle);
+
+                                            if(isset($driver)) {
+
+                                                $driverContact = App\Models\Contact::find($driver->contact_id);
+
+                                            }
+
+                                        @endphp
+
+                                        <div class="d-none" id="driverJson">{{ json_encode($driverContact) }}</div>
+
+                                    @endif
+
+                                    @if (isset($opposite))
+
+                                        <div class="d-none" id="oppositeJson">{{ json_encode($opposite) }}</div>
+
+                                    @endif
+
                                     <div class="d-none" id="statusSelectJson">{{ json_encode(App\Models\Claim::STATUS_SELECT) }}</div>
                                     <div class="d-none" id="damagePartSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_PART_SELECT) }}</div>
                                     <div class="d-none" id="damageAreaSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_AREA_SELECT) }}</div>
                                     <div class="d-none" id="damageOriginJson">{{ json_encode(App\Models\Claim::DAMAGE_ORIGIN) }}</div>
+                                    <div class="d-none" id="damageKindJson">{{ json_encode(App\Models\Claim::DAMAGE_KIND) }}</div>
+                                    <div class="d-none" id="recoverableClaimJson">{{ json_encode(App\Models\Claim::RECOVERABLE_CLAIM_SELECT) }}</div>
 
                                 </div>
                                 <div class="form-group">
