@@ -53,7 +53,9 @@
                             {{ trans('cruds.sla.fields.label') }}
                         </th>
                         <td>
-                            {{ App\Models\SLA::LABEL_SELECT[$sla->label] }}
+                            @if ($sla->label)
+                                {{ App\Models\SLA::LABEL_SELECT[$sla->label] }}
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -77,7 +79,9 @@
                             {{ trans('cruds.sla.fields.reports') }}
                         </th>
                         <td>
-                            {{ App\Models\SLA::REPORT_SELECT[$sla->reports] }}
+                            @if($sla->reports !== null)
+                                {{ App\Models\SLA::REPORT_SELECT[$sla->reports] }}
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -103,7 +107,7 @@
                 </tbody>
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.contacts.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.sla.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>

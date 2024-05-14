@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSLARequest;
+use App\Http\Requests\UpdateSLARequest;
 use App\Models\SLA;
 use App\Models\Company;
 use Gate;
@@ -66,24 +67,39 @@ class SLAController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SLA $SLA)
+    public function edit(SLA $sla)
     {
-        //
+        $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.sla.edit', compact('sla', 'companies'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SLA $sLA)
+public function update(UpdateSLARequest $request, SLA $sla)
     {
-        //
+        $multiSelects = ['analytics_options'];
+
+        $sla->update($request->except($multiSelects));
+
+        $sla->analytics_options = $request->input('analytics_options') ? json_encode($request->input('analytics_options')) : null;
+        $sla->save();
+
+        $company = Company::where('id', $sla->company)->first();
+
+        return view('admin.sla.show', compact('sla', 'company'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SLA $sLA)
+    public function destroy(SLA $sla)
     {
-        //
+        abort_if(Gate::denies('sla_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $sla->delete();
+
+        return back();
     }
 }

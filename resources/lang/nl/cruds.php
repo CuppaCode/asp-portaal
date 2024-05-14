@@ -233,6 +233,8 @@ return [
             'description_helper'  => ' ',
             'team'                => 'Team',
             'team_helper'         => ' ',
+            'contact'             => 'Contactpersoon',
+            'contact_helper'      => '',
         ],
     ],
     'task' => [

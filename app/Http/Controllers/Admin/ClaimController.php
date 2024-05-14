@@ -21,6 +21,7 @@ use App\Models\Opposite;
 use App\Models\User;
 use App\Models\MailTemplate;
 use App\Models\Note;
+use App\Models\SLA;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -284,8 +285,6 @@ class ClaimController extends Controller
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        dd($request->all());
-
         $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
         $companies = null;
@@ -453,9 +452,9 @@ class ClaimController extends Controller
         $isAdmin = $user->roles->contains(1);
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-        $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
+        $firstContact = Contact::where('id', $claim->company->contact_id)->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
-
+        $sla = SLA::where('company_id', $claim->company->id)->first();
         $users = User::where('team_id', $user->team->id)->get();
 
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
@@ -471,7 +470,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'sla'));
     }
 
     public function destroy(Claim $claim)

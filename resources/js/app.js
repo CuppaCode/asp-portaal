@@ -174,6 +174,10 @@ $(document).ready(function () {
         $('#'+data).val('');
     });
 
+    $('#sla-toggle').on('click', function (e) {
+        $('.sla-show').slideToggle();
+    });
+
 
     // Claims AJAX requests
 

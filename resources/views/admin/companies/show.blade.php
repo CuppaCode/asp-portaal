@@ -31,6 +31,16 @@
                             {{ $company->name }}
                         </td>
                     </tr>
+                    @if (!empty($contact))
+                    <tr>
+                        <th>
+                            {{ trans('cruds.company.fields.contact') }}
+                        </th>
+                        <td>
+                            {{ $contact->first_name ." ". $contact->last_name }}
+                        </td>
+                    </tr>
+                    @endif
                     <tr>
                         <th>
                             {{ trans('cruds.company.fields.company_type') }}
