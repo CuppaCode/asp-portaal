@@ -3,7 +3,7 @@
 
 @php
 
-    $canAssignCompany = auth()->user()->can('assign_company');
+    $isAdminOrAgent = auth()->user()->isAdminOrAgent();
 
 @endphp
 
@@ -27,7 +27,7 @@
         <div class="card-body">
             @csrf
 
-            @if ($canAssignCompany)
+            @if ($isAdminOrAgent)
                 <div class="form-group">
 
                     <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>

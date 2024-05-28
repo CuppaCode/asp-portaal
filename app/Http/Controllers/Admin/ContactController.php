@@ -48,11 +48,11 @@ class ContactController extends Controller
     public function store(StoreContactRequest $request)
     {
         $user = auth()->user();
-        $canAssignCompany = $user->can('assign_company');
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         $contact = Contact::create($request->all());
 
-        if(!$canAssignCompany) {
+        if(!$isAdminOrAgent) {
             
             $contact->company_id = $user->contact->company->id;
 

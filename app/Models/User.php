@@ -56,6 +56,16 @@ class User extends Authenticatable
         return $this->roles()->where('id', 1)->exists();
     }
 
+    public function canAssignCompany()
+    {
+        return $this->can('assign_company');
+    }
+
+    public function isAdminOrAgent()
+    {
+        return $this->roles()->where('title', 'Admin')->orWhere('title', 'Agent')->exists();
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);

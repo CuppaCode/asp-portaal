@@ -13,13 +13,15 @@ trait MultiTenantModelTrait
     public static function bootMultiTenantModelTrait()
     {
         if (! app()->runningInConsole() && auth()->check()) {
-            $canAssignCompany = auth()->user()->can('assign_company');
-            static::creating(function ($model) use ($canAssignCompany) {
+            
+            $isAdminOrAgent = auth()->user()->isAdminOrAgent();
+            
+            static::creating(function ($model) use ($isAdminOrAgent) {
                 // Prevent admin from setting his own id - admin entries are global.
                 // If required, remove the surrounding IF condition and admins will act as users
-                if (! $canAssignCompany) {
+                if (! $isAdminOrAgent) {
                     $model->team_id = auth()->user()->team_id;
-                } elseif ($canAssignCompany) {
+                } elseif ($isAdminOrAgent) {
                     if($model->table == 'claims') {
                         $company = Company::where('id', $model->company_id)->get('team_id')->first();
                         $model->team_id = $company->team_id;
@@ -34,8 +36,10 @@ trait MultiTenantModelTrait
                     }
                 }
             });
-            if (! $canAssignCompany) {
+            if (!$isAdminOrAgent) {
+
                 static::addGlobalScope('team_id', function (Builder $builder) {
+
                     $field = sprintf('%s.%s', $builder->getQuery()->from, 'team_id');
 
                     $builder->where($field, auth()->user()->team_id)->orWhereNull($field);
