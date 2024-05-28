@@ -4,9 +4,8 @@
 @php
 
     use Carbon\Carbon;
-    $isAdmin = auth()->user()->roles->contains(1);
-
-    //dd($contacts)
+    $user = auth()->user();
+    $isAdminOrAgent = $user->isAdminOrAgent();
 
 @endphp
 
@@ -15,7 +14,7 @@
         {{ trans('global.back_to_list') }}
     </a>
 
-    @if ($isAdmin)
+    @if ($isAdminOrAgent)
 
         @if ($claim->assign_self == true)
             <div class="alert alert-danger" role="alert">
@@ -25,7 +24,7 @@
     
     @endif
 
-    @unless( !$claim->assign_self && !$isAdmin )
+    @unless( !$claim->assign_self && !$isAdminOrAgent )
 
         <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
             {{ trans('global.edit') }}
@@ -39,7 +38,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         Schadedossier overzicht
         
-        @if( $claim->assign_self || $isAdmin)
+        @if( $claim->assign_self || $isAdminOrAgent)
         <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
@@ -100,7 +99,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Schademelding
 
-                @unless( !$claim->assign_self && !$isAdmin )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -163,7 +162,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Contactgegevens
 
-                @unless( !$claim->assign_self && !$isAdmin )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -196,7 +195,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Gegevens wagenpark
 
-                    @unless( !$claim->assign_self && !$isAdmin )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
@@ -268,7 +267,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wederpartij
 
-                @unless( !$claim->assign_self && !$isAdmin )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -341,7 +340,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Details wederpartij
 
-                    @unless( !$claim->assign_self && !$isAdmin )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
@@ -393,7 +392,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Bijlages
 
-                @unless( !$claim->assign_self && !$isAdmin )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -880,72 +879,71 @@
 
     
 
-@if (auth()->user()->roles->contains(1))
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                Kosten Schadedossier
+@can ('financial_access')
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Kosten Schadedossier
 
-                @unless( !$claim->assign_self && !$isAdmin )
-                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                    {{ trans('global.edit') }}
-                </a>
-                @endunless
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.damage_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->damage_costs }}</p>
-                    
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.recovery_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->recovery_costs }}</p>
-                    
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.replacement_vehicle_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->replacement_vehicle_costs }}</p>
-                        
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.expert_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->expert_costs }}</p>
-                    </div>
-                    <div class="col-md-6">    
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.other_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->other_costs }}</p>
-                        
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.deductible_excess_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->deductible_excess_costs }}</p>
-                        
-                        <div class="card-title">
-                            {{ trans('cruds.claim.fields.insurance_costs') }}
-                        </div>
-                        <p class="card-text">&euro; {{ $claim->insurance_costs }}</p>
-                    </div>
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+                    @endunless
                 </div>
-            
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.damage_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->damage_costs }}</p>
+                        
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.recovery_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->recovery_costs }}</p>
+                        
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.replacement_vehicle_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->replacement_vehicle_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.expert_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->expert_costs }}</p>
+                        </div>
+                        <div class="col-md-6">    
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.other_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->other_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.deductible_excess_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->deductible_excess_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.insurance_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->insurance_costs }}</p>
+                        </div>
+                    </div>
+                
+                </div>
             </div>
         </div>
-    </div>
-    @if ($isAdmin)
 
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     ASP Financieel
                     
-                    @unless( !$claim->assign_self && !$isAdmin )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
@@ -985,8 +983,7 @@
             </div>
         </div>
 
-    @endif
-</div>
-@endif
+    </div>
+@endcan
 
 @endsection

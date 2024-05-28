@@ -3,7 +3,7 @@
 
 @php
 
-    $isAdmin = auth()->user()->roles->contains(1);
+    $isAdminOrAgent = auth()->user()->isAdminOrAgent();
 
 @endphp
 
@@ -27,7 +27,7 @@
         <div class="card-body">
             @csrf
 
-            @if ($isAdmin)
+            @if ($isAdminOrAgent)
                 <div class="form-group">
 
                     <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
