@@ -61,7 +61,7 @@ class MailTemplateController extends Controller
     }
 
     public function destroy(MailTemplate $mailTemplate)
-    {
+    {   
         abort_if(Gate::denies('mail_template_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $mailTemplate->delete();

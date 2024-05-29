@@ -78,14 +78,9 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
-        $companies = null;
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
-        if($isAdmin) {
-
-            $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
+        $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -98,7 +93,7 @@ class ClaimController extends Controller
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        if($isAdmin) {
+        if($isAdminOrAgent) {
 
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -117,7 +112,7 @@ class ClaimController extends Controller
 
         /* Custom bit */
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
         
@@ -143,7 +138,7 @@ class ClaimController extends Controller
             'claim_id'      => $claim->id,
         ]);
         
-        if(!$isAdmin) {
+        if(!$isAdminOrAgent) {
             
             $claim->company_id = $user->contact->company->id;
 
@@ -246,10 +241,10 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
-        abort_if(!$isAdmin && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(!$isAdminOrAgent && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -268,7 +263,7 @@ class ClaimController extends Controller
         $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
 
 
-        if($isAdmin) {
+        if($isAdminOrAgent) {
 
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -285,11 +280,11 @@ class ClaimController extends Controller
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        $isAdmin = auth()->user()->roles->contains(1);
         $user = auth()->user();
+        $isAdminOrAgent = $user->isAdminOrAgent();
         $companies = null;
         
-        if(!$isAdmin) {
+        if(!$isAdminOrAgent) {
             
             $claim->company_id = $user->contact->company->id;
             
@@ -446,31 +441,44 @@ class ClaimController extends Controller
 
     public function show(Claim $claim)
     {
+
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         
         $user = auth()->user();
-        $isAdmin = $user->roles->contains(1);
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $firstContact = Contact::where('id', $claim->company->contact_id)->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
+
         $sla = SLA::where('company_id', $claim->company->id)->first();
         $users = User::where('team_id', $user->team->id)->get();
 
+        $parentMediaArray = [
+            trans('cruds.claim.fields.damage_files') => $claim->damage_files,
+            trans('cruds.claim.fields.report_files') => $claim->report_files,
+            trans('cruds.claim.fields.financial_files') => $claim->financial_files,
+            trans('cruds.claim.fields.other_files') => $claim->other_files
+        ];
+        
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
         $mailTemplates = MailTemplate::all();
-      
+        
         $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
-
-        if($isAdmin) {
-
+        
+        if($isAdminOrAgent) {
+            
             $users = User::get();
+            
+        } else {
+            
+            $users = User::where('team_id', $user->team->id)->get();
 
-        } 
+        }
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'sla'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla'));
     }
 
     public function destroy(Claim $claim)

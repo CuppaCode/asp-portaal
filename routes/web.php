@@ -119,9 +119,20 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Test123
         
         Groet,
-        Jemoeder';
+        Tester';
         return $markdown->render("emails.plain-email", ['body' => $data]);
-    }); 
+    });
+
+    // Ajax routes
+    Route::post('users/get-user-name', 'UsersController@getUserName');
+
+    Route::post('claims/update-status', 'ClaimController@quickUpdateStatus');
+    Route::post('tasks/update-status', 'TaskController@quickUpdateStatus');
+
+    Route::post('companies/quick-store', 'CompanyController@quickStore');
+    Route::post('comments/quick-store', 'CommentController@quickStore');
+    
+    Route::post('analytics/get-data', 'AnalyticsController@getData');
 
 });
 

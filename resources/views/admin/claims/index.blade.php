@@ -3,7 +3,9 @@
 
 @php
     
-    $isAdmin = auth()->user()->roles->contains(1);
+    $user = auth()->user();
+    $isAdmin = $user->can('financial_access');
+    $isAdminOrAgent = $user->isAdminOrAgent();
     
 @endphp
 
@@ -108,7 +110,7 @@
                                     </a>
                                 @endcan
                                     
-                                @unless( !$claim->assign_self && !$isAdmin )
+                                @unless( !$claim->assign_self && !$isAdminOrAgent )
 
                                     @can('claim_edit')
                                         <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
@@ -175,7 +177,7 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
-    order: [[ 1, 'asc' ]],
+    order: [[ 4, 'desc' ]],
     pageLength: 100,
   });
   let table = $('.datatable-Claim:not(.ajaxTable)').DataTable({ buttons: dtButtons })

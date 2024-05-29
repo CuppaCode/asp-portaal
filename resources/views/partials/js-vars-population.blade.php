@@ -1,10 +1,10 @@
 @php
 
- $isAdmin = 0;
+ $isAdminOrAgent = 0;
 
- if(auth()->user()->roles->contains(1)) {
+ if(auth()->user()->isAdminOrAgent()) {
 
-    $isAdmin = 1;
+    $isAdminOrAgent = 1;
 
  }
 
@@ -12,6 +12,6 @@
 
 <script type="text/javascript">
 
-    var isAdmin = {{ $isAdmin }};
+    var isAdminOrAgent = {{ $isAdminOrAgent }};
 
 </script>

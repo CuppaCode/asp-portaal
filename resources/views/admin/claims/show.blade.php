@@ -3,25 +3,95 @@
 
     @php
 
-        use Carbon\Carbon;
-        $isAdmin = auth()->user()->roles->contains(1);
-
-        //dd($contacts)
+    use Carbon\Carbon;
+    $user = auth()->user();
+    $isAdminOrAgent = $user->isAdminOrAgent();
 
     @endphp
 
-    <div class="top-bar-claims form-group d-flex justify-content-between align-items-center">
-        <a class="btn btn-dark" href="{{ route('admin.claims.index') }}">
-            {{ trans('global.back_to_list') }}
+
+<div class="top-bar-claims form-group d-flex justify-content-between align-items-center">
+    <a class="btn btn-dark" href="{{ route('admin.claims.index') }}">
+        {{ trans('global.back_to_list') }}
+    </a>
+
+    @if ($isAdminOrAgent)
+
+        @if ($claim->assign_self == true)
+            <div class="alert alert-danger" role="alert">
+                Let op! Dit schadedossier wordt behandeld door klant zelf.
+            </div>
+        @endif
+    
+    @endif
+
+    @unless( !$claim->assign_self && !$isAdminOrAgent )
+
+        <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+            {{ trans('global.edit') }}
         </a>
 
-        @if ($isAdmin)
-            @if ($claim->assign_self == true)
-                <div class="alert alert-danger" role="alert">
-                    Let op! Dit schadedossier wordt behandeld door klant zelf.
+    @endunless
+    
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        Schadedossier overzicht
+        
+        @if( $claim->assign_self || $isAdminOrAgent)
+        <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
+
+            @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
+
+                <option value="{{ $key }}" {{ $claim->status == $key ? 'selected' : '' }}>{{ $status }}</option>
+
+            @endforeach
+
+        </select>
+
+        @else 
+        <div class="col-md-3 btn btn-info">
+            {{ App\Models\Claim::STATUS_SELECT[$claim->status] }}
+        </div>
+        @endif
+  
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.claim_number') }}
                 </div>
+                {{ $claim->claim_number }}
+            </div>
+            <div class="col-md-3">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.company') }}</div>
+                {{ $claim->company->name ?? '' }}
+            </div>
+            <div class="col-md-3">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.subject') }}</div>
+                {{ $claim->subject }}
+            </div>
+            @if ($claim->opposite_claim_no)
+            <div class="col-md-2">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.opposite_claim_no') }}</div>
+                {{ $claim->opposite_claim_no }}
+            </div>
+            @endif
+            @if ($claim->assignee_id && isset($assignee_name))
+            <div class="col-md-2">
+                <div class="card-title">
+                    {{ trans('cruds.claim.fields.assignee') }}</div>
+                {{ $assignee_name->first_name . ' ' . $assignee_name->last_name }}
+            </div>
             @endif
         @endif
+
 
         <div>
             @if($sla)
@@ -37,8 +107,9 @@
                     </button>
                 @endcan
             @endif
-            @unless (!$claim->assign_self && !$isAdmin)
-                <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+            
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
             @endunless
@@ -135,13 +206,14 @@
         </div>
     </div>
 
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Schadedossier overzicht
         
-                    @if ($claim->assign_self || $isAdmin)
+                    @if ($claim->assign_self || $isAdminOrAgent)
                         <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
         
                             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
@@ -156,6 +228,16 @@
                         </div>
                     @endif
         
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
+                @endunless
+            </div>
+            <div class="card-body">
+                @isset($firstContact) 
+                <div class="card-title">
+                    Naam
                 </div>
         
                 <div class="card-body">
@@ -199,10 +281,11 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Schademelding
 
-                    @unless (!$claim->assign_self && !$isAdmin)
-                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                            {{ trans('global.edit') }}
-                        </a>
+
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
                     @endunless
                 </div>
 
@@ -211,7 +294,28 @@
                     <div class="card-title">
                         {{ trans('cruds.claim.fields.created_at') }}
                     </div>
+
                     <p class="card-text">{{ $claim->created_at }}</p>
+
+                    <p class="card-text">{{ App\Models\Driver::find($claim->driver_vehicle)->driver_full_name ?? '' }}</p>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </div>
+    <div class="col-md-6">
+        @if (!empty($claim->vehicle_opposite) || !empty($claim->damaged_part_opposite) || !empty($claim->damage_origin_opposite) || !empty($claim->damaged_area_opposite) || !empty($claim->driver_vehicle_opposite))
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                Gegevens wederpartij
+
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
+                @endunless
+            </div>
 
                     @if (!empty($claim->date_accident))
                         <div class="card-title">
@@ -261,10 +365,12 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Contactgegevens
 
-                    @unless (!$claim->assign_self && !$isAdmin)
-                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                            {{ trans('global.edit') }}
-                        </a>
+
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+
                     @endunless
                 </div>
                 <div class="card-body">
@@ -381,7 +487,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         Gegevens wederpartij
 
-                        @unless (!$claim->assign_self && !$isAdmin)
+                        @unless (!$claim->assign_self && !$isAdminOrAgent)
                             <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                 {{ trans('global.edit') }}
                             </a>
@@ -460,7 +566,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             Details wederpartij
 
-                            @unless (!$claim->assign_self && !$isAdmin)
+                            @unless (!$claim->assign_self && !$isAdminOrAgent)
                                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                     {{ trans('global.edit') }}
                                 </a>
@@ -514,65 +620,38 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Bijlages
 
-                    @unless (!$claim->assign_self && !$isAdmin)
-                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                            {{ trans('global.edit') }}
-                        </a>
-                    @endunless
-                </div>
+          
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
+                @endunless
+            </div>
 
-                <div class="card-body">
-                    <div class="row">
+            <div class="card-body">
+                <div class="row">
+
+                    @foreach($parentMediaArray as $name => $mediaArray)
+                    
+
                         <div class="col-md-3">
                             <div class="card-title">
-                                {{ trans('cruds.claim.fields.damage_files') }}
+                                {{ $name }}
                             </div>
                             <p class="card-text media-box">
 
-                                @foreach ($claim->damage_files as $key => $media)
+                                @foreach($mediaArray as $key => $media)
+                                    
                                     <a href="{{ $media->getUrl() }}" target="_blank">
-                                        <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
+                                        <img src="{{ $media->getUrl() }}" alt="{{ $media->name }}"/>
                                     </a>
+
                                 @endforeach
                             </p>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.report_files') }}
-                            </div>
-                            <p class="card-text media-box">
-                                @foreach ($claim->report_files as $key => $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank">
-                                        <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                                    </a>
-                                @endforeach
-                            </p>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.financial_files') }}
-                            </div>
-                            <p class="card-text media-box">
-                                @foreach ($claim->financial_files as $key => $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank">
-                                        <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                                    </a>
-                                @endforeach
-                            </p>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.other_files') }}
-                            </div>
-                            <p class="card-text media-box">
-                                @foreach ($claim->other_files as $key => $media)
-                                    <a href="{{ $media->getUrl() }}" target="_blank">
-                                        <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                                    </a>
-                                @endforeach
-                            </p>
-                        </div>
-                    </div>
+
+                    @endforeach
+
                 </div>
             </div>
         </div>
@@ -1050,10 +1129,42 @@
                                 </div>
                                 <p class="card-text">&euro; {{ $claim->recovery_costs }}</p>
 
+
                                 <div class="card-title">
                                     {{ trans('cruds.claim.fields.replacement_vehicle_costs') }}
                                 </div>
                                 <p class="card-text">&euro; {{ $claim->replacement_vehicle_costs }}</p>
+
+                                    @if (isset($claim->driver_vehicle))
+
+                                        @php
+
+                                            $driver = App\Models\Driver::find($claim->driver_vehicle);
+
+                                            if(isset($driver)) {
+
+                                                $driverContact = App\Models\Contact::find($driver->contact_id);
+
+                                            }
+
+                                        @endphp
+
+                                        <div class="d-none" id="driverJson">{{ json_encode($driverContact) }}</div>
+
+                                    @endif
+
+                                    @if (isset($opposite))
+
+                                        <div class="d-none" id="oppositeJson">{{ json_encode($opposite) }}</div>
+
+                                    @endif
+
+                                    <div class="d-none" id="statusSelectJson">{{ json_encode(App\Models\Claim::STATUS_SELECT) }}</div>
+                                    <div class="d-none" id="damagePartSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_PART_SELECT) }}</div>
+                                    <div class="d-none" id="damageAreaSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_AREA_SELECT) }}</div>
+                                    <div class="d-none" id="damageOriginJson">{{ json_encode(App\Models\Claim::DAMAGE_ORIGIN) }}</div>
+                                    <div class="d-none" id="damageKindJson">{{ json_encode(App\Models\Claim::DAMAGE_KIND) }}</div>
+                                    <div class="d-none" id="recoverableClaimJson">{{ json_encode(App\Models\Claim::RECOVERABLE_CLAIM_SELECT) }}</div>
 
                                 <div class="card-title">
                                     {{ trans('cruds.claim.fields.expert_costs') }}
@@ -1065,6 +1176,7 @@
                                     {{ trans('cruds.claim.fields.other_costs') }}
                                 </div>
                                 <p class="card-text">&euro; {{ $claim->other_costs }}</p>
+
 
                                 <div class="card-title">
                                     {{ trans('cruds.claim.fields.deductible_excess_costs') }}
@@ -1078,21 +1190,78 @@
                             </div>
                         </div>
 
+
+@can ('financial_access')
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Kosten Schadedossier
+
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+                    @endunless
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.damage_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->damage_costs }}</p>
+                        
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.recovery_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->recovery_costs }}</p>
+                        
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.replacement_vehicle_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->replacement_vehicle_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.expert_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->expert_costs }}</p>
+                        </div>
+                        <div class="col-md-6">    
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.other_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->other_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.deductible_excess_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->deductible_excess_costs }}</p>
+                            
+                            <div class="card-title">
+                                {{ trans('cruds.claim.fields.insurance_costs') }}
+                            </div>
+                            <p class="card-text">&euro; {{ $claim->insurance_costs }}</p>
+                        </div>
+
                     </div>
+                
                 </div>
             </div>
-            @if ($isAdmin)
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            ASP Financieel
+        </div>
 
-                            @unless (!$claim->assign_self && !$isAdmin)
-                                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                                    {{ trans('global.edit') }}
-                                </a>
-                            @endunless
-                        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    ASP Financieel
+                    
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        {{ trans('global.edit') }}
+                    </a>
+                    @endunless
+                </div>
 
                         <div class="card-body">
                             <div class="card-title">
@@ -1129,6 +1298,8 @@
                 </div>
             @endif
         </div>
-    @endif
+
+    </div>
+@endcan
 
 @endsection
