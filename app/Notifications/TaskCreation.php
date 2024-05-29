@@ -39,15 +39,16 @@ class TaskCreation extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/admin/tasks/'.$this->task->id);
         
         // dd($this->claim);
-
+        
         if (isset($this->claim[0]->claim_number)){
             $claim_number = $this->claim[0]->claim_number;
         } else {
             $claim_number = null;
         }
+
+        $url = url('/admin/claims/'.$claim_number);
 
         return (new MailMessage)
             ->subject(config('app.name') . ': Er is een nieuwe taak aangemaakt ')
@@ -56,7 +57,7 @@ class TaskCreation extends Notification
             ->lineIf($claim_number != null, "Betreffende schadedossier: {$claim_number}")
             ->line("Beschrijving taak: {$this->task['description']}")
             ->line("Deadline: {$this->task['deadline_at']}  ")
-            ->action('Bekijk taak', $url)
+            ->action('Bekijk taak in claim', $url)
             ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
     }
 

@@ -48,7 +48,7 @@ class TaskStatusUpdate extends Notification
             ->subject(config('app.name') . ' - Status van taak is gewijzigd naar '. $status)
             ->line("De status van de taak is gewijzigd naar ". $status. ". Betreffende onderstaande taak: ")
             ->line($this->task->description)
-            ->action('Bekijk claim', $url)
+            ->action('Bekijk taak in claim', $url)
             ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
     }
 

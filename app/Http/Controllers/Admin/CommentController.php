@@ -102,8 +102,9 @@ class CommentController extends Controller
             $task = Task::where('id', $comment->commentable_id)->first();
             $claim = Claim::where('id', $task->claim_id)->first();
             $user = User::where('id', $task->created_by)->first();
+            $body = $comment->body;
 
-            $message = new \App\Notifications\TaskCommentUpdate($task, $claim, $user);
+            $message = new \App\Notifications\TaskCommentUpdate($task, $claim, $user, $body);
 
             Notification::route('mail', [
                 $user->email => $user->name])->notify($message);

@@ -18,11 +18,12 @@ class TaskCommentUpdate extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($task, $claim, $user)
+    public function __construct($task, $claim, $user, $body)
     {
         $this->task = $task;
         $this->claim = $claim;
         $this->user = $user;
+        $this->body = $body;
     }
 
     /**
@@ -45,10 +46,10 @@ class TaskCommentUpdate extends Notification
         $url = url('/admin/claims/'.$this->claim->id);
 
         return (new MailMessage)
-            ->subject(config('app.name') . ' - Status van taak is gewijzigd naar '. $status)
-            ->line("De status van de taak is gewijzigd naar ". $status. ". Betreffende onderstaande taak: ")
-            ->line($this->task->description)
-            ->action('Bekijk claim', $url)
+            ->subject(config('app.name') . ' - Nieuwe reactie op taak')
+            ->line("Er is een nieuwe reactie op de taak. {$this->task['description']}")
+            ->line("Reactie: {$this->body}")
+            ->action('Bekijk taak in claim', $url)
             ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
     }
 
