@@ -47,7 +47,7 @@
 
     <div class="row">
         <div class="col-md-6 offset-md-6" style="position: relative;">
-            <div class="card card-sla text-white bg-warning sla-show hide">
+            <div class="card card-sla text-white bg-blue-asp sla-show hide">
                 <div class="card-header">
                     SLA Details
                 </div>
