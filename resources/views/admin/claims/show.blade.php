@@ -671,7 +671,7 @@
                                     </select>
                                 </div>
                         
-                                @if (auth()->user()->roles->contains(1))
+                                @if (auth()->user()->isAdminOrAgent())
                                 <div class="form-group d-none">
                                     <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}" name="user_id" id="user_id" required>
                                         <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
@@ -799,6 +799,13 @@
 
                                     <label class="required" for="mailBody">Bericht</label>
                                     <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+
+                                    <div class="form-group">
+
+                                        <label for="mailAttachments">Bijlage</label>
+                                        <input type="file" name="mailAttachments[]" id="mailAttachents" multiple>
+
+                                    </div>
 
                                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                     <div class="form-group d-none">

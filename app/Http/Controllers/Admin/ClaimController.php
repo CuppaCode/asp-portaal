@@ -550,7 +550,7 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '');
+        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '', $request->mailAttachments ?? null);
         Notification::route('mail', [
             $request->mailReceiver ?? '' => ''])->notify($message);
 
