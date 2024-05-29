@@ -47,7 +47,7 @@ class TaskCommentUpdate extends Notification
 
         return (new MailMessage)
             ->subject(config('app.name') . ' - Nieuwe reactie op taak')
-            ->line("Er is een nieuwe reactie op de taak. {$this->task['description']}")
+            ->line("Er is een nieuwe reactie op jouw verstuurde taak. {$this->task['description']}")
             ->line("Reactie: {$this->body}")
             ->action('Bekijk taak in claim', $url)
             ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
