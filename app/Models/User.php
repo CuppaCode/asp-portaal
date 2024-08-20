@@ -63,7 +63,23 @@ class User extends Authenticatable
 
     public function isAdminOrAgent()
     {
-        return $this->roles()->where('title', 'Admin')->orWhere('title', 'Agent')->exists();
+        
+        $roles = $this->roles()->get();
+
+        if( $roles->contains(1) ){
+            
+            return true;
+
+        }
+
+        if ( $roles->contains(3) ){
+
+            return true;
+
+        }
+
+        return false;
+
     }
 
     public function __construct(array $attributes = [])
@@ -74,6 +90,7 @@ class User extends Authenticatable
             if (! $user->roles()->get()->contains($registrationRole)) {
                 $user->roles()->attach($registrationRole);
             }
+            
         });
     }
 

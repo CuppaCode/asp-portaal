@@ -3,112 +3,111 @@
 
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.company.title') }}
+        {{ trans('global.show') }} {{ trans('cruds.sla.title') }}
     </div>
 
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.companies.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.sla.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
+
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.id') }}
+                            {{ trans('cruds.sla.fields.id') }}
                         </th>
                         <td>
-                            {{ $company->id }}
+                            {{ $sla->id }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.name') }}
+                            {{ trans('cruds.sla.fields.company') }}
                         </th>
                         <td>
-                            {{ $company->name }}
-                        </td>
-                    </tr>
-                    @if (!empty($contact))
-                    <tr>
-                        <th>
-                            {{ trans('cruds.company.fields.contact') }}
-                        </th>
-                        <td>
-                            {{ $contact->first_name ." ". $contact->last_name }}
-                        </td>
-                    </tr>
-                    @endif
-                    <tr>
-                        <th>
-                            {{ trans('cruds.company.fields.company_type') }}
-                        </th>
-                        <td>
-                            {{ App\Models\Company::COMPANY_TYPE_SELECT[$company->company_type] ?? '' }}
+                            {{ $sla->company->name ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.street') }}
+                            {{ trans('cruds.sla.fields.startdate') }}
                         </th>
                         <td>
-                            {{ $company->street }}
+                            {{ $sla->startdate ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.zipcode') }}
+                            {{ trans('cruds.sla.fields.enddate') }}
                         </th>
                         <td>
-                            {{ $company->zipcode }}
+                            {{ $sla->enddate ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.city') }}
+                            {{ trans('cruds.sla.fields.label') }}
                         </th>
                         <td>
-                            {{ $company->city }}
+                            @if ($sla->label)
+                                {{ App\Models\SLA::LABEL_SELECT[$sla->label] }}
+                            @endif
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.country') }}
+                            {{ trans('cruds.sla.fields.amount_users') }}
                         </th>
                         <td>
-                            {{ $company->country }}
+                            {{ $sla->amount_users }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.phone') }}
+                            {{ trans('cruds.sla.fields.max_amount') }}
                         </th>
                         <td>
-                            {{ $company->phone }}
+                            &euro; {{ $sla->max_amount }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.active') }}
+                            {{ trans('cruds.sla.fields.reports') }}
                         </th>
                         <td>
-                            <input type="checkbox" disabled="disabled" {{ $company->active ? 'checked' : '' }}>
+                            @if($sla->reports !== null)
+                                {{ App\Models\SLA::REPORT_SELECT[$sla->reports] }}
+                            @endif
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.company.fields.description') }}
+                            {{ trans('cruds.sla.fields.analytics') }}
                         </th>
                         <td>
-                            {!! $company->description !!}
+                            @if($sla->analytics_options !== null)
+                                @foreach(json_decode($sla->analytics_options) as $options)
+                                    {{ App\Models\SLA::ANALYTICS_SELECT[$options] }},
+                                @endforeach
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.sla.fields.other') }}
+                        </th>
+                        <td>
+                            {{ $sla->other }}
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.companies.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.sla.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>

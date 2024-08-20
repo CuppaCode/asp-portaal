@@ -37,10 +37,18 @@ class PlainMail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $mail = (new MailMessage)
-                    ->view('emails.plain-email', ['body' => $this->message])
-                    ->subject(config('app.name') . ':' . $this->subject);
 
+        $mailMessage = new MailMessage;
+
+        $mailMessage->subject = $this->subject;
+
+        $paragraphs = explode("\n", $this->message);
+
+        // Voeg elke paragraaf toe als een nieuwe 'line'
+        foreach ($paragraphs as $paragraph) {
+            $mailMessage->line($paragraph);
+        }
+      
         if($this->attachments) {
 
             foreach($this->attachments as $index => $file) {
@@ -54,7 +62,7 @@ class PlainMail extends Notification
 
         }
 
-        return $mail;
+        return $mailMessage;
     }
 
     /**
