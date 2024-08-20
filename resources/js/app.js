@@ -105,7 +105,6 @@ $(document).ready(function () {
 
     var obstacle = $('.obstacle-show');
     var vehicle = $('.opposite-vehicle-show');
-    var other = $('.other-show');
 
     $('#opposite_type').change(function(){ // [create.claims] Showing the opposite vehcile fields based on the value of the question.
 
@@ -143,17 +142,7 @@ $(document).ready(function () {
             obstacle.addClass('d-none');   
         }
     }
-
-    $('#analytics_options').on('change', function(){
-        console.log($.inArray('other', $(this).val()));
-        if($.inArray('other', $(this).val()) !== -1) {
-            other.removeClass('d-none');
-        } else if ($.inArray('other', $(this).val()) == -1){
-            if(!other.hasClass('d-none')) {
-                other.addClass('d-none');
-            }
-        }
-    });
+    
 
 
     var expertise_receive_date = $('.expertise-report-show');
@@ -179,10 +168,6 @@ $(document).ready(function () {
         var data = $(this).data('for');
 
         $('#'+data).val('');
-    });
-
-    $('#sla-toggle').on('click', function (e) {
-        $('.sla-show').slideToggle();
     });
 
 
