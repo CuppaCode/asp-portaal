@@ -47,7 +47,6 @@ class Company extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'team_id',
-        'contact_id',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

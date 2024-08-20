@@ -104,9 +104,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
     Route::resource('mail-templates', 'MailTemplateController');
 
-    // SLA
-    Route::resource('sla', 'SLAController');
-
     // Mail examples
     Route::get('preview-notification', function () {
         $markdown = new \Illuminate\Mail\Markdown(view(), config('mail.markdown'));   

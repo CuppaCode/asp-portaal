@@ -60,9 +60,4 @@ class Contact extends Model
     {
         return $this->hasOne(Driver::class);
     }
-
-    public function contact()
-    {
-        return $this->hasOne(Contact::class);
-    }
 }
