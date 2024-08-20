@@ -21,6 +21,21 @@
                 <span class="help-block">{{ trans('cruds.company.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
+                <label>{{ trans('cruds.company.fields.contact') }}</label>
+                <select class="form-control {{ $errors->has('contact_id') ? 'is-invalid' : '' }}" name="contact_id" id="contact_id">
+                    <option value disabled {{ old('contact_id', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach($contacts as $id => $entry)
+                        <option value="{{ $entry->id }}" {{ (old('contact_id') ? old('contact_id') : $company->contact_id ?? '' ) == $entry->id ? 'selected' : '' }}>{{ $entry->first_name ." ". $entry->last_name }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('contact_id'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('contact_id') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.company.fields.company_type_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label>{{ trans('cruds.company.fields.company_type') }}</label>
                 <select class="form-control {{ $errors->has('company_type') ? 'is-invalid' : '' }}" name="company_type" id="company_type">
                     <option value disabled {{ old('company_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
@@ -176,7 +191,7 @@
   }
 
   var allEditors = document.querySelectorAll('.ckeditor');
-  for (var i = 0; i < allEditors.length; ++i) {
+  for (var i = 1; i < allEditors.length; ++i) {
     ClassicEditor.create(
       allEditors[i], {
         extraPlugins: [SimpleUploadAdapter]

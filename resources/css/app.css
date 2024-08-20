@@ -486,3 +486,23 @@ div.dt-buttons {
 .legend_other {
     background-color: #000;
 }
+
+.hide {
+    display: none;
+}
+
+.sla-show td, .sla-show th {
+    border: none;
+}
+
+.card-sla {
+    position: absolute;
+    z-index: 10;
+    right: 15px;
+    left: 15px;
+    margin-top: 1px;
+}
+
+.bg-blue-asp {
+    background-color: #344A9B;
+}
