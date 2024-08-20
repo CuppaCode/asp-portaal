@@ -451,6 +451,24 @@
                         <div class="col-10 content">
                         <h5> {{ $note->title }}</h5>
                         {!! nl2br($note->description) !!}
+                        
+                        @if($item->hasMedia('attachments'))
+
+                            <div class="note-imagewrapper">
+
+                                <strong>Bijlage(s):</strong><br/><br/>
+
+                                @foreach($item->getMedia('attachments') as $image)
+
+                                    <a download href="{{ $image->getUrl() }}">
+                                        <img src="{{ $image->getUrl('thumb') }}" alt="Image">
+                                    </a>
+                                @endforeach
+
+                            </div>
+
+                        @endif
+                      
                     {{-- </div>
                 </div>
             </div> --}}
@@ -501,7 +519,10 @@
                             <span class="badge bg-info">{{ $task->user->name }}</span>
                             
                         </div>
+                        
                         {!! nl2br($task->description) !!}
+                        
+                    
                     {{-- </div>
                 </div>
             </div> --}}
@@ -531,7 +552,7 @@
             </div>
 
             @foreach ($item->comments as $comment)
-
+            
                 <div class="item comment">
                     <div class="row">
 
@@ -552,8 +573,10 @@
                         </div>
 
                         <div class="col-8">
+
                             {{ $comment->body }}
                             {{ $comment->team_id }}
+
                         </div>
 
                     </div>
@@ -770,7 +793,7 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label class="required" for="mailReceiver">Ontvanger</label>
-                                        <select class="form-control select2" name="mailReceiver" id="mailReceiver" required>
+                                        <select class="form-control select2" name="mailReceiver[]" id="mailReceiver" required multiple="multiple">
 
                                             @foreach($allContactsInCompany as $id => $entry)
                                                 <option value="{{ $entry->email }}" {{ old('mailReceiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
@@ -797,13 +820,18 @@
 
                                     </div>
 
-                                    <label class="required" for="mailBody">Bericht</label>
-                                    <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+                                    <div class="form-group">
+
+                                        <label class="required" for="mailBody">Bericht</label>
+                                        <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+
+                                    </div>
+
 
                                     <div class="form-group">
 
                                         <label for="mailAttachments">Bijlage</label>
-                                        <input type="file" name="mailAttachments[]" id="mailAttachents" multiple>
+                                        <input type="file" name="mailAttachments[]" id="mailAttachments" multiple>
 
                                     </div>
 
