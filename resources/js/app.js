@@ -10,6 +10,13 @@ Alpine.start();
 
 $(document).ready(function () {
 
+    //Setup headers for AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     var array = document.querySelectorAll('.custom_datepicker');
     
     array.forEach(function (datepicker) {
@@ -187,7 +194,7 @@ $(document).ready(function () {
         var claimID = $(this).data('claim-id');
         var newStatus = $(this).val();
 
-        $.post('/api/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
+        $.post('/admin/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
             
@@ -205,7 +212,7 @@ $(document).ready(function () {
         var taskID = $(this).data('task-id');
         var newStatus = $(this).val();
 
-        $.post('/api/tasks/update-status', { task_id: taskID, new_status: newStatus } , function(res) {
+        $.post('/admin/tasks/update-status', { task_id: taskID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
             
@@ -360,7 +367,7 @@ $(document).ready(function () {
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
-    if(isAdmin < 1 || !isAdmin || isAdmin != 1){
+    if(isAdminOrAgent < 1 || !isAdminOrAgent || isAdminOrAgent != 1){
 
         return;
         
@@ -376,7 +383,7 @@ function ajaxCreateCompany( inputID, typeID = null ) {
 
         if( !selected.element ) {
 
-            $.post('/api/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
+            $.post('/admin/companies/quick-store', { name: selected.text , company_type: typeID  } , function(res) {
 
                 var newOption = inputID.find('option[value="'+ selected.id +'"]');
                 var inputName = inputID.attr('name');
@@ -417,11 +424,10 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
         teamID: parseInt(teamID)
     };
 
-    $.post('/api/comments/quick-store', data)
+    $.post('/admin/comments/quick-store', data)
     .done(res => {
 
         commentableDOM.find('.item.form textarea[name="body"]').val('');
-        //commentableDOM.find('.item.form').slideToggle();
 
         commentableDOM.find('.item.comment').each((index, comment) => {
 
@@ -466,7 +472,7 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
                 const userDOM = $('#js-username-' + comment.id);        
 
-                $.post('/api/users/get-user-name', { userID: comment.user_id })
+                $.post('/admin/users/get-user-name', { userID: comment.user_id })
                 .done(function(res){
                     userDOM.text(res.name);
                 });
@@ -548,11 +554,13 @@ async function setupMailBody() {
     const damagedPartTranslationsJson = JSON.parse($('#damagePartSelectJson').text());
     const damageAreaSelectJson = JSON.parse($('#damageAreaSelectJson').text());
     const damageOriginJson = JSON.parse($('#damageOriginJson').text());
+    const damageKindJson = JSON.parse($('#damageKindJson').text());
+    const recoverableClaimJson = JSON.parse($('#recoverableClaimJson').text());
 
-    const allMailTranslations = Object.assign({}, statusSelectJson, damagedPartTranslationsJson, damageAreaSelectJson, damageOriginJson);
+    const allMailTranslations = Object.assign({}, statusSelectJson, damagedPartTranslationsJson, damageAreaSelectJson, damageOriginJson, damageKindJson, recoverableClaimJson);
 
-    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]'];
-    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', JSON.parse(claimJson.damaged_part), JSON.parse(claimJson.damaged_area), JSON.parse(claimJson.damage_origin), claimJson.damage_costs];
+    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]', '[kenteken_wederpartij]', '[verhaalbaar]', '[schade_soort]'];
+    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', JSON.parse(claimJson.damaged_part), JSON.parse(claimJson.damaged_area), JSON.parse(claimJson.damage_origin), claimJson.damage_costs, claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : '[kenteken_wederpartij]', claimJson.recoverable_claim, claimJson.damage_kind];
 
     const contactText = $('#contactJson');
 
@@ -583,6 +591,28 @@ async function setupMailBody() {
             var find = find.concat(['[herstel_contact_naam]', '[herstel_email]']);
             var replace = replace.concat([recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
         }
+
+    }
+
+    const driverText = $('#driverJson');
+
+    if(driverText.length > 0) {
+
+        const driverJson = JSON.parse(driverText.text());
+
+        var find = find.concat(['[chauffeur_naam]', '[chauffeur_email]']);
+        var replace = replace.concat([driverJson.first_name + ' ' + driverJson.last_name, driverJson.email]);
+
+    }
+
+    const oppositeText = $('#oppositeJson');
+
+    if(oppositeText.length > 0) {
+
+        const oppositeJson = JSON.parse(oppositeText.text());
+
+        var find = find.concat(['[wederpartij_naam]', '[wederpartij_adres]', '[wederpartij_postcode_stad]', '[wederpartij_telnr]', '[wederpartij_email]']);
+        var replace = replace.concat([oppositeJson.name ? oppositeJson.name : '[wederpartij_naam]', oppositeJson.street ? oppositeJson.street : '[wederpartij_adres]', oppositeJson.zipcode ? oppositeJson.zipcode : '[wederpartij_postcode]' + ' ' + oppositeJson.city ? oppositeJson.city : '[wederpartij_stad]', oppositeJson.phone ? oppositeJson.phone : '[wederpartij_telnr]', oppositeJson.email ? oppositeJson.email : '[wederpartij_email]' ]);
 
     }
 

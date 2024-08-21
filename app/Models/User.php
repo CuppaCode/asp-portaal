@@ -14,10 +14,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use SoftDeletes, Notifiable, Auditable, HasFactory;
+    use SoftDeletes, Notifiable, Auditable, HasFactory, HasApiTokens;
 
     public $table = 'users';
 
@@ -55,6 +56,32 @@ class User extends Authenticatable
         return $this->roles()->where('id', 1)->exists();
     }
 
+    public function canAssignCompany()
+    {
+        return $this->can('assign_company');
+    }
+
+    public function isAdminOrAgent()
+    {
+        
+        $roles = $this->roles()->get();
+
+        if( $roles->contains(1) ){
+            
+            return true;
+
+        }
+
+        if ( $roles->contains(3) ){
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -63,6 +90,7 @@ class User extends Authenticatable
             if (! $user->roles()->get()->contains($registrationRole)) {
                 $user->roles()->attach($registrationRole);
             }
+            
         });
     }
 

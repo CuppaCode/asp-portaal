@@ -21,7 +21,6 @@ use App\Models\Opposite;
 use App\Models\User;
 use App\Models\MailTemplate;
 use App\Models\Note;
-use App\Models\SLA;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -285,7 +284,8 @@ class ClaimController extends Controller
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        $isAdmin = auth()->user()->roles->contains(1);
+        // dd($request);
+
         $user = auth()->user();
         $companies = null;
         
@@ -447,15 +447,20 @@ class ClaimController extends Controller
     public function show(Claim $claim)
     {
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        
+
         $user = auth()->user();
         $isAdmin = $user->roles->contains(1);
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-        $firstContact = Contact::where('id', $claim->company->contact_id)->first();
+        $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
-        $sla = SLA::where('company_id', $claim->company->id)->first();
-        $users = User::where('team_id', $user->team->id)->get();
+
+        $parentMediaArray = [
+            trans('cruds.claim.fields.damage_files') => $claim->damage_files,
+            trans('cruds.claim.fields.report_files') => $claim->report_files,
+            trans('cruds.claim.fields.financial_files') => $claim->financial_files,
+            trans('cruds.claim.fields.other_files') => $claim->other_files
+        ];
 
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
         $mailTemplates = MailTemplate::all();
@@ -470,7 +475,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'sla'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray'));
     }
 
     public function destroy(Claim $claim)
