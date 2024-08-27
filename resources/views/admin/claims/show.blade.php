@@ -789,7 +789,7 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label class="required" for="mailReceiver">Ontvanger</label>
-                                        <select class="form-control select2" name="mailReceiver[]" id="mailReceiver" required>
+                                        <select class="form-control select2" name="mailReceiver[]" id="mailReceiver" required multiple="multiple">
 
                                             @foreach($allContactsInCompany as $id => $entry)
                                                 <option value="{{ $entry->email }}" {{ old('mailReceiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>

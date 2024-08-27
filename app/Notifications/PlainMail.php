@@ -38,22 +38,15 @@ class PlainMail extends Notification
     public function toMail(object $notifiable): MailMessage
     {
 
-        $mailMessage = new MailMessage;
-
-        $mailMessage->subject = $this->subject;
-
-        $paragraphs = explode("\n", $this->message);
-
-        // Voeg elke paragraaf toe als een nieuwe 'line'
-        foreach ($paragraphs as $paragraph) {
-            $mailMessage->line($paragraph);
-        }
+        $mailMessage = (new MailMessage)
+            ->view('emails.plain-email', ['body' => $this->message])
+            ->subject($this->subject);
       
         if($this->attachments) {
 
             foreach($this->attachments as $index => $file) {
                 
-                $mail->attach($file, [
+                $mailMessage->attach($file, [
                     'as' => $file->getClientOriginalName(),
                     'mime' => $file->getMimeType()
                 ]);
