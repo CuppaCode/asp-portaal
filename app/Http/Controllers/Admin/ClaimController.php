@@ -550,12 +550,20 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '');
-        // dd($request->mailBody);
-        Notification::route('mail', [
-            $request->mailReceiver ?? '' => ''])->notify($message);
 
-        $noteDescription = "Ontvanger: {$request->mailReceiver}<br/>
+        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '', $request->mailAttachments ?? null);
+
+        foreach($request->mailReceiver as $receiver) {
+            
+            Notification::route('mail', [
+                $receiver ?? '' => ''])->notify($message);
+
+        }
+
+
+        $receiverString = implode(', ', $request->mailReceiver);
+
+        $noteDescription = "Ontvanger(s): {$receiverString}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -565,6 +573,13 @@ class ClaimController extends Controller
             'description' => $noteDescription,
             'team_id' => auth()->user()->team->id
         ]);
+
+        if ($request->hasFile('mailAttachments')) {
+
+            foreach ($request->file('mailAttachments') as $image) {
+                $note->addMedia($image)->toMediaCollection('attachments');
+            }
+        }
 
         $note->claims()->sync($request->input('claims', []));
 

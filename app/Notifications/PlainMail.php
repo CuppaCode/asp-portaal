@@ -15,10 +15,11 @@ class PlainMail extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($subject, $message)
+    public function __construct($subject, $message, $attachments)
     {
         $this->subject = $subject;
         $this->message = $message;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -46,6 +47,19 @@ class PlainMail extends Notification
         // Voeg elke paragraaf toe als een nieuwe 'line'
         foreach ($paragraphs as $paragraph) {
             $mailMessage->line($paragraph);
+        }
+      
+        if($this->attachments) {
+
+            foreach($this->attachments as $index => $file) {
+                
+                $mail->attach($file, [
+                    'as' => $file->getClientOriginalName(),
+                    'mime' => $file->getMimeType()
+                ]);
+
+            }
+
         }
 
         return $mailMessage;

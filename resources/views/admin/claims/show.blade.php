@@ -451,6 +451,25 @@
                         <div class="col-10 content">
                         <h5> {{ $note->title }}</h5>
                         {!! nl2br($note->description) !!}
+                        
+                        @if($item->hasMedia('attachments'))
+
+                            <div class="note-imagewrapper">
+
+                                <strong>Bijlage(s):</strong><br/><br/>
+
+                                @foreach($item->getMedia('attachments') as $image)
+
+                                    <a download href="{{ $image->getUrl() }}">
+                                        <img src="{{ $image->getUrl('thumb') }}" alt="Image">
+                                    </a>
+                                @endforeach
+
+                            </div>
+
+                        @endif
+                      
+
                     {{-- </div>
                 </div>
             </div> --}}
@@ -770,7 +789,7 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label class="required" for="mailReceiver">Ontvanger</label>
-                                        <select class="form-control select2" name="mailReceiver" id="mailReceiver" required>
+                                        <select class="form-control select2" name="mailReceiver[]" id="mailReceiver" required>
 
                                             @foreach($allContactsInCompany as $id => $entry)
                                                 <option value="{{ $entry->email }}" {{ old('mailReceiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
@@ -796,9 +815,20 @@
                                         <input type="text" class="form-control" name="mailSubject" id="mailSubject" value="" required>
 
                                     </div>
+                                    
+                                    <div class="form-group">
 
-                                    <label class="required" for="mailBody">Bericht</label>
-                                    <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+                                      <label class="required" for="mailBody">Bericht</label>
+                                      <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+                                      
+                                    </div>
+                                    
+                                    <div class="form-group">
+
+                                        <label for="mailAttachments">Bijlage</label>
+                                        <input type="file" name="mailAttachments[]" id="mailAttachments" multiple>
+
+                                    </div>
 
                                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                     <div class="form-group d-none">
