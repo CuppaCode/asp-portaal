@@ -4,7 +4,8 @@
     @php
 
         use Carbon\Carbon;
-        $isAdmin = auth()->user()->roles->contains(1);
+        $user = auth()->user();
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         //dd($contacts)
 
@@ -15,13 +16,23 @@
             {{ trans('global.back_to_list') }}
         </a>
 
-        @if ($isAdmin)
-            @if ($claim->assign_self == true)
-                <div class="alert alert-danger" role="alert">
-                    Let op! Dit schadedossier wordt behandeld door klant zelf.
-                </div>
-            @endif
+        @if ($isAdminOrAgent)
+
+        @if ($claim->assign_self == true)
+            <div class="alert alert-danger" role="alert">
+                Let op! Dit schadedossier wordt behandeld door klant zelf.
+            </div>
         @endif
+    
+    @endif
+
+    @unless( !$claim->assign_self && !$isAdminOrAgent )
+
+        <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+            {{ trans('global.edit') }}
+        </a>
+
+    @endunless
 
         <div>
             @if($sla)
@@ -37,11 +48,11 @@
                     </button>
                 @endcan
             @endif
-            @unless (!$claim->assign_self && !$isAdmin)
+            @if( $claim->assign_self || $isAdminOrAgent)
                 <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
-            @endunless
+            @endif
         </div>
     </div>
 
@@ -141,7 +152,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Schadedossier overzicht
         
-                    @if ($claim->assign_self || $isAdmin)
+                    @if( $claim->assign_self || $isAdminOrAgent)
                         <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
         
                             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
@@ -199,11 +210,11 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Schademelding
 
-                    @unless (!$claim->assign_self && !$isAdmin)
+                    @if( $claim->assign_self || $isAdminOrAgent)
                         <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                             {{ trans('global.edit') }}
                         </a>
-                    @endunless
+                    @endif
                 </div>
 
                 <div class="card-body">
@@ -261,11 +272,11 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Contactgegevens
 
-                    @unless (!$claim->assign_self && !$isAdmin)
+                    @if( $claim->assign_self || $isAdminOrAgent)
                         <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                             {{ trans('global.edit') }}
                         </a>
-                    @endunless
+                    @endif
                 </div>
                 <div class="card-body">
                     @isset($firstContact)
@@ -381,11 +392,11 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         Gegevens wederpartij
 
-                        @unless (!$claim->assign_self && !$isAdmin)
+                        @if( $claim->assign_self || $isAdminOrAgent)
                             <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                 {{ trans('global.edit') }}
                             </a>
-                        @endunless
+                        @endif
                     </div>
 
                     <div class="card-body">
@@ -460,11 +471,11 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             Details wederpartij
 
-                            @unless (!$claim->assign_self && !$isAdmin)
+                            @if( $claim->assign_self || $isAdminOrAgent)
                                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                     {{ trans('global.edit') }}
                                 </a>
-                            @endunless
+                            @endif
                         </div>
 
                         <div class="card-body">
@@ -514,11 +525,11 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Bijlages
 
-                    @unless (!$claim->assign_self && !$isAdmin)
+                    @if( $claim->assign_self || $isAdminOrAgent)
                         <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                             {{ trans('global.edit') }}
                         </a>
-                    @endunless
+                    @endif
                 </div>
 
                 <div class="card-body">
@@ -599,9 +610,7 @@
                         <div class="col-10 content">
                             <h5> {{ $note->title }}</h5>
                             {!! nl2br($note->description) !!}
-                            {{-- </div>
-                </div>
-            </div> --}}
+
                         @elseif ($item::class == 'App\Models\Task')
                             @php
                                 $task = $item;
@@ -1023,18 +1032,18 @@
 
 
 
-    @if (auth()->user()->roles->contains(1))
+    @can ('financial_access')
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         Kosten Schadedossier
 
-                        @unless (!$claim->assign_self && !$isAdmin)
+                        @if( $claim->assign_self || $isAdminOrAgent)
                             <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                 {{ trans('global.edit') }}
                             </a>
-                        @endunless
+                        @endif
                     </div>
 
                     <div class="card-body">
@@ -1081,17 +1090,17 @@
                     </div>
                 </div>
             </div>
-            @if ($isAdmin)
+
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             ASP Financieel
 
-                            @unless (!$claim->assign_self && !$isAdmin)
+                            @if( $claim->assign_self || $isAdminOrAgent)
                                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                     {{ trans('global.edit') }}
                                 </a>
-                            @endunless
+                            @endif
                         </div>
 
                         <div class="card-body">
@@ -1127,8 +1136,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
         </div>
-    @endif
+    @endcan
 
 @endsection
