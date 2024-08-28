@@ -44,11 +44,13 @@ class TaskCreation extends Notification
         
         if (isset($this->claim[0]->claim_number)){
             $claim_number = $this->claim[0]->claim_number;
+            $claim_id = $this->claim[0]->id;
         } else {
             $claim_number = null;
+            $claim_id = null;
         }
 
-        $url = url('/admin/claims/'.$claim_number);
+        $url = url('/admin/claims/'.$claim_id);
 
         return (new MailMessage)
             ->subject(config('app.name') . ': Er is een nieuwe taak aangemaakt ')
