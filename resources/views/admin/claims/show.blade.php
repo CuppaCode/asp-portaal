@@ -5,7 +5,7 @@
 
     use Carbon\Carbon;
     $user = auth()->user();
-    $canAssignCompany = $user->can('assign_company');
+    $isAdminOrAgent = $user->isAdminOrAgent();
 
 @endphp
 
@@ -14,7 +14,7 @@
         {{ trans('global.back_to_list') }}
     </a>
 
-    @if ($canAssignCompany)
+    @if ($isAdminOrAgent)
 
         @if ($claim->assign_self == true)
             <div class="alert alert-danger" role="alert">
@@ -24,7 +24,7 @@
     
     @endif
 
-    @unless( !$claim->assign_self && !$canAssignCompany )
+    @unless( !$claim->assign_self && !$isAdminOrAgent )
 
         <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
             {{ trans('global.edit') }}
@@ -38,7 +38,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         Schadedossier overzicht
         
-        @if( $claim->assign_self || $canAssignCompany)
+        @if( $claim->assign_self || $isAdminOrAgent)
         <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
 
             @foreach (App\Models\Claim::STATUS_SELECT as $key => $status)
@@ -99,7 +99,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Schademelding
 
-                @unless( !$claim->assign_self && !$canAssignCompany )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -162,7 +162,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Contactgegevens
 
-                @unless( !$claim->assign_self && !$canAssignCompany )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -195,7 +195,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Gegevens wagenpark
 
-                    @unless( !$claim->assign_self && !$canAssignCompany )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
@@ -267,7 +267,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Gegevens wederpartij
 
-                @unless( !$claim->assign_self && !$canAssignCompany )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -340,7 +340,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Details wederpartij
 
-                    @unless( !$claim->assign_self && !$canAssignCompany )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
@@ -392,7 +392,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 Bijlages
 
-                @unless( !$claim->assign_self && !$canAssignCompany )
+                @unless( !$claim->assign_self && !$isAdminOrAgent )
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                     {{ trans('global.edit') }}
                 </a>
@@ -451,6 +451,25 @@
                         <div class="col-10 content">
                         <h5> {{ $note->title }}</h5>
                         {!! nl2br($note->description) !!}
+                        
+                        @if($item->hasMedia('attachments'))
+
+                            <div class="note-imagewrapper">
+
+                                <strong>Bijlage(s):</strong><br/><br/>
+
+                                @foreach($item->getMedia('attachments') as $image)
+
+                                    <a download href="{{ $image->getUrl() }}">
+                                        <img src="{{ $image->getUrl('thumb') }}" alt="Image">
+                                    </a>
+                                @endforeach
+
+                            </div>
+
+                        @endif
+                      
+
                     {{-- </div>
                 </div>
             </div> --}}
@@ -770,7 +789,7 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                         <label class="required" for="mailReceiver">Ontvanger</label>
-                                        <select class="form-control select2" name="mailReceiver" id="mailReceiver" required>
+                                        <select class="form-control select2" name="mailReceiver[]" id="mailReceiver" required multiple="multiple">
 
                                             @foreach($allContactsInCompany as $id => $entry)
                                                 <option value="{{ $entry->email }}" {{ old('mailReceiver') ? 'selected' : '' }}>{{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} - {{ $entry->email }}</option>
@@ -796,9 +815,20 @@
                                         <input type="text" class="form-control" name="mailSubject" id="mailSubject" value="" required>
 
                                     </div>
+                                    
+                                    <div class="form-group">
 
-                                    <label class="required" for="mailBody">Bericht</label>
-                                    <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+                                      <label class="required" for="mailBody">Bericht</label>
+                                      <textarea class="form-control" name="mailBody" id="mailBody">{!! old('mailBody') !!}</textarea>
+                                      
+                                    </div>
+                                    
+                                    <div class="form-group">
+
+                                        <label for="mailAttachments">Bijlage</label>
+                                        <input type="file" name="mailAttachments[]" id="mailAttachments" multiple>
+
+                                    </div>
 
                                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                     <div class="form-group d-none">
@@ -832,10 +862,36 @@
 
                                     @endif
 
+                                    @if (isset($claim->driver_vehicle))
+
+                                        @php
+
+                                            $driver = App\Models\Driver::find($claim->driver_vehicle);
+
+                                            if(isset($driver)) {
+
+                                                $driverContact = App\Models\Contact::find($driver->contact_id);
+
+                                            }
+
+                                        @endphp
+
+                                        <div class="d-none" id="driverJson">{{ json_encode($driverContact) }}</div>
+
+                                    @endif
+
+                                    @if (isset($opposite))
+
+                                        <div class="d-none" id="oppositeJson">{{ json_encode($opposite) }}</div>
+
+                                    @endif
+
                                     <div class="d-none" id="statusSelectJson">{{ json_encode(App\Models\Claim::STATUS_SELECT) }}</div>
                                     <div class="d-none" id="damagePartSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_PART_SELECT) }}</div>
                                     <div class="d-none" id="damageAreaSelectJson">{{ json_encode(App\Models\Claim::DAMAGED_AREA_SELECT) }}</div>
                                     <div class="d-none" id="damageOriginJson">{{ json_encode(App\Models\Claim::DAMAGE_ORIGIN) }}</div>
+                                    <div class="d-none" id="damageKindJson">{{ json_encode(App\Models\Claim::DAMAGE_KIND) }}</div>
+                                    <div class="d-none" id="recoverableClaimJson">{{ json_encode(App\Models\Claim::RECOVERABLE_CLAIM_SELECT) }}</div>
 
                                 </div>
                                 <div class="form-group">
@@ -860,7 +916,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Kosten Schadedossier
 
-                    @unless( !$claim->assign_self && !$canAssignCompany )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>
@@ -917,7 +973,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     ASP Financieel
                     
-                    @unless( !$claim->assign_self && !$canAssignCompany )
+                    @unless( !$claim->assign_self && !$isAdminOrAgent )
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                         {{ trans('global.edit') }}
                     </a>

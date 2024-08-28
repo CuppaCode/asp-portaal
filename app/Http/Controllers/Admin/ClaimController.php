@@ -77,7 +77,7 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $canAssignCompany = $user->can('assign_company');
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -92,7 +92,7 @@ class ClaimController extends Controller
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        if($canAssignCompany) {
+        if($isAdminOrAgent) {
 
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -111,7 +111,7 @@ class ClaimController extends Controller
 
         /* Custom bit */
         $user = auth()->user();
-        $canAssignCompany = $user->can('assign_company');
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
         
@@ -137,7 +137,7 @@ class ClaimController extends Controller
             'claim_id'      => $claim->id,
         ]);
         
-        if(!$canAssignCompany) {
+        if(!$isAdminOrAgent) {
             
             $claim->company_id = $user->contact->company->id;
 
@@ -241,9 +241,9 @@ class ClaimController extends Controller
         abort_if(Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $canAssignCompany = $user->can('assign_company');
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
-        abort_if(!$canAssignCompany && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(!$isAdminOrAgent && !$claim->assign_self, Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -262,7 +262,7 @@ class ClaimController extends Controller
         $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
 
 
-        if($canAssignCompany) {
+        if($isAdminOrAgent) {
 
             $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -282,10 +282,10 @@ class ClaimController extends Controller
         // dd($request);
 
         $user = auth()->user();
-        $canAssignCompany = $user->can('assign_company');
+        $isAdminOrAgent = $user->isAdminOrAgent();
         $companies = null;
         
-        if(!$canAssignCompany) {
+        if(!$isAdminOrAgent) {
             
             $claim->company_id = $user->contact->company->id;
             
@@ -442,10 +442,11 @@ class ClaimController extends Controller
 
     public function show(Claim $claim)
     {
+
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
-        $canAssignCompany = $user->can('assign_company');
+        $isAdminOrAgent = $user->isAdminOrAgent();
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
         $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
@@ -458,18 +459,21 @@ class ClaimController extends Controller
             trans('cruds.claim.fields.other_files') => $claim->other_files
         ];
 
-        $users = User::where('team_id', $user->team->id)->get();
-
+        
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
         $mailTemplates = MailTemplate::all();
-      
+        
         $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
-
-        if($canAssignCompany) {
-
+        
+        if($isAdminOrAgent) {
+            
             $users = User::get();
+            
+        } else {
+            
+            $users = User::where('team_id', $user->team->id)->get();
 
-        } 
+        }
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
@@ -546,11 +550,20 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '');
-        Notification::route('mail', [
-            $request->mailReceiver ?? '' => ''])->notify($message);
 
-        $noteDescription = "Ontvanger: {$request->mailReceiver}<br/>
+        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '', $request->mailAttachments ?? null);
+
+        foreach($request->mailReceiver as $receiver) {
+            
+            Notification::route('mail', [
+                $receiver ?? '' => ''])->notify($message);
+
+        }
+
+
+        $receiverString = implode(', ', $request->mailReceiver);
+
+        $noteDescription = "Ontvanger(s): {$receiverString}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -560,6 +573,13 @@ class ClaimController extends Controller
             'description' => $noteDescription,
             'team_id' => auth()->user()->team->id
         ]);
+
+        if ($request->hasFile('mailAttachments')) {
+
+            foreach ($request->file('mailAttachments') as $image) {
+                $note->addMedia($image)->toMediaCollection('attachments');
+            }
+        }
 
         $note->claims()->sync($request->input('claims', []));
 

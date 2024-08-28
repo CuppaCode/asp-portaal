@@ -352,7 +352,7 @@ $(document).ready(function () {
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
-    if(canAssignCompany < 1 || !canAssignCompany || canAssignCompany != 1){
+    if(isAdminOrAgent < 1 || !isAdminOrAgent || isAdminOrAgent != 1){
 
         return;
         
@@ -539,11 +539,13 @@ async function setupMailBody() {
     const damagedPartTranslationsJson = JSON.parse($('#damagePartSelectJson').text());
     const damageAreaSelectJson = JSON.parse($('#damageAreaSelectJson').text());
     const damageOriginJson = JSON.parse($('#damageOriginJson').text());
+    const damageKindJson = JSON.parse($('#damageKindJson').text());
+    const recoverableClaimJson = JSON.parse($('#recoverableClaimJson').text());
 
-    const allMailTranslations = Object.assign({}, statusSelectJson, damagedPartTranslationsJson, damageAreaSelectJson, damageOriginJson);
+    const allMailTranslations = Object.assign({}, statusSelectJson, damagedPartTranslationsJson, damageAreaSelectJson, damageOriginJson, damageKindJson, recoverableClaimJson);
 
-    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]'];
-    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', JSON.parse(claimJson.damaged_part), JSON.parse(claimJson.damaged_area), JSON.parse(claimJson.damage_origin), claimJson.damage_costs];
+    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]', '[kenteken_wederpartij]', '[verhaalbaar]', '[schade_soort]'];
+    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', JSON.parse(claimJson.damaged_part), JSON.parse(claimJson.damaged_area), JSON.parse(claimJson.damage_origin), claimJson.damage_costs, claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : '[kenteken_wederpartij]', claimJson.recoverable_claim, claimJson.damage_kind];
 
     const contactText = $('#contactJson');
 
@@ -574,6 +576,28 @@ async function setupMailBody() {
             var find = find.concat(['[herstel_contact_naam]', '[herstel_email]']);
             var replace = replace.concat([recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
         }
+
+    }
+
+    const driverText = $('#driverJson');
+
+    if(driverText.length > 0) {
+
+        const driverJson = JSON.parse(driverText.text());
+
+        var find = find.concat(['[chauffeur_naam]', '[chauffeur_email]']);
+        var replace = replace.concat([driverJson.first_name + ' ' + driverJson.last_name, driverJson.email]);
+
+    }
+
+    const oppositeText = $('#oppositeJson');
+
+    if(oppositeText.length > 0) {
+
+        const oppositeJson = JSON.parse(oppositeText.text());
+
+        var find = find.concat(['[wederpartij_naam]', '[wederpartij_adres]', '[wederpartij_postcode_stad]', '[wederpartij_telnr]', '[wederpartij_email]']);
+        var replace = replace.concat([oppositeJson.name ? oppositeJson.name : '[wederpartij_naam]', oppositeJson.street ? oppositeJson.street : '[wederpartij_adres]', oppositeJson.zipcode ? oppositeJson.zipcode : '[wederpartij_postcode]' + ' ' + oppositeJson.city ? oppositeJson.city : '[wederpartij_stad]', oppositeJson.phone ? oppositeJson.phone : '[wederpartij_telnr]', oppositeJson.email ? oppositeJson.email : '[wederpartij_email]' ]);
 
     }
 

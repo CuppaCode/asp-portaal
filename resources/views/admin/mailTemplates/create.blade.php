@@ -10,9 +10,11 @@
     <div class="card">
 
         <div class="card-header">
-          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag]</pre>
+          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag] [kenteken_wederpartij] [verhaalbaar] [schade_soort]</pre>
           <pre>[contact_naam] [contact_email]</pre>
           <pre>[herstel_adres] [herstel_postcode] [herstel_telnr] [herstel_contact_naam] [herstel_email]</pre>
+          <pre>[chauffeur_naam] [chauffeur_email]</pre>
+          <pre>[wederpartij_naam] [wederpartij_adres] [wederpartij_postcode_stad] [wederpartij_telnr] [wederpartij_email]</pre>
         </div>
 
         <div class="card-body">

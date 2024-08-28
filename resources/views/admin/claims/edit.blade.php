@@ -5,7 +5,7 @@
 
     $user = auth()->user();
     $isAdmin = $user->can('financial_access');
-    $canAssignCompany = $user->can('assign_company');
+    $isAdminOrAgent = $user->isAdminOrAgent();
 
 @endphp
 
@@ -21,7 +21,7 @@
 
         <div class="card-body">
             @csrf
-            @if ($canAssignCompany)
+            @if ($isAdminOrAgent)
             <div class="form-group">
                 <label class="required" for="company_id">{{ trans('cruds.claim.fields.company') }}</label>
                 <select class="form-control select2 {{ $errors->has('company') ? 'is-invalid' : '' }}" name="company_id" id="company_id" required>

@@ -1,50 +1,33 @@
-<div id="header">
-    <img src="{{ config('app.url') }}/images/logo-asp.png" width="333" height="55">
-</div>
 <div id="body">
 
     {!! nl2br($body) !!}
 
 </div>
-<div id="footer">
-
-    <div class="left">
-
-        <img src="{{ config('app.url') }}/images/logo-asp.png" width="333" height="55">
-
-    </div>
-
-    <div class="right">
-
-        <ul>
-            <li>            			
-                <span><a href="https://www.autoschadeplan.nl" target="_blank">www.autoschadeplan.nl</a></span>
-            </li>
-        </ul>
-
-    </div>
-
-</div>
 
 <style>
 
-    #header,
-    #footer {
-        background: #344A9B;
-        padding: 20px;
+    html, body {
+        background-color: lightgrey!important;
     }
 
     #body {
         padding: 30px;
+        margin: 0 auto;
+        width: 70%;
+        background-color: white;
+        height: auto;
     }
 
     #footer {
         display: flex;
         justify-content: space-between;
+        padding: 30px;
+        margin: 0 auto;
+        width: 70%;
     }
 
     #footer .right ul li a {
-        color: white;
+        color: black;
         text-decoration: none;
     }
 

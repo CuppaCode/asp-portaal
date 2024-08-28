@@ -98,7 +98,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'noreply@asp-portaal.nl'),
+        'address' => env('MAIL_FROM_ADDRESS', 'noreply@autoschadeplan.nl'),
         'name' => env('MAIL_FROM_NAME', 'ASP Portaal')
     ],
 

@@ -1,10 +1,10 @@
 @php
 
- $canAssignCompany = 0;
+ $isAdminOrAgent = 0;
 
- if(auth()->user()->can('assign_company')) {
+ if(auth()->user()->isAdminOrAgent()) {
 
-    $canAssignCompany = 1;
+    $isAdminOrAgent = 1;
 
  }
 
@@ -12,6 +12,6 @@
 
 <script type="text/javascript">
 
-    var canAssignCompany = {{ $canAssignCompany }};
+    var isAdminOrAgent = {{ $isAdminOrAgent }};
 
 </script>
