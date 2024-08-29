@@ -172,6 +172,9 @@ $(document).ready(function () {
 
 
     // Claims AJAX requests
+    var bootstrapButton = $.fn.button.noConflict() // return $.fn.button to previously assigned value
+    $.fn.bootstrapBtn = bootstrapButton // give $().bootstrapBtn the Bootstrap functionality
+    //launchModal();
 
     // Claim status change
     $('#current-status').on('change', function (e) {
@@ -182,8 +185,13 @@ $(document).ready(function () {
         $.post('/admin/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
+
+            if(newStatus == 'claim_denied') {
+
+                launchModal();
+            }
             
-            if(newStatus != res.status) {
+            if(newStatus != res.status && newStatus != 'claim_denied') {
                 $('#current-status').val(res.status);
             }
 
@@ -683,4 +691,19 @@ async function createWysiwyg( textareaCollection ){
 
     });
 
+}
+
+function launchModal( 
+    modalTitle = 'Modal title',
+    modalBody = 'Modal body text goes here.'
+){
+
+    var myModal = $('#exampleModal').model({
+        keyboard: false
+    });
+    // var myModal = new coreui.Modal(document.getElementById('exampleModel'), {
+    //     keyboard: false
+    // });
+
+    myModal.show();
 }

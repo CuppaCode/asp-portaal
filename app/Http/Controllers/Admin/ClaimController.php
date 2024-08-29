@@ -532,6 +532,18 @@ class ClaimController extends Controller
 
         }
 
+        if( $request->new_status == 'claim_denied' ) {
+
+            return response()->json(
+                [
+                    'status' => $claim->status,
+                    'type' => 'alert-warning',
+                    'message' => 'Geef een reden waarom deze claim wordt afgewezen.'
+                ], 200
+            );
+
+        }
+
         
 
         $claim->status = $request->new_status;
