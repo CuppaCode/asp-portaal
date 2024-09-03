@@ -153,3 +153,6 @@ table.dataTable thead .sorting_desc {
     font-size: 12px;
 }
 
+.recent-activities .item .comment .row .col-8, .recent-activities .item  .row .col-10.content {
+    padding-bottom: 55px;
+}
