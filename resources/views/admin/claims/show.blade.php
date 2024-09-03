@@ -26,13 +26,6 @@
     
     @endif
 
-    @unless( !$claim->assign_self && !$isAdminOrAgent )
-
-        <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-            {{ trans('global.edit') }}
-        </a>
-
-    @endunless
 
         <div>
             @if($sla)
@@ -310,7 +303,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         Gegevens wagenpark
 
-                        @unless (!$claim->assign_self && !$isAdmin)
+                        @unless (!$claim->assign_self && !$isAdminOrAgent)
                             <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                                 {{ trans('global.edit') }}
                             </a>
