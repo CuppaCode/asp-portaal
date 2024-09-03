@@ -15,10 +15,11 @@ class PlainMail extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($subject, $message)
+    public function __construct($subject, $message, $attachments)
     {
         $this->subject = $subject;
         $this->message = $message;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -37,15 +38,21 @@ class PlainMail extends Notification
     public function toMail(object $notifiable): MailMessage
     {
 
-        $mailMessage = new MailMessage;
+        $mailMessage = (new MailMessage)
+            ->view('emails.plain-email', ['body' => $this->message])
+            ->subject($this->subject);
+      
+        if($this->attachments) {
 
-        $mailMessage->subject = $this->subject;
+            foreach($this->attachments as $index => $file) {
+                
+                $mailMessage->attach($file, [
+                    'as' => $file->getClientOriginalName(),
+                    'mime' => $file->getMimeType()
+                ]);
 
-        $paragraphs = explode("\n", $this->message);
+            }
 
-        // Voeg elke paragraaf toe als een nieuwe 'line'
-        foreach ($paragraphs as $paragraph) {
-            $mailMessage->line($paragraph);
         }
 
         return $mailMessage;

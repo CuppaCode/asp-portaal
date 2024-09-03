@@ -135,3 +135,21 @@ table.dataTable thead .sorting_desc {
     background-color: #494949;
     border-left: 15px solid #344a9b;
 }
+
+.c-main .recent-activities .collapsed .read-more.js-read-more { 
+    margin-bottom: -15px; 
+}
+
+.recent-activities .item .read-more.js-read-more {
+    width: 150px; 
+    text-align: center; 
+    background-color: rgba(255, 165, 0, 1); 
+    padding: 10px; 
+    margin-bottom: -15px; 
+    color: #fff; 
+    text-decoration: none; 
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px;
+    font-size: 12px;
+}
+
