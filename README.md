@@ -79,7 +79,7 @@ Install mailpit locally by following the instructions on [this page](https://git
 
 Thats it, now you can fix your env file by putting in the following:
 ``MAIL_MAILER=smtp
-MAIL_HOST=localhost
+MAIL_HOST=localhost or MAIL_HOST=0.0.0.0
 MAIL_PORT=1025
 MAIL_USERNAME=null
 MAIL_PASSWORD=null

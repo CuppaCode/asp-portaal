@@ -45,6 +45,7 @@ class Task extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'team_id',
+        'created_by',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

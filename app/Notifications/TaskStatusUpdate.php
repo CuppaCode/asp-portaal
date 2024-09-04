@@ -7,8 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\HtmlString;
 use Illuminate\Notifications\Notification;
+use App\Models\Task;
 
-class TaskCreation extends Notification
+class TaskStatusUpdate extends Notification
 {
     use Queueable;
 
@@ -39,26 +40,14 @@ class TaskCreation extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        
-        // dd($this->claim);
-        
-        if (isset($this->claim[0]->claim_number)){
-            $claim_number = $this->claim[0]->claim_number;
-            $claim_id = $this->claim[0]->id;
-        } else {
-            $claim_number = null;
-            $claim_id = null;
-        }
 
-        $url = url('/admin/claims/'.$claim_id);
+        $status = Task::STATUS_SELECT[$this->task->status];
+        $url = url('/admin/claims/'.$this->claim->id);
 
         return (new MailMessage)
-            ->subject(config('app.name') . ': Er is een nieuwe taak aangemaakt ')
-            ->greeting("Hallo {$this->user['name']},")
-            ->line("Er staat een nieuwe taak voor je klaar")
-            ->lineIf($claim_number != null, "Betreffende schadedossier: {$claim_number}")
-            ->line("Beschrijving taak: {$this->task['description']}")
-            ->line("Deadline: {$this->task['deadline_at']}  ")
+            ->subject(config('app.name') . ' - Status van taak is gewijzigd naar '. $status)
+            ->line("De status van de taak is gewijzigd naar ". $status. ". Betreffende onderstaande taak: ")
+            ->line($this->task->description)
             ->action('Bekijk taak in claim', $url)
             ->salutation(new HtmlString("Bedankt, <br>Autoschadeplan"));
     }

@@ -9,10 +9,13 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Models\Note;
 use App\Models\Task;
+use App\Models\Claim;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
@@ -95,10 +98,24 @@ class CommentController extends Controller
 
         $allComments = $comment->commentable->comments;
 
+        if($comment->commentable_type === 'App\Models\Task') {
+            $task = Task::where('id', $comment->commentable_id)->first();
+            $claim = Claim::where('id', $task->claim_id)->first();
+            $user = User::where('id', $task->created_by)->first();
+            $body = $comment->body;
+
+            $message = new \App\Notifications\TaskCommentUpdate($task, $claim, $user, $body);
+
+            Notification::route('mail', [
+                $user->email => $user->name])->notify($message);
+        }
+
         return response()->json([
             'type'  => 'alert-success',
             'allComments' => $allComments,
             'message' => 'Comment successvol geplaatst'
         ]);
+
+        
     }
 }

@@ -52,11 +52,18 @@ class NoteController extends Controller
 
         $claim_id = $request->input('claims');
 
-        $note = Note::create($request->all());
+        $note = Note::create($request->except('attachments')); //except?
 
         $note->claims()->sync($request->input('claims', []));
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $note->id]);
+
+        // if ($media = $request->input('ck-media', false)) {
+        //     Media::whereIn('id', $media)->update(['model_id' => $note->id]);
+        // }
+        if ($request->hasFile('attachments')) {
+
+            foreach ($request->file('attachments') as $image) {
+                $note->addMedia($image)->toMediaCollection('attachments');
+            }
         }
 
         if($request->input('add-new-note', 'true')) {

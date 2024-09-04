@@ -15,10 +15,11 @@ class PlainMail extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($subject, $message)
+    public function __construct($subject, $message, $attachments)
     {
         $this->subject = $subject;
         $this->message = $message;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -36,9 +37,25 @@ class PlainMail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-                    ->view('emails.plain-email', ['body' => $this->message])
-                    ->subject(config('app.name') . ':' . $this->subject);
+
+        $mailMessage = (new MailMessage)
+            ->view('emails.plain-email', ['body' => $this->message])
+            ->subject($this->subject);
+      
+        if($this->attachments) {
+
+            foreach($this->attachments as $index => $file) {
+                
+                $mailMessage->attach($file, [
+                    'as' => $file->getClientOriginalName(),
+                    'mime' => $file->getMimeType()
+                ]);
+
+            }
+
+        }
+
+        return $mailMessage;
     }
 
     /**

@@ -46,6 +46,16 @@ class Note extends Model implements HasMedia
         $this->addMediaConversion('preview')->fit('crop', 120, 120);
     }
 
+    /**
+     * Configureer de media collectie voor dit model.
+     *
+     * @return void
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('attachments');
+    }
+
     public function claims()
     {
         return $this->belongsToMany(Claim::class);

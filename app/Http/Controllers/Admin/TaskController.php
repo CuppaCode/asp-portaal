@@ -53,6 +53,10 @@ class TaskController extends Controller
         $task = Task::create($request->all());
         $user = $task->user;
         $claim = Claim::where('id', $request->claim_id)->get();
+        $created_by = auth()->user();
+
+        $task->created_by = $created_by->id;
+        $task->save();
         
         $message = new \App\Notifications\TaskCreation($task, $claim, $user);
         Notification::route('mail', [
@@ -133,11 +137,18 @@ class TaskController extends Controller
 
     public function quickUpdateStatus(Request $request)
     {
-        $task = Task::find($request->task_id);
-
+        $task = Task::where('id', $request->task_id)->first();
+        $claim = Claim::where('id', $task->claim_id)->first();
+        $user = User::where('id', $task->created_by)->first();
         $task->status = $request->new_status;
 
         $task->save();
+
+        $message = new \App\Notifications\TaskStatusUpdate($task, $claim, $user);
+
+        
+        Notification::route('mail', [
+            $user->email => $user->name])->notify($message);
 
         return response()->json(
             [
