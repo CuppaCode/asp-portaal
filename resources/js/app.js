@@ -693,17 +693,38 @@ async function createWysiwyg( textareaCollection ){
 
 }
 
-function launchModal( 
-    modalTitle = 'Modal title',
-    modalBody = 'Modal body text goes here.'
-){
+// function launchModal( 
+//     modalTitle = 'Claim afwijzing',
+//     modalBody = 'Om een claim af te wijzen dient u een reden te geven, selecteer de juiste.'
+// ){
 
-    var myModal = $('#exampleModal').model({
-        keyboard: false
-    });
-    // var myModal = new coreui.Modal(document.getElementById('exampleModel'), {
-    //     keyboard: false
-    // });
+//     const rawModal = document.getElementById('exampleModal');
+//     const myModal = new coreui.Modal(rawModal, {
+//         keyboard: false
+//     });
 
-    myModal.show();
-}
+//     const DOMModalTitle = $(rawModal).find('[data-modal-title]');
+//     const DOMModalBody = $(rawModal).find('[data-modal-body]');
+
+//     const claimID = $(rawModal).find('[name="claim_id"]').val();
+
+//     DOMModalTitle.text(modalTitle);
+//     DOMModalBody.html(modalBody);
+
+//     myModal.show();
+
+//     $('[data-modal-save]').on('click', function (e) {
+
+//         const declineReason = $(rawModal).find('#decline_reason').val();
+
+//         $.post('/admin/claims/decline-claim', { declineReason: declineReason, claimID: claimID })
+//         .done(function(res){
+
+//             sendFlashMessage(res.message, res.type);
+
+//             myModal.hide();
+            
+//         });
+
+//     });
+// }
