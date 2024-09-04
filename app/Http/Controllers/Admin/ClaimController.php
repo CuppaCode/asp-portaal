@@ -514,7 +514,6 @@ class ClaimController extends Controller
 
     public function quickUpdateStatus(Request $request)
     {
-        dd($request);
         $claim = Claim::find($request->claim_id);
 
         $new_status = null;
@@ -603,8 +602,6 @@ class ClaimController extends Controller
 
     public function declineClaim(Request $request)
     {
-        dd($request);
-
         $claim = Claim::find($request->claimID);
 
         $claim->decline_reason = $request->declineReason;
@@ -616,7 +613,7 @@ class ClaimController extends Controller
         return response()->json(
             [
                 'type' => 'alert-danger',
-                'message' => 'Claim afgewezen door: ' . $claim->decline_reason
+                'message' => 'Claim afgewezen door: ' . \App\Models\Claim::DECLINE_REASON_SELECT[$claim->decline_reason]
             ], 200);
 
     }
