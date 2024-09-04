@@ -26,7 +26,6 @@
     
     @endif
 
-
         <div>
             @if($sla)
                 @can('sla_access')
@@ -138,12 +137,23 @@
             </div>
         </div>
     </div>
+    
+    @include('partials.eventModal')
 
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     Schadedossier overzicht
+                    
+                    @if ( isset($claim->decline_reason) && $claim->status == 'claim_denied')
+
+                        <div class="alert alert-danger mb-0" role="alert">
+                            <strong>Reden afwijzing:</strong>
+                            {{ App\Models\Claim::DECLINE_REASON_SELECT[$claim->decline_reason] }}
+                        </div>
+
+                    @endif
         
                     @if( $claim->assign_self || $isAdminOrAgent)
                         <select class="form-control col-md-4" id="current-status" data-claim-id="{{ $claim->id }}">
