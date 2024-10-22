@@ -21,6 +21,7 @@ use App\Models\Opposite;
 use App\Models\User;
 use App\Models\MailTemplate;
 use App\Models\Note;
+use App\Models\SLA;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -279,8 +280,6 @@ class ClaimController extends Controller
 
     public function update(UpdateClaimRequest $request, Claim $claim)
     {
-        // dd($request);
-
         $user = auth()->user();
         $isAdminOrAgent = $user->isAdminOrAgent();
         $companies = null;
@@ -442,7 +441,6 @@ class ClaimController extends Controller
 
     public function show(Claim $claim)
     {
-
         abort_if(Gate::denies('claim_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = auth()->user();
@@ -452,6 +450,9 @@ class ClaimController extends Controller
         $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
 
+        $sla = SLA::where('company_id', $claim->company->id)->first();
+        $users = User::where('team_id', $user->team->id)->get();
+
         $parentMediaArray = [
             trans('cruds.claim.fields.damage_files') => $claim->damage_files,
             trans('cruds.claim.fields.report_files') => $claim->report_files,
@@ -459,12 +460,11 @@ class ClaimController extends Controller
             trans('cruds.claim.fields.other_files') => $claim->other_files
         ];
 
-        
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
         $mailTemplates = MailTemplate::all();
-        
+      
         $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
-        
+
         if($isAdminOrAgent) {
             
             $users = User::get();
@@ -477,7 +477,7 @@ class ClaimController extends Controller
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla'));
     }
 
     public function destroy(Claim $claim)
@@ -532,6 +532,18 @@ class ClaimController extends Controller
 
         }
 
+        if( $request->new_status == 'claim_denied' ) {
+
+            return response()->json(
+                [
+                    'status' => $claim->status,
+                    'type' => 'alert-warning',
+                    'message' => 'Geef een reden waarom deze claim wordt afgewezen.'
+                ], 200
+            );
+
+        }
+
         
 
         $claim->status = $request->new_status;
@@ -550,11 +562,19 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '');
-        Notification::route('mail', [
-            $request->mailReceiver ?? '' => ''])->notify($message);
+        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '', $request->mailAttachments ?? null);
 
-        $noteDescription = "Ontvanger: {$request->mailReceiver}<br/>
+        foreach($request->mailReceiver as $receiver) {
+            
+            Notification::route('mail', [
+                $receiver ?? '' => ''])->notify($message);
+
+        }
+
+
+        $receiverString = implode(', ', $request->mailReceiver);
+
+        $noteDescription = "Ontvanger(s): {$receiverString}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -565,10 +585,35 @@ class ClaimController extends Controller
             'team_id' => auth()->user()->team->id
         ]);
 
+        if ($request->hasFile('mailAttachments')) {
+
+            foreach ($request->file('mailAttachments') as $image) {
+                $note->addMedia($image)->toMediaCollection('attachments');
+            }
+        }
+
         $note->claims()->sync($request->input('claims', []));
 
 
         return redirect()->back()->with('message', 'Mail is verstuurd en gelogd in dossier');
+
+    }
+
+    public function declineClaim(Request $request)
+    {
+        $claim = Claim::find($request->claimID);
+
+        $claim->decline_reason = $request->declineReason;
+
+        $claim->status = 'claim_denied';
+
+        $claim->save();
+
+        return response()->json(
+            [
+                'type' => 'alert-danger',
+                'message' => 'Claim afgewezen door: ' . \App\Models\Claim::DECLINE_REASON_SELECT[$claim->decline_reason]
+            ], 200);
 
     }
 }

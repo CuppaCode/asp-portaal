@@ -11,6 +11,7 @@ use App\Models\ExpertiseOffice;
 use App\Models\InjuryOffice;
 use App\Models\RecoveryOffice;
 use App\Models\Company;
+use App\Models\Contact;
 use App\Models\Team;
 use Gate;
 use Illuminate\Http\Request;
@@ -36,7 +37,9 @@ class CompanyController extends Controller
     {
         abort_if(Gate::denies('company_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.companies.create');
+        $contacts = Contact::where('is_driver', 0)->get();
+
+        return view('admin.companies.create', compact('contacts'));
     }
 
     public function store(StoreCompanyRequest $request)
@@ -102,9 +105,10 @@ class CompanyController extends Controller
     {
         abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $contacts = Contact::where('is_driver', 0)->get();
         $company->load('team');
 
-        return view('admin.companies.edit', compact('company'));
+        return view('admin.companies.edit', compact('company', 'contacts'));
     }
 
     public function update(UpdateCompanyRequest $request, Company $company)
@@ -119,8 +123,9 @@ class CompanyController extends Controller
         abort_if(Gate::denies('company_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $company->load('team');
+        $contact = Contact::where('id', $company->contact_id)->first();
 
-        return view('admin.companies.show', compact('company'));
+        return view('admin.companies.show', compact('company', 'contact'));
     }
 
     public function destroy(Company $company)

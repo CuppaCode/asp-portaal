@@ -171,6 +171,16 @@
                 </ul>
             </li>
         @endcan
+        @can('sla_access')
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.sla.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/sla") || request()->is("admin/sla/*") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-envelope c-sidebar-nav-icon">
+
+                </i>
+                {{ trans('cruds.sla.title') }}
+            </a>
+        </li>
+        @endcan
         @can('user_management_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/permissions*") ? "c-show" : "" }} {{ request()->is("admin/roles*") ? "c-show" : "" }} {{ request()->is("admin/users*") ? "c-show" : "" }} {{ request()->is("admin/teams*") ? "c-show" : "" }} {{ request()->is("admin/audit-logs*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
@@ -301,6 +311,7 @@
             </a>
         </li>
         @endcan
+        
     </ul>
 
 </div>

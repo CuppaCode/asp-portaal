@@ -105,6 +105,7 @@ $(document).ready(function () {
 
     var obstacle = $('.obstacle-show');
     var vehicle = $('.opposite-vehicle-show');
+    var other = $('.other-show');
 
     $('#opposite_type').change(function(){ // [create.claims] Showing the opposite vehcile fields based on the value of the question.
 
@@ -142,7 +143,17 @@ $(document).ready(function () {
             obstacle.addClass('d-none');   
         }
     }
-    
+
+    $('#analytics_options').on('change', function(){
+        console.log($.inArray('other', $(this).val()));
+        if($.inArray('other', $(this).val()) !== -1) {
+            other.removeClass('d-none');
+        } else if ($.inArray('other', $(this).val()) == -1){
+            if(!other.hasClass('d-none')) {
+                other.addClass('d-none');
+            }
+        }
+    });
 
 
     var expertise_receive_date = $('.expertise-report-show');
@@ -170,8 +181,15 @@ $(document).ready(function () {
         $('#'+data).val('');
     });
 
+    $('#sla-toggle').on('click', function (e) {
+        $('.sla-show').slideToggle();
+    });
+
 
     // Claims AJAX requests
+    var bootstrapButton = $.fn.button.noConflict() // return $.fn.button to previously assigned value
+    $.fn.bootstrapBtn = bootstrapButton // give $().bootstrapBtn the Bootstrap functionality
+    //launchModal();
 
     // Claim status change
     $('#current-status').on('change', function (e) {
@@ -182,8 +200,13 @@ $(document).ready(function () {
         $.post('/admin/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
+
+            if(newStatus == 'claim_denied') {
+
+                launchModal();
+            }
             
-            if(newStatus != res.status) {
+            if(newStatus != res.status && newStatus != 'claim_denied') {
                 $('#current-status').val(res.status);
             }
 
@@ -683,4 +706,42 @@ async function createWysiwyg( textareaCollection ){
 
     });
 
+}
+
+function launchModal( 
+    modalTitle = 'Claim afwijzing',
+    modalBody = 'Om een claim af te wijzen dient u een reden te geven, selecteer de juiste.'
+){
+
+    const rawModal = document.getElementById('exampleModal');
+    const myModal = new coreui.Modal(rawModal, {
+        keyboard: false
+    });
+
+    const DOMModalTitle = $(rawModal).find('[data-modal-title]');
+    const DOMModalBody = $(rawModal).find('[data-modal-body]');
+
+    const claimID = $(rawModal).find('input[name="claim_id"]').val();
+
+    DOMModalTitle.text(modalTitle);
+    DOMModalBody.html(modalBody);
+
+    myModal.show();
+
+    $('[data-modal-save]').on('click', function (e) {
+
+        const declineReason = $(rawModal).find('#decline_reason').val();
+
+        console.log(declineReason, claimID);
+
+        $.post('/admin/claims/decline-claim', { declineReason: declineReason, claimID: claimID })
+        .done(function(res){
+
+            sendFlashMessage(res.message, res.type);
+
+            myModal.hide();
+            
+        });
+
+    });
 }

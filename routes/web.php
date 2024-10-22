@@ -104,6 +104,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
     Route::resource('mail-templates', 'MailTemplateController');
 
+    // SLA
+    Route::resource('sla', 'SLAController');
+
     // Mail examples
     Route::get('preview-notification', function () {
         $markdown = new \Illuminate\Mail\Markdown(view(), config('mail.markdown'));   
@@ -125,6 +128,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::post('claims/update-status', 'ClaimController@quickUpdateStatus');
     Route::post('tasks/update-status', 'TaskController@quickUpdateStatus');
+    Route::post('claims/decline-claim', 'ClaimController@declineClaim');
 
     Route::post('companies/quick-store', 'CompanyController@quickStore');
     Route::post('comments/quick-store', 'CommentController@quickStore');
