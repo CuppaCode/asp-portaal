@@ -578,7 +578,7 @@
                     <div class="row">
                         <div class="col-2 date-holder text-right">
                             <div class="icon"><i class="fa fa-user"></i></div>
-                            <div class="date"> <span>{{ $note->user->name ?? "Onbekende gebruiker" }}</span><br><span
+                            <div class="date"> <span>{{ $note->user->name ?? "Verwijderde gebruiker" }}</span><br><span
                                     class="text-info">{{ $note->created_at }}</span></div>
                         </div>
                         <div class="col-10 content">
