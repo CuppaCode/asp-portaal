@@ -7,11 +7,11 @@
         $user = auth()->user();
         $isAdminOrAgent = $user->isAdminOrAgent();
 
-        //dd($contacts)
-
     @endphp
 
     @include('partials.claims.show.header')
+
+    @include('partials.claims.show.eventModal')
 
     <div class="row">
         

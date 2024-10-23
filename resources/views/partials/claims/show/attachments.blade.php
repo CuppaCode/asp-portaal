@@ -12,55 +12,26 @@
 
         <div class="card-body">
             <div class="row">
-                <div class="col-md-3">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.damage_files') }}
-                    </div>
-                    <p class="card-text media-box">
+                
+                @foreach($parentMediaArray as $name => $mediaArray)
 
-                        @foreach ($claim->damage_files as $key => $media)
-                            <a href="{{ $media->getUrl() }}" target="_blank">
-                                <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                            </a>
-                        @endforeach
-                    </p>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.report_files') }}
+                    <div class="col-md-3">
+                        <div class="card-title">
+                            {{ $name }}
+                        </div>
+                        <p class="card-text media-box">
+
+                            @foreach($mediaArray as $key => $media)
+                                
+                                <a href="{{ $media->getUrl() }}" target="_blank">
+                                    <img src="{{ $media->getUrl() }}" alt="{{ $media->name }}"/>
+                                </a>
+                            @endforeach
+                        </p>
                     </div>
-                    <p class="card-text media-box">
-                        @foreach ($claim->report_files as $key => $media)
-                            <a href="{{ $media->getUrl() }}" target="_blank">
-                                <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                            </a>
-                        @endforeach
-                    </p>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.financial_files') }}
-                    </div>
-                    <p class="card-text media-box">
-                        @foreach ($claim->financial_files as $key => $media)
-                            <a href="{{ $media->getUrl() }}" target="_blank">
-                                <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                            </a>
-                        @endforeach
-                    </p>
-                </div>
-                <div class="col-md-3">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.other_files') }}
-                    </div>
-                    <p class="card-text media-box">
-                        @foreach ($claim->other_files as $key => $media)
-                            <a href="{{ $media->getUrl() }}" target="_blank">
-                                <img src="{{ $media->getUrl('thumb') }}" alt="{{ $media->name }}" />
-                            </a>
-                        @endforeach
-                    </p>
-                </div>
+
+                @endforeach
+                
             </div>
         </div>
     </div>

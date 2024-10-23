@@ -31,7 +31,7 @@
             </select>
         </div>
 
-        @if (auth()->user()->roles->contains(1))
+        @if ($isAdminOrAgent)
             <div class="form-group d-none">
                 <select class="form-control select2 {{ $errors->has('user') ? 'is-invalid' : '' }}"
                     name="user_id" id="user_id" required>

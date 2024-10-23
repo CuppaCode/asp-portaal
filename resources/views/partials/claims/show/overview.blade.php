@@ -45,11 +45,11 @@
                         {{ $claim->opposite_claim_no }}
                     </div>
                 @endif
-                @if ($claim->assignee_id)
+                @if ($assignee_name)
                     <div class="col-md-2">
                         <div class="card-title">
                             {{ trans('cruds.claim.fields.assignee') }}</div>
-                        {{ $assignee_name->first_name . ' ' . $assignee_name->last_name }}
+                        {{ $assignee_name->first_name ?? 'Verwijderde gebruiker' . ' ' . $assignee_name->last_name ?? '' }}
                     </div>
                 @endif
             </div>
