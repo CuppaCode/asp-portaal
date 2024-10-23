@@ -197,8 +197,13 @@ $(document).ready(function () {
         $.post('/admin/claims/update-status', { claim_id: claimID, new_status: newStatus } , function(res) {
 
             sendFlashMessage(res.message, res.type);
+
+            if(newStatus == 'claim_denied') {
+
+                launchModal();
+            }
             
-            if(newStatus != res.status) {
+            if(newStatus != res.status && newStatus != 'claim_denied') {
                 $('#current-status').val(res.status);
             }
 
