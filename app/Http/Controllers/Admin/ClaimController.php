@@ -586,4 +586,22 @@ class ClaimController extends Controller
         return redirect()->back()->with('message', 'Mail is verstuurd en gelogd in dossier');
 
     }
+
+    public function declineClaim(Request $request)
+    {
+        $claim = Claim::find($request->claimID);
+
+        $claim->decline_reason = $request->declineReason;
+
+        $claim->status = 'claim_denied';
+
+        $claim->save();
+
+        return response()->json(
+            [
+                'type' => 'alert-danger',
+                'message' => 'Claim afgewezen door: ' . \App\Models\Claim::DECLINE_REASON_SELECT[$claim->decline_reason]
+            ], 200);
+
+    }
 }
