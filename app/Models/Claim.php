@@ -186,6 +186,14 @@ class Claim extends Model implements HasMedia
         'transport'                     => 'Tranport'
     ];
 
+    public const DECLINE_REASON_SELECT = [
+        'no_response'   => 'Geen reactie',
+        'no_liability'  => 'Geen aansprakelijkheid',
+        'faulty'        => 'Foutieve melding',
+        'duplicate'     => 'Dubbele melding',
+        'no_agreement'  => 'Geen akkoord opdrachtgever'
+    ];
+
     protected $fillable = [
         'company_id',
         'assign_self',
