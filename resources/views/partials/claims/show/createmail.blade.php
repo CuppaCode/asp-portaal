@@ -89,6 +89,10 @@
                 {{ json_encode(App\Models\Claim::DAMAGED_AREA_SELECT) }}</div>
             <div class="d-none" id="damageOriginJson">
                 {{ json_encode(App\Models\Claim::DAMAGE_ORIGIN) }}</div>
+            <div class="d-none" id="damageKindJson">
+                {{ json_encode(App\Models\Claim::DAMAGE_KIND) }}</div>
+            <div class="d-none" id="recoverableClaimJson">
+                {{ json_encode(App\Models\Claim::RECOVERABLE_CLAIM_SELECT) }}</div>
 
         </div>
         <div class="form-group">
