@@ -5,13 +5,13 @@
 
     @if ($isAdminOrAgent)
 
-    @if ($claim->assign_self == true)
-        <div class="alert alert-danger" role="alert">
-            Let op! Dit schadedossier wordt behandeld door klant zelf.
-        </div>
-    @endif
+        @if ($claim->assign_self == true)
+            <div class="alert alert-danger" role="alert">
+                Let op! Dit schadedossier wordt behandeld door klant zelf.
+            </div>
+        @endif
 
-@endif
+    @endif
 
 
     <div>
