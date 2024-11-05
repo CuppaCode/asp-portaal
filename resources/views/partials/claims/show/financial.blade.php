@@ -78,7 +78,6 @@
                                     Ja
                                 @else
                                     Nee
-                                    3
                                 @endif
                             </p>
 
