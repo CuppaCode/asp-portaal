@@ -463,8 +463,12 @@ class ClaimController extends Controller
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
         $mailTemplates = MailTemplate::all();
       
-        $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
-
+        $assignee_name = null;
+        
+        if($claim->assignee_id) {
+            Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
+        }
+        
         if($isAdminOrAgent) {
             
             $users = User::get();
