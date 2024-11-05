@@ -187,6 +187,9 @@ $(document).ready(function () {
 
 
     // Claims AJAX requests
+    var bootstrapButton = $.fn.button.noConflict() // return $.fn.button to previously assigned value
+    $.fn.bootstrapBtn = bootstrapButton // give $().bootstrapBtn the Bootstrap functionality
+    //launchModal();
 
     // Claim status change
     $('#current-status').on('change', function (e) {
