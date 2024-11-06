@@ -466,7 +466,7 @@ class ClaimController extends Controller
         $assignee_name = null;
         
         if($claim->assignee_id) {
-            Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
+            $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
         }
         
         if($isAdminOrAgent) {

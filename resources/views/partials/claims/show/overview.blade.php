@@ -57,8 +57,15 @@
                 @if ($assignee_name)
                     <div class="col-md-2">
                         <div class="card-title">
-                            {{ trans('cruds.claim.fields.assignee') }}</div>
-                        {{ $assignee_name->first_name ?? 'Verwijderde gebruiker' . ' ' . $assignee_name->last_name ?? '' }}
+                            {{ trans('cruds.claim.fields.assignee') }}
+                        </div>
+                        
+                        @if ( $assignee_name->first_name && $assignee_name->last_name )
+                            {{ $assignee_name->first_name }} {{ $assignee_name->last_name }}
+                        @else
+                            Verwijderde gebruiker
+                        @endif
+                        
                     </div>
                 @endif
             </div>
