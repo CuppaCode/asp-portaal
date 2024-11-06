@@ -37,6 +37,7 @@
 
     </div>
 
+
     <div class="card recent-activities">
         <div class="card-header d-flex justify-content-between align-items-center">
             Notities / Activiteiten
@@ -44,11 +45,13 @@
     
         @include('partials.claims.show.activities')
 
+
     <div class="item last-form">
         <div class="row">
             <div class="col-2 date-holder text-right">
                 <div class="icon"><i class="fa fa-plus"></i></div>
                 <div class="date">Nieuwe notitie<span></span><br><span class="text-info"></span></div>
+
             </div>
             <div class="col-10 content">
                 <ul class="nav nav-tabs" id="notes" role="tablist">
