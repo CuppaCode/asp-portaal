@@ -81,6 +81,21 @@
                 @endif
             @endif
 
+            @if ($driver)
+
+                <div class="d-none" id="driverJson">
+                    {{ json_encode($driver) }}</div> 
+
+            @endif
+
+            @if ($oppositeVehicleInfo)
+
+                <div class="d-none" id="oppositeJson">
+                    {{ json_encode($oppositeVehicleInfo) }}</div>
+
+            @endif
+        
+
             <div class="d-none" id="statusSelectJson">
                 {{ json_encode(App\Models\Claim::STATUS_SELECT) }}</div>
             <div class="d-none" id="damagePartSelectJson">

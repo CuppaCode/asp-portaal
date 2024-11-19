@@ -479,9 +479,25 @@ class ClaimController extends Controller
 
         }
 
+        $driver = Driver::find($claim->driver_vehicle)->contact ?? null;
+
+        $oppositeVehicleInfo = null;
+
+        if ($claim->vehicle_opposite) {
+
+            $oppositeVehicleInfo = (object) [
+                'vehicle' => $claim->vehicle_opposite,
+                'damaged_part' => $claim->damaged_part_opposite ?? null,
+                'damage_origin' => $claim->damage_origin_opposite ?? null,
+                'damaged_area' => $claim->damaged_area_opposite ?? null,
+                'driver' => $claim->driver_vehicle_opposite ?? null
+            ];
+
+        }
+
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla', 'driver', 'oppositeVehicleInfo'));
     }
 
     public function destroy(Claim $claim)
