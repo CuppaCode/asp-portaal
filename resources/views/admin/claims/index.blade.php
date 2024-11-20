@@ -47,6 +47,9 @@
                             {{ trans('cruds.claim.fields.status') }}
                         </th>
                         <th>
+                            {{ trans('cruds.claim.fields.assignee')}}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -79,6 +82,9 @@
                             </select>
                         </td>
                         <td>
+
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 </thead>
@@ -102,6 +108,9 @@
                             </td>
                             <td>
                                 {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
+                            </td>
+                            <td>
+
                             </td>
                             <td class="edits-td">
                                 @can('claim_show')
@@ -200,6 +209,7 @@
         }
 
         table.column( 1 ).visible( false );
+        table.column( 6 ).visible( false );
     });
   
 let visibleColumnsIndexes = null;
