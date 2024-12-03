@@ -588,18 +588,18 @@ async function setupMailBody() {
         '[schade_soort]'
     ];
     var replace = [
-        claimJson.company ? claimJson.company.name : null, 
-        claimJson.company ? '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>' : null, 
+        claimJson.company ? claimJson.company.name : 'N/A', 
+        claimJson.company ? '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>' : 'N/A', 
         claimJson.subject, 
         claimJson.claim_number, 
         claimJson.status, 
         claimJson.date_accident, 
-        claimJson.vehicle ? claimJson.vehicle.plates : null,
+        claimJson.vehicle ? claimJson.vehicle.plates : 'N/A',
         JSON.parse(claimJson.damaged_part, translationParseHelper), 
         JSON.parse(claimJson.damaged_area, translationParseHelper), 
         JSON.parse(claimJson.damage_origin, translationParseHelper), 
         claimJson.damage_costs, 
-        claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : null, 
+        claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : 'N/A', 
         claimJson.recoverable_claim, 
         claimJson.damage_kind
     ];
@@ -699,9 +699,9 @@ async function setupMailBody() {
             oppositeJson.zipcode + ' ' + oppositeJson.city, 
             oppositeJson.phone, 
             oppositeJson.email,
-            oppositeJson.damaged_part ? JSON.parse(oppositeJson.damaged_part, translationParseHelper) : null, 
-            oppositeJson.damaged_area ? JSON.parse(oppositeJson.damaged_area, translationParseHelper) : null, 
-            oppositeJson.damage_origin ? JSON.parse(oppositeJson.damage_origin, translationParseHelper) : null 
+            oppositeJson.damaged_part ? JSON.parse(oppositeJson.damaged_part, translationParseHelper) : 'N/A', 
+            oppositeJson.damaged_area ? JSON.parse(oppositeJson.damaged_area, translationParseHelper) : 'N/A', 
+            oppositeJson.damage_origin ? JSON.parse(oppositeJson.damage_origin, translationParseHelper) : 'N/A' 
         ]);
 
     }
