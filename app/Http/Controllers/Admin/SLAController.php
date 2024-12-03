@@ -18,7 +18,7 @@ class SLAController extends Controller
      */
     public function index()
     {
-        abort_if(Gate::denies('sla_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('sla_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $SLA = SLA::get();
 
@@ -31,6 +31,8 @@ class SLAController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('sla_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.sla.create', compact('companies'));
@@ -69,6 +71,8 @@ class SLAController extends Controller
      */
     public function edit(SLA $sla)
     {
+        abort_if(Gate::denies('sla_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.sla.edit', compact('sla', 'companies'));
@@ -96,7 +100,7 @@ public function update(UpdateSLARequest $request, SLA $sla)
      */
     public function destroy(SLA $sla)
     {
-        abort_if(Gate::denies('sla_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('sla_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $sla->delete();
 
