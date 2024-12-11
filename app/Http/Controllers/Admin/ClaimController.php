@@ -262,16 +262,7 @@ class ClaimController extends Controller
 
         $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
 
-
-        if($isAdminOrAgent) {
-
-            $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        } else {
-            
-            $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
+        $drivers = Driver::where('team_id', $claim->company->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
@@ -468,7 +459,7 @@ class ClaimController extends Controller
         if($claim->assignee_id) {
             $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
         }
-        
+
         if($isAdminOrAgent) {
             
             $users = User::get();
