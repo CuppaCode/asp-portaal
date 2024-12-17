@@ -347,4 +347,117 @@ class Claim extends Model implements HasMedia
     {
         return $this->belongsTo(Team::class, 'team_id');
     }
+
+    public function getAssigneeAttribute() 
+    {
+        if ($this->assignee_id != null || isset($this->assignee_id)) {
+
+            $assignee = Contact::where('user_id', $this->assignee_id)->select('first_name', 'last_name')->get()->first();
+
+
+            return $assignee->first_name ." ". $assignee->last_name;
+        } else {
+            return;
+        }
+    }
+
+    public function getOppositeDriverPlateAttribute() {
+        if ($this->opposite_type != 'obstacle') {
+            return $this->vehicle_opposite;
+        } else {
+            return;
+        }
+    }
+
+    public function getOppositeAttribute() {
+        return $opposite = Opposite::where('claim_id', $this->id)->get()->first();
+    }
+
+    public function getDamagedAreaXAttribute() {
+        $x = '';
+        if($this->damaged_area != null) {
+            foreach(json_decode($this->damaged_area) as $area) {
+                $x .= Claim::DAMAGED_AREA_SELECT[$area] . ', ';
+            }
+
+            return $x;
+        }
+    }
+
+    public function getDamagedOriginXAttribute() {
+        $x = '';
+        if($this->damage_origin != null) {
+            foreach(json_decode($this->damage_origin) as $origin) {
+                $x .= Claim::DAMAGE_ORIGIN[$origin] . ', ';
+            }
+
+            return $x;
+        }
+    }
+
+    public function getDamagedPartXAttribute() {
+        $x = '';
+        if($this->damaged_part != null) {
+            foreach(json_decode($this->damaged_part) as $part) {
+                $x .= Claim::DAMAGED_PART_SELECT[$part] . ', ';
+            }
+
+            return $x;
+        }
+    }
+
+    public function getDamagedAreaOppositeXAttribute() {
+        $x = '';
+        if($this->damaged_area_opposite != null) {
+            foreach(json_decode($this->damaged_area_opposite) as $area) {
+                $x .= Claim::DAMAGED_AREA_OPPOSITE_SELECT[$area] . ', ';
+            }
+
+            return $x;
+        }
+    }
+
+    public function getDamagedOriginOppositeXAttribute() {
+        $x = '';
+        if($this->damage_origin_opposite != null) {
+            foreach(json_decode($this->damage_origin_opposite) as $origin) {
+                $x .= Claim::DAMAGE_ORIGIN_OPPOSITE[$origin] . ', ';
+            }
+
+            return $x;
+        }
+    }
+
+    public function getDamagedPartOppositeXAttribute() {
+        $x = '';
+        if($this->damaged_part_opposite != null) {
+            foreach(json_decode($this->damaged_part_opposite) as $part) {
+                $x .= Claim::DAMAGED_PART_OPPOSITE_SELECT[$part] . ', ';
+            }
+
+            return $x;
+        }
+    }
+
+    public function getRecoveryOfficeXAttribute() {
+        if ($this->recovery_office != null || isset($this->recovery_office)) {
+
+            $RecoveryOffice = company::where('id', $this->recovery_office->company_id)->get()->first();
+
+            return $RecoveryOffice->name;
+        } else {
+            return;
+        }
+    }
+
+    public function getExpertiseOfficeXAttribute() {
+        if ($this->expertise_office != null || isset($this->expertise_office)) {
+
+            $ExpertiseOffice = company::where('id', $this->expertise_office->company_id)->get()->first();
+
+            return $ExpertiseOffice->name;
+        } else {
+            return;
+        }
+    }
 }
