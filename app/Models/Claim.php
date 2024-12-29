@@ -26,7 +26,7 @@ class Claim extends Model implements HasMedia
     ];
 
     public const DAMAGED_PART_SELECT = [
-        'backpart'  => 'Achterscherm',
+        //'backpart'  => 'Achterscherm',
         'trunk'     => 'Achterklep',
         'tire'      => 'Band/Velg',
         'bumper'    => 'Bumper',
@@ -35,7 +35,7 @@ class Claim extends Model implements HasMedia
         'doormolding'   => 'Deurrubber',
         'supportarm' => 'Draagarm',
         'dorpel'    => 'Dorpel',
-        'interior'  => 'Interieur',
+        //'interior'  => 'Interieur',
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
@@ -45,10 +45,26 @@ class Claim extends Model implements HasMedia
         'mirror'    => 'Spiegel',
         'screen' => 'Scherm',
         'exhaust'   => 'Uitlaat',
-        'light'     => 'Verlichting',
+        //'light'     => 'Verlichting',
         'wheel'     => 'Wielophanding',
-
+        'clutch' => 'Koppeling',
+        'valve_box' => 'Klepkast',
+        'license_plate' => 'Kentekenplaat',
+        'battery' => 'Accu',
+        'bump_strip' => 'Stootlijst/sierlijst',
+        'tow_bar' => 'Trekhaak',
+        'leveling_leg' => 'Stelpoot (caravan/camper)',
+        'drawbar' => 'Dissel',
+        'headlight' => 'Koplamp',
+        'taillight' => 'Achterlicht',
+        'raw' => 'RAW',
+        'steering_wheel' => 'Stuur',
+        'dashboard' => 'Dashboard',
+        'upholstery' => 'Stoel/bank/bekleding',
+        'door_panel' => 'Deurpaneel',
+        'gear_lever' => 'Schakelpook/Aut. handle'
     ];
+
 
     public const CONTACT_LAWYER_SELECT = [
         'yes' => 'Ja',
@@ -90,24 +106,31 @@ class Claim extends Model implements HasMedia
     public const OPPOSITE_TYPE_SELECT = [
         'private'  => 'Particulier',
         'business' => 'Zakelijk',
+        'lease_car' => 'Leaseauto',
         'unknown'  => 'Onbekend',
-        'obstacle' => 'Obstakel',
+        //'obstacle' => 'Obstakel',
     ];
 
     public const STATUS_SELECT = [
         'new'                       => 'Nieuw',
         'in_progress'               => 'In behandeling',
-        'requested_info'            => 'Informatie opgevraagd',
-        'damage_estimate_requested' => 'Schadebegroting opgevraagd',
-        'damage_estimate_received'  => 'Schadebegroting ontvangen',
+        'claim_denied'              => 'Claim afgewezen',        
+        'damage_estimate_requested' => 'Schadebedrag opgevraagd',
+        'damage_form_requested'     => 'Schadeformulier opgevraagd', // new
+        'requested_info'            => 'Aanvullende informatie opgevraagd',
+        'opposite_is_responsible'   => 'WP aansprakelijk gesteld', // new
+        'responsible_by_opposite'   => 'Aansprakelijk gesteld door WP', // new
+        'requested_expert'          => 'Expert aangevraagd',
+        'awaiting_approval'         => 'Goedkeuring aangevraagd', 
+        'with_recovery'             => 'Bij hersteller', // new
+        'awaiting_invoice'          => 'Factuur naar administratie',
+        'reopened'                  => 'Dossier heropend', // new
+        'finished'                  => 'Dossier Gesloten',
+
+        'damage_estimate_received'  => 'Schadebedrag ontvangen', //Fallback?
         'sended_responsible'        => 'Aansprakelijkheid verstuurd',
         'received_responsible'      => 'Aansprakelijkheid ontvangen',
-        'requested_expert'          => 'Expert aangevraagd',
-        'awaiting_invoice'          => 'Factuur afwachten',
         'awaiting_report'           => 'Rapport afwachten',
-        'awaiting_approval'         => 'Goedkeuring afwachten',
-        'claim_denied'              => 'Claim afgewezen',
-        'finished'                  => 'Gesloten',
     ];
 
     protected $dates = [
@@ -133,6 +156,7 @@ class Claim extends Model implements HasMedia
         'bottom_side' => 'Onderzijde',
         'front_side'  => 'Voorzijde',
         'back_side'   => 'Achterzijde',
+        'inside'      => 'Binnenzijde'
     ];
 
     public const DAMAGED_AREA_OPPOSITE_SELECT = [
@@ -152,8 +176,31 @@ class Claim extends Model implements HasMedia
     public const DAMAGE_ORIGIN = [
         'no_priority'                   => 'Geen voorrang',
         'parking'                       => 'Parkeren',
-        'backtoopposite'                => 'Achterop tegenpartij',
-        'oppositetoback'                => 'Tegenpartij achterop',
+        'backtoopposite'                => 'Achterop TP',
+        'oppositetoback'                => 'TP achterop',
+        'backed_up' => 'Achteruitgereden',
+        'enter_leave_traffic' => 'In- of uitvoegen',
+        'change_lane' => 'Veranderen van rijstrook',
+        'run_redlight' => 'Door rood verkeerslicht',
+        'insufficient_right_keeping' => 'Onvoldoende rechtshouden',
+        'swerve' => 'Uitwijken',
+        'parking_damage_still' => 'Parkeerschade (stond stil)',
+        'parking_damage_smash' => 'Parkeerschade (reed tegen WP)',
+        'pushed_in_traffic' => 'Doorgedrukt in file',
+        'water_damage' => 'Hagel/storm/water',
+        'part_loose' => 'Onderdeel los/open',
+        'electrical_fault' => 'Electrische storing',
+        'breakdown_IM' => 'Pechverplaatsing IM',
+        'wrong_parker' => 'Foutparkeerder',
+        'seizure' => 'In beslagname',
+        'insufficient_fuse' => 'Onvoldoende zekering',
+        'broken_cable' => 'Afgebroken kabel/spanband/strop',
+        'lost_cargo' => 'Verloren lading/onderdeel',
+        'spoon_damage' => 'Lepelschade',
+        'upper_deck_damage' => 'Bovendek schade',
+        'open_door' => 'Openen portier',
+        'flat_tire' => 'Lekke band',
+        'storage_from_ditch' => 'Berging uit sloot/greppel',
         'slip'                          => 'Slippen',
         'special_maneuver'              => 'Bijzondere manoeuvre',
         'obstacle'                      => 'Tegen opstakel',
@@ -161,18 +208,42 @@ class Claim extends Model implements HasMedia
         'unloading'                     => 'Lossen',
         'animal_collision'              => 'Aanrijding dier',
         'stone_chips'                   => 'Steenslag',
-        'fire'                          => 'Brand',
-        'cyclist_pedestrian_collision'  => 'Aanrijding fietsen/voetganger',
+        'fire'                          => 'Brand/kortsluiting',
+        'cyclist_pedestrian_collision'  => 'Aanrijding fietser/voetganger',
         'dodge'                         => 'Uitwijken',
-        'transport'                     => 'Tranport'
+        'transport'                     => 'Tranport',
+
 
     ];
 
     public const DAMAGE_ORIGIN_OPPOSITE = [
         'no_priority'                   => 'Geen voorrang',
         'parking'                       => 'Parkeren',
-        'backtoopposite'                => 'Achterop tegenpartij',
-        'oppositetoback'                => 'Tegenpartij achterop',
+        'backtoopposite'                => 'Achterop TP',
+        'oppositetoback'                => 'TP achterop',
+        'backed_up' => 'Achteruitgereden',
+        'enter_leave_traffic' => 'In- of uitvoegen',
+        'change_lane' => 'Veranderen van rijstrook',
+        'run_redlight' => 'Door rood verkeerslicht',
+        'insufficient_right_keeping' => 'Onvoldoende rechtshouden',
+        'swerve' => 'Uitwijken',
+        'parking_damage_still' => 'Parkeerschade (stond stil)',
+        'parking_damage_smash' => 'Parkeerschade (reed tegen WP)',
+        'pushed_in_traffic' => 'Doorgedrukt in file',
+        'water_damage' => 'Hagel/storm/water',
+        'part_loose' => 'Onderdeel los/open',
+        'electrical_fault' => 'Electrische storing',
+        'breakdown_IM' => 'Pechverplaatsing IM',
+        'wrong_parker' => 'Foutparkeerder',
+        'seizure' => 'In beslagname',
+        'insufficient_fuse' => 'Onvoldoende zekering',
+        'broken_cable' => 'Afgebroken kabel/spanband/strop',
+        'lost_cargo' => 'Verloren lading/onderdeel',
+        'spoon_damage' => 'Lepelschade',
+        'upper_deck_damage' => 'Bovendek schade',
+        'open_door' => 'Openen portier',
+        'flat_tire' => 'Lekke band',
+        'storage_from_ditch' => 'Berging uit sloot/greppel',
         'slip'                          => 'Slippen',
         'special_maneuver'              => 'Bijzondere manoeuvre',
         'obstacle'                      => 'Tegen opstakel',
@@ -180,10 +251,10 @@ class Claim extends Model implements HasMedia
         'unloading'                     => 'Lossen',
         'animal_collision'              => 'Aanrijding dier',
         'stone_chips'                   => 'Steenslag',
-        'fire'                          => 'Brand',
-        'cyclist_pedestrian_collision'  => 'Aanrijding fietsen/voetganger',
+        'fire'                          => 'Brand/kortsluiting',
+        'cyclist_pedestrian_collision'  => 'Aanrijding fietser/voetganger',
         'dodge'                         => 'Uitwijken',
-        'transport'                     => 'Tranport'
+        'transport'                     => 'Tranport',
     ];
 
     public const DECLINE_REASON_SELECT = [
