@@ -57,15 +57,21 @@ class ClaimController extends Controller
 
     public function open()
     {
+        abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
 
         $companies = Company::get();
+        $contacts = Contact::get(); 
+        $opposite = Opposite::get();   
 
-        return view('admin.claims.index', compact('claims', 'companies'));
+        return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
     }
 
     public function closed()
     {
+        abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('status', 'finished')->get();
 
         $companies = Company::get();

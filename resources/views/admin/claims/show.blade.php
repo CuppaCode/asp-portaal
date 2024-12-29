@@ -33,6 +33,12 @@
 
     <div class="row">
         
+        @include('partials.claims.show.extradetails')
+
+    </div>
+
+    <div class="row">
+        
         @include('partials.claims.show.attachments')
 
     </div>
