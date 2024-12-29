@@ -323,7 +323,6 @@
             table.column(5).search(param, 'strict').draw();
         }
 
-        console.log(table);
         table.column( 1 ).visible( false );
         table.column( 6 ).visible( false );  
         table.column( 7 ).visible( false );  
