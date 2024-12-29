@@ -268,16 +268,7 @@ class ClaimController extends Controller
 
         $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
 
-
-        if($isAdminOrAgent) {
-
-            $drivers = Driver::with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        } else {
-            
-            $drivers = Driver::where('team_id', $user->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        }
+        $drivers = Driver::where('team_id', $claim->company->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
 
@@ -474,7 +465,7 @@ class ClaimController extends Controller
         if($claim->assignee_id) {
             $assignee_name = Contact::where('user_id', $claim->assignee_id)->select('first_name', 'last_name')->get()->first();
         }
-        
+
         if($isAdminOrAgent) {
             
             $users = User::get();
@@ -485,9 +476,25 @@ class ClaimController extends Controller
 
         }
 
+        $driver = Driver::find($claim->driver_vehicle)->contact ?? null;
+
+        $oppositeVehicleInfo = null;
+
+        if ($claim->vehicle_opposite) {
+
+            $oppositeVehicleInfo = (object) [
+                'vehicle' => $claim->vehicle_opposite,
+                'damaged_part' => $claim->damaged_part_opposite ?? null,
+                'damage_origin' => $claim->damage_origin_opposite ?? null,
+                'damaged_area' => $claim->damaged_area_opposite ?? null,
+                'driver' => $claim->driver_vehicle_opposite ?? null
+            ];
+
+        }
+
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
 
-        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla'));
+        return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla', 'driver', 'oppositeVehicleInfo'));
     }
 
     public function destroy(Claim $claim)

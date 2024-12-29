@@ -145,7 +145,7 @@ $(document).ready(function () {
     }
 
     $('#analytics_options').on('change', function(){
-        console.log($.inArray('other', $(this).val()));
+        
         if($.inArray('other', $(this).val()) !== -1) {
             other.removeClass('d-none');
         } else if ($.inArray('other', $(this).val()) == -1){
@@ -541,6 +541,10 @@ function sendFlashMessage( message, type ) {
 
 }
 
+function translationParseHelper(key, value) {
+    return " " + value;
+}
+
 async function setupMailBody() {
 
     const nativeMailBody = document.querySelector('#mailBody');
@@ -567,8 +571,38 @@ async function setupMailBody() {
 
     const allMailTranslations = Object.assign({}, statusSelectJson, damagedPartTranslationsJson, damageAreaSelectJson, damageOriginJson, damageKindJson, recoverableClaimJson);
 
-    var find = ['[bedrijf]', '[telnr]', '[onderwerp]', '[dossiernr]', '[status]', '[datumschade]', '[kenteken]', '[schade_aard]', '[schade_plaats]', '[schade_oorzaak]', '[schade_bedrag]', '[kenteken_wederpartij]', '[verhaalbaar]', '[schade_soort]'];
-    var replace = [claimJson.company.name, '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>', claimJson.subject, claimJson.claim_number, claimJson.status, claimJson.date_accident, claimJson.vehicle ? claimJson.vehicle.plates : '[kenteken]', JSON.parse(claimJson.damaged_part), JSON.parse(claimJson.damaged_area), JSON.parse(claimJson.damage_origin), claimJson.damage_costs, claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : '[kenteken_wederpartij]', claimJson.recoverable_claim, claimJson.damage_kind];
+    var find = [
+        '[bedrijf]', 
+        '[telnr]', 
+        '[onderwerp]', 
+        '[dossiernr]', 
+        '[status]', 
+        '[datumschade]', 
+        '[kenteken]', 
+        '[schade_aard]', 
+        '[schade_plaats]', 
+        '[schade_oorzaak]', 
+        '[schade_bedrag]', 
+        '[kenteken_wederpartij]', 
+        '[verhaalbaar]', 
+        '[schade_soort]'
+    ];
+    var replace = [
+        claimJson.company ? claimJson.company.name : 'N/A', 
+        claimJson.company ? '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>' : 'N/A', 
+        claimJson.subject, 
+        claimJson.claim_number, 
+        claimJson.status, 
+        claimJson.date_accident, 
+        claimJson.vehicle ? claimJson.vehicle.plates : 'N/A',
+        JSON.parse(claimJson.damaged_part, translationParseHelper), 
+        JSON.parse(claimJson.damaged_area, translationParseHelper), 
+        JSON.parse(claimJson.damage_origin, translationParseHelper), 
+        claimJson.damage_costs, 
+        claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : 'N/A', 
+        claimJson.recoverable_claim, 
+        claimJson.damage_kind
+    ];
 
     const contactText = $('#contactJson');
 
@@ -576,8 +610,15 @@ async function setupMailBody() {
         
         const contactJson = JSON.parse(contactText.text());
 
-        var find = find.concat(['[contact_naam]', '[contact_email]']);
-        var replace = replace.concat([contactJson.first_name + ' ' + contactJson.last_name, '<a href="mailto:'+ contactJson.email +'" target="_blank">' + contactJson.email + "</a>"]);
+        var find = find.concat([
+            '[contact_naam]', 
+            '[contact_email]'
+        ]);
+
+        var replace = replace.concat([
+            contactJson.first_name + ' ' + contactJson.last_name, 
+            '<a href="mailto:'+ contactJson.email +'" target="_blank">' + contactJson.email + "</a>"
+        ]);
 
     }
 
@@ -587,8 +628,16 @@ async function setupMailBody() {
         
         const recoveryJson = JSON.parse(recoveryText.text());
 
-        var find = find.concat(['[herstel_adres]', '[herstel_postcode]', '[herstel_telnr]']);
-        var replace = replace.concat([recoveryJson.street + ' ' + recoveryJson.city, recoveryJson.zipcode, '<a href="tel:' + recoveryJson.phone + '" target="_blank">' + recoveryJson.phone + '</a>']);
+        var find = find.concat([
+            '[herstel_adres]', 
+            '[herstel_postcode]', 
+            '[herstel_telnr]'
+        ]);
+        var replace = replace.concat([
+            recoveryJson.street + ' ' + recoveryJson.city, 
+            recoveryJson.zipcode, 
+            '<a href="tel:' + recoveryJson.phone + '" target="_blank">' + recoveryJson.phone + '</a>'
+        ]);
 
         const recoveryContactText = $('#recoveryContactJson');
 
@@ -596,8 +645,15 @@ async function setupMailBody() {
 
             const recoveryContactJson = JSON.parse(recoveryContactText.text());
             
-            var find = find.concat(['[herstel_contact_naam]', '[herstel_email]']);
-            var replace = replace.concat([recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>']);
+            var find = find.concat([
+                '[herstel_contact_naam]', 
+                '[herstel_email]'
+            ]);
+
+            var replace = replace.concat([
+                recoveryContactJson[0].first_name + ' ' + recoveryContactJson[0].last_name, 
+                '<a href="mailto:' + recoveryContactJson[0].email + '" target="_blank">' + recoveryContactJson[0].email + '</a>'
+            ]);
         }
 
     }
@@ -606,10 +662,17 @@ async function setupMailBody() {
 
     if(driverText.length > 0) {
 
-        const driverJson = JSON.parse(driverText.text());
+        const driverJson = JSON.parse(driverText.text()); 
 
-        var find = find.concat(['[chauffeur_naam]', '[chauffeur_email]']);
-        var replace = replace.concat([driverJson.first_name + ' ' + driverJson.last_name, driverJson.email]);
+        var find = find.concat([
+            '[chauffeur_naam]', 
+            '[chauffeur_email]'
+        ]);
+
+        var replace = replace.concat([
+            driverJson.first_name + ' ' + driverJson.last_name, 
+            driverJson.email
+        ]);
 
     }
 
@@ -619,8 +682,27 @@ async function setupMailBody() {
 
         const oppositeJson = JSON.parse(oppositeText.text());
 
-        var find = find.concat(['[wederpartij_naam]', '[wederpartij_adres]', '[wederpartij_postcode_stad]', '[wederpartij_telnr]', '[wederpartij_email]']);
-        var replace = replace.concat([oppositeJson.name ? oppositeJson.name : '[wederpartij_naam]', oppositeJson.street ? oppositeJson.street : '[wederpartij_adres]', oppositeJson.zipcode ? oppositeJson.zipcode : '[wederpartij_postcode]' + ' ' + oppositeJson.city ? oppositeJson.city : '[wederpartij_stad]', oppositeJson.phone ? oppositeJson.phone : '[wederpartij_telnr]', oppositeJson.email ? oppositeJson.email : '[wederpartij_email]' ]);
+        var find = find.concat([
+            '[wederpartij_naam]', 
+            '[wederpartij_adres]', 
+            '[wederpartij_postcode_stad]', 
+            '[wederpartij_telnr]', 
+            '[wederpartij_email]',
+            '[wederpartij_schade_aard]', 
+            '[wederpartij_schade_plaats]', 
+            '[wederpartij_schade_oorzaak]',
+        ]);
+
+        var replace = replace.concat([
+            oppositeJson.name, 
+            oppositeJson.street, 
+            oppositeJson.zipcode + ' ' + oppositeJson.city, 
+            oppositeJson.phone, 
+            oppositeJson.email,
+            oppositeJson.damaged_part ? JSON.parse(oppositeJson.damaged_part, translationParseHelper) : 'N/A', 
+            oppositeJson.damaged_area ? JSON.parse(oppositeJson.damaged_area, translationParseHelper) : 'N/A', 
+            oppositeJson.damage_origin ? JSON.parse(oppositeJson.damage_origin, translationParseHelper) : 'N/A' 
+        ]);
 
     }
 
@@ -631,13 +713,13 @@ async function setupMailBody() {
 
         $.each(find, (index, item) => {
             
-            finalBody = finalBody.replace(item, replace[index]);
+            finalBody = finalBody.replaceAll(item, replace[index]);
 
         });
 
         $.each(allMailTranslations, (index, item) => {
 
-            finalBody = finalBody.replace(index, item);
+            finalBody = finalBody.replaceAll(index, item);
 
         });
 
@@ -647,13 +729,13 @@ async function setupMailBody() {
 
         $.each(find, (index, item) => {
 
-            finalSubject = finalSubject.replace(item, replace[index]);
+            finalSubject = finalSubject.replaceAll(item, replace[index]);
 
         });
 
         $.each(allMailTranslations, (index, item) => {
 
-            finalSubject = finalSubject.replace(index, item);
+            finalSubject = finalSubject.replaceAll(index, item);
 
         });
 
@@ -671,15 +753,15 @@ async function setupMailBody() {
 
         $.each(find, (index, item) => {
             
-            finalBody = finalBody.replace(item, replace[index]);
-            finalSubject = finalSubject.replace(item, replace[index]);
+            finalBody = finalBody.replaceAll(item, replace[index]);
+            finalSubject = finalSubject.replaceAll(item, replace[index]);
 
         });
 
         $.each(allMailTranslations, (index, item) => {
 
-            finalBody = finalBody.replace(index, item);
-            finalSubject = finalSubject.replace(index, item);
+            finalBody = finalBody.replaceAll(index, item);
+            finalSubject = finalSubject.replaceAll(index, item);
 
         });
 
@@ -731,8 +813,6 @@ function launchModal(
     $('[data-modal-save]').on('click', function (e) {
 
         const declineReason = $(rawModal).find('#decline_reason').val();
-
-        console.log(declineReason, claimID);
 
         $.post('/admin/claims/decline-claim', { declineReason: declineReason, claimID: claimID })
         .done(function(res){
