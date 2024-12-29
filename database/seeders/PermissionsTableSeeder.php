@@ -349,6 +349,26 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => 85,
                 'title' => 'financial_access'
+            ],
+            [
+                'id'    => 86,
+                'title' => 'sla_access',
+            ],
+            [
+                'id'    => 87,
+                'title' => 'sla_show',
+            ],
+            [
+                'id'    => 88,
+                'title' => 'sla_create',
+            ],
+            [
+                'id'    => 89,
+                'title' => 'sla_edit',
+            ],
+            [
+                'id'    => 90,
+                'title' => 'sla_delete',
             ]
         ];
 
