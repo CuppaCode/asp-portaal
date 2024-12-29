@@ -322,7 +322,24 @@
         }
 
         table.column( 1 ).visible( false );
-        table.column( 6 ).visible( false );
+        table.column( 6 ).visible( false );  
+        table.column( 7 ).visible( false );  
+        table.column( 8 ).visible( false );  
+        table.column( 9 ).visible( false );  
+        table.column( 10 ).visible( false );  
+        table.column( 11 ).visible( false );  
+        table.column( 12 ).visible( false );  
+        table.column( 13 ).visible( false );  
+        table.column( 14 ).visible( false );  
+        table.column( 15 ).visible( false );  
+        table.column( 16 ).visible( false );  
+        table.column( 17 ).visible( false );  
+        table.column( 18 ).visible( false );  
+        table.column( 19 ).visible( false );  
+        table.column( 20 ).visible( false );  
+        table.column( 21 ).visible( false );  
+        table.column( 22 ).visible( false );
+
     });
   
 let visibleColumnsIndexes = null;
