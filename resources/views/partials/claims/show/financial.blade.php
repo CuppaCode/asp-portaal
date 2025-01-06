@@ -3,7 +3,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        Financieel
+                        Kosten Schadedossier
 
                         @if( $claim->assign_self || $isAdminOrAgent)
                             <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
