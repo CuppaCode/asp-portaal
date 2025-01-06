@@ -1,7 +1,7 @@
 <div class="col-md-6">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            Contactgegevens klant
+            Contactgegevens
 
             @if( $claim->assign_self || $isAdminOrAgent)
                 <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
@@ -20,15 +20,7 @@
                 <div class="card-title">
                     Email
                 </div>
-                <p class="card-text">
-                    <a href="mailto:{{ $firstContact->email }}">{{ $firstContact->email }} </a>
-                </p>   
-                <div class="card-title">
-                    Telefoonnummer
-                </div>
-                <p class="card-text">
-                    <a href="tel:{{ $claim->company->phone }}">{{ $claim->company->phone }} </a>
-                </p>
+                <p class="card-text"><a href="mailto:{{ $firstContact->email }}">{{ $firstContact->email }} </a> </p>
             @else
                 Nog geen contactpersoon bekend.
             @endisset
