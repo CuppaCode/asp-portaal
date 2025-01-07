@@ -47,6 +47,9 @@
                             {{ trans('cruds.claim.fields.status') }}
                         </th>
                         <th>
+                            {{ trans('cruds.claim.fields.created_at') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.claim.fields.assignee') }}
                         </th>
                         <th>
@@ -148,6 +151,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -170,6 +174,9 @@
                             </td>
                             <td>
                                 {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->created_at->format('d-m-Y') ?? ''}}
                             </td>
                             <td>
                                 {{ $claim->assignee ?? ''}}
@@ -324,7 +331,7 @@
         }
 
         table.column( 1 ).visible( false );
-        table.column( 6 ).visible( false );  
+        // table.column( 6 ).visible( false );  
         table.column( 7 ).visible( false );  
         table.column( 8 ).visible( false );  
         table.column( 9 ).visible( false );  
@@ -341,6 +348,7 @@
         table.column( 20 ).visible( false );  
         table.column( 21 ).visible( false );  
         table.column( 22 ).visible( false );
+        table.column( 23 ).visible( false );
 
     });
   
