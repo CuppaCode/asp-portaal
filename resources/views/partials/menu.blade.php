@@ -312,6 +312,15 @@
         </li>
         @endcan
         
+    
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailTemplates") || request()->is("admin/mailTemplates/*") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-envelope c-sidebar-nav-icon">
+
+                </i>
+                SuperAdminPanel
+            </a>
+        </li>
     </ul>
 
 </div>
