@@ -354,8 +354,11 @@ class Claim extends Model implements HasMedia
 
             $assignee = Contact::where('user_id', $this->assignee_id)->select('first_name', 'last_name')->get()->first();
 
-
-            return $assignee->first_name ." ". $assignee->last_name;
+            if ($assignee != null || isset($assignee)) {
+                return $assignee->first_name ." ". $assignee->last_name;
+            } else {
+                return;
+            }
         } else {
             return;
         }
