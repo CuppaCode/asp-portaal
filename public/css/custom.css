@@ -156,3 +156,8 @@ table.dataTable thead .sorting_desc {
 .recent-activities .item .comment .row .col-8, .recent-activities .item  .row .col-10.content {
     padding-bottom: 55px;
 }
+
+div.dt-button-collection {
+    width: auto;
+    margin-right: 100px;
+}

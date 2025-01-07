@@ -64,4 +64,10 @@ class Driver extends Model
     {
         return "{$this->contact->first_name} {$this->contact->last_name} | {$this->company->name}";
     }
+
+    public function getDriverNameAttribute()
+    {
+        return "{$this->contact->first_name} {$this->contact->last_name}";
+    }
 }
+

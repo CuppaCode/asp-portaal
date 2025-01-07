@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-@can('user_create')
+@can('sla_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.sla.create') }}">
@@ -58,19 +58,19 @@
                                 {{ $SLAItem->company->name ?? '' }}
                             </td>
                             <td>
-                                @can('user_show')
+                                @can('sla_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.sla.show', $SLAItem->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
-                                @can('user_edit')
+                                @can('sla_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.sla.edit', $SLAItem->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 
-                                @can('user_delete')
+                                @can('sla_delete')
                                     <form action="{{ route('admin.sla.destroy', $SLAItem->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

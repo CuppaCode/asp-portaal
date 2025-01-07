@@ -47,8 +47,60 @@
                             {{ trans('cruds.claim.fields.status') }}
                         </th>
                         <th>
-                            &nbsp;
+                            {{ trans('cruds.claim.fields.assignee') }}
                         </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.driver_vehicle')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damage_kind')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damaged_area')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damage_origin')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damaged_part')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.vehicle_opposite')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.opposite_claim_no') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damaged_area_opposite')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damage_origin_opposite')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damaged_part_opposite')}}
+                        </th>
+                        <th>
+                            {{ trans('cruds.opposite.fields.name') }} WP
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.injury') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damage_costs') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.recovery_costs') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.recovery_office') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.expertise_office') }}
+                        </th>
+                        <th style="width: 250px;">
+                            
+                        </th>
+
                     </tr>
                     <tr>
                         <td>
@@ -78,8 +130,24 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td>
-                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,10 +171,62 @@
                             <td>
                                 {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
                             </td>
+                            <td>
+                                {{ $claim->assignee ?? ''}}
+                            </td>
+                            <td>
+                                {{ App\Models\Driver::find($claim->driver_vehicle)->driver_name ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::DAMAGE_KIND[$claim->damage_kind] ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->damaged_area_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->damaged_origin_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->damaged_part_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->opposite_driver_plate->plates ?? ''}}
+                            </td>
+                            <td>
+                                {{ $claim->opposite_claim_no ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->damaged_area_opposite_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->damaged_origin_opposite_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->damaged_part_opposite_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->opposite->name ?? ''}}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' }}
+                            </td>
+                            <td>
+                                &euro; {{ $claim->damage_costs ?? ''}}
+                            </td>
+                            <td>
+                                &euro; {{ $claim->recovery_costs }}
+                            </td>
+                            <td>
+                                {{ $claim->recovery_office_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->expertise_office_x ?? '' }}
+                            </td>
+                            
                             <td class="edits-td">
                                 @can('claim_show')
                                     <a id="view-row-datatable" class="btn btn-xs btn-primary" href="{{ route('admin.claims.show', $claim->id) }}">
-                                        {{ trans('global.view') }}
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                 @endcan
                                     
@@ -114,7 +234,7 @@
 
                                     @can('claim_edit')
                                         <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                                            {{ trans('global.edit') }}
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
                                         </a>
                                     @endcan
 
@@ -122,7 +242,9 @@
                                     <form action="{{ route('admin.claims.destroy', $claim->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        <button type="submit" class="btn btn-xs btn-danger">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
                                     </form>
                                 @endcan
 
@@ -179,7 +301,9 @@
     orderCellsTop: true,
     order: [[ 4, 'desc' ]],
     pageLength: 100,
+    // stateSave: true,
   });
+  
   let table = $('.datatable-Claim:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
@@ -200,6 +324,24 @@
         }
 
         table.column( 1 ).visible( false );
+        table.column( 6 ).visible( false );  
+        table.column( 7 ).visible( false );  
+        table.column( 8 ).visible( false );  
+        table.column( 9 ).visible( false );  
+        table.column( 10 ).visible( false );  
+        table.column( 11 ).visible( false );  
+        table.column( 12 ).visible( false );  
+        table.column( 13 ).visible( false );  
+        table.column( 14 ).visible( false );  
+        table.column( 15 ).visible( false );  
+        table.column( 16 ).visible( false );  
+        table.column( 17 ).visible( false );  
+        table.column( 18 ).visible( false );  
+        table.column( 19 ).visible( false );  
+        table.column( 20 ).visible( false );  
+        table.column( 21 ).visible( false );  
+        table.column( 22 ).visible( false );
+
     });
   
 let visibleColumnsIndexes = null;
