@@ -29,6 +29,8 @@ class HomeController
         $company_claims = Claim::whereNot('status', 'finished')->where('company_id', $user->team_id)->get();
         $company_claims_open = Claim::where('status', 'finished')->where('company_id', $user->team_id)->where('assign_self', 1)->count();
         
+        $unassignedClaims = count(claim::where('assignee_id', null)->whereNot('status', 'finished')->get());
+
         $claims_count = [
             'claims_all' => $claims_all,
             'company_claims_open' => $company_claims_open,
@@ -73,6 +75,6 @@ class HomeController
         $users = User::get();
         $teams = Team::get();
 
-        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users'));;
+        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims'));;
     }
 }
