@@ -107,6 +107,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // SLA
     Route::resource('sla', 'SLAController');
 
+    // SuperAdmin
+    Route::get('super-admin', 'SuperAdminController@index')->name('super-admin');
+
     // Mail examples
     Route::get('preview-notification', function () {
         $markdown = new \Illuminate\Mail\Markdown(view(), config('mail.markdown'));   
@@ -146,8 +149,4 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 
         Route::post('profile', 'ChangePasswordController@updateProfile')->name('password.updateProfile');
         Route::post('profile/destroy', 'ChangePasswordController@destroy')->name('password.destroyProfile');
     }
-});
-
-Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['auth']], function () {
-    Route::get('super-admin', 'SuperAdmin@index')->name('superAdmin');
 });

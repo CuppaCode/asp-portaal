@@ -312,15 +312,18 @@
         </li>
         @endcan
         
-    
-        <li class="c-sidebar-nav-item">
-            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailTemplates") || request()->is("admin/mailTemplates/*") ? "c-active" : "" }}">
-                <i class="fa-fw fas fa-envelope c-sidebar-nav-icon">
+        @if(auth()->user()->isSuperAdmin)
 
-                </i>
-                SuperAdminPanel
-            </a>
-        </li>
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.super-admin") }}" class="c-sidebar-nav-link {{ request()->is("admin/super-admin/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.superAdmin.title') }}
+                </a>
+            </li>
+
+        @endif
     </ul>
 
 </div>

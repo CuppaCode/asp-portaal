@@ -561,6 +561,9 @@ return [
             'subject_helper' => '',
             'body' => 'Sjabloon',
             'body_helper' => ''
-        ]
+        ]    
+    ],
+    'superAdmin' => [
+        'title' => 'Super Admin Tools'
     ]
 ];
