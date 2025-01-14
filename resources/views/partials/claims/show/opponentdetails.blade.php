@@ -11,7 +11,7 @@
                 Gegevens wederpartij
 
                 @if( $claim->assign_self || $isAdminOrAgent)
-                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}#info-opposite">
                         {{ trans('global.edit') }}
                     </a>
                 @endif
@@ -90,7 +90,7 @@
                     Details wederpartij
 
                     @if( $claim->assign_self || $isAdminOrAgent)
-                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}#details-opposite">
                             {{ trans('global.edit') }}
                         </a>
                     @endif
