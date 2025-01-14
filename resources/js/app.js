@@ -269,6 +269,10 @@ $(document).ready(function () {
 
     }
 
+    // Select all on SA tools
+    var claimsSA = $('#claimsSA');
+    addSelectAllToDropdown(claimsSA);
+
 
     // Comments form show
     $('.item .add-comment').on('click', function(e) {
@@ -824,4 +828,33 @@ function launchModal(
         });
 
     });
+}
+
+function addSelectAllToDropdown( inputID )
+{
+    const addSelectAll = matches => {
+        if (matches.length > 0) {
+          // Insert a special "Select all matches" item at the start of the 
+          // list of matched items.
+          return [
+            {id: 'selectAll', text: 'Select All', matchIds: matches.map(match => match.id)},
+            ...matches
+          ];
+        }
+      };
+    
+    const handleSelection = event => {
+        if (event.params.data.id === 'selectAll') {
+            inputID.val(event.params.data.matchIds);
+            inputID.trigger('change');
+        };
+    };
+    
+    inputID.select2({
+        multiple: true,
+        sorter: addSelectAll
+    });
+
+    inputID.on('select2:select', handleSelection);
+
 }

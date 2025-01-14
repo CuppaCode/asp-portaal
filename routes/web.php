@@ -109,6 +109,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // SuperAdmin
     Route::get('super-admin', 'SuperAdminController@index')->name('super-admin');
+    Route::post('super-admin/migrate-status', 'SuperAdminController@migrateStatus')->name('super-admin.migrate-status');
 
     // Mail examples
     Route::get('preview-notification', function () {
