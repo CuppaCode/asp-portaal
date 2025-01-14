@@ -34,6 +34,16 @@
                 </div>
             </div>
         </div>  
+        <div class="col-sm-6 col-lg-3">
+            <div class="card bg-dark text-white py-3" style="min-height: 134px;">
+                <div class="card-body row text-center">
+                    <div class="col">
+                        <div class="text-value-xl">{{ $longestClaim->claim_number }}</div>
+                        <div class="text-uppercase text-muted small">Langst openstaande claim</div>
+                    </div>
+                </div>
+            </div>
+        </div>  
     </div>
     <div class="row">
         @foreach($users as $user)
@@ -74,68 +84,7 @@
         @endforeach
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                @if (auth()->user()->roles->contains(1))
-                    <div class="card-header">
-                        Alle openstaande schadedossiers
-                    </div>
-
-                    <div class="card-body">
-                        <table class="table table-borderless table-striped table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Bedrijf</th>
-                                    <th scope="col">Onderwerp</th>
-                                    <th scope="col">status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($claims as $claim)
-                                <tr class='clickable-row' data-href='{{ route('admin.claims.show', $claim->id) }}'>
-                                    <td>{{ $claim->claim_number }}</td>
-                                    <td>{{ $claim->company->name }}</td>
-                                    <td>{{ $claim->subject }}</td>
-                                    <td>{{ App\Models\Claim::STATUS_SELECT[$claim->status] }}</td>
-                                    </tr>
-                                @endforeach
-
-                            </tbody>
-                        </table>
-
-                        {{ $claims->links() }}
-                    </div>
-                @else 
-                    <div class="card-header">
-                        Alle openstaande schadedossiers
-                    </div>
-
-                    <div class="card-body">
-                        <table class="table table-borderless table-striped table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Onderwerp</th>
-                                    <th scope="col">status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($company_claims as $claim)
-                                <tr class='clickable-row' data-href='{{ route('admin.claims.show', $claim->id) }}'>
-                                    <td>{{ $claim->claim_number }}</td>
-                                    <td>{{ $claim->subject }}</td>
-                                    <td>{{ App\Models\Claim::STATUS_SELECT[$claim->status] }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                @endif
-            </div>
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-12 col-lg-6">
             <div class="card">
                 <div class="card-header">
                     Openstaande taken (persoonlijk)
@@ -143,7 +92,7 @@
 
                 <div class="card-body">
                     @isset($personal_tasks)
-                    <table class="table table-borderless table-striped table-responsive">
+                    <table class="table table-borderless table-striped" width=100%>
                         <thead>
                             <tr>
                                 <th scope="col">Datum</th>
@@ -193,7 +142,7 @@
             </div>
         </div>
         @if (auth()->user()->roles->contains(1))
-            <div class="col-md-6">
+            <div class="col-md-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
                         Alle openstaande taken
@@ -201,7 +150,7 @@
                     <div class="collapse show" id="collapseTasks">
                         <div class="card-body">
                             @isset($tasks)
-                            <table class="table table-borderless table-striped table-responsive">
+                            <table class="table table-borderless table-striped">
                                 <thead>
                                     <tr>
                                         <th scope="col">Datum</th>

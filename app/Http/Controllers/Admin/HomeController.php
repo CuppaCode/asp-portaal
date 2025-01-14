@@ -30,6 +30,7 @@ class HomeController
         $company_claims_open = Claim::where('status', 'finished')->where('company_id', $user->team_id)->where('assign_self', 1)->count();
         
         $unassignedClaims = count(claim::where('assignee_id', null)->whereNot('status', 'finished')->get());
+        $longestClaim = Claim::whereNotIn('status', ['finished', 'claim_denied'])->orderBy('created_at', 'asc')->get()->first();
 
         $claims_count = [
             'claims_all' => $claims_all,
@@ -75,6 +76,6 @@ class HomeController
         $users = User::get();
         $teams = Team::get();
 
-        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims'));;
+        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim'));
     }
 }
