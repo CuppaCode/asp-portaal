@@ -38,7 +38,7 @@
             <div class="card bg-dark text-white py-3" style="min-height: 134px;">
                 <div class="card-body row text-center">
                     <div class="col">
-                        <div class="text-value-xl">{{ $longestClaim->claim_number }}</div>
+                        <a href="{{ route("admin.claims.show", [$longestClaim->id]) }}" class="text-value-xl text-white">{{ $longestClaim->claim_number }}</a>
                         <div class="text-uppercase text-muted small">Langst openstaande claim</div>
                     </div>
                 </div>
@@ -48,8 +48,7 @@
     <div class="row">
 
         @foreach($users as $user)
-        
-            @if($user->inProgressClaim > 0)
+            @if($user->newClaims != 0 || $user->inProgressClaims != 0)
                 <div class="col-sm-6 col-lg-3">
                     <div class="card" style="min-height: 134px;">
                         <div class="card-header py-2">
