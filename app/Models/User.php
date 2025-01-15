@@ -138,21 +138,21 @@ class User extends Authenticatable
 
     public function getNewClaimsAttribute() 
     {
-        $claims = claim::where('assignee_id', $this->id)->where('status', 'new')->get();
+        $claims = Claim::where('assignee_id', $this->id)->where('status', 'new')->get();
 
         return count($claims);
     }
 
     public function getInProgressClaimsAttribute() 
     {
-        $claims = claim::where('assignee_id', $this->id)->whereNot('status', 'finished')->whereNot('status', 'new')->get();
+        $claims = Claim::where('assignee_id', $this->id)->whereNot('status', 'finished')->whereNot('status', 'new')->get();
 
         return count($claims);
     }
     
     public function getAssignedTaskAttribute() 
     {
-        $tasks = task::where('user_id', $this->id)->whereNot('status', 'done')->get();
+        $tasks = Task::where('user_id', $this->id)->whereNot('status', 'done')->get();
 
         return count($tasks);
     }

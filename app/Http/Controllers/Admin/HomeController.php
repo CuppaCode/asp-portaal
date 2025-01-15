@@ -50,7 +50,7 @@ class HomeController
         
         $expertise_offices = ExpertiseOffice::get();
 
-        $most_origin_damage = claim::select('damage_origin')
+        $most_origin_damage = Claim::select('damage_origin')
         ->groupBy('damage_origin')
         ->whereNotNull('damage_origin')
         ->get();

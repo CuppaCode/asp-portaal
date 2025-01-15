@@ -47,7 +47,6 @@
     </div>
     <div class="row">
 
-        {{ dd($users) }}
         @foreach($users as $user)
         
             @if($user->newClaims != 0 || $user->inProgressClaim != 0)
