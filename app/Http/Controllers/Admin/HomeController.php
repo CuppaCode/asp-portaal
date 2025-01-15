@@ -29,7 +29,7 @@ class HomeController
         $company_claims = Claim::whereNot('status', 'finished')->where('company_id', $user->team_id)->get();
         $company_claims_open = Claim::where('status', 'finished')->where('company_id', $user->team_id)->where('assign_self', 1)->count();
         
-        $unassignedClaims = count(claim::where('assignee_id', null)->whereNot('status', 'finished')->get());
+        $unassignedClaims = count(Claim::where('assignee_id', null)->whereNot('status', 'finished')->get());
         $longestClaim = Claim::whereNotIn('status', ['finished', 'claim_denied'])->orderBy('created_at', 'asc')->get()->first();
 
         $claims_count = [
