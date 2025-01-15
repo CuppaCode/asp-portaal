@@ -49,7 +49,7 @@
 
         @foreach($users as $user)
         
-            @if($user->newClaims != 0 || $user->inProgressClaim != 0)
+            {{-- @if($user->newClaims != 0 || $user->inProgressClaim != 0) --}}
                 <div class="col-sm-6 col-lg-3">
                     <div class="card" style="min-height: 134px;">
                         <div class="card-header py-2">
@@ -82,7 +82,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            {{-- @endif --}}
         @endforeach
     </div>
     <div class="row">
