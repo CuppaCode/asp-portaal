@@ -38,7 +38,7 @@ class AuditLog extends Model
     {
         $claim = Claim::where('id', $this->subject_id)->get();
         
-        $user = Contact::where('id', $claim[0]['assignee_id'])->get();
+        $user = Contact::where('user_id', $claim[0]['assignee_id'])->get();
 
         return $user;
     }
