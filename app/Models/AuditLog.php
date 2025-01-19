@@ -26,4 +26,29 @@ class AuditLog extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+    
+    public function getClaimAttribute() 
+    {
+        $claim = Claim::where('id', $this->subject_id)->get();
+
+        return $claim;
+    }
+
+    public function getClaimAssigneeAttribute() 
+    {
+        $claim = Claim::where('id', $this->subject_id)->get();
+        
+        $user = Contact::where('id', $claim[0]['assignee_id'])->get();
+
+        return $user;
+    }
+
+    public function getCompanyAttribute() 
+    {
+        $company = Company::where('id', $this->Claim[0]['company_id'])->get();
+
+        return $company;
+    }
 }
+
+

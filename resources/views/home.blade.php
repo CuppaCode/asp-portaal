@@ -142,69 +142,97 @@
                 </div>
             </div>
         </div>
-        @if (auth()->user()->roles->contains(1))
-            <div class="col-md-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        Alle openstaande taken
-                    </div>
-                    <div class="collapse show" id="collapseTasks">
-                        <div class="card-body">
-                            @isset($tasks)
-                            <table class="table table-borderless table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Datum</th>
-                                        <th scope="col">Beschrijving</th>
-                                        <th scope="col">Owner</th>
-                                        <th scope="col">status</th>
-                                        <th scope="col">Schadedossier</th>
+        <div class="col-md-12 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    Openstaande claims (persoonlijk)
+                </div>
+
+                <div class="card-body">
+                    @isset($personal_claims)
+                    <table class="table table-borderless table-striped" width=100%>
+                        <thead>
+                            <tr>
+                                <th scope="col">Dossier</th>
+                                <th scope="col">Klant</th>
+                                <th scope="col">Kenmerk WP</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($personal_claims as $claim)
+                                <tr class='clickable-row' data-href='{{ route('admin.claims.show', $claim->id) }}'>
+                                    <td> {{ $claim->claim_number ?? ''}} </td>
+                                    <td> {{ $claim->company->name ?? '' }} </td>
+                                    <td> {{ $claim->subject ?? '' }} </td>
+                                    <td> {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }} </td>
+                                </tr>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                    {{ $personal_claims->links() }}
+
+                    @else
+                    Geen openstaande claims
+                    @endisset
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Recente updates
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped table-hover datatable-AuditLog">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Dossier</th>
+                                    <th scope="col">Klant</th>
+                                    <th scope="col">Kenmerk WP</th>
+                                    <th scope="col">Status</th>
+                                    <th>
+                                        {{ trans('cruds.auditLog.fields.user_id') }}
+                                    </th>
+                                    <th>
+                                        Laatste update
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($auditLogs as $key => $auditLog)
+                                    <tr data-entry-url="{{ route('admin.audit-logs.show', $auditLog->id) }}" data-entry-id="{{ $auditLog->id }}">
+                                        <td>
+                                            {{ $auditLog->Claim[0]['claim_number'] ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $auditLog->Company[0]['name'] ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $auditLog->Claim[0]['subject'] ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ App\Models\Claim::STATUS_SELECT[$auditLog->Claim[0]['status']] ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $auditLog->claimAssignee[0]['first_name'] ?? '' }} {{ $auditLog->claimAssignee[0]['last_name'] ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $auditLog->created_at ?? '' }}
+                                        </td>
+            
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($tasks as $task)
-                                        @php 
-                                            $deadline_at = $task->deadline_at;
-                                            $today = date('d-m-Y');
-
-                                            // dd($deadline_at);
-                                            $deadline_at_time = strtotime($deadline_at);
-                                            $today_time = strtotime($today);
-                                        @endphp
-
-                                        @if($today_time <= $deadline_at_time)
-                                            @php $overdue = 'overdue-no'; @endphp
-                                        @else 
-                                            @php $overdue = 'overdue-yes'; @endphp  
-                                        @endif
-                                        <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.tasks.show', $task->id) }}'>
-                                            <td>{{ date('d-m-Y', strtotime($task->deadline_at)) }}</td>
-                                            <td>{!! Str::limit($task->description, 25) !!}</td>
-                                            <td>{{ $task->user->name }}</td>
-                                            <td>{{ App\Models\TASK::STATUS_SELECT[$task->status] }}</td>
-                                            <td>
-                                                @isset($task->claim->claim_number) 
-                                                {{ $task->claim->claim_number }}
-                                                @else 
-                                                ...
-                                                @endisset
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-
-                            {{ $tasks->links() }}
-                            @else
-                            Geen openstaande taken
-                            @endisset
-
-                        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 </div>
 @endsection
