@@ -72,7 +72,7 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('assignee_id', null)->get();
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('assignee_id', null)->WhereNot('status', 'finished')->get();
 
         $companies = Company::get();
 
