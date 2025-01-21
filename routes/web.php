@@ -35,6 +35,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('claims/send-mail', 'ClaimController@sendMail')->name('claims.sendMail');
 
     Route::get('openclaims', 'ClaimController@open')->name('claims.open');
+    Route::get('unassignedclaims', 'ClaimController@unassigned')->name('claims.unassigned');
     Route::get('closedclaims', 'ClaimController@closed')->name('claims.closed');
 
     // Company

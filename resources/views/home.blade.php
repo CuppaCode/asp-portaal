@@ -28,7 +28,7 @@
             <div class="card bg-danger text-white py-3" style="min-height: 134px;">
                 <div class="card-body row text-center">
                     <div class="col">
-                        <div class="text-value-xl">{{ $unassignedClaims }}</div>
+                        <a href="{{ route("admin.claims.unassigned") }}" class="text-value-xl text-white">{{ $unassignedClaims }}</a>
                         <div class="text-uppercase text-muted small">Niet toegewezen dossier</div>
                     </div>
                 </div>

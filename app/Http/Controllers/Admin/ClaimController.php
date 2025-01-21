@@ -67,6 +67,17 @@ class ClaimController extends Controller
 
         return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
     }
+    
+    public function unassigned()
+    {
+        abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('assignee_id', null)->get();
+
+        $companies = Company::get();
+
+        return view('admin.claims.index', compact('claims', 'companies'));
+    }
 
     public function closed()
     {
