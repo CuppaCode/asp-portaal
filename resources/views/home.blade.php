@@ -195,12 +195,8 @@
                                     <th scope="col">Klant</th>
                                     <th scope="col">Kenmerk WP</th>
                                     <th scope="col">Status</th>
-                                    <th>
-                                        {{ trans('cruds.auditLog.fields.user_id') }}
-                                    </th>
-                                    <th>
-                                        Laatste update
-                                    </th>
+                                    <th scope="col">Gebruiker</th>
+                                    <th scope="col">Laatste update</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -219,7 +215,7 @@
                                             {{ App\Models\Claim::STATUS_SELECT[$auditLog->Claim[0]['status']] ?? '' }}
                                         </td>
                                         <td>
-                                            {{ $auditLog->claimAssignee[0]['first_name'] ?? '' }} {{ $auditLog->claimAssignee[0]['last_name'] ?? '' }}
+                                            {{ $auditLog->claimAssignee ?? '' }}
                                         </td>
                                         <td>
                                             {{ $auditLog->created_at ?? '' }}
