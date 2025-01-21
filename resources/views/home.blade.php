@@ -1,5 +1,11 @@
 @extends('layouts.admin')
 @section('content')
+
+@php
+$user = auth()->user();
+$isAdminOrAgent = $user->isAdminOrAgent();
+@endphp
+
 <div class="content">
     <div class="row">
         <div class="col-sm-6 col-lg-3">
@@ -13,6 +19,7 @@
             </a>
         </div>
     </div>
+    @if ($isAdminOrAgent)
     <div class="row">
         <div class="col-sm-6 col-lg-3">
             <div class="card bg-warning text-white py-3" style="min-height: 134px;">
@@ -84,6 +91,7 @@
             @endif
         @endforeach
     </div>
+    @endif
     <div class="row">
         <div class="col-md-12 col-lg-6">
             <div class="card">
@@ -180,6 +188,7 @@
             </div>
         </div>
     </div>
+    @if ($isAdminOrAgent)
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -230,6 +239,7 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 @endsection
 @section('scripts')

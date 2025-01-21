@@ -79,6 +79,7 @@ class HomeController
         
         $users = User::get();
         $teams = Team::get();
+        
 
         return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs'));
     }
