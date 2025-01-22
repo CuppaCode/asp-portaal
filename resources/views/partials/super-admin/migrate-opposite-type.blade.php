@@ -3,7 +3,7 @@
     <div class="card">
 
         <div class="card-header">
-            Migrate Opposite Type (ALPHA)
+            Migrate <span class="badge badge-primary">Opposite Type</span> (ALPHA)
         </div>
 
         <div class="card-body">

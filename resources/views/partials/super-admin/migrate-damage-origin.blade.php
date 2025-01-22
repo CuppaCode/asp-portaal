@@ -3,21 +3,21 @@
     <div class="card">
 
         <div class="card-header">
-            Migrate <span class="badge badge-primary">Damaged Part</span> (ALPHA)
+            Migrate <span class="badge badge-primary">Damage Origin</span> (ALPHA)
         </div>
 
         <div class="card-body">
 
-            <form method="POST" action="{{ route("admin.super-admin.migrate-damaged-part") }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route("admin.super-admin.migrate-damage-origin") }}" enctype="multipart/form-data">
 
                 @csrf
         
                 <div class="form-group">
         
-                    <label class="required" for="old_damaged_part">Old Damaged Part</label>
-                    <select class="form-control select2" name="old_damaged_part" id="old_damaged_part" required>
-                        @foreach($claimDamagedParts as $id => $entry)
-                            <option value="{{ $id }}" {{ old('old_damaged_part') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    <label class="required" for="old_damage_origin">Old Damage Origin</label>
+                    <select class="form-control select2" name="old_damage_origin" id="old_damage_origin" required>
+                        @foreach($claimDamageOrigin as $id => $entry)
+                            <option value="{{ $id }}" {{ old('old_damage_origin') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                         @endforeach
                     </select>
         
@@ -25,10 +25,10 @@
         
                 <div class="form-group">
         
-                    <label class="required" for="new_damaged_part">New Damage Part</label>
-                    <select class="form-control select2" name="new_damaged_part" id="new_damaged_part" required>
-                        @foreach($claimDamagedParts as $id => $entry)
-                            <option value="{{ $id }}" {{ old('new_damaged_part') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    <label class="required" for="new_damage_origin">New Damage Origin</label>
+                    <select class="form-control select2" name="new_damage_origin" id="new_damage_origin" required>
+                        @foreach($claimDamageOrigin as $id => $entry)
+                            <option value="{{ $id }}" {{ old('new_damage_origin') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                         @endforeach
                     </select>
                     
@@ -36,10 +36,10 @@
         
                 <div class="form-group">
                     
-                    <label class="required" for="migrateDamagedPartClaimsSA">Claims</label>
-                    <select class="form-control select2" name="migrateDamagedPartClaimsSA[]" id="migrateDamagedPartClaimsSA" required multiple>
+                    <label class="required" for="migrateDamageOriginClaimsSA">Claims</label>
+                    <select class="form-control select2" name="migrateDamageOriginClaimsSA[]" id="migrateDamageOriginClaimsSA" required multiple>
                         @foreach($claims as $id => $entry)
-                            <option value="{{ $entry->id }}" {{ old('migrateDamagedPartClaimsSA') == $entry->id ? 'selected' : '' }}>{{ $entry->claim_number }}</option>
+                            <option value="{{ $entry->id }}" {{ old('migrateDamageOriginClaimsSA') == $entry->id ? 'selected' : '' }}>{{ $entry->claim_number }}</option>
                         @endforeach
                     </select>
                     
@@ -58,21 +58,21 @@
         
             </form>
 
-            @if (Session::has('noDamagedPartClaimsSA'))
+            @if (Session::has('noDamageOriginClaimsSA'))
 
                 <div class="alert alert-danger" role="alert">
-                    {{ Session::get('noDamagedPartClaimsSA') }}
+                    {{ Session::get('noDamageOriginClaimsSA') }}
                 </div>
 
             @endif
         
-            @if (Session::has('migrateDamagedPartClaims'))
+            @if (Session::has('migrateDamageOriginClaims'))
         
                 <ul class="list-group">
         
                     <li class="list-group-item">Affected claims</li>
         
-                    @foreach(Session::get('migrateDamagedPartClaims') as $claim)
+                    @foreach(Session::get('migrateDamageOriginClaims') as $claim)
         
                         <a href="{{ route('admin.claims.show', $claim->id) }}" target="_blank" class="list-group-item list-group-item-action">
                             {{ $claim->claim_number }}

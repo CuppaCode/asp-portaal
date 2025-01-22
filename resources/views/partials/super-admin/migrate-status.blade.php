@@ -3,7 +3,7 @@
     <div class="card">
 
         <div class="card-header">
-            Migrate Status (ALPHA)
+            Migrate <span class="badge badge-primary">Status</span> (ALPHA)
         </div>
 
         <div class="card-body">

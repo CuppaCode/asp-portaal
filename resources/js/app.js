@@ -272,8 +272,13 @@ $(document).ready(function () {
     // Select all on SA tools
     const allMigrateSelectsSA = [
         $('#migrateStatusClaimsSA'),
+        $('#migrateOppositeTypeClaimsSA'),
         $('#migrateDamagedPartClaimsSA'),
-        $('#migrateOppositeTypeClaimsSA')
+        $('#migrateDamagedPartOppositeClaimsSA'),
+        $('#migrateDamageOriginClaimsSA'),
+        $('#migrateDamageOriginOppositeClaimsSA'),
+        $('#migrateDamagedAreaClaimsSA'),
+        $('#migrateDamagedAreaOppositeClaimsSA')
     ];
 
     allMigrateSelectsSA.forEach( item => {

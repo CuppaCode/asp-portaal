@@ -25,8 +25,21 @@ class Claim extends Model implements HasMedia
         'other' => 'Anders...',
     ];
 
+    public const CONTACT_LAWYER_SELECT = [
+        'yes' => 'Ja',
+        'no'  => 'Nee',
+        'n/a' => 'N.V.T',
+    ];
+
+    protected $appends = [
+        'damage_files',
+        'report_files',
+        'financial_files',
+        'other_files',
+    ];
+
     public const DAMAGED_PART_SELECT = [
-        //'backpart'  => 'Achterscherm',
+        'backpart'  => 'Achterscherm', //Fallback?
         'trunk'     => 'Achterklep',
         'tire'      => 'Band/Velg',
         'bumper'    => 'Bumper',
@@ -35,7 +48,7 @@ class Claim extends Model implements HasMedia
         'doormolding'   => 'Deurrubber',
         'supportarm' => 'Draagarm',
         'dorpel'    => 'Dorpel',
-        //'interior'  => 'Interieur',
+        'interior'  => 'Interieur', //Fallback?
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
@@ -45,7 +58,7 @@ class Claim extends Model implements HasMedia
         'mirror'    => 'Spiegel',
         'screen' => 'Scherm',
         'exhaust'   => 'Uitlaat',
-        //'light'     => 'Verlichting',
+        'light'     => 'Verlichting', //Fallback?
         'wheel'     => 'Wielophanding',
         'clutch' => 'Koppeling',
         'valve_box' => 'Klepkast',
@@ -65,22 +78,8 @@ class Claim extends Model implements HasMedia
         'gear_lever' => 'Schakelpook/Aut. handle'
     ];
 
-
-    public const CONTACT_LAWYER_SELECT = [
-        'yes' => 'Ja',
-        'no'  => 'Nee',
-        'n/a' => 'N.V.T',
-    ];
-
-    protected $appends = [
-        'damage_files',
-        'report_files',
-        'financial_files',
-        'other_files',
-    ];
-
     public const DAMAGED_PART_OPPOSITE_SELECT = [
-        'backpart'  => 'Achterscherm',
+        'backpart'  => 'Achterscherm', //Fallback?
         'trunk'     => 'Achterklep',
         'tire'      => 'Band/Velg',
         'bumper'    => 'Bumper',
@@ -89,7 +88,7 @@ class Claim extends Model implements HasMedia
         'doormolding'   => 'Deurrubber',
         'supportarm' => 'Draagarm',
         'dorpel'    => 'Dorpel',
-        'interior'  => 'Interieur',
+        'interior'  => 'Interieur', //Fallback?
         'motor'     => 'Motor',
         'portdoor'  => 'Portier',
         'window'    => 'Ruit',
@@ -99,8 +98,24 @@ class Claim extends Model implements HasMedia
         'mirror'    => 'Spiegel',
         'screen' => 'Scherm',
         'exhaust'   => 'Uitlaat',
-        'light'     => 'Verlichting',
+        'light'     => 'Verlichting', //Fallback?
         'wheel'     => 'Wielophanding',
+        'clutch' => 'Koppeling',
+        'valve_box' => 'Klepkast',
+        'license_plate' => 'Kentekenplaat',
+        'battery' => 'Accu',
+        'bump_strip' => 'Stootlijst/sierlijst',
+        'tow_bar' => 'Trekhaak',
+        'leveling_leg' => 'Stelpoot (caravan/camper)',
+        'drawbar' => 'Dissel',
+        'headlight' => 'Koplamp',
+        'taillight' => 'Achterlicht',
+        'raw' => 'RAW',
+        'steering_wheel' => 'Stuur',
+        'dashboard' => 'Dashboard',
+        'upholstery' => 'Stoel/bank/bekleding',
+        'door_panel' => 'Deurpaneel',
+        'gear_lever' => 'Schakelpook/Aut. handle'
     ];
 
     public const OPPOSITE_TYPE_SELECT = [
@@ -108,7 +123,7 @@ class Claim extends Model implements HasMedia
         'business' => 'Zakelijk',
         'lease_car' => 'Leaseauto',
         'unknown'  => 'Onbekend',
-        'obstacle' => 'Obstakel',
+        'obstacle' => 'Obstakel', //Fallback?
     ];
 
     public const STATUS_SELECT = [
@@ -156,7 +171,7 @@ class Claim extends Model implements HasMedia
         'bottom_side' => 'Onderzijde',
         'front_side'  => 'Voorzijde',
         'back_side'   => 'Achterzijde',
-        'inside'      => 'Binnenzijde'
+        'inside'      => 'Binnenzijde' //new
     ];
 
     public const DAMAGED_AREA_OPPOSITE_SELECT = [
@@ -166,6 +181,7 @@ class Claim extends Model implements HasMedia
         'bottom_side' => 'Onderzijde',
         'front_side'  => 'Voorzijde',
         'back_side'   => 'Achterzijde',
+        'inside'      => 'Binnenzijde' //new
     ];
 
     public const DAMAGE_KIND = [
@@ -211,9 +227,7 @@ class Claim extends Model implements HasMedia
         'fire'                          => 'Brand/kortsluiting',
         'cyclist_pedestrian_collision'  => 'Aanrijding fietser/voetganger',
         'dodge'                         => 'Uitwijken',
-        'transport'                     => 'Tranport',
-
-
+        'transport'                     => 'Tranport'
     ];
 
     public const DAMAGE_ORIGIN_OPPOSITE = [
@@ -254,7 +268,7 @@ class Claim extends Model implements HasMedia
         'fire'                          => 'Brand/kortsluiting',
         'cyclist_pedestrian_collision'  => 'Aanrijding fietser/voetganger',
         'dodge'                         => 'Uitwijken',
-        'transport'                     => 'Tranport',
+        'transport'                     => 'Tranport'
     ];
 
     public const DECLINE_REASON_SELECT = [
