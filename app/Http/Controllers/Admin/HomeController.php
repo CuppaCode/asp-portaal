@@ -13,6 +13,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\AuditLog;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
@@ -28,7 +29,12 @@ class HomeController
         $claims_asp_open = Claim::whereNot('status', 'finished')->where('assign_self', 0)->count();
         $company_claims = Claim::whereNot('status', 'finished')->where('company_id', $user->team_id)->get();
         $company_claims_open = Claim::where('status', 'finished')->where('company_id', $user->team_id)->where('assign_self', 1)->count();
+
+        $auditLogs = AuditLog::where('description', 'audit:updated')->where('subject_type', 'like', '%Claim'.'%')->limit(20)->orderBy('created_at', 'desc')->get();
         
+        $unassignedClaims = count(Claim::where('assignee_id', null)->whereNot('status', 'finished')->get());
+        $longestClaim = Claim::whereNotIn('status', ['finished', 'claim_denied'])->orderBy('created_at', 'asc')->get()->first();
+
         $claims_count = [
             'claims_all' => $claims_all,
             'company_claims_open' => $company_claims_open,
@@ -47,7 +53,7 @@ class HomeController
         
         $expertise_offices = ExpertiseOffice::get();
 
-        $most_origin_damage = claim::select('damage_origin')
+        $most_origin_damage = Claim::select('damage_origin')
         ->groupBy('damage_origin')
         ->whereNotNull('damage_origin')
         ->get();
@@ -69,10 +75,12 @@ class HomeController
 
         $tasks = Task::with(['user', 'claim', 'team'])->whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'tasks');
         $personal_tasks = Task::where('user_id', $user->id)->whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'ptasks');
+        $personal_claims = Claim::where('assignee_id', $user->id)->whereNot('status', 'done')->paginate(5, ['*'], 'pclaims');
         
         $users = User::get();
         $teams = Team::get();
+        
 
-        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users'));;
+        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs'));
     }
 }

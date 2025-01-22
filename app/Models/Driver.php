@@ -62,12 +62,20 @@ class Driver extends Model
 
     public function getDriverFullNameAttribute()
     {
-        return "{$this->contact->first_name} {$this->contact->last_name} | {$this->company->name}";
+        if(!empty($this->contact) && !empty($this->company)) {
+            return "{$this->contact->first_name} {$this->contact->last_name} | {$this->company->name}";
+        } else {
+            return "Niet gevonden";
+        }
     }
 
     public function getDriverNameAttribute()
     {
-        return "{$this->contact->first_name} {$this->contact->last_name}";
+        if(!empty($this->contact)) {
+            return "{$this->contact->first_name} {$this->contact->last_name}";
+        } else {
+            return "Niet gevonden";
+        }
     }
 }
 
