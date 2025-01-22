@@ -13,6 +13,11 @@ class SuperAdminController extends Controller
 
     public function index()
     {  
+        if(!auth()->user()->isSuperAdmin){
+            return back();
+        }
+
+
         $claimStatusses = Claim::STATUS_SELECT;
         $claimOppositeTypes = Claim::OPPOSITE_TYPE_SELECT;
         $claimDamagedParts = Claim::DAMAGED_PART_SELECT;
