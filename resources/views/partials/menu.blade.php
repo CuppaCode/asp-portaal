@@ -312,6 +312,18 @@
         </li>
         @endcan
         
+        @if(auth()->user()->isSuperAdmin)
+
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.super-admin") }}" class="c-sidebar-nav-link {{ request()->is("admin/super-admin/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.superAdmin.title') }}
+                </a>
+            </li>
+
+        @endif
     </ul>
 
 </div>
