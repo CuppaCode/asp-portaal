@@ -3,21 +3,21 @@
     <div class="card">
 
         <div class="card-header">
-            Migrate Status (ALPHA)
+            Migrate Opposite Type (ALPHA)
         </div>
 
         <div class="card-body">
-            
-            <form method="POST" action="{{ route("admin.super-admin.migrate-status") }}" enctype="multipart/form-data">
+
+            <form method="POST" action="{{ route("admin.super-admin.migrate-opposite-type") }}" enctype="multipart/form-data">
 
                 @csrf
         
                 <div class="form-group">
         
-                    <label class="required" for="old_status">Old status</label>
-                    <select class="form-control select2" name="old_status" id="old_status" required>
-                        @foreach($claimStatusses as $id => $entry)
-                            <option value="{{ $id }}" {{ old('old_status') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    <label class="required" for="old_opposite_type">Old Opposite Type</label>
+                    <select class="form-control select2" name="old_opposite_type" id="old_opposite_type" required>
+                        @foreach($claimOppositeTypes as $id => $entry)
+                            <option value="{{ $id }}" {{ old('old_opposite_type') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                         @endforeach
                     </select>
         
@@ -25,10 +25,10 @@
         
                 <div class="form-group">
         
-                    <label class="required" for="new_status">New status</label>
-                    <select class="form-control select2" name="new_status" id="new_status" required>
-                        @foreach($claimStatusses as $id => $entry)
-                            <option value="{{ $id }}" {{ old('new_status') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    <label class="required" for="new_opposite_type">New Opposite Type</label>
+                    <select class="form-control select2" name="new_opposite_type" id="new_opposite_type" required>
+                        @foreach($claimOppositeTypes as $id => $entry)
+                            <option value="{{ $id }}" {{ old('new_opposite_type') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                         @endforeach
                     </select>
                     
@@ -36,10 +36,10 @@
         
                 <div class="form-group">
                     
-                    <label class="required" for="migrateStatusClaimsSA">Claims</label>
-                    <select class="form-control select2" name="migrateStatusClaimsSA[]" id="migrateStatusClaimsSA" required multiple>
+                    <label class="required" for="migrateOppositeTypeClaimsSA">Claims</label>
+                    <select class="form-control select2" name="migrateOppositeTypeClaimsSA[]" id="migrateOppositeTypeClaimsSA" required multiple>
                         @foreach($claims as $id => $entry)
-                            <option value="{{ $entry->id }}" {{ old('migrateStatusClaimsSA') == $entry->id ? 'selected' : '' }}>{{ $entry->claim_number }}</option>
+                            <option value="{{ $entry->id }}" {{ old('migrateOppositeTypeClaimsSA') == $entry->id ? 'selected' : '' }}>{{ $entry->claim_number }}</option>
                         @endforeach
                     </select>
                     
@@ -58,21 +58,21 @@
         
             </form>
 
-            @if (Session::has('noStatusClaimsSA'))
+            @if (Session::has('noOppositeTypeClaimsSA'))
 
                 <div class="alert alert-danger" role="alert">
-                    {{ Session::get('noStatusClaimsSA') }}
+                    {{ Session::get('noOppositeTypeClaimsSA') }}
                 </div>
 
             @endif
         
-            @if (Session::has('migrateStatusClaims'))
+            @if (Session::has('migrateOppositeTypeClaims'))
         
                 <ul class="list-group">
         
                     <li class="list-group-item">Affected claims</li>
         
-                    @foreach(Session::get('migrateStatusClaims') as $claim)
+                    @foreach(Session::get('migrateOppositeTypeClaims') as $claim)
         
                         <a href="{{ route('admin.claims.show', $claim->id) }}" target="_blank" class="list-group-item list-group-item-action">
                             {{ $claim->claim_number }}
@@ -83,7 +83,6 @@
                 </ul>
         
             @endif
-
         </div>
         
     </div>

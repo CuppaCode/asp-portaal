@@ -108,7 +108,7 @@ class Claim extends Model implements HasMedia
         'business' => 'Zakelijk',
         'lease_car' => 'Leaseauto',
         'unknown'  => 'Onbekend',
-        //'obstacle' => 'Obstakel',
+        'obstacle' => 'Obstakel',
     ];
 
     public const STATUS_SELECT = [

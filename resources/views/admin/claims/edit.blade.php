@@ -237,7 +237,7 @@
                     <select class="form-control select2 {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part[]" id="damaged_part" aria-label="multiple select" multiple>
                         @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
                             @if ( $claim->damaged_part !== null )
-                            <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damaged_part )) ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damaged_part, true )) ? 'selected' : '' }}>{{ $label }}</option>
                             @else
                             <option value="{{ $key }}" {{ old('damaged_part', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endif

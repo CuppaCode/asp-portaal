@@ -270,8 +270,18 @@ $(document).ready(function () {
     }
 
     // Select all on SA tools
-    var claimsSA = $('#claimsSA');
-    addSelectAllToDropdown(claimsSA);
+    const allMigrateSelectsSA = [
+        $('#migrateStatusClaimsSA'),
+        $('#migrateDamagedPartClaimsSA'),
+        $('#migrateOppositeTypeClaimsSA')
+    ];
+
+    allMigrateSelectsSA.forEach( item => {
+
+        addSelectAllToDropdown(item);
+
+    })
+    
 
 
     // Comments form show

@@ -8,6 +8,10 @@
 
         @include('partials.super-admin.migrate-status')
 
+        @include('partials.super-admin.migrate-damaged-part')
+
+        @include('partials.super-admin.migrate-opposite-type')
+
     </div>
 </div>
 @endsection
