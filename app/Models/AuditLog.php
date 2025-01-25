@@ -29,7 +29,7 @@ class AuditLog extends Model
     
     public function getClaimAttribute() 
     {
-        $claim = Claim::where('id', $this->subject_id)->get();
+        $claim = Claim::where('id', $this->subject_id)->get() ?? '';
 
         return $claim;
     }
