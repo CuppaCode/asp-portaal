@@ -52,9 +52,13 @@ class AuditLog extends Model
 
     public function getCompanyAttribute() 
     {
-        $company = Company::where('id', $this->Claim[0]['company_id'])->get() ?? '';
 
-        return $company;
+        if(isset($this->claim[0])) {
+            $company = Company::where('id', $this->Claim[0]['company_id'])->get();
+        } else {
+            return "Onbekende klant";
+        }
+            return $company;
     }
 }
 
