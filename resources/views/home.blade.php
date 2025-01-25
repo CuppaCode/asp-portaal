@@ -241,7 +241,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
 
                         </tbody>
                     </table>
-                    {{ $personal_tasks->links() }}
+                    {{ $tasks->links() }}
 
                     @else
                     Geen openstaande taken
