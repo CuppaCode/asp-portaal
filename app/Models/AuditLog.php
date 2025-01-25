@@ -52,7 +52,7 @@ class AuditLog extends Model
 
     public function getCompanyAttribute() 
     {
-        $company = Company::where('id', $this->Claim[0]['company_id'])->get();
+        $company = Company::where('id', $this->Claim[0]['company_id'])->get() ?? '';
 
         return $company;
     }
