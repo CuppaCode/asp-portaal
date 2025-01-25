@@ -73,7 +73,7 @@ class HomeController
         arsort($most_origin_damages);
         $popular = array_slice(array_keys($most_origin_damages), 0, 1, true);
 
-        $tasks = Task::with(['user', 'claim', 'team'])->whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'tasks');
+        $tasks = Task::whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'tasks');
         $personal_tasks = Task::where('user_id', $user->id)->whereNot('status', 'done')->orderBy('deadline_at')->paginate(5, ['*'], 'ptasks');
         $personal_claims = Claim::where('assignee_id', $user->id)->whereNot('status', 'done')->paginate(5, ['*'], 'pclaims');
         
