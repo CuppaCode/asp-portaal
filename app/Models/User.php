@@ -92,6 +92,7 @@ class User extends Authenticatable
         $superAdminIPs = [
             '188.91.67.52', //Erik home
             '82.168.180.202', // Jeffrey home
+            '84.31.153.165', // Patrick Office
             '127.0.0.1' //locally
         ];
 
