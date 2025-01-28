@@ -16,7 +16,7 @@ class SuperAdminController extends Controller
         if(!auth()->user()->isSuperAdmin){
             return back();
         }
-        
+
         $claimStatusses = Claim::STATUS_SELECT;
         $claimOppositeTypes = Claim::OPPOSITE_TYPE_SELECT;
         $claimDamagedParts = Claim::DAMAGED_PART_SELECT;
@@ -146,7 +146,7 @@ class SuperAdminController extends Controller
 
             }
 
-            $damagedPartsOpposite[] = $request->input('new_damaged_part');
+            $damagedPartsOpposite[] = $request->input('new_damaged_part_opposite');
 
             $claim->damaged_part_opposite = json_encode($damagedPartsOpposite);
 
@@ -213,7 +213,7 @@ class SuperAdminController extends Controller
 
         foreach($claims as $claim){
 
-            $damageOriginOpposite = array_values(json_decode($claim->damage_origin_oppisite, true));
+            $damageOriginOpposite = array_values(json_decode($claim->damage_origin_opposite, true));
 
 
             foreach($damageOriginOpposite as $key => $item){
