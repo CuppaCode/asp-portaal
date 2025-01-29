@@ -1,7 +1,7 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            Schadedossier overzicht
+            Dossier
 
             @if ( isset($claim->decline_reason) && $claim->status == 'claim_denied')
 

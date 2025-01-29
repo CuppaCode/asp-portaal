@@ -47,7 +47,7 @@
                             {{ trans('cruds.claim.fields.status') }}
                         </th>
                         <th>
-                            {{ trans('cruds.claim.fields.created_at') }}
+                            {{ trans('cruds.claim.fields.date_accident') }}
                         </th>
                         <th>
                             {{ trans('cruds.claim.fields.assignee') }}
@@ -176,7 +176,7 @@
                                 {{ App\Models\Claim::STATUS_SELECT[$claim->status] ?? '' }}
                             </td>
                             <td>
-                                {{ $claim->created_at->format('d-m-Y') ?? ''}}
+                                {{ $claim->date_accident ?? ''}}
                             </td>
                             <td>
                                 {{ $claim->assignee ?? ''}}
