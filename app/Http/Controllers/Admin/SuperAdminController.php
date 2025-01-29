@@ -37,7 +37,7 @@ class SuperAdminController extends Controller
             ->where('status', $request->input('old_status'))
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noStatusClaimsSA', $this->noClaimsWithCriteria);
 
@@ -60,7 +60,7 @@ class SuperAdminController extends Controller
             ->where('opposite_type', $request->input('old_opposite_type'))
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
             
             return back()->with('noOppositeTypeClaimsSA', $this->noClaimsWithCriteria);
 
@@ -84,7 +84,7 @@ class SuperAdminController extends Controller
             ->where('damaged_part', 'LIKE', '%'.$request->input('old_damaged_part').'%')
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noDamagedPartClaimsSA', $this->noClaimsWithCriteria);
 
@@ -124,7 +124,7 @@ class SuperAdminController extends Controller
             ->where('damaged_part_opposite', 'LIKE', '%'.$request->input('old_damaged_part_opposite').'%')
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noDamagedPartOppositeClaimsSA', $this->noClaimsWithCriteria);
 
@@ -164,7 +164,7 @@ class SuperAdminController extends Controller
             ->where('damage_origin', 'LIKE', '%'.$request->input('old_damage_origin').'%')
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noDamageOriginClaimsSA', $this->noClaimsWithCriteria);
 
@@ -178,7 +178,7 @@ class SuperAdminController extends Controller
 
             foreach($damageOrigin as $key => $item){
 
-                if( $item == $request->input('old_damage_opposite')){
+                if( $item == $request->input('old_damage_origin')){
 
                     unset($damageOrigin[$key]);
 
@@ -186,9 +186,9 @@ class SuperAdminController extends Controller
 
             }
 
-            $damageOrigin[] = $request->input('new_damage_opposite');
+            $damageOrigin[] = $request->input('new_damage_origin');
 
-            $claim->damage_opposite = json_encode($damageOrigin);
+            $claim->damage_origin = json_encode($damageOrigin);
 
             $claim->save();
             
@@ -204,7 +204,7 @@ class SuperAdminController extends Controller
             ->where('damage_origin_opposite', 'LIKE', '%'.$request->input('old_damage_origin_opposite').'%')
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noDamageOriginOppositeClaimsSA', $this->noClaimsWithCriteria);
 
@@ -218,7 +218,7 @@ class SuperAdminController extends Controller
 
             foreach($damageOriginOpposite as $key => $item){
 
-                if( $item == $request->input('old_damage_opposite')){
+                if( $item == $request->input('old_damage_origin_opposite')){
 
                     unset($damageOriginOpposite[$key]);
 
@@ -226,9 +226,9 @@ class SuperAdminController extends Controller
 
             }
 
-            $damageOriginOpposite[] = $request->input('new_damage_opposite');
+            $damageOriginOpposite[] = $request->input('new_damage_origin_opposite');
 
-            $claim->damage_opposite = json_encode($damageOriginOpposite);
+            $claim->damage_origin_opposite = json_encode($damageOriginOpposite);
 
             $claim->save();
             
@@ -244,7 +244,7 @@ class SuperAdminController extends Controller
             ->where('damaged_area', 'LIKE', '%'.$request->input('old_damaged_area').'%')
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noDamagedAreaClaimsSA', $this->noClaimsWithCriteria);
 
@@ -284,7 +284,7 @@ class SuperAdminController extends Controller
             ->where('damaged_area_opposite', 'LIKE', '%'.$request->input('old_damaged_area_opposite').'%')
             ->get();
 
-        if(empty($claims)){
+        if($claims->isEmpty()){
         
             return back()->with('noDamagedAreaOppositeClaimsSA', $this->noClaimsWithCriteria);
 
