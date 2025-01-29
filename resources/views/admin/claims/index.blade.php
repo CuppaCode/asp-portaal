@@ -41,6 +41,9 @@
                             {{ trans('cruds.claim.fields.subject') }}
                         </th>
                         <th>
+                            {{ trans('cruds.claim.fields.claim_feature') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.claim.fields.claim_number') }}
                         </th>
                         <th>
@@ -126,6 +129,9 @@
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
                         <td>
+                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
+                        </td>
+                        <td>
                             <select class="search" strict="true">
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach(App\Models\Claim::STATUS_SELECT as $key => $item)
@@ -133,8 +139,12 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
+                        </td>
+                        <td>
+                            <input class="search" type="text" placeholder="{{ trans('global.search') }}">
+                        </td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -168,6 +178,9 @@
                             </td>
                             <td>
                                 {{ $claim->subject ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->vehicle->plates ?? '' }}
                             </td>
                             <td>
                                 {{ $claim->claim_number ?? '' }}
@@ -307,8 +320,8 @@
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
     order: [[ 4, 'desc' ]],
-    pageLength: 100,
-    // stateSave: true,
+    pageLength: 50,
+    stateSave: true,
   });
   
   let table = $('.datatable-Claim:not(.ajaxTable)').DataTable({ buttons: dtButtons })
@@ -332,23 +345,24 @@
 
         table.column( 1 ).visible( false );
         // table.column( 6 ).visible( false );  
-        table.column( 7 ).visible( false );  
-        table.column( 8 ).visible( false );  
-        table.column( 9 ).visible( false );  
-        table.column( 10 ).visible( false );  
-        table.column( 11 ).visible( false );  
-        table.column( 12 ).visible( false );  
-        table.column( 13 ).visible( false );  
-        table.column( 14 ).visible( false );  
-        table.column( 15 ).visible( false );  
-        table.column( 16 ).visible( false );  
-        table.column( 17 ).visible( false );  
-        table.column( 18 ).visible( false );  
-        table.column( 19 ).visible( false );  
-        table.column( 20 ).visible( false );  
-        table.column( 21 ).visible( false );  
-        table.column( 22 ).visible( false );
-        table.column( 23 ).visible( false );
+        // table.column( 7 ).visible( false );  
+        // table.column( 8 ).visible( false );  
+        // table.column( 9 ).visible( false );  
+        // table.column( 10 ).visible( false );  
+        // table.column( 11 ).visible( false );  
+        // table.column( 12 ).visible( false );  
+        // table.column( 13 ).visible( false );  
+        // table.column( 14 ).visible( false );  
+        // table.column( 15 ).visible( false );  
+        // table.column( 16 ).visible( false );  
+        // table.column( 17 ).visible( false );  
+        // table.column( 18 ).visible( false );  
+        // table.column( 19 ).visible( false );  
+        // table.column( 20 ).visible( false );  
+        // table.column( 21 ).visible( false );  
+        // table.column( 22 ).visible( false );
+        // table.column( 23 ).visible( false );
+        // table.column( 24 ).visible( false );
 
     });
   

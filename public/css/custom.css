@@ -161,3 +161,11 @@ div.dt-button-collection {
     width: auto;
     margin-right: 100px;
 }
+
+a.btn.buttons-columnVisibility.active {
+    background-color: #f0f3f5;
+}
+
+a.btn.buttons-columnVisibility {
+    margin: 2px;
+}
