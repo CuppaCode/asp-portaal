@@ -33,20 +33,23 @@ class AuditLog extends Model
 
         return $claim;
     }
-
-    public function getClaimAssigneeAttribute() 
+    
+    public function getClaimAssigneeAttribute()
     {
-        $claim = Claim::where('id', $this->subject_id)->get();
-
-        if(!empty($claim[0]['assignee_id'])) {
-            $username = Contact::where('user_id', $claim[0]['assignee_id'])->first()->get();
-
-            $user = $username[0]['first_name'] . ' ' . $username[0]['last_name'];
+        $claim = Claim::where('id', $this->subject_id)->first();
+    
+        if ($claim && !empty($claim->assignee_id)) {
+            $contact = Contact::where('user_id', $claim->assignee_id)->first();
+    
+            if ($contact) {
+                $user = $contact->first_name . ' ' . $contact->last_name;
+            } else {
+                $user = "Onbekende gebruiker";
+            }
         } else {
             $user = "Onbekende gebruiker";
         }
     
-
         return $user;
     }
 
