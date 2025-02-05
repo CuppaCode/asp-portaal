@@ -65,24 +65,26 @@
                         <div class="col-10 content">
                             <div class="status">
 
-                                @if (auth()->user()->id == $task->user->id)
-                                    <select class="js-task-status badge bg-success"
-                                        data-task-id="{{ $task->id }}">
+                                @if (isset($task->user->id))
+                                    @if (auth()->user()->id == $task->user->id)
+                                        <select class="js-task-status badge bg-success"
+                                            data-task-id="{{ $task->id }}">
 
-                                        @foreach (App\Models\Task::STATUS_SELECT as $key => $status)
-                                            <option value="{{ $key }}"
-                                                {{ $task->status == $key ? 'selected' : '' }}>
-                                                {{ $status }}</option>
-                                        @endforeach
+                                            @foreach (App\Models\Task::STATUS_SELECT as $key => $status)
+                                                <option value="{{ $key }}"
+                                                    {{ $task->status == $key ? 'selected' : '' }}>
+                                                    {{ $status }}</option>
+                                            @endforeach
 
-                                    </select>
-                                @else
-                                    <span
-                                        class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+                                        </select>
+                                    @else
+                                        <span
+                                            class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+                                    @endif
+                                    <span class="badge bg-primary">{{ $deadline }}</span>
+                                    <span class="badge bg-info">{{ $task->user->name }}</span>
                                 @endif
-
-                                <span class="badge bg-primary">{{ $deadline }}</span>
-                                <span class="badge bg-info">{{ $task->user->name }}</span>
+                                
 
                             </div>
                             {!! nl2br($task->description) !!}

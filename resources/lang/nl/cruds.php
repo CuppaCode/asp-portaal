@@ -199,6 +199,7 @@ return [
             'opposite_claim_no_helper'         => '',
             'assignee'                         => 'Behandelaar dossier',
             'assignee_helper'                  => '',
+            'claim_feature'                    => 'Kenmerk KL',       
         ],
     ],
     'company' => [

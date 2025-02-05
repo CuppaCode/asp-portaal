@@ -37,16 +37,23 @@
                     </div>
                     {{ $claim->claim_number }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="card-title">
                         {{ trans('cruds.claim.fields.company') }}</div>
                     {{ $claim->company->name ?? '' }}
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="card-title">
                         {{ trans('cruds.claim.fields.subject') }}</div>
                     {{ $claim->subject }}
                 </div>
+                @if (!empty($claim->vehicle->plates))
+                    <div class="col-md-2">
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.claim_feature') }}</div>
+                        {{ $claim->vehicle->plates }}
+                    </div>
+                @endif
                 @if ($claim->opposite_claim_no)
                     <div class="col-md-2">
                         <div class="card-title">
