@@ -10,7 +10,7 @@
                 Gegevens voertuig klant
 
                 @unless (!$claim->assign_self && !$isAdminOrAgent)
-                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}#info-car">
                         {{ trans('global.edit') }}
                     </a>
                 @endunless
