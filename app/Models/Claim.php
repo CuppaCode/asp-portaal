@@ -133,6 +133,7 @@ class Claim extends Model implements HasMedia
         'damage_estimate_requested' => 'Schadebedrag opgevraagd',
         'damage_form_requested'     => 'Schadeformulier opgevraagd', // new
         'requested_info'            => 'Aanvullende informatie opgevraagd',
+        'to_insurance'              => 'Naar verzekering',
         'opposite_is_responsible'   => 'WP aansprakelijk gesteld', // new
         'responsible_by_opposite'   => 'Aansprakelijk gesteld door WP', // new
         'requested_expert'          => 'Expert aangevraagd',
