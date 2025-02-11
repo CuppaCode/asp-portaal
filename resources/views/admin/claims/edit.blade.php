@@ -237,7 +237,7 @@
                     <select class="form-control select2 {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part[]" id="damaged_part" aria-label="multiple select" multiple>
                         @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
                             @if ( $claim->damaged_part !== null )
-                            <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damaged_part, true )) ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damaged_part, true )) ? 'selected' : '' }}>{{ $label }}</option>
                             @else
                             <option value="{{ $key }}" {{ old('damaged_part', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endif
@@ -256,7 +256,7 @@
                     <select class="form-control select2 {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" aria-label="multiple select" multiple>
                         @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
                             @if ( $claim->damaged_area !== null )
-                            <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damaged_area )) ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damaged_area )) ? 'selected' : '' }}>{{ $label }}</option>
                             @else
                             <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endif
@@ -275,7 +275,7 @@
                 <select class="form-control select2 {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin[]" id="damage_origin" multiple>
                     @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
                         @if ( $claim->damage_origin !== null )
-                        <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damage_origin )) ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damage_origin )) ? 'selected' : '' }}>{{ $label }}</option>
                         @else
                         <option value="{{ $key }}" {{ old('damage_origin', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                         @endif
@@ -343,7 +343,7 @@
                     <select class="form-control select2{{ $errors->has('damaged_part_opposite') ? 'is-invalid' : '' }}" name="damaged_part_opposite[]" id="damaged_part_opposite" multiple>
                         @foreach(App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $label)
                             @if ( $claim->damaged_part_opposite !== null )
-                            <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damaged_part_opposite )) ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damaged_part_opposite )) ? 'selected' : '' }}>{{ $label }}</option>
                             @else
                             <option value="{{ $key }}" {{ old('damaged_part_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endif
@@ -362,7 +362,7 @@
                     <select class="form-control select2 {{ $errors->has('damaged_area_opposite') ? 'is-invalid' : '' }}" name="damaged_area_opposite[]" id="damaged_area_opposite" multiple>
                         @foreach(App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT as $key => $label)
                         @if ( $claim->damaged_area_opposite !== null )    
-                            <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damaged_area_opposite )) ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damaged_area_opposite )) ? 'selected' : '' }}>{{ $label }}</option>
                             @else
                             <option value="{{ $key }}" {{ old('damaged_area_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                             @endif
@@ -381,7 +381,7 @@
                         <select class="form-control select2 {{ $errors->has('damage_origin_opposite') ? 'is-invalid' : '' }}" name="damage_origin_opposite[]" id="damage_origin_opposite" multiple>
                             @foreach(App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE as $key => $label)
                                 @if ( $claim->damage_origin_opposite !== null )    
-                                <option value="{{ $key }}" {{ in_array($key, json_decode( $claim->damage_origin_opposite )) ? 'selected' : '' }}>{{ $label }}</option>
+                                <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damage_origin_opposite )) ? 'selected' : '' }}>{{ $label }}</option>
                                 @else
                                 <option value="{{ $key }}" {{ old('damage_origin_opposite', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                                 @endif
