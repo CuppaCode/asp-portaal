@@ -3,7 +3,7 @@
     <div class="card">
 
         <div class="card-header">
-            Migrate <span class="badge badge-primary">Damaged Part</span> (ALPHA)
+            Migrate <span class="badge badge-primary">Damaged Part</span> <span class="badge badge-primary">Schade aard</span> (ALPHA)
         </div>
 
         <div class="card-body">
