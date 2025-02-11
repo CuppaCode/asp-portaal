@@ -87,7 +87,7 @@
     </div>
 
     
-    <div class="card">
+    <div id="claimdetails" class="card">
         <div class="card-header">
             Schademelding
         </div>
@@ -189,7 +189,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div id="info-car" class="card">
         <div class="card-header">
             Gegevens wagenpark
         </div>
@@ -290,7 +290,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div id="info-opposite" class="card">
         <div class="card-header">
             Gegevens wederpartij
         </div>
@@ -397,7 +397,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div id="details-opposite" class="card">
         <div class="card-header">
             Details wederpartij
         </div>
@@ -434,7 +434,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div id="extra-details" class="card">
         <div class="card-header">
             Schadehersteller
         </div>
@@ -455,7 +455,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div  class="card">
         <div class="card-header">
             Expertise
         </div>
@@ -509,7 +509,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div id="finance" class="card">
         <div class="card-header">
             Financieel
         </div>
@@ -615,7 +615,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    <div id="attachments" class="card">
         <div class="card-header">
             Bijlages
         </div>
