@@ -31,6 +31,7 @@ class Company extends Model implements HasMedia
         'salvage'    => 'Berging',
         'recovery'   => 'Hersteller',
         'expertise'  => 'Expertise',
+        'insurance'  => 'Verzekeraar',
     ];
 
     protected $fillable = [
