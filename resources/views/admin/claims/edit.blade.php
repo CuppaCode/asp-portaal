@@ -187,6 +187,46 @@
                         </div>
                     @endif
             </div>
+
+        </div>
+    </div>
+    <div id="claim-waybill" class="card">
+        <div class="card-header">
+            Vrachtbrief
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <div class="form-check">
+                        <input type="hidden" name="loading_photos" value="0">
+                        <input class="form-check-input" type="checkbox" name="loading_photos" id="loading_photos" value="1" {{ $claim->loading_photos || old('loading_photos', 0) === 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="loading_photos">{{ trans('cruds.claim.fields.loading_photos') }}</label>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="form-check">
+                        <input type="hidden" name="unloading_photos" value="0">
+                        <input class="form-check-input" type="checkbox" name="unloading_photos" id="unloading_photos" value="1" {{ $claim->unloading_photos || old('unloading_photos', 0) === 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="unloading_photos">{{ trans('cruds.claim.fields.unloading_photos') }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <div class="form-check">
+                        <input type="hidden" name="waybill_signed_at_loading" value="0">
+                        <input class="form-check-input" type="checkbox" name="waybill_signed_at_loading" id="waybill_signed_at_loading" value="1" {{ $claim->waybill_signed_at_loading || old('waybill_signed_at_loading', 0) === 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="waybill_signed_at_loading">{{ trans('cruds.claim.fields.waybill_signed_at_loading') }}</label>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="form-check">
+                        <input type="hidden" name="waybill_signed_at_unloading" value="0">
+                        <input class="form-check-input" type="checkbox" name="waybill_signed_at_unloading" id="waybill_signed_at_unloading" value="1" {{ $claim->waybill_signed_at_unloading || old('waybill_signed_at_unloading', 0) === 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="waybill_signed_at_unloading">{{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div id="info-car" class="card">

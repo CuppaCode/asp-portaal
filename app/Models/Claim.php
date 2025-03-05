@@ -324,6 +324,10 @@ class Claim extends Model implements HasMedia
         'invoice_comment',
         'assignee_id',
         'invoice_amount',
+        'loading_photos',
+        'unloading_photos',
+        'waybill_signed_at_loading',
+        'waybill_signed_at_unloading'
     ];
 
     protected function serializeDate(DateTimeInterface $date)
