@@ -59,4 +59,52 @@
             @endif
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            Vrachtbrief
+
+            @if( $claim->assign_self || $isAdminOrAgent)
+                <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                    {{ trans('global.edit') }}
+                </a>
+            @endif
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.loading_photos') }}
+                    </div>
+                    <p class="card-text">{{ boolval($claim->loading_photos) ? 'Ja' : 'Nee' }}</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.unloading_photos') }}
+                    </div>
+                    <p class="card-text">{{ boolval($claim->unloading_photos) ? 'Ja' : 'Nee' }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
+                    </div>
+                    <p class="card-text">{{ boolval($claim->waybill_signed_at_loading) ? 'Ja' : 'Nee' }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card-title">
+                        {{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}
+                    </div>
+                    <p class="card-text">{{ boolval($claim->waybill_signed_at_unloading) ? 'Ja' : 'Nee' }}</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </div>
