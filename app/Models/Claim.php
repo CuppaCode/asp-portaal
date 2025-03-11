@@ -31,6 +31,12 @@ class Claim extends Model implements HasMedia
         'n/a' => 'N.V.T',
     ];
 
+    public const WAYBILL_SELECT = [
+        'yes' => 'Ja',
+        'no'  => 'Nee',
+        'n/a' => 'N.V.T',
+    ];
+
     protected $appends = [
         'damage_files',
         'report_files',

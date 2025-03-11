@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('claims', function (Blueprint $table) {
-            $table->enum('loading_photos', ['yes', 'no', 'n/a'])->nullable();
-            $table->enum('unloading_photos', ['yes', 'no', 'n/a'])->nullable();
-            $table->enum('waybill_signed_at_loading', ['yes', 'no', 'n/a'])->nullable();
-            $table->enum('waybill_signed_at_unloading', ['yes', 'no', 'n/a'])->nullable();
+            $table->boolean('loading_photos')->default(0)->nullable();
+            $table->boolean('unloading_photos')->default(0)->nullable();
+            $table->boolean('waybill_signed_at_loading')->default(0)->nullable();
+            $table->boolean('waybill_signed_at_unloading')->default(0)->nullable();
         });
     }
 

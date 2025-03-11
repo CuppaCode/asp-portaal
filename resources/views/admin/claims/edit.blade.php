@@ -196,35 +196,52 @@
         </div>
         <div class="card-body">
             <div class="form-row">
+
                 <div class="form-group col-md-6">
-                    <div class="form-check">
-                        <input type="hidden" name="loading_photos" value="0">
-                        <input class="form-check-input" type="checkbox" name="loading_photos" id="loading_photos" value="1" {{ $claim->loading_photos || old('loading_photos', 0) === 1 ? 'checked' : '' }}>
-                        <label class="form-check-label" for="loading_photos">{{ trans('cruds.claim.fields.loading_photos') }}</label>
-                    </div>
+
+                    <label for="loading_photos">{{ trans('cruds.claim.fields.loading_photos') }}</label>
+                    <select class="form-control {{ $errors->has('loading_photos') ? 'is-invalid' : '' }}" name="loading_photos" id="loading_photos">
+                        <option value disabled {{ old('loading_photos', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('loading_photos', $claim->loading_photos) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    
                 </div>
                 <div class="form-group col-md-6">
-                    <div class="form-check">
-                        <input type="hidden" name="unloading_photos" value="0">
-                        <input class="form-check-input" type="checkbox" name="unloading_photos" id="unloading_photos" value="1" {{ $claim->unloading_photos || old('unloading_photos', 0) === 1 ? 'checked' : '' }}>
-                        <label class="form-check-label" for="unloading_photos">{{ trans('cruds.claim.fields.unloading_photos') }}</label>
-                    </div>
+
+                    <label for="unloading_photos">{{ trans('cruds.claim.fields.unloading_photos') }}</label>
+                    <select class="form-control {{ $errors->has('unloading_photos') ? 'is-invalid' : '' }}" name="unloading_photos" id="unloading_photos">
+                        <option value disabled {{ old('unloading_photos', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('unloading_photos', $claim->unloading_photos) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <div class="form-check">
-                        <input type="hidden" name="waybill_signed_at_loading" value="0">
-                        <input class="form-check-input" type="checkbox" name="waybill_signed_at_loading" id="waybill_signed_at_loading" value="1" {{ $claim->waybill_signed_at_loading || old('waybill_signed_at_loading', 0) === 1 ? 'checked' : '' }}>
-                        <label class="form-check-label" for="waybill_signed_at_loading">{{ trans('cruds.claim.fields.waybill_signed_at_loading') }}</label>
-                    </div>
+
+                    <label for="waybill_signed_at_loading">{{ trans('cruds.claim.fields.waybill_signed_at_loading') }}</label>
+                    <select class="form-control {{ $errors->has('waybill_signed_at_loading') ? 'is-invalid' : '' }}" name="waybill_signed_at_loading" id="waybill_signed_at_loading">
+                        <option value disabled {{ old('waybill_signed_at_loading', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('waybill_signed_at_loading', $claim->waybill_signed_at_loading) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+
                 </div>
                 <div class="form-group col-md-6">
-                    <div class="form-check">
-                        <input type="hidden" name="waybill_signed_at_unloading" value="0">
-                        <input class="form-check-input" type="checkbox" name="waybill_signed_at_unloading" id="waybill_signed_at_unloading" value="1" {{ $claim->waybill_signed_at_unloading || old('waybill_signed_at_unloading', 0) === 1 ? 'checked' : '' }}>
-                        <label class="form-check-label" for="waybill_signed_at_unloading">{{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}</label>
-                    </div>
+
+                    <label for="waybill_signed_at_unloading">{{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}</label>
+                    <select class="form-control {{ $errors->has('waybill_signed_at_unloading') ? 'is-invalid' : '' }}" name="waybill_signed_at_unloading" id="waybill_signed_at_unloading">
+                        <option value disabled {{ old('waybill_signed_at_unloading', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                            <option value="{{ $key }}" {{ old('waybill_signed_at_unloading', $claim->waybill_signed_at_unloading) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    
                 </div>
             </div>
         </div>
