@@ -75,33 +75,50 @@
 
             <div class="row">
 
-                <div class="col-md-6 mb-4">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.loading_photos') }}
-                    </div>
-                    <p class="card-text">{{ boolval($claim->loading_photos) ? 'Ja' : 'Nee' }}</p>
-                </div>
+                @if ($claim->loading_photos)
 
-                <div class="col-md-6 mb-4">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.unloading_photos') }}
+                    <div class="col-md-6 mb-4">
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.loading_photos') }}
+                        </div>
+                        <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->loading_photos] }}</p>
                     </div>
-                    <p class="card-text">{{ boolval($claim->unloading_photos) ? 'Ja' : 'Nee' }}</p>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
-                    </div>
-                    <p class="card-text">{{ boolval($claim->waybill_signed_at_loading) ? 'Ja' : 'Nee' }}</p>
-                </div>
+                @endif
 
-                <div class="col-md-6">
-                    <div class="card-title">
-                        {{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}
+                @if ($claim->unloading_photos)
+
+                    <div class="col-md-6 mb-4">
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.unloading_photos') }}
+                        </div>
+                        <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->unloading_photos] }}</p>
                     </div>
-                    <p class="card-text">{{ boolval($claim->waybill_signed_at_unloading) ? 'Ja' : 'Nee' }}</p>
-                </div>
+                
+                @endif
+
+
+                @if ($claim->waybill_signed_at_loading)
+
+                    <div class="col-md-6">
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
+                        </div>
+                        <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->waybill_signed_at_loading] }}</p>
+                    </div>
+
+                @endif
+                
+                @if ($claim->waybill_signed_at_unloading)
+
+                    <div class="col-md-6">
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}
+                        </div>
+                        <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->waybill_signed_at_unloading] }}</p>
+                    </div>
+
+                @endif
 
             </div>
 
