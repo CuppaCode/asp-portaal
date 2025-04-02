@@ -13,7 +13,6 @@ use App\Models\Contact;
 use App\Models\ExpertiseOffice;
 use App\Models\InjuryOffice;
 use App\Models\RecoveryOffice;
-use App\Models\InsuranceOffice;
 use App\Models\Team;
 use App\Models\Vehicle;
 use App\Models\VehicleOpposite;
@@ -272,7 +271,7 @@ class ClaimController extends Controller
 
         $vehicle_opposite = VehicleOpposite::pluck('plates', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $recovery_offices = InsuranceOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $recovery_offices = RecoveryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
