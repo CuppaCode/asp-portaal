@@ -397,6 +397,11 @@ class Claim extends Model implements HasMedia
         return $this->belongsTo(ExpertiseOffice::class, 'expertise_office_id');
     }
 
+    public function insurance_office()
+    {
+        return $this->belongsTo(InsuranceOffice::class, 'insurance_office_id');
+    }
+
     public function getRequestedAtAttribute($value)
     {
         return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;

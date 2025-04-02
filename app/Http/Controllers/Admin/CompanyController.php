@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\ExpertiseOffice;
 use App\Models\InjuryOffice;
 use App\Models\RecoveryOffice;
+use App\Models\InsuranceOffice;
 use App\Models\Company;
 use App\Models\Contact;
 use App\Models\Team;
@@ -50,7 +51,7 @@ class CompanyController extends Controller
             Media::whereIn('id', $media)->update(['model_id' => $company->id]);
         }
 
-        if ($company->company_type != 'injury' && $company->company_type != 'recovery' && $company->company_type != 'expertise') {
+        if ($company->company_type != 'injury' && $company->company_type != 'recovery' && $company->company_type != 'expertise' && $company->company_type != 'insurance') {
 
             $team = Team::create([
                 'name' => $company->name,
@@ -62,7 +63,7 @@ class CompanyController extends Controller
 
         $company->save();
         
-        if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise') {
+        if ($company->company_type == 'injury' || $company->company_type == 'recovery' || $company->company_type == 'expertise' || $company->company_type == 'insurance') {
 
             $identifier = str_replace(' ', '_', strtolower($company->company_type . '_' . $company->name));
 
@@ -88,6 +89,12 @@ class CompanyController extends Controller
                 case 'expertise':
 
                     ExpertiseOffice::create($office);
+
+                    break;
+                
+                case 'insurance':
+
+                    InsuranceOffice::create($office);
 
                     break;
 
