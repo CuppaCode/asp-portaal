@@ -31,6 +31,12 @@ class Claim extends Model implements HasMedia
         'n/a' => 'N.V.T',
     ];
 
+    public const WAYBILL_SELECT = [
+        'yes' => 'Ja',
+        'no'  => 'Nee',
+        'n/a' => 'N.V.T',
+    ];
+
     protected $appends = [
         'damage_files',
         'report_files',
@@ -324,6 +330,10 @@ class Claim extends Model implements HasMedia
         'invoice_comment',
         'assignee_id',
         'invoice_amount',
+        'loading_photos',
+        'unloading_photos',
+        'waybill_signed_at_loading',
+        'waybill_signed_at_unloading'
     ];
 
     protected function serializeDate(DateTimeInterface $date)

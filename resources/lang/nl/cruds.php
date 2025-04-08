@@ -199,7 +199,11 @@ return [
             'opposite_claim_no_helper'         => '',
             'assignee'                         => 'Behandelaar dossier',
             'assignee_helper'                  => '',
-            'claim_feature'                    => 'Kenmerk KL',       
+            'claim_feature'                    => 'Kenmerk KL',
+            'loading_photos'                   => 'Foto\'s laden',
+            'unloading_photos'                 => 'Foto\'s lossen',
+            'waybill_signed_at_loading'        => 'Vrachtbrief getekend bij laden',
+            'waybill_signed_at_unloading'      => 'Vrachtbrief getekend bij lossen'
         ],
     ],
     'company' => [
