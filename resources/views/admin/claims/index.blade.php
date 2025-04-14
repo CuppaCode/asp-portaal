@@ -103,6 +103,24 @@
                         <th>
                             {{ trans('cruds.claim.fields.expertise_office') }}
                         </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.recoverable_claim') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.loading_photos') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.unloading_photos') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.invoice_amount') }}
+                        </th>
                         <th style="width: 250px;">
                             
                         </th>
@@ -145,6 +163,12 @@
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -231,16 +255,34 @@
                                 {{ App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' }}
                             </td>
                             <td>
-                                &euro; {{ $claim->damage_costs ?? ''}}
+                                &euro; {{ dot_to_comma($claim->damage_costs) ?? ''}}
                             </td>
                             <td>
-                                &euro; {{ $claim->recovery_costs }}
+                                &euro; {{ dot_to_comma($claim->recovery_costs) ?? '' }}
                             </td>
                             <td>
                                 {{ $claim->recovery_office_x ?? '' }}
                             </td>
                             <td>
                                 {{ $claim->expertise_office_x ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$claim->recoverable_claim] ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::WAYBILL_SELECT[$claim->loading_photos] ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::WAYBILL_SELECT[$claim->unloading_photos] ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::WAYBILL_SELECT[$claim->waybill_signed_at_loading] ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Claim::WAYBILL_SELECT[$claim->waybill_signed_at_unloading] ?? '' }}
+                            </td>
+                            <td>
+                                &euro; {{ dot_to_comma($claim->invoice_amount) ?? '' }}
                             </td>
                             
                             <td class="edits-td">
@@ -361,7 +403,12 @@
         table.column( 22 ).visible( false );
         table.column( 23 ).visible( false );
         table.column( 24 ).visible( false );
-
+        table.column( 25 ).visible( false );
+        table.column( 26 ).visible( false );
+        table.column( 27 ).visible( false );
+        table.column( 28 ).visible( false );
+        table.column( 29 ).visible( false );
+        table.column( 30 ).visible( false );
     });
   
 let visibleColumnsIndexes = null;
