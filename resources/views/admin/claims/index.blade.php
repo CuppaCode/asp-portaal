@@ -403,7 +403,12 @@
         table.column( 22 ).visible( false );
         table.column( 23 ).visible( false );
         table.column( 24 ).visible( false );
-
+        table.column( 25 ).visible( false );
+        table.column( 26 ).visible( false );
+        table.column( 27 ).visible( false );
+        table.column( 28 ).visible( false );
+        table.column( 29 ).visible( false );
+        table.column( 30 ).visible( false );
     });
   
 let visibleColumnsIndexes = null;
