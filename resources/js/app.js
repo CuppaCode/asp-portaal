@@ -516,6 +516,48 @@ function ajaxCreateComment( commentableID, commentableType, commentableDOM, body
 
 }
 
+document.addEventListener('click', function (event) {
+    // Check if the clicked element is the button or the child icon
+    if (event.target.matches('.delete-comment-btn') || event.target.closest('.delete-comment-btn')) {
+        event.preventDefault();
+
+        const button = event.target.closest('.delete-comment-btn'); // Get the button element
+        const commentID = button.dataset.commentId;
+        const commentDOM = $(button).closest('.item.comment');
+
+        if (confirm('Weet je zeker dat je deze opmerking wilt verwijderen?')) {
+            ajaxDeleteComment(commentID, commentDOM);
+        }
+    }
+});
+
+function ajaxDeleteComment(commentID, commentDOM) {
+    if (!commentID || commentID === undefined) {
+        sendFlashMessage('Er is een fout opgetreden. Probeer het opnieuw.', 'alert-warning');
+        return;
+    }
+
+    $.ajax({
+        url: `/admin/comments/${commentID}`,
+        type: 'DELETE',
+        success: function (res) {
+            // Remove the comment from the DOM
+            commentDOM.remove();
+
+            // Show success message
+            sendFlashMessage(res.message, res.type);
+        },
+        error: function (err) {
+            // Handle errors
+            if (err.responseJSON && err.responseJSON.message) {
+                sendFlashMessage(err.responseJSON.message, 'alert-danger');
+            } else {
+                sendFlashMessage('Er is een fout opgetreden bij het verwijderen van de opmerking.', 'alert-danger');
+            }
+        }
+    });
+}
+
 function bindTags( inputID ) {
 
     inputID.select2({

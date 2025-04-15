@@ -133,11 +133,17 @@
                             </div>
                         </div>
             
-                        <div class="col-8">
+                        <div class="col-7">
                             {{ $comment->body }}
                             {{ $comment->team_id }}
                         </div>
-            
+                        
+                        <div class="col-1 text-right">
+                            <button class="btn btn-danger btn-sm delete-comment-btn" data-comment-id="{{ $comment->id }}">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
                     </div>
             
                 </div>
