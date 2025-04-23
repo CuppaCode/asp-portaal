@@ -153,13 +153,7 @@
 
     <a class="js-read-more read-more" href="javascript:;">
         <span class="js-read-more-text">Lees meer...</span>
-
-        @if (count($item->comments) > 0)
-            <span class="comment-total">
-                ({{ count($item->comments) }})
-            </span>
-        @endif
-
+        <span class="comment-total">({{ count($item->comments) }})</span>
     </a>
 
     </div>
