@@ -139,9 +139,11 @@
                         </div>
                         
                         <div class="col-1 text-right">
-                            <button class="btn btn-danger btn-sm delete-comment-btn" data-comment-id="{{ $comment->id }}">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
+                            @can('comment_delete')
+                                <button class="btn btn-danger btn-sm delete-comment-btn" data-comment-id="{{ $comment->id }}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            @endcan
                         </div>
 
                     </div>
