@@ -17,6 +17,35 @@
 
             </div>
             <div class="form-group">
+                <label for="mailCc">CC</label>
+                <select class="form-control select2" name="mailCc[]" id="mailCc" multiple="multiple">
+
+                    @foreach ($allContactsInCompany as $id => $entry)
+                        <option value="{{ $entry->email }}"
+                            {{ old('mailCc') ? 'selected' : '' }}>
+                            {{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} -
+                            {{ $entry->email }}</option>
+                    @endforeach
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <label for="mailBcc">BCC</label>
+                <select class="form-control select2" name="mailBcc[]" id="mailBcc" multiple="multiple">
+
+                    @foreach ($allContactsInCompany as $id => $entry)
+                        <option value="{{ $entry->email }}"
+                            {{ old('mailBcc') ? 'selected' : '' }}>
+                            {{ $entry->first_name ?? '' }} {{ $entry->last_name ?? '' }} -
+                            {{ $entry->email }}</option>
+                    @endforeach
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
                 <label for="template">Template</label>
                 <select class="form-control select2" name="mailTemplate" id="mailTemplate">
 
