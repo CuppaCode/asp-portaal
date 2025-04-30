@@ -133,11 +133,17 @@
                             </div>
                         </div>
             
-                        <div class="col-8">
+                        <div class="col-7">
                             {{ $comment->body }}
                             {{ $comment->team_id }}
                         </div>
-            
+                        
+                        <div class="col-1 text-right">
+                            <button class="btn btn-danger btn-sm delete-comment-btn" data-comment-id="{{ $comment->id }}">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
                     </div>
             
                 </div>
@@ -147,13 +153,7 @@
 
     <a class="js-read-more read-more" href="javascript:;">
         <span class="js-read-more-text">Lees meer...</span>
-
-        @if (count($item->comments) > 0)
-            <span class="comment-total">
-                ({{ count($item->comments) }})
-            </span>
-        @endif
-
+        <span class="comment-total">({{ count($item->comments) }})</span>
     </a>
 
     </div>

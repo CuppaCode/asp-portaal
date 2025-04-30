@@ -65,13 +65,29 @@ class CommentController extends Controller
         return view('admin.comments.show', compact('comment'));
     }
 
-    public function destroy(Comment $comment)
+    public function destroy(Request $request, Comment $comment)
     {
-        abort_if(Gate::denies('comment_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // Check if the user has permission to delete the comment
+        if (Gate::denies('comment_delete')) {
+            return response()->json([
+                'type' => 'alert-danger',
+                'message' => 'Je hebt geen toestemming om deze opmerking te verwijderen.'
+            ], Response::HTTP_FORBIDDEN);
+        }
 
-        $comment->delete();
+        try {
+            $comment->delete();
 
-        return back();
+            return response()->json([
+                'type' => 'alert-success',
+                'message' => 'De opmerking is succesvol verwijderd.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'type' => 'alert-danger',
+                'message' => 'Er is een fout opgetreden bij het verwijderen van de opmerking.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function massDestroy(MassDestroyCommentRequest $request)

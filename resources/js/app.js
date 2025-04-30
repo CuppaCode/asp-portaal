@@ -359,7 +359,10 @@ $(document).ready(function () {
 
     });
 
-
+    $('.recent-activities > .item').each(function () {
+        const commentableDOM = $(this);
+        updateCommentCount(commentableDOM); // Update the comment count on DOM load
+    });
 
     $('.js-read-more').on('click', function(e) {
         e.preventDefault();
@@ -391,6 +394,20 @@ $(document).ready(function () {
     createWysiwyg(document.querySelectorAll('.ckeditor'));
 
 });
+
+// // Use event delegation to handle clicks on dynamically added delete buttons
+// $(document).on('click', '.delete-comment-btn', function (event) {
+//     event.preventDefault();
+
+//     const button = $(this); // Get the button element
+//     const commentID = button.data('comment-id');
+//     const commentDOM = button.closest('.item.comment');
+
+//     // Show confirmation prompt
+//     if (confirm('Weet je zeker dat je deze opmerking wilt verwijderen?')) {
+//         ajaxDeleteComment(commentID, commentDOM);
+//     }
+// });
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
@@ -434,86 +451,117 @@ function ajaxCreateCompany( inputID, typeID = null ) {
 
 }
 
-function ajaxCreateComment( commentableID, commentableType, commentableDOM, body, userID, teamID ) {
-
-    if(!body || body == '' || body == undefined) {
-
+function ajaxCreateComment(commentableID, commentableType, commentableDOM, body, userID, teamID) {
+    if (!body || body === '' || body === undefined) {
         sendFlashMessage('Vul eerst een opmerking in voordat je deze verzend.', 'alert-warning');
-
         return;
     }
 
-    const data = { 
+    const data = {
         commentableID: commentableID,
         commentableType: commentableType,
         body: body,
         userID: parseInt(userID),
-        teamID: parseInt(teamID)
+        teamID: parseInt(teamID),
     };
 
     $.post('/admin/comments/quick-store', data)
-    .done(res => {
+        .done((res) => {
+            commentableDOM.find('.item.form textarea[name="body"]').val('');
 
-        commentableDOM.find('.item.form textarea[name="body"]').val('');
+            commentableDOM.find('.item.comment').each((index, comment) => {
+                comment.remove();
+            });
 
-        commentableDOM.find('.item.comment').each((index, comment) => {
-
-            comment.remove();
-
-        });
-
-        if(res.allComments){
-
-            const commentDOM = res.allComments.map(comment => {
-
-                return `
-                    <div class="item comment">
-                        <div class="row">
-
-                            <div class="col-2 p-0"></div>
-
-                            <div class="col-2 date-holder text-right">
-                                <div class="icon"><i class="fa fa-commenting-o"></i></div>
-                                <div class="date">
-
-                                    <span id="js-username-${comment.id}"></span>
-                                    <br>
-                                    <span class="text-info">${comment.created_at}</span>
+            if (res.allComments) {
+                const commentDOM = res.allComments.map((comment) => {
+                    return `
+                        <div class="item comment">
+                            <div class="row">
+                                <div class="col-2 p-0"></div>
+                                <div class="col-2 date-holder text-right">
+                                    <div class="icon"><i class="fa fa-commenting-o"></i></div>
+                                    <div class="date">
+                                        <span id="js-username-${comment.id}"></span>
+                                        <br>
+                                        <span class="text-info">${comment.created_at}</span>
+                                    </div>
+                                </div>
+                                <div class="col-7">
+                                    ${comment.body}
+                                </div>
+                                <div class="col-1 text-right">
+                                    <button class="btn btn-danger btn-sm delete-comment-btn" data-comment-id="${comment.id}">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="col-8">
-                                ${comment.body}
-                            </div>
-
                         </div>
-
-                    </div>
-                `;
-
-            });
-
-            commentableDOM.find('.row:first').after(commentDOM);
-
-            res.allComments.forEach(comment => {
-
-                const userDOM = $('#js-username-' + comment.id);        
-
-                $.post('/admin/users/get-user-name', { userID: comment.user_id })
-                .done(function(res){
-                    userDOM.text(res.name);
+                    `;
                 });
 
-            });
+                commentableDOM.find('.row:first').after(commentDOM);
 
+                res.allComments.forEach((comment) => {
+                    const userDOM = $('#js-username-' + comment.id);
+
+                    $.post('/admin/users/get-user-name', { userID: comment.user_id }).done(function (res) {
+                        userDOM.text(res.name);
+                    });
+                });
+
+                // Update the comment count
+                updateCommentCount(commentableDOM);
+            }
+
+            sendFlashMessage(res.message, res.type);
+        });
+}
+
+document.addEventListener('click', function (event) {
+    // Check if the clicked element is the button or the child icon
+    if (event.target.matches('.delete-comment-btn') || event.target.closest('.delete-comment-btn')) {
+        event.preventDefault();
+
+        const button = event.target.closest('.delete-comment-btn'); // Get the button element
+        const commentID = button.dataset.commentId;
+        const commentDOM = $(button).closest('.item.comment');
+
+        if (confirm('Weet je zeker dat je deze opmerking wilt verwijderen?')) {
+            ajaxDeleteComment(commentID, commentDOM);
         }
+    }
+});
 
+function ajaxDeleteComment(commentID, commentDOM) {
+    if (!commentID || commentID === undefined) {
+        sendFlashMessage('Er is een fout opgetreden. Probeer het opnieuw.', 'alert-warning');
+        return;
+    }
 
-        sendFlashMessage(res.message, res.type);
+    $.ajax({
+        url: `/admin/comments/${commentID}`,
+        type: 'DELETE',
+        success: function (res) {
+            // Remove the comment from the DOM
+            const commentableDOM = commentDOM.closest('.item:not(.form)');
+            commentDOM.remove();
 
+            // Update the comment count
+            updateCommentCount(commentableDOM);
+
+            // Show success message
+            sendFlashMessage(res.message, res.type);
+        },
+        error: function (err) {
+            // Handle errors
+            if (err.responseJSON && err.responseJSON.message) {
+                sendFlashMessage(err.responseJSON.message, 'alert-danger');
+            } else {
+                sendFlashMessage('Er is een fout opgetreden bij het verwijderen van de opmerking.', 'alert-danger');
+            }
+        },
     });
-
-
 }
 
 function bindTags( inputID ) {
@@ -873,3 +921,30 @@ function addSelectAllToDropdown( inputID )
     inputID.on('select2:select', handleSelection);
 
 }
+
+function updateCommentCount(commentableDOM) {
+    const commentCount = commentableDOM.find('.item.comment').length;
+    const commentTotalElement = commentableDOM.find('.comment-total');
+    const readMoreElement = commentableDOM.find('.js-read-more');
+    const readMoreTextElement = readMoreElement.find('.js-read-more-text');
+
+    if (commentTotalElement.length > 0) {
+        if (commentCount > 0) {
+            commentTotalElement.text(`(${commentCount})`).show();
+            readMoreElement.show();
+        } else {
+            commentTotalElement.text('').hide();
+            readMoreElement.show(); // Still show Lees meer, just without (0)
+        }
+    }
+
+    // Adjust the read more/less label
+    if (readMoreTextElement.length > 0) {
+        if (commentableDOM.hasClass('collapsed')) {
+            readMoreTextElement.text('Lees meer...');
+        } else {
+            readMoreTextElement.text('Lees minder...');
+        }
+    }
+}
+
