@@ -12,14 +12,22 @@ class PlainMail extends Notification
 {
     use Queueable;
 
+    protected $subject;
+    protected $message;
+    protected $attachments;
+    protected $cc;
+    protected $bcc;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct($subject, $message, $attachments)
+    public function __construct($subject, $message, $attachments = null, $cc = [], $bcc = [])
     {
         $this->subject = $subject;
         $this->message = $message;
         $this->attachments = $attachments;
+        $this->cc = $cc;
+        $this->bcc = $bcc;
     }
 
     /**
@@ -41,6 +49,15 @@ class PlainMail extends Notification
         $mailMessage = (new MailMessage)
             ->view('emails.plain-email', ['body' => $this->message])
             ->subject($this->subject);
+
+        // Add CC recipients if provided
+        if(!empty($this->cc)) {
+            $mailMessage->cc($this->cc);
+        }
+
+        if (!empty($this->bcc)) {
+            $mailMessage->bcc($this->bcc);
+        }
       
         if($this->attachments) {
 
