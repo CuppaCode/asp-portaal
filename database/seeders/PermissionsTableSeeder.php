@@ -369,6 +369,26 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => 90,
                 'title' => 'sla_delete',
+            ],
+            [
+                'id'    => 91,
+                'title' => 'comment_create',
+            ],
+            [
+                'id'    => 92,
+                'title' => 'comment_edit',
+            ],
+            [
+                'id'    => 93,
+                'title' => 'comment_show',
+            ],
+            [
+                'id'    => 94,
+                'title' => 'comment_delete',
+            ],
+            [
+                'id'    => 95,
+                'title' => 'comment_access',
             ]
         ];
 
