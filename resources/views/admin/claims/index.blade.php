@@ -116,7 +116,7 @@
                             {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
                         </th>
                         <th>
-                            {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
+                            {{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}
                         </th>
                         <th>
                             {{ trans('cruds.claim.fields.invoice_amount') }}

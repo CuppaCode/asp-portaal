@@ -384,9 +384,11 @@ $(document).ready(function () {
 
     });
 
-    // Bind mailreceiver
-    const mailReceiver = $('#mailReceiver');
-    bindTags(mailReceiver);
+    // Bind mailreceiver and cc
+    const mailBinders = $('#mailReceiver, #mailCc, #mailBcc');
+
+    bindTags(mailBinders);
+    
 
     // Handle template change
     setupMailBody();

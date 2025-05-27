@@ -97,15 +97,14 @@ class ClaimController extends Controller
         $user = auth()->user();
         $isAdminOrAgent = $user->isAdminOrAgent();
 
-        $companies = Company::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
+        $companies = Company::where('active', 1)->where('company_type', 'salvage')->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        
         $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $recovery_offices = RecoveryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
         
-
         $vehicles = Vehicle::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $vehicle_opposites = VehicleOpposite::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
@@ -590,12 +589,21 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $message = new \App\Notifications\PlainMail($request->mailSubject ?? '', $request->mailBody ?? '', $request->mailAttachments ?? null);
+        $message = new \App\Notifications\PlainMail(
+            $request->mailSubject ?? '',
+            $request->mailBody ?? '',
+            $request->mailAttachments ?? null,
+            $request->mailCc ?? [],
+            $request->mailBcc ?? []
+        );
 
         foreach($request->mailReceiver as $receiver) {
             
-            Notification::route('mail', [
-                $receiver ?? '' => ''])->notify($message);
+            Notification::route(
+                'mail', [
+                    $receiver ?? '' => ''
+                ]
+            )->notify($message);
 
         }
 
@@ -628,7 +636,46 @@ class ClaimController extends Controller
     }
 
     public function declineClaim(Request $request)
-    {
+    {$noteDescription = "Ontvanger(s): {$receiverString}<br/>
+CC: {$request->cc}<br/>
+Onderwerp: {$request->mailSubject}<br/>
+Bericht: {$request->mailBody}";
+
+$note = Note::create([
+    'title' => 'Mail:'. $request->mailSubject,
+    'user_id' => $request->input('user_id'),
+    'description' => $noteDescription,
+    'team_id' => auth()->user()->team->id
+]);
+
+if ($request->hasFile('mailAttachments')) {
+    foreach ($request->file('mailAttachments') as $image) {
+        $note->addMedia($image)->toMediaCollection('attachments');
+    }
+}
+
+$note->claims()->sync($request->input('claims', []));
+
+// Example mail-sending logic with CC
+Mail::send('emails.template', ['body' => $request->mailBody], function ($message) use ($request, $receiverString) {
+    $message->to(explode(',', $receiverString))
+            ->subject($request->mailSubject);
+
+    // Add CC recipients if provided
+    if ($request->filled('cc')) {
+        $message->cc(explode(',', $request->cc));
+    }
+
+    // Add attachments if provided
+    if ($request->hasFile('mailAttachments')) {
+        foreach ($request->file('mailAttachments') as $attachment) {
+            $message->attach($attachment->getRealPath(), [
+                'as' => $attachment->getClientOriginalName(),
+                'mime' => $attachment->getMimeType(),
+            ]);
+        }
+    }
+});
         $claim = Claim::find($request->claimID);
 
         $claim->decline_reason = $request->declineReason;

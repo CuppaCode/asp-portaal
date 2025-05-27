@@ -163,7 +163,8 @@ div.dt-button-collection {
 }
 
 a.btn.buttons-columnVisibility.active {
-    background-color: #f0f3f5;
+    background-color: rgba(52, 74, 155, 1);
+    color: #fff;
 }
 
 a.btn.buttons-columnVisibility {
