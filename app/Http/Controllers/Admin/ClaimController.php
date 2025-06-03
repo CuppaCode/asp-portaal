@@ -453,8 +453,10 @@ class ClaimController extends Controller
         $user = auth()->user();
         $isAdminOrAgent = $user->isAdminOrAgent();
 
+        $company = Company::where('id', $claim->company->id)->get()->first();
+
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
-        $firstContact = Contact::where('company_id', $claim->company->id)->get()->first();
+        $firstContact = Contact::where('id', $company->contact_id)->get()->first();
         $notesAndTasks = $claim->notes->merge($claim->tasks)->sortBy('created_at');
 
         $sla = SLA::where('company_id', $claim->company->id)->first();
