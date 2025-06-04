@@ -70,6 +70,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.opposite_claim_no_helper') }}</span>
             </div>
+            <div class="form-group">
             <label>{{ trans('cruds.claim.fields.assignee') }}</label>
                 <select class="form-control {{ $errors->has('assignee_id') ? 'is-invalid' : '' }}" name="assignee_id" id="assignee_id">
                     <option value disabled {{ old('assignee_id', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
@@ -83,6 +84,7 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.assignee_helper') }}</span>
+            </div>
         </div>
     </div>
 
