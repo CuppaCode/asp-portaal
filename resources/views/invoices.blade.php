@@ -19,6 +19,12 @@
                         <th>Gefactureerd</th>
                         <th>Opmerking</th>
                         <th>Bedrag</th>
+                        <th>
+                            {{ trans('cruds.claim.fields.damage_costs') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.recovery_costs') }}
+                        </th>
                         <th>status</th>
                         <th>&nbsp;</th>
                     </tr>
@@ -46,6 +52,10 @@
                         </td>
                         <td>
                         </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,6 +73,8 @@
                             </td>
                             <td>{{ $claim->invoice_comment }}</td>
                             <td>&euro; {{ $claim->invoice_amount }}</td>
+                            <td>&euro; {{ $claim->damage_costs }}</td>
+                            <td>&euro; {{ $claim->recovery_costs }}</td>
                             <td>{{ App\Models\Claim::STATUS_SELECT[$claim->status] }}</td>
                             <td></td>
                         </tr>
