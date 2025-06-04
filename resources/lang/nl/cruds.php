@@ -203,7 +203,9 @@ return [
             'loading_photos'                   => 'Foto\'s laden',
             'unloading_photos'                 => 'Foto\'s lossen',
             'waybill_signed_at_loading'        => 'Vrachtbrief getekend bij laden',
-            'waybill_signed_at_unloading'      => 'Vrachtbrief getekend bij lossen'
+            'waybill_signed_at_unloading'      => 'Vrachtbrief getekend bij lossen',
+            'closed_at'                        => 'Gesloten op',
+            'closed_at_helper'                 => ' ',
         ],
     ],
     'company' => [

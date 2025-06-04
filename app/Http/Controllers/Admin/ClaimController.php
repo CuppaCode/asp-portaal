@@ -374,7 +374,7 @@ class ClaimController extends Controller
                 'claim_id'      => $claim->id,
             ]);
         }
-        
+        $claim->closed_at = $request->input('closed_at');
         $claim->update($request->except($multiSelects));
 
         
@@ -548,17 +548,19 @@ class ClaimController extends Controller
         $new_status = null;
 
         if( $request->new_status == 'finished' ) {
+            
 
-            if(!isset($claim->damage_costs) || !isset($claim->recovery_costs) || !isset($claim->damage_kind)) {
+            if(!isset($claim->damage_costs) || !isset($claim->recovery_costs)) {
     
                 return response()->json(
                     [
                         'status' => $claim->status,
                         'type'  => 'alert-danger',
-                        'message' => 'Status NIET aangepast! U dient eerst financiele gegevens verder in te vullen voordat de claim gesloten kan worden.'
+                        'message' => 'Status NIET aangepast! U dient eerst financiele en gesloten op gegevens verder in te vullen voordat de claim gesloten kan worden.'
                     ], 200);
             }
 
+            $claim->closed_at = now()->format('d-m-Y');
         }
 
         if( $request->new_status == 'claim_denied' ) {
