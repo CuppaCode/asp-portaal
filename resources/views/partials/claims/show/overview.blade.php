@@ -75,6 +75,14 @@
                         
                     </div>
                 @endif
+                @if($claim->closed_at)
+                    <div class="col-md-2">
+                        <div class="card-title">
+                            {{ trans('cruds.claim.fields.closed_at') }}
+                        </div>
+                        {{ $claim->closed_at }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

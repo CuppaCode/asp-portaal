@@ -162,6 +162,7 @@ class Claim extends Model implements HasMedia
         'created_at',
         'updated_at',
         'deleted_at',
+        'closed_at',
     ];
 
     public const RECOVERABLE_CLAIM_SELECT = [
@@ -370,6 +371,16 @@ class Claim extends Model implements HasMedia
     public function setDateAccidentAttribute($value)
     {
         $this->attributes['date_accident'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getClosedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setClosedAtAttribute($value)
+    {
+        $this->attributes['closed_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
     public function injury_office()
