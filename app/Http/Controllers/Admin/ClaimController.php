@@ -27,6 +27,8 @@ use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
+
 
 class ClaimController extends Controller
 {
@@ -615,6 +617,7 @@ class ClaimController extends Controller
         $receiverString = implode(', ', $request->mailReceiver);
 
         $noteDescription = "Ontvanger(s): {$receiverString}<br/>
+        CC: {$request->cc}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -626,11 +629,33 @@ class ClaimController extends Controller
         ]);
 
         if ($request->hasFile('mailAttachments')) {
-
             foreach ($request->file('mailAttachments') as $image) {
                 $note->addMedia($image)->toMediaCollection('attachments');
             }
         }
+
+        $note->claims()->sync($request->input('claims', []));
+
+        // Example mail-sending logic with CC
+        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString) {
+            $message->to(explode(',', $receiverString))
+                    ->subject($request->mailSubject);
+
+            // Add CC recipients if provided
+            if ($request->filled('cc')) {
+                $message->cc(explode(',', $request->cc));
+            }
+
+            // Add attachments if provided
+            if ($request->hasFile('mailAttachments')) {
+                foreach ($request->file('mailAttachments') as $attachment) {
+                    $message->attach($attachment->getRealPath(), [
+                        'as' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getMimeType(),
+                    ]);
+                }
+            }
+        });
 
         $note->claims()->sync($request->input('claims', []));
 
@@ -640,46 +665,7 @@ class ClaimController extends Controller
     }
 
     public function declineClaim(Request $request)
-    {$noteDescription = "Ontvanger(s): {$receiverString}<br/>
-CC: {$request->cc}<br/>
-Onderwerp: {$request->mailSubject}<br/>
-Bericht: {$request->mailBody}";
-
-$note = Note::create([
-    'title' => 'Mail:'. $request->mailSubject,
-    'user_id' => $request->input('user_id'),
-    'description' => $noteDescription,
-    'team_id' => auth()->user()->team->id
-]);
-
-if ($request->hasFile('mailAttachments')) {
-    foreach ($request->file('mailAttachments') as $image) {
-        $note->addMedia($image)->toMediaCollection('attachments');
-    }
-}
-
-$note->claims()->sync($request->input('claims', []));
-
-// Example mail-sending logic with CC
-Mail::send('emails.template', ['body' => $request->mailBody], function ($message) use ($request, $receiverString) {
-    $message->to(explode(',', $receiverString))
-            ->subject($request->mailSubject);
-
-    // Add CC recipients if provided
-    if ($request->filled('cc')) {
-        $message->cc(explode(',', $request->cc));
-    }
-
-    // Add attachments if provided
-    if ($request->hasFile('mailAttachments')) {
-        foreach ($request->file('mailAttachments') as $attachment) {
-            $message->attach($attachment->getRealPath(), [
-                'as' => $attachment->getClientOriginalName(),
-                'mime' => $attachment->getMimeType(),
-            ]);
-        }
-    }
-});
+    {
         $claim = Claim::find($request->claimID);
 
         $claim->decline_reason = $request->declineReason;
