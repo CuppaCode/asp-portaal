@@ -124,6 +124,9 @@
                         <th>
                             {{ trans('cruds.claim.fields.closed_at') }}
                         </th>
+                        <th>
+                            {{ trans('cruds.claim.fields.created_at') }}
+                        </th>
                         <th style="width: 250px;">
                             
                         </th>
@@ -166,6 +169,7 @@
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -290,6 +294,10 @@
                             </td>
                             <td>
                                 {{ $claim->closed_at ?? '' }}
+                            </td>
+                            <td>
+                                {{ $claim->created_at ? $claim->created_at->format('d-m-Y') : '' }}
+                            </td>
                             
                             <td class="edits-td">
                                 @can('claim_show')
@@ -416,6 +424,7 @@
         table.column( 29 ).visible( false );
         table.column( 30 ).visible( false );
         table.column( 31 ).visible( false );
+        table.column( 32 ).visible( false );
     });
   
 let visibleColumnsIndexes = null;
