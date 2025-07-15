@@ -126,7 +126,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                                 @else 
                                     @php $overdue = 'overdue-yes'; @endphp
                                 @endif
-                                <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.tasks.show', $task->id) }}'>
+                                <tr class='clickable-row {{ $overdue }}' data-href='{{ route('admin.claims.show', $task->claim->id) }}'>
                                     <td>{{ date('d-m-Y', strtotime($task->deadline_at)) }}</td>
                                     <td>{!! Str::limit($task->description, 40) !!}</td>
                                     <td>{{ App\Models\TASK::STATUS_SELECT[$task->status] }}</td>
