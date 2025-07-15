@@ -65,7 +65,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                             <div class="row">
                                 <div class="col">
                                     <div class="text-value-xl">{{ $user->newClaims }}</div>
-                                    <div class="text-uppercase text-muted small">Open Dossiers</div>
+                                    <div class="text-uppercase text-muted small">Nieuwe Dossiers</div>
                                 </div>
                                 <div class="vr"></div>
                                 <div class="col">
