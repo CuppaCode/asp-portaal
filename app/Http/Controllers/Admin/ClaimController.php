@@ -634,10 +634,8 @@ class ClaimController extends Controller
             }
         }
 
-        $note->claims()->sync($request->input('claims', []));
-
         // Example mail-sending logic with CC
-        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString) {
+        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString, $note) {
             $message->to(explode(',', $receiverString))
                     ->subject($request->mailSubject);
 
@@ -647,11 +645,12 @@ class ClaimController extends Controller
             }
 
             // Add attachments if provided
-            if ($request->hasFile('mailAttachments')) {
-                foreach ($request->file('mailAttachments') as $attachment) {
-                    $message->attach($attachment->getRealPath(), [
-                        'as' => $attachment->getClientOriginalName(),
-                        'mime' => $attachment->getMimeType(),
+            if ($note->hasMedia('attachments')) {
+                //dd($request->file('mailAttachments'));
+                foreach ($note->getMedia('attachments') as $attachment) {
+                    $message->attach($attachment->getPath(), [
+                        'as' => $attachment->getAttribute('file_name'),
+                        'mime' => $attachment->mime_type,
                     ]);
                 }
             }
