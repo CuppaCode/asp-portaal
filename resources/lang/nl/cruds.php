@@ -394,7 +394,10 @@ return [
             'phone_helper'      => ' ',
             'team'              => 'Team',
             'team_helper'       => ' ',
+            'company'           => 'Klant',
+            'company_helper'    => ' ',
         ],
+        'certificates' => 'Certificaten',
     ],
     'vehicleInformation' => [
         'title'          => 'Voertuigen informatie',

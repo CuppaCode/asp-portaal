@@ -69,6 +69,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Driver
     Route::delete('drivers/destroy', 'DriverController@massDestroy')->name('drivers.massDestroy');
     Route::resource('drivers', 'DriverController');
+    Route::resource('certificates', 'CertificateController');
 
     // Vehicle Opposite
     Route::delete('vehicle-opposites/destroy', 'VehicleOppositeController@massDestroy')->name('vehicle-opposites.massDestroy');
