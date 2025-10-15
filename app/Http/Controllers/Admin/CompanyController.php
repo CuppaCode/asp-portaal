@@ -125,7 +125,59 @@ class CompanyController extends Controller
         $company->load('team');
         $contact = Contact::where('id', $company->contact_id)->first();
 
-        return view('admin.companies.show', compact('company', 'contact'));
+        // Extra fields
+        $bankAccountNumber = $company->bank_account_number;
+        $companySize = $company->company_size;
+        $truckCount = $company->truck_count;
+        $additionalInformation = $company->additional_information;
+
+        // Statistics
+        $openStatuses = array_keys(\App\Models\Claim::STATUS_SELECT);
+        $openStatuses = array_filter($openStatuses, fn($status) => $status !== 'finished' && $status !== 'claim_denied');
+
+        $openClaims = \App\Models\Claim::where('company_id', $company->id)
+            ->whereIn('status', $openStatuses)
+            ->count();
+
+        $closedClaims = \App\Models\Claim::where('company_id', $company->id)
+            ->where('status', 'finished')
+            ->count();
+
+        $closedClaimsThisYear = \App\Models\Claim::where('company_id', $company->id)
+            ->where('status', 'finished')
+            ->whereYear('closed_at', now()->year)
+            ->count();
+
+        $driverCount = \App\Models\Driver::where('company_id', $company->id)->count();
+
+        // Claims list
+        $claims = \App\Models\Claim::where('company_id', $company->id)
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Drivers list
+        $drivers = \App\Models\Driver::where('company_id', $company->id)
+            ->with('contact')
+            ->get();
+
+        // Attachments (using Spatie MediaLibrary)
+        $attachments = $company->getMedia('attachments');
+
+        return view('admin.companies.show', compact(
+            'company',
+            'contact',
+            'bankAccountNumber',
+            'companySize',
+            'truckCount',
+            'additionalInformation',
+            'openClaims',
+            'closedClaims',
+            'closedClaimsThisYear',
+            'driverCount',
+            'claims',
+            'drivers',
+            'attachments'
+        ));
     }
 
     public function destroy(Company $company)
