@@ -40,7 +40,11 @@
                 <div class="col-md-2">
                     <div class="card-title">
                         {{ trans('cruds.claim.fields.company') }}</div>
-                    {{ $claim->company->name ?? '' }}
+                    @if($claim->company)
+                        <a href="{{ route('admin.companies.show', $claim->company->id) }}">{{ $claim->company->name }}</a>
+                    @else
+                        -
+                    @endif
                 </div>
                 <div class="col-md-2">
                     <div class="card-title">

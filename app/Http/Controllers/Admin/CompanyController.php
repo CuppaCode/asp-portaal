@@ -44,7 +44,13 @@ class CompanyController extends Controller
 
     public function store(StoreCompanyRequest $request)
     {
-        $company = Company::create($request->all());
+        $data = $request->all();
+        foreach(['start_fee', 'claims_fee', 'additional_costs'] as $field) {
+            if(isset($data[$field])) {
+                $data[$field] = str_replace(',', '.', $data[$field]);
+            }
+        }
+        $company = Company::create($data);
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $company->id]);
@@ -113,7 +119,13 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request, Company $company)
     {
-        $company->update($request->all());
+        $data = $request->all();
+        foreach(['start_fee', 'claims_fee', 'additional_costs'] as $field) {
+            if(isset($data[$field])) {
+                $data[$field] = str_replace(',', '.', $data[$field]);
+            }
+        }
+        $company->update($data);
 
         return redirect()->route('admin.companies.index');
     }
@@ -122,7 +134,7 @@ class CompanyController extends Controller
     {
         abort_if(Gate::denies('company_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $company->load('team');
+    $company->load(['team', 'sla']);
         $contact = Contact::where('id', $company->contact_id)->first();
 
         // Extra fields
@@ -163,6 +175,7 @@ class CompanyController extends Controller
         // Attachments (using Spatie MediaLibrary)
         $attachments = $company->getMedia('attachments');
 
+        $sla = $company->sla;
         return view('admin.companies.show', compact(
             'company',
             'contact',
@@ -176,7 +189,8 @@ class CompanyController extends Controller
             'driverCount',
             'claims',
             'drivers',
-            'attachments'
+            'attachments',
+            'sla'
         ));
     }
 

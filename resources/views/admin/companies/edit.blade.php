@@ -143,6 +143,23 @@
             </div>
         </div>
     </div>
+    <div class="card mt-3">
+        <div class="card-header">{{ trans('cruds.company.fields.financial') }}</div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="start_fee">{{ trans('cruds.company.fields.start_fee') }}</label>
+                <input class="form-control" type="number" step="0.01" name="start_fee" id="start_fee" value="{{ old('start_fee', $company->start_fee) }}">
+            </div>
+            <div class="form-group">
+                <label for="claims_fee">{{ trans('cruds.company.fields.claims_fee') }}</label>
+                <input class="form-control" type="number" step="0.01" name="claims_fee" id="claims_fee" value="{{ old('claims_fee', $company->claims_fee) }}">
+            </div>
+            <div class="form-group">
+                <label for="additional_costs">{{ trans('cruds.company.fields.additional_costs') }}</label>
+                <input class="form-control" type="number" step="0.01" name="additional_costs" id="additional_costs" value="{{ old('additional_costs', $company->additional_costs) }}">
+            </div>
+        </div>
+    </div>
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="card">

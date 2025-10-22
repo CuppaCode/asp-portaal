@@ -28,7 +28,11 @@
                             {{ trans('cruds.contact.fields.company') }}
                         </th>
                         <td>
-                            {{ $contact->company->name ?? '' }}
+                            @if($contact->company)
+                                <a href="{{ route('admin.companies.show', $contact->company->id) }}">{{ $contact->company->name }}</a>
+                            @else
+                                -
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -70,6 +74,14 @@
                         <td>
                             <input type="checkbox" disabled="disabled" {{ $contact->newsletter ? 'checked' : '' }}>
                         </td>
+                    </tr>
+                    <tr>
+                        <th>{{ trans('cruds.contact.fields.phone') }}</th>
+                        <td>{{ $contact->phone ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ trans('cruds.contact.fields.note') }}</th>
+                        <td>{{ $contact->note ?? '-' }}</td>
                     </tr>
                 </tbody>
             </table>
