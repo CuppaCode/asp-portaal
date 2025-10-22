@@ -134,7 +134,14 @@ class ClaimController extends Controller
 
         $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
         
-        $claim = Claim::create($request->except($multiSelects));
+        $data = $request->except($multiSelects);
+        if (isset($data['company_id'])) {
+            $company = \App\Models\Company::find($data['company_id']);
+            if ($company && isset($company->claims_fee)) {
+                $data['invoice_amount'] = $company->claims_fee;
+            }
+        }
+        $claim = Claim::create($data);
 
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
         $claim->damaged_part = $request->input('damaged_part') ? json_encode($request->input('damaged_part')) : null;

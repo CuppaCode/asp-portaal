@@ -91,6 +91,7 @@ return [
             'other'                 => 'Anders',
             'other_helper'          => '',
         ],
+        'create_sla' => 'SLA toevoegen',
     ],
     'claim' => [
         'title'          => 'Schadedossier',
@@ -257,6 +258,16 @@ return [
             'activities'          => 'Activiteiten',
             'claim_created_on'    => 'Dossier aangemaakt op',
             'claim_closed_on'     => 'Dossier gesloten op',
+            'contactperson'       => 'Contactpersoon',
+            'name'                => 'Naam',
+            'phone'               => 'Telefoonnummer',
+            'email'               => 'E-mailadres',
+            'remarks'             => 'Opmerkingen',
+            'statistics'          => 'Statistieken',
+            'financial'           => 'Financieel',
+            'start_fee'          => 'Startvergoeding',
+            'claims_fee'         => 'Dossiervergoeding',
+            'additional_costs'   => 'Extra kosten',
         ],
     ],
     'task' => [
@@ -316,7 +327,9 @@ return [
             'create_user'       => 'Maak gebruiker aan voor deze contact',
             'create_user_helper'=> '',
             'is_driver'         => 'Is deze contact een chauffeur?',
-            'is_driver_helper'  => ''
+            'is_driver_helper'  => '',
+            'phone'             => 'Telefoonnummer',
+            'note'              => 'Notitie',
         ],
     ],
     'injuryOffice' => [

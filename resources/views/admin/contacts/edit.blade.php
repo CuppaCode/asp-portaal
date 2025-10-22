@@ -69,6 +69,14 @@
                 <span class="help-block">{{ trans('cruds.contact.fields.email_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="phone">{{ trans('cruds.contact.fields.phone') }}</label>
+                <input class="form-control" type="text" name="phone" id="phone" value="{{ old('phone', $contact->phone) }}">
+            </div>
+            <div class="form-group">
+                <label for="note">{{ trans('cruds.contact.fields.note') }}</label>
+                <textarea class="form-control" name="note" id="note">{{ old('note', $contact->note) }}</textarea>
+            </div>
+            <div class="form-group">
                 <div class="form-check {{ $errors->has('newsletter') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="newsletter" value="0">
                     <input class="form-check-input" type="checkbox" name="newsletter" id="newsletter" value="1" {{ $contact->newsletter || old('newsletter', 0) === 1 ? 'checked' : '' }}>
