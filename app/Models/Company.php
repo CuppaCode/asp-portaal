@@ -49,12 +49,24 @@ class Company extends Model implements HasMedia
         'deleted_at',
         'team_id',
         'contact_id',
+        'bank_account_number',
+        'company_size',
+        'truck_count',
+        'additional_information',
+        'start_fee',
+        'claims_fee',
+        'additional_costs',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
     }
+
+        public function sla()
+        {
+            return $this->hasOne(SLA::class, 'company_id');
+        }
 
     public function registerMediaConversions(Media $media = null): void
     {

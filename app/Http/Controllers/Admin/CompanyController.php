@@ -44,7 +44,13 @@ class CompanyController extends Controller
 
     public function store(StoreCompanyRequest $request)
     {
-        $company = Company::create($request->all());
+        $data = $request->all();
+        foreach(['start_fee', 'claims_fee', 'additional_costs'] as $field) {
+            if(isset($data[$field])) {
+                $data[$field] = str_replace(',', '.', $data[$field]);
+            }
+        }
+        $company = Company::create($data);
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $company->id]);
@@ -113,7 +119,13 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request, Company $company)
     {
-        $company->update($request->all());
+        $data = $request->all();
+        foreach(['start_fee', 'claims_fee', 'additional_costs'] as $field) {
+            if(isset($data[$field])) {
+                $data[$field] = str_replace(',', '.', $data[$field]);
+            }
+        }
+        $company->update($data);
 
         return redirect()->route('admin.companies.index');
     }
@@ -122,10 +134,64 @@ class CompanyController extends Controller
     {
         abort_if(Gate::denies('company_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $company->load('team');
+    $company->load(['team', 'sla']);
         $contact = Contact::where('id', $company->contact_id)->first();
 
-        return view('admin.companies.show', compact('company', 'contact'));
+        // Extra fields
+        $bankAccountNumber = $company->bank_account_number;
+        $companySize = $company->company_size;
+        $truckCount = $company->truck_count;
+        $additionalInformation = $company->additional_information;
+
+        // Statistics
+        $openStatuses = array_keys(\App\Models\Claim::STATUS_SELECT);
+        $openStatuses = array_filter($openStatuses, fn($status) => $status !== 'finished' && $status !== 'claim_denied');
+
+        $openClaims = \App\Models\Claim::where('company_id', $company->id)
+            ->whereIn('status', $openStatuses)
+            ->count();
+
+        $closedClaims = \App\Models\Claim::where('company_id', $company->id)
+            ->where('status', 'finished')
+            ->count();
+
+        $closedClaimsThisYear = \App\Models\Claim::where('company_id', $company->id)
+            ->where('status', 'finished')
+            ->whereYear('closed_at', now()->year)
+            ->count();
+
+        $driverCount = \App\Models\Driver::where('company_id', $company->id)->count();
+
+        // Claims list
+        $claims = \App\Models\Claim::where('company_id', $company->id)
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Drivers list
+        $drivers = \App\Models\Driver::where('company_id', $company->id)
+            ->with('contact')
+            ->get();
+
+        // Attachments (using Spatie MediaLibrary)
+        $attachments = $company->getMedia('attachments');
+
+        $sla = $company->sla;
+        return view('admin.companies.show', compact(
+            'company',
+            'contact',
+            'bankAccountNumber',
+            'companySize',
+            'truckCount',
+            'additionalInformation',
+            'openClaims',
+            'closedClaims',
+            'closedClaimsThisYear',
+            'driverCount',
+            'claims',
+            'drivers',
+            'attachments',
+            'sla'
+        ));
     }
 
     public function destroy(Company $company)
