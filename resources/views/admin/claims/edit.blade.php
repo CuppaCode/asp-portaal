@@ -556,7 +556,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.expert_report_is_in_helper') }}</span>
             </div>
-            <div class="form-group expertise-report-show d-none">
+            <div class="form-group expertise-report-show {{ !$claim->expert_report_is_in && !old('expert_report_is_in', 0) ? 'd-none' : '' }}">
                 <label for="report_received_at">{{ trans('cruds.claim.fields.report_received_at') }}</label>
                 <input class="form-control date custom_datepicker {{ $errors->has('report_received_at') ? 'is-invalid' : '' }}" type="text" name="report_received_at" id="report_received_at" value="{{ old('report_received_at', $claim->report_received_at) }}">
                 @if($errors->has('report_received_at'))
@@ -738,7 +738,26 @@
 
 @section('scripts')
 <script>
-    var uploadedDamageFilesMap = {}
+$(document).ready(function() {
+    // Initialize expertise report field visibility
+    function toggleExpertReportFields() {
+        if ($('#expert_report_is_in').is(':checked')) {
+            $('.expertise-report-show').removeClass('d-none');
+        } else {
+            $('.expertise-report-show').addClass('d-none');
+        }
+    }
+
+    // Run on page load
+    toggleExpertReportFields();
+
+    // Run on checkbox change
+    $('#expert_report_is_in').change(function() {
+        toggleExpertReportFields();
+    });
+});
+
+var uploadedDamageFilesMap = {}
 Dropzone.options.damageFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
     maxFilesize: 5, // MB
