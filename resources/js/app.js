@@ -159,7 +159,11 @@ $(document).ready(function () {
     var expertise_receive_date = $('.expertise-report-show');
 
     $('#expert_report_is_in').change(function()  {
-        expertise_receive_date.toggleClass('d-none');
+        if ($(this).is(':checked')) {
+            expertise_receive_date.removeClass('d-none');
+        } else {
+            expertise_receive_date.addClass('d-none');
+        }
     });
 
     $(".clickable-row").click(function() {
