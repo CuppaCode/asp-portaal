@@ -58,6 +58,26 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.contact.fields.last_name_helper') }}</span>
             </div>
+                <div class="form-group">
+                    <label for="birthdate">{{ trans('cruds.contact.fields.birthdate') }}</label>
+                    <input class="form-control {{ $errors->has('birthdate') ? 'is-invalid' : '' }}" type="date" name="birthdate" id="birthdate" value="{{ old('birthdate', $contact->birthdate) }}">
+                    @if($errors->has('birthdate'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('birthdate') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.contact.fields.birthdate_helper') }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="driver_license_id">{{ trans('cruds.contact.fields.driver_license_id') }}</label>
+                    <input class="form-control {{ $errors->has('driver_license_id') ? 'is-invalid' : '' }}" type="text" name="driver_license_id" id="driver_license_id" value="{{ old('driver_license_id', $contact->driver_license_id) }}">
+                    @if($errors->has('driver_license_id'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('driver_license_id') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.contact.fields.driver_license_id_helper') }}</span>
+                </div>
             <div class="form-group">
                 <label class="required" for="email">{{ trans('cruds.contact.fields.email') }}</label>
                 <input class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" type="email" name="email" id="email" value="{{ old('email', $contact->email) }}" required>

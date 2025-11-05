@@ -330,6 +330,10 @@ return [
             'is_driver_helper'  => '',
             'phone'             => 'Telefoonnummer',
             'note'              => 'Notitie',
+                'birthdate'         => 'Geboortedatum',
+                'birthdate_helper'  => ' ',
+                'driver_license_id' => 'Rijbewijsnummer',
+                'driver_license_id_helper' => ' ',
         ],
     ],
     'injuryOffice' => [

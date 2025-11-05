@@ -99,7 +99,10 @@ class ClaimController extends Controller
         $user = auth()->user();
         $isAdminOrAgent = $user->isAdminOrAgent();
 
-        $companies = Company::where('active', 1)->where('company_type', 'salvage')->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $companies = Company::where('active', 1)
+            ->whereIn('company_type', ['salvage', 'transport'])
+            ->pluck('name', 'id')
+            ->prepend(trans('global.pleaseSelect'), '');
         
         $injury_offices = InjuryOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
