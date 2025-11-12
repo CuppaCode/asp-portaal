@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\Driver;
+use App\Models\Claim;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Gate;
 
 class CertificateController extends Controller
@@ -21,19 +24,31 @@ class CertificateController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Driver $driver)
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        //
+
+        return view('admin.certificate.create', compact('driver'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Driver $driver)
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        //
+        
+        $certificate = Certificate::create(
+            [
+                'driver_id' => $driver->id,
+                'name' => $request->name,
+                'notify_date' => $request->notify_date,
+                'expiry_date' => $request->expiry_date,
+                'team_id' => auth()->user()->team_id
+            ]
+        );
+
+        return redirect()->route('admin.drivers.show', $driver->id)->with('success', 'Certificaat succesvol aangemaakt!');
     }
 
     /**

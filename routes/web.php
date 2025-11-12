@@ -69,7 +69,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Driver
     Route::delete('drivers/destroy', 'DriverController@massDestroy')->name('drivers.massDestroy');
     Route::resource('drivers', 'DriverController');
-    Route::resource('certificates', 'CertificateController');
+    Route::get('certificate/create/{driver}', 'CertificateController@create')->name('certificate.create');
+    Route::post('certificate/{driver}', 'CertificateController@store')->name('certificate.store');
+    Route::resource('certificate', 'CertificateController')->except(['create', 'store']);
 
     // Vehicle Opposite
     Route::delete('vehicle-opposites/destroy', 'VehicleOppositeController@massDestroy')->name('vehicle-opposites.massDestroy');

@@ -396,8 +396,7 @@ return [
             'team_helper'       => ' ',
             'company'           => 'Klant',
             'company_helper'    => ' ',
-        ],
-        'certificates' => 'Certificaten',
+        ]
     ],
     'vehicleInformation' => [
         'title'          => 'Voertuigen informatie',
@@ -575,5 +574,29 @@ return [
     ],
     'superAdmin' => [
         'title' => 'Super Admin Tools'
+    ],
+    'certificate' => [
+        'title'          => 'Certificaten',
+        'title_singular' => 'Certificaat',
+        'fields'         => [
+            'id'                => 'ID',
+            'id_helper'         => ' ',
+            'driver'            => 'Chauffeur',
+            'driver_helper'     => ' ',
+            'name'              => 'Naam',
+            'name_helper'       => ' ',
+            'notify_date'       => 'Herinneringsdatum',
+            'notify_date_helper'=> ' ',
+            'expiry_date'       => 'Vervaldatum',
+            'expiry_date_helper'=> ' ',
+            'created_at'        => 'Created at',
+            'created_at_helper' => ' ',
+            'updated_at'        => 'Updated at',
+            'updated_at_helper' => ' ',
+            'deleted_at'        => 'Deleted at',
+            'deleted_at_helper' => ' ',
+            'team'              => 'Team',
+            'team_helper'       => ' ',
+        ],
     ]
 ];
