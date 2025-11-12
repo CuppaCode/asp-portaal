@@ -389,6 +389,10 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => 95,
                 'title' => 'comment_access',
+            ],
+            [
+                'id'    => 96,
+                'title' => 'certificate_access',
             ]
         ];
 

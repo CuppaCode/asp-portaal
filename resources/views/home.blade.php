@@ -249,6 +249,68 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                 </div>
             </div>
         </div>
+
+    @if($isAdminOrAgent)
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    {{ trans('cruds.dashboard.drivers_certificates') }}
+                </div>
+                <div class="card-body">
+                    @if(!empty($drivers_with_certificates) && $drivers_with_certificates->count())
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-striped" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('cruds.dashboard.driver') }}</th>
+                                    <th>{{ trans('cruds.dashboard.company') }}</th>
+                                    <th>{{ trans('cruds.dashboard.certificates') }}</th>
+                                    <th>{{ trans('cruds.dashboard.actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($drivers_with_certificates as $driver)
+                                <tr @if(!empty($driver->has_expiring_within_year)) class="table-danger" @endif>
+                                    <td>{{ $driver->driver_name ?? ($driver->contact->first_name . ' ' . $driver->contact->last_name ?? 'Niet gevonden') }}</td>
+                                    <td>{{ $driver->company->name ?? '' }}</td>
+                                    <td>
+                                        @if($driver->certificates && $driver->certificates->count())
+                                            <ul class="mb-0">
+                                                @foreach($driver->certificates as $certificate)
+                                                    <li @if(!empty($certificate->is_expiring_within_year)) class="text-danger" @endif>
+                                                        {{ $certificate->name }} @if($certificate->expiry_date) — {{ $certificate->expiry_date }} @endif
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            Geen certificaten
+                                        @endif
+                                    </td>
+                                    <td class="text-end">
+                                        @can('driver_show')
+                                            <a class="btn btn-sm btn-primary" href="{{ route('admin.drivers.show', $driver->id) }}" title="{{ trans('cruds.driver.title_singular') }} bekijken">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                        @can('certificate_access')
+                                            <a class="btn btn-sm btn-success" href="{{ route('admin.certificate.create', $driver->id) }}" title="{{ trans('cruds.certificate.title_singular') }} aanmaken">
+                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                        Geen drivers gevonden
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
