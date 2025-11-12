@@ -48,7 +48,7 @@ class CertificateController extends Controller
             ]
         );
 
-        return redirect()->route('admin.drivers.show', $driver->id)->with('success', 'Certificaat succesvol aangemaakt!');
+        return redirect()->back()->with('success', 'Certificaat succesvol aangemaakt!');
     }
 
     /**

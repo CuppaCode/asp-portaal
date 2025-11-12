@@ -541,6 +541,14 @@ return [
         'title_report'   => 'Statistiek report',
         'title_singular' => 'Statistiek',
     ],
+    'dashboard' => [
+        'drivers_certificates' => 'Chauffeurs & certificaten',
+        'drivers_certificates_overview' => 'Overzicht Chauffeurs en Certificaten',
+        'driver' => 'Chauffeur',
+        'company' => 'Klant',
+        'certificates' => 'Certificaten',
+        'actions' => 'Acties',
+    ],
     'invoices' => [
         'title'          => 'Facturatie',
         'title_singular' => 'Facturatie',

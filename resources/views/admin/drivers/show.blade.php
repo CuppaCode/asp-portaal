@@ -9,8 +9,8 @@
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.drivers.index') }}">
-                    {{ trans('global.back_to_list') }}
+                <a class="btn btn-default" href="{{ url()->previous() ?: route('admin.drivers.index') }}" onclick="event.preventDefault(); history.back();" aria-label="{{ trans('global.back') }}">
+                    {{ trans('global.back') }}
                 </a>
             </div>
             <table class="table table-bordered table-striped">

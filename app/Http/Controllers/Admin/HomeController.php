@@ -24,6 +24,34 @@ class HomeController
     {
         $user = auth()->user();
 
+        // Only fetch drivers that have certificates for admin users/agents
+        $drivers_with_certificates = null;
+        if ($user->isAdminOrAgent()) {
+            $drivers_with_certificates = \App\Models\Driver::with(['certificates' => function($q) {
+                $q->orderBy('expiry_date');
+            }])->whereHas('certificates')->get();
+
+            // Annotate drivers and certificates with an 'is_expiring_within_year' flag
+            $drivers_with_certificates->transform(function($driver) {
+                $driver->has_expiring_within_year = false;
+
+                foreach ($driver->certificates as $certificate) {
+                    if (!empty($certificate->expiry_date)) {
+                        $expiry = \Carbon\Carbon::parse($certificate->expiry_date);
+                        if ($expiry->lte(\Carbon\Carbon::now()->addYear())) {
+                            $certificate->is_expiring_within_year = true;
+                            $driver->has_expiring_within_year = true;
+                        } else {
+                            $certificate->is_expiring_within_year = false;
+                        }
+                    } else {
+                        $certificate->is_expiring_within_year = false;
+                    }
+                }
+
+                return $driver;
+            });
+        }
         $claims = Claim::whereNot('status', 'finished')->with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->paginate(7, ['*'], 'claims');
         $claims_all = Claim::whereNot('status', 'finished')->count();
         $claims_asp_open = Claim::whereNot('status', 'finished')->where('assign_self', 0)->count();
@@ -80,7 +108,8 @@ class HomeController
         $users = User::get();
         $teams = Team::get();
         
-
-        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs'));
+        // Pass drivers_with_certificates to the view
+        // If you use a different dashboard view, update the view name accordingly
+        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs', 'drivers_with_certificates'));
     }
 }
