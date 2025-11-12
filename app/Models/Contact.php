@@ -36,6 +36,8 @@ class Contact extends Model
         'updated_at',
         'deleted_at',
         'team_id',
+        'birthdate',
+        'driver_license_id',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
