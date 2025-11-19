@@ -7,6 +7,7 @@ use App\Models\Certificate;
 use App\Models\Driver;
 use App\Models\Claim;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Gate;
 
@@ -48,7 +49,18 @@ class CertificateController extends Controller
             ]
         );
 
-        return redirect()->back()->with('success', 'Certificaat succesvol aangemaakt!');
+        // Prefer explicit back URL from the form (safer than relying on Referer header)
+        $back = $request->input('back_to');
+
+        // compute urls to avoid redirecting back to the same page (or the create page)
+        $currentUrl = url()->current();
+        $createUrl = route('admin.certificate.create', $driver->id);
+
+        if ($back && Str::startsWith($back, url('/')) && $back !== $currentUrl && $back !== $createUrl) {
+            return redirect($back)->with('success', 'Certificaat succesvol aangemaakt!');
+        }
+
+        return redirect()->route('admin.drivers.show', $driver->id)->with('success', 'Certificaat succesvol aangemaakt!');
     }
 
     /**
