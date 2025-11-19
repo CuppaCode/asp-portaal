@@ -30,15 +30,26 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
 
 
-class ClaimController extends Controller
-{
+class ClaimController extends Controller {
+
     use MediaUploadingTrait;
 
     public function index()
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->get();
+        $years = Claim::selectRaw('YEAR(date_accident) as year')->distinct()->orderBy('year', 'desc')->pluck('year')->toArray();
+        $year = request('year');
+        if (empty($year) && count($years)) {
+            $year = $years[0]; // Default to latest year
+        }
+        if ($year && $year !== 'all') {
+            $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+                ->whereYear('date_accident', $year)
+                ->get();
+        } else {
+            $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->get();
+        }
 
         $companies = Company::get();
 
@@ -54,20 +65,19 @@ class ClaimController extends Controller
 
         $teams = Team::get();
 
-        return view('admin.claims.index', compact('claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles'));
+    return view('admin.claims.index', compact('claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'years', 'year'));
     }
 
     public function open()
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
-
-        $companies = Company::get();
-        $contacts = Contact::get(); 
-        $opposite = Opposite::get();   
-
-        return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
+    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
+    $companies = Company::get();
+    $contacts = Contact::get(); 
+    $opposite = Opposite::get();   
+    // No year filter for open claims
+    return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
     }
     
     public function unassigned()
@@ -85,11 +95,23 @@ class ClaimController extends Controller
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('status', 'finished')->get();
-
+        $years = Claim::selectRaw('YEAR(date_accident) as year')->distinct()->orderBy('year', 'desc')->pluck('year')->toArray();
+        $year = request('year');
+        if (empty($year) && count($years)) {
+            $year = $years[0]; // Default to latest year
+        }
+        if ($year && $year !== 'all') {
+            $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+                ->where('status', 'finished')
+                ->whereYear('date_accident', $year)
+                ->get();
+        } else {
+            $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+                ->where('status', 'finished')
+                ->get();
+        }
         $companies = Company::get();
-
-        return view('admin.claims.index', compact('claims', 'companies'));
+        return view('admin.claims.index', compact('claims', 'companies', 'years', 'year'));
     }
 
     public function create()

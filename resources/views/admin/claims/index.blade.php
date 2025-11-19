@@ -2,22 +2,34 @@
 @section('content')
 
 @php
-    
     $user = auth()->user();
     $isAdmin = $user->can('financial_access');
     $isAdminOrAgent = $user->isAdminOrAgent();
-    
 @endphp
 
-@can('claim_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
+<div class="row align-items-center mb-3">
+    @can('claim_create')
+        <div class="col-auto">
             <a class="btn btn-success" href="{{ route('admin.claims.create') }}">
                 {{ trans('cruds.claim.title_singular') }} aanmaken
             </a>
         </div>
-    </div>
-@endcan
+    @endcan
+    @if(!empty($years))
+        <div class="col-auto ml-auto">
+            <form method="GET" action="{{ url()->current() }}" class="form-inline">
+                <label for="year" class="mr-2">Jaar:</label>
+                <select name="year" id="year" class="form-control mr-2" onchange="this.form.submit()">
+                    <option value="all" {{ (empty($year) || $year == 'all') ? 'selected' : '' }}>Alle jaren</option>
+                    @foreach($years as $y)
+                        <option value="{{ $y }}" {{ ($year == $y) ? 'selected' : '' }}>{{ $y }}</option>
+                    @endforeach
+                </select>
+                <noscript><input type="submit" value="Filter" class="btn btn-primary"></noscript>
+            </form>
+        </div>
+    @endif
+</div>
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.claim.title_singular') }} {{ trans('global.list') }}
