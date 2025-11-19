@@ -9,6 +9,7 @@
     <div class="card-body">
         <form method="POST" action="{{ route("admin.certificate.store", ['driver' => $driver->id]) }}" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="back_to" value="{{ url()->previous() }}">
 
             <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.contact.fields.name') }}</label>
@@ -18,7 +19,7 @@
                         {{ $errors->first('name') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.contact.fields.name') }}</span>
+                
             </div>
 
             <div class="form-group">
@@ -29,7 +30,6 @@
                         {{ $errors->first('notify_date') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.notify_date') }}</span>
             </div>
 
             <div class="form-group">
@@ -40,7 +40,6 @@
                         {{ $errors->first('expiry_date') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.expiry_date') }}</span>
             </div>
 
             <div class="form-group">
