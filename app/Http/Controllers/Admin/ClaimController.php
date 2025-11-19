@@ -525,17 +525,22 @@ class ClaimController extends Controller {
         $driver = Driver::find($claim->driver_vehicle)->contact ?? null;
 
         $oppositeVehicleInfo = null;
-
-        if ($claim->vehicle_opposite) {
-
+        if ($claim->vehicle_opposite || $opposite) {
             $oppositeVehicleInfo = (object) [
+                // Vehicle info
                 'vehicle' => $claim->vehicle_opposite,
                 'damaged_part' => $claim->damaged_part_opposite ?? null,
                 'damage_origin' => $claim->damage_origin_opposite ?? null,
                 'damaged_area' => $claim->damaged_area_opposite ?? null,
-                'driver' => $claim->driver_vehicle_opposite ?? null
+                'driver' => $claim->driver_vehicle_opposite ?? null,
+                // Opponent address/contact info
+                'name'    => $opposite->name ?? ($claim->vehicle_opposite->name ?? ''),
+                'street'  => $opposite->street ?? '',
+                'zipcode' => $opposite->zipcode ?? '',
+                'city'    => $opposite->city ?? '',
+                'phone'   => $opposite->phone ?? '',
+                'email'   => $opposite->email ?? '',
             ];
-
         }
 
         $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
