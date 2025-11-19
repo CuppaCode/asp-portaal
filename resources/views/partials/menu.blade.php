@@ -168,6 +168,14 @@
                             </a>
                         </li>
                     @endcan
+                    @can('certificate_category_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route('admin.certificate-categories.index') }}" class="c-sidebar-nav-link {{ request()->is('admin/certificate-categories') || request()->is('admin/certificate-categories/*') ? 'c-active' : '' }}">
+                                <i class="fa-fw fas fa-certificate c-sidebar-nav-icon"></i>
+                                {{ trans('cruds.certificateCategory.title') ?? 'Certificate categories' }}
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </li>
         @endcan

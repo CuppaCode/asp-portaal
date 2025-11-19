@@ -72,6 +72,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('certificate/create/{driver}', 'CertificateController@create')->name('certificate.create');
     Route::post('certificate/{driver}', 'CertificateController@store')->name('certificate.store');
     Route::resource('certificate', 'CertificateController')->except(['create', 'store']);
+    // Certificate categories
+    Route::get('certificate-categories/search', 'CertificateCategoryController@search')->name('certificate-categories.search');
+    Route::post('certificate-categories/quick-store', 'CertificateCategoryController@quickStore')->name('certificate-categories.quickStore');
+    Route::resource('certificate-categories', 'CertificateCategoryController');
 
     // Vehicle Opposite
     Route::delete('vehicle-opposites/destroy', 'VehicleOppositeController@massDestroy')->name('vehicle-opposites.massDestroy');
