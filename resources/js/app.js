@@ -399,6 +399,68 @@ $(document).ready(function () {
 
     createWysiwyg(document.querySelectorAll('.ckeditor'));
 
+        // Inline task edit logic
+        let openEditForm = null;
+
+        $(document).on('click', '.js-task-edit-btn', function () {
+            // Close any open form
+            if (openEditForm) {
+                $(openEditForm).hide();
+            }
+            // Find the form for this task
+            const taskId = $(this).data('task-id');
+            const form = $('.js-task-edit-form[data-task-id="' + taskId + '"]');
+            if (form.length) {
+                form.show();
+                openEditForm = form;
+                // Optionally hide description display
+                form.closest('.content').find('.task-desc, .js-task-status, .js-task-edit-btn').hide();
+            }
+        });
+
+        $(document).on('click', '.js-task-edit-cancel', function () {
+            const form = $(this).closest('.js-task-edit-form');
+            form.hide();
+            openEditForm = null;
+            // Show description/status display again
+            form.closest('.content').find('.task-desc, .js-task-status, .js-task-edit-btn').show();
+        });
+
+        $(document).on('submit', '.js-task-edit-form', function (e) {
+            e.preventDefault();
+            const form = $(this);
+            const taskId = form.data('task-id');
+            const description = form.find('textarea[name="description"]').val();
+            const status = form.find('select[name="status"]').val();
+            const user_id = form.find('select[name="user_id"]').val();
+
+            $.ajax({
+                url: '/admin/tasks/' + taskId + '/inline',
+                method: 'POST',
+                data: { description, status, user_id },
+                success: function (data) {
+                    if (data.success) {
+                        // Update UI
+                        const content = form.closest('.content');
+                        // Update description
+                        content.find('.task-desc').html(data.task.description.replace(/\n/g, '<br>')).show();
+                        // Update status dropdown
+                        content.find('.js-task-status').val(data.task.status).show();
+                        // Update assignee name
+                        content.find('.badge.bg-info').text(data.task.user_name);
+                        content.find('.js-task-edit-btn').show();
+                        form.hide();
+                        openEditForm = null;
+                    } else {
+                        alert('Fout bij opslaan');
+                    }
+                },
+                error: function () {
+                    alert('Fout bij opslaan');
+                }
+            });
+        });
+
 });
 
 // // Use event delegation to handle clicks on dynamically added delete buttons
