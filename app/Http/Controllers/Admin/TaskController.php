@@ -21,6 +21,39 @@ class TaskController extends Controller
 {
     use MediaUploadingTrait;
 
+    /**
+     * Inline update for AJAX editing (description, status)
+     */
+    public function updateInline(Request $request, Task $task)
+    {
+        $user = auth()->user();
+        // Allow if user is admin, or is creator and has edit permission
+        $isAdmin = $user->isAdmin ?? false;
+        if (!$isAdmin && ($task->created_by !== $user->id || Gate::denies('task_edit'))) {
+            return response()->json(['success' => false, 'message' => 'Geen permissie'], 403);
+        }
+
+        $task->description = $request->input('description');
+        $task->status = $request->input('status');
+        if ($request->has('user_id')) {
+            $task->user_id = $request->input('user_id');
+        }
+        $task->save();
+
+        // Reload user for updated name
+        $task->load('user');
+
+        return response()->json([
+            'success' => true,
+            'task' => [
+                'id' => $task->id,
+                'description' => $task->description,
+                'status' => $task->status,
+                'user_id' => $task->user_id,
+                'user_name' => $task->user ? $task->user->name : '',
+            ]
+        ]);
+    }
     public function index()
     {
         abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
