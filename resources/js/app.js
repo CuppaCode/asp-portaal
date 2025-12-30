@@ -159,7 +159,11 @@ $(document).ready(function () {
     var expertise_receive_date = $('.expertise-report-show');
 
     $('#expert_report_is_in').change(function()  {
-        expertise_receive_date.toggleClass('d-none');
+        if ($(this).is(':checked')) {
+            expertise_receive_date.removeClass('d-none');
+        } else {
+            expertise_receive_date.addClass('d-none');
+        }
     });
 
     $(".clickable-row").click(function() {
@@ -779,64 +783,46 @@ async function setupMailBody() {
     var finalSubject = $('option:selected', mailTemplate).data('subject') ?? '';
 
     if (finalBody != '') {
-
         $.each(find, (index, item) => {
-            
             finalBody = finalBody.replaceAll(item, replace[index]);
-
         });
-
-        $.each(allMailTranslations, (index, item) => {
-
-            finalBody = finalBody.replaceAll(index, item);
-
-        });
-
+        Object.keys(allMailTranslations)
+            .filter(key => key.startsWith('[') && key.endsWith(']'))
+            .forEach(key => {
+                finalBody = finalBody.replaceAll(key, allMailTranslations[key]);
+            });
     }
 
     if (finalSubject != '') {
-
         $.each(find, (index, item) => {
-
             finalSubject = finalSubject.replaceAll(item, replace[index]);
-
         });
-
-        $.each(allMailTranslations, (index, item) => {
-
-            finalSubject = finalSubject.replaceAll(index, item);
-
-        });
-
+        Object.keys(allMailTranslations)
+            .filter(key => key.startsWith('[') && key.endsWith(']'))
+            .forEach(key => {
+                finalSubject = finalSubject.replaceAll(key, allMailTranslations[key]);
+            });
     }
-        
-    const ckeditor = await ClassicEditor.create(nativeMailBody);
 
+    const ckeditor = await ClassicEditor.create(nativeMailBody);
     ckeditor.setData(finalBody);
     mailSubject.val(finalSubject);
 
     mailTemplate.on('change', function (e) {
-
         var finalSubject = $('option:selected', this).data('subject') ?? '';
         var finalBody = $(this).val() ?? '';
-
         $.each(find, (index, item) => {
-            
             finalBody = finalBody.replaceAll(item, replace[index]);
             finalSubject = finalSubject.replaceAll(item, replace[index]);
-
         });
-
-        $.each(allMailTranslations, (index, item) => {
-
-            finalBody = finalBody.replaceAll(index, item);
-            finalSubject = finalSubject.replaceAll(index, item);
-
-        });
-
+        Object.keys(allMailTranslations)
+            .filter(key => key.startsWith('[') && key.endsWith(']'))
+            .forEach(key => {
+                finalBody = finalBody.replaceAll(key, allMailTranslations[key]);
+                finalSubject = finalSubject.replaceAll(key, allMailTranslations[key]);
+            });
         ckeditor.setData(finalBody);
         mailSubject.val(finalSubject);
-
     });
 
    

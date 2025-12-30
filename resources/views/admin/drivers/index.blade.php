@@ -1,14 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-@can('driver_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.drivers.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.driver.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
+
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.driver.title_singular') }} {{ trans('global.list') }}
@@ -23,7 +15,7 @@
 
                         </th>
                         <th>
-                            {{ trans('cruds.driver.fields.id') }}
+                            {{ trans('cruds.driver.fields.company') }}
                         </th>
                         <th>
                             {{ trans('cruds.driver.fields.last_name') }}
@@ -64,27 +56,21 @@
 
                             </td>
                             <td>
-                                {{ $driver->id ?? '' }}
+                                {{ $driver->contact->company->name ?? '' }}
                             </td>
                             <td>
-                                {{ $driver->last_name ?? '' }}
+                                {{ $driver->contact->last_name ?? '' }}
                             </td>
                             <td>
-                                {{ $driver->email ?? '' }}
+                                {{ $driver->contact->email ?? '' }}
                             </td>
                             <td>
-                                {{ $driver->phone ?? '' }}
+                                {{ $driver->contact->company->phone ?? '' }}
                             </td>
                             <td>
                                 @can('driver_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.drivers.show', $driver->id) }}">
                                         {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('driver_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.drivers.edit', $driver->id) }}">
-                                        {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 

@@ -2,8 +2,13 @@
 @section('content')
 
 <div class="card">
-    <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.contact.title') }}
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>{{ trans('global.show') }} {{ trans('cruds.contact.title') }}</span>
+        @can('contact_edit')
+            <a href="{{ route('admin.contacts.edit', $contact->id) }}" class="btn btn-sm btn-primary">
+                <i class="fa fa-edit"></i> {{ trans('global.edit') }}
+            </a>
+        @endcan
     </div>
 
     <div class="card-body">
@@ -28,11 +33,7 @@
                             {{ trans('cruds.contact.fields.company') }}
                         </th>
                         <td>
-                            @if($contact->company)
-                                <a href="{{ route('admin.companies.show', $contact->company->id) }}">{{ $contact->company->name }}</a>
-                            @else
-                                -
-                            @endif
+                            {{ $contact->company->name ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -78,6 +79,14 @@
                     <tr>
                         <th>{{ trans('cruds.contact.fields.phone') }}</th>
                         <td>{{ $contact->phone ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ trans('cruds.contact.fields.birthdate') }}</th>
+                        <td>{{ $contact->birthdate ? \Carbon\Carbon::parse($contact->birthdate)->format('d-m-Y') : '-' }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ trans('cruds.contact.fields.driver_license_id') }}</th>
+                        <td>{{ $contact->driver_license_id ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>{{ trans('cruds.contact.fields.note') }}</th>

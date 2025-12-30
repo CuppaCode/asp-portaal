@@ -60,6 +60,11 @@ class Driver extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
     public function getDriverFullNameAttribute()
     {
         if(!empty($this->contact) && !empty($this->company)) {

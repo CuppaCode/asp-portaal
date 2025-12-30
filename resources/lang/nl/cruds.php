@@ -207,6 +207,10 @@ return [
             'waybill_signed_at_unloading'      => 'Vrachtbrief getekend bij lossen',
             'closed_at'                        => 'Gesloten op',
             'closed_at_helper'                 => ' ',
+            'notify_date'                       => 'Herinneringsdatum',
+            'notify_date_helper'                => ' ',
+            'expiry_date'                       => 'Vervaldatum',
+            'expiry_date_helper'                => ' ',
         ],
     ],
     'company' => [
@@ -314,6 +318,8 @@ return [
             'deleted_at_helper' => ' ',
             'first_name'        => 'Voornaam',
             'first_name_helper' => ' ',
+            'name'              => 'Naam',
+            'name_helper'       => ' ',
             'last_name'         => 'Achternaam',
             'last_name_helper'  => ' ',
             'email'             => 'Email',
@@ -330,6 +336,10 @@ return [
             'is_driver_helper'  => '',
             'phone'             => 'Telefoonnummer',
             'note'              => 'Notitie',
+                'birthdate'         => 'Geboortedatum',
+                'birthdate_helper'  => ' ',
+                'driver_license_id' => 'Rijbewijsnummer',
+                'driver_license_id_helper' => ' ',
         ],
     ],
     'injuryOffice' => [
@@ -422,7 +432,9 @@ return [
             'phone_helper'      => ' ',
             'team'              => 'Team',
             'team_helper'       => ' ',
-        ],
+            'company'           => 'Klant',
+            'company_helper'    => ' ',
+        ]
     ],
     'vehicleInformation' => [
         'title'          => 'Voertuigen informatie',
@@ -567,6 +579,14 @@ return [
         'title_report'   => 'Statistiek report',
         'title_singular' => 'Statistiek',
     ],
+    'dashboard' => [
+        'drivers_certificates' => 'Chauffeurs & certificaten',
+        'drivers_certificates_overview' => 'Overzicht Chauffeurs en Certificaten',
+        'driver' => 'Chauffeur',
+        'company' => 'Klant',
+        'certificates' => 'Certificaten',
+        'actions' => 'Acties',
+    ],
     'invoices' => [
         'title'          => 'Facturatie',
         'title_singular' => 'Facturatie',
@@ -600,5 +620,29 @@ return [
     ],
     'superAdmin' => [
         'title' => 'Super Admin Tools'
+    ],
+    'certificate' => [
+        'title'          => 'Certificaten',
+        'title_singular' => 'Certificaat',
+        'fields'         => [
+            'id'                => 'ID',
+            'id_helper'         => ' ',
+            'driver'            => 'Chauffeur',
+            'driver_helper'     => ' ',
+            'name'              => 'Naam',
+            'name_helper'       => ' ',
+            'notify_date'       => 'Herinneringsdatum',
+            'notify_date_helper'=> ' ',
+            'expiry_date'       => 'Vervaldatum',
+            'expiry_date_helper'=> ' ',
+            'created_at'        => 'Created at',
+            'created_at_helper' => ' ',
+            'updated_at'        => 'Updated at',
+            'updated_at_helper' => ' ',
+            'deleted_at'        => 'Deleted at',
+            'deleted_at_helper' => ' ',
+            'team'              => 'Team',
+            'team_helper'       => ' ',
+        ],
     ]
 ];
