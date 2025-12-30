@@ -53,6 +53,7 @@
     </div>
 </div>
 
+@can('certificate_access')
 
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
@@ -98,5 +99,6 @@
         </table>
     </div>
 </div>
+@endcan
 
 @endsection

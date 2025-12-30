@@ -251,6 +251,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
         </div>
 
     @if($isAdminOrAgent)
+    @can('certificate_access')
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
@@ -309,6 +310,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                 </div>
             </div>
         </div>
+        @endcan
         @endif
 
         <div class="col-md-12">
