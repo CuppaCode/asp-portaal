@@ -17,6 +17,7 @@ use App\Models\AuditLog;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
+use App\Models\CertificateCategory;
 
 class HomeController
 {
@@ -109,7 +110,25 @@ class HomeController
         $teams = Team::get();
         
         // Pass drivers_with_certificates to the view
+        // Fetch certificate categories that have certificates expiring within 30 days
+        $categories_expiring_30 = null;
+        if ($user->isAdminOrAgent()) {
+            $today = Carbon::now()->startOfDay();
+            $limit = Carbon::now()->addDays(30)->endOfDay();
+
+            // Include certificates that are already expired as well as those expiring within the next 30 days.
+            // We select certificates with expiry_date <= $limit (and not null).
+            $categories_expiring_30 = CertificateCategory::whereHas('certificates', function($q) use ($limit) {
+                    $q->whereNotNull('expiry_date')
+                        ->where('expiry_date', '<=', $limit->toDateString());
+            })->with(['certificates' => function($q) use ($limit) {
+                    $q->whereNotNull('expiry_date')
+                        ->where('expiry_date', '>', $limit->toDateString())
+                        ->orderBy('expiry_date');
+            }])->get();
+        }
+
         // If you use a different dashboard view, update the view name accordingly
-        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs', 'drivers_with_certificates'));
+        return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs', 'drivers_with_certificates', 'categories_expiring_30'));
     }
 }

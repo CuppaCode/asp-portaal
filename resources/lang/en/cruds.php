@@ -19,4 +19,7 @@ return [
             'deleted_at_helper' => ' ',
         ],
     ],
+    'dashboard' => [
+        'certificate_category_expiring' => ':name certificates expiring within 30 days',
+    ],
 ];

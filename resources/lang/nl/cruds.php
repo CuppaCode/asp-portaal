@@ -586,6 +586,7 @@ return [
         'company' => 'Klant',
         'certificates' => 'Certificaten',
         'actions' => 'Acties',
+        'certificate_category_expiring' => ':name certificaten die verlopen binnen 30 dagen',
     ],
     'invoices' => [
         'title'          => 'Facturatie',
