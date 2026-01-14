@@ -170,14 +170,12 @@
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
                         <td>
-                            @if($isAdminOrAgent)
                             <select class="search" strict="true">
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach(App\Models\Claim::STATUS_SELECT as $key => $item)
                                     <option value="{{ $item }}">{{ $item }}</option>
                                 @endforeach
                             </select>
-                            @endif
                         </td>
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
