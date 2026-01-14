@@ -151,12 +151,14 @@
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
                         </td>
                         <td>
+                            @if($isAdminOrAgent)
                             <select class="search">
                                 <option value>{{ trans('global.all') }}</option>
                                 @foreach($companies as $key => $item)
                                     <option value="{{ $item->name }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
+                            @endif
                         </td>
                         <td>
                             <input class="search" type="text" placeholder="{{ trans('global.search') }}">
