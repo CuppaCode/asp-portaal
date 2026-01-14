@@ -110,22 +110,22 @@ class HomeController
         $teams = Team::get();
         
         // Pass drivers_with_certificates to the view
-        // Fetch certificate categories that have certificates expiring within 30 days
+        // Fetch certificate categories that have certificates expiring within 30 days (including already expired)
         $categories_expiring_30 = null;
         if ($user->isAdminOrAgent()) {
-            $today = Carbon::now()->startOfDay();
             $limit = Carbon::now()->addDays(30)->endOfDay();
+            $limitDate = $limit->toDateString();
 
-            // Include certificates that are already expired as well as those expiring within the next 30 days.
-            // We select certificates with expiry_date <= $limit (and not null).
-            $categories_expiring_30 = CertificateCategory::whereHas('certificates', function($q) use ($limit) {
+            // Find categories that have at least one certificate with expiry_date <= $limitDate,
+            // and eager-load only those certificates (filtered) so the view can iterate them directly.
+            $categories_expiring_30 = CertificateCategory::whereHas('certificates', function($q) use ($limitDate) {
                     $q->whereNotNull('expiry_date')
-                        ->where('expiry_date', '<=', $limit->toDateString());
-            })->with(['certificates' => function($q) use ($limit) {
-                    $q->whereNotNull('expiry_date')
-                        ->where('expiry_date', '>', $limit->toDateString())
-                        ->orderBy('expiry_date');
-            }])->get();
+                      ->whereDate('expiry_date', '<=', $limitDate);
+                        })->with(['certificates' => function($q) use ($limitDate) {
+                                        $q->whereNotNull('expiry_date')
+                                            ->whereDate('expiry_date', '<=', $limitDate)
+                                            ->orderBy('expiry_date');
+                        }])->get();
         }
 
         // If you use a different dashboard view, update the view name accordingly

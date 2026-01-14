@@ -259,111 +259,122 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                 </div>
                 <div class="card-body">
                     @if(!empty($drivers_with_certificates) && $drivers_with_certificates->count())
-                    <div class="table-responsive">
-                        <table class="table table-borderless table-striped" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>{{ trans('cruds.dashboard.driver') }}</th>
-                                    <th>{{ trans('cruds.dashboard.company') }}</th>
-                                    <th>{{ trans('cruds.dashboard.certificates') }}</th>
-                                    <th>{{ trans('cruds.dashboard.actions') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($drivers_with_certificates as $driver)
-                                <tr @if(!empty($driver->has_expiring_within_year)) class="table-danger" @endif>
-                                    <td>{{ $driver->driver_name ?? ($driver->contact->first_name . ' ' . $driver->contact->last_name ?? 'Niet gevonden') }}</td>
-                                    <td>{{ $driver->company->name ?? '' }}</td>
-                                    <td>
-                                        @if($driver->certificates && $driver->certificates->count())
-                                            <ul class="mb-0">
-                                                @foreach($driver->certificates as $certificate)
-                                                    <li @if(!empty($certificate->is_expiring_within_year)) class="text-danger" @endif>
-                                                        {{ $certificate->name }} @if($certificate->expiry_date) — {{ $certificate->expiry_date }} @endif
-                                                    </li>
-                                                @endforeach
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                            @foreach($drivers_with_certificates as $driver)
+                                @php
+                                    $driverName = $driver->driver_name ?? ($driver->contact->first_name . ' ' . $driver->contact->last_name ?? 'Niet gevonden');
+                                    $expiringCount = 0;
+                                    if($driver->certificates) {
+                                        $expiringCount = $driver->certificates->where('is_expiring_within_year', true)->count();
+                                    }
+                                @endphp
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <div class="fw-bold">{{ $driverName }}</div>
+                                            <div>
+                                                @if($expiringCount > 0)
+                                                    <span class="badge bg-danger">{{ $expiringCount }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-muted small">{{ $driver->company->name ?? '' }}</div>
+                                            <ul class="list-unstyled mt-2 mb-0">
+                                                @if($driver->certificates && $driver->certificates->count())
+                                                    @foreach($driver->certificates as $certificate)
+                                                        <li class="mb-1 @if(!empty($certificate->is_expiring_within_year)) text-danger @endif">
+                                                            {{ $certificate->name }} @if($certificate->expiry_date) — <span class="small">{{ $certificate->expiry_date }}</span> @endif
+                                                        </li>
+                                                    @endforeach
+                                                @else
+                                                    <li class="text-muted">Geen certificaten</li>
+                                                @endif
                                             </ul>
-                                        @else
-                                            Geen certificaten
-                                        @endif
-                                    </td>
-                                    <td class="text-end">
-                                        @can('driver_show')
-                                            <a class="btn btn-sm btn-primary" href="{{ route('admin.drivers.show', $driver->id) }}" title="{{ trans('cruds.driver.title_singular') }} bekijken">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </a>
-                                        @endcan
-                                        @can('certificate_access')
-                                            <a class="btn btn-sm btn-success" href="{{ route('admin.certificate.create', $driver->id) }}" title="{{ trans('cruds.certificate.title_singular') }} aanmaken">
-                                                <i class="fa fa-plus" aria-hidden="true"></i>
-                                            </a>
-                                        @endcan
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                        <div class="card-footer text-end">
+                                            @can('driver_show')
+                                                <a class="btn btn-sm btn-outline-primary me-1" href="{{ route('admin.drivers.show', $driver->id) }}" title="{{ trans('cruds.driver.title_singular') }} bekijken">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                </a>
+                                            @endcan
+                                            @can('certificate_access')
+                                                <a class="btn btn-sm btn-outline-success" href="{{ route('admin.certificate.create', $driver->id) }}" title="{{ trans('cruds.certificate.title_singular') }} aanmaken">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </a>
+                                            @endcan
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @else
                         Geen drivers gevonden
                     @endif
                 </div>
             </div>
         </div>
-        @endcan
-        @endif
-
+    @endcan
+    @endif
+        
         @if(!empty($categories_expiring_30) && $categories_expiring_30->count())
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
             @foreach($categories_expiring_30 as $category)
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            {{ trans('cruds.dashboard.certificate_category_expiring', ['name' => $category->name]) }}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="fw-bold">{{ $category->name }}</div>
+                            <div>
+                                <span class="badge bg-danger">{{ $category->certificates->count() }}</span>
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="list-group list-group-flush">
                             @if($category->certificates && $category->certificates->count())
-                                <div class="table-responsive">
-                                    <table class="table table-borderless table-striped" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Chauffeur</th>
-                                                <th>Certificaat</th>
-                                                <th>Vervaldatum</th>
-                                                <th class="text-end">Acties</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($category->certificates as $certificate)
-                                                <tr class="table-danger">
-                                                    <td>{{ $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden') }}</td>
-                                                    <td>{{ $certificate->name }}</td>
-                                                    <td>{{ $certificate->expiry_date }}</td>
-                                                    <td class="text-end">
-                                                        @can('driver_show')
-                                                            @if(isset($certificate->driver->id))
-                                                                <a class="btn btn-sm btn-primary" href="{{ route('admin.drivers.show', $certificate->driver->id) }}" title="{{ trans('cruds.driver.title_singular') }} bekijken">
-                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                                </a>
-                                                            @endif
-                                                        @endcan
-                                                        @can('certificate_access')
-                                                            <a class="btn btn-sm btn-success" href="{{ route('admin.certificate.show', $certificate->id) }}" title="{{ trans('cruds.certificate.title_singular') }} bekijken">
-                                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            </a>
-                                                        @endcan
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                @foreach($category->certificates as $certificate)
+                                    @php
+                                        $expired = false;
+                                        if(!empty($certificate->expiry_date)){
+                                            $expired = \Carbon\Carbon::parse($certificate->expiry_date)->lte(\Carbon\Carbon::now());
+                                        }
+                                        $driverName = $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden');
+                                    @endphp
+                                    <div class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-semibold">{{ $driverName }}</div>
+                                            <div class="text-muted small">{{ $certificate->name }}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div>
+                                                <span class="badge @if($expired) bg-danger @else bg-warning text-dark @endif">{{ $certificate->expiry_date }}</span>
+                                            </div>
+                                            <div class="mt-2">
+                                                @can('driver_show')
+                                                    @if(isset($certificate->driver->id))
+                                                        <a class="btn btn-sm btn-outline-primary me-1" href="{{ route('admin.drivers.show', $certificate->driver->id) }}" title="{{ trans('cruds.driver.title_singular') }} bekijken">
+                                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                                        </a>
+                                                    @endif
+                                                @endcan
+                                                @can('certificate_access')
+                                                    <a class="btn btn-sm btn-outline-success" href="{{ route('admin.certificate.show', $certificate->id) }}" title="{{ trans('cruds.certificate.title_singular') }} bekijken">
+                                                        <i class="fa fa-id-card" aria-hidden="true"></i>
+                                                    </a>
+                                                @endcan
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             @else
-                                Geen certificaten gevonden
+                                <div class="list-group-item">Geen certificaten gevonden</div>
                             @endif
+                        </div>
+                        <div class="card-footer text-end">
+                            <a href="{{ route('admin.certificate-categories.show', $category->id) }}" class="btn btn-sm btn-link">{{ __('Bekijk alle') }}</a>
                         </div>
                     </div>
                 </div>
             @endforeach
+            </div>
         @endif
 
         <div class="col-md-12">
