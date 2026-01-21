@@ -17,7 +17,7 @@ class ClaimCreation extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($claim, $user)
+    public function __construct($claim, $user = null)
     {
         $this->claim = $claim;
         $this->user = $user;

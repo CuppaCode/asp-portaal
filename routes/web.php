@@ -11,6 +11,21 @@ Route::get('/home', function () {
 
 Auth::routes();
 
+// Public Claim Form Routes (no authentication required)
+Route::get('/claim-form/{token}', 'PublicClaimFormController@show')->name('public.claim-form.show');
+Route::post('/claim-form/{token}', 'PublicClaimFormController@store')->name('public.claim-form.store');
+
+// Draft Claim Actions (signed URLs for email links - no auth)
+Route::get('/claim-draft/{claim}/approve', 'PublicDraftClaimController@approve')
+    ->name('draft-claim.approve')
+    ->middleware('signed');
+Route::get('/claim-draft/{claim}/deny-form', 'PublicDraftClaimController@showDenyForm')
+    ->name('draft-claim.deny-form')
+    ->middleware('signed');
+Route::post('/claim-draft/{claim}/deny', 'PublicDraftClaimController@deny')
+    ->name('draft-claim.deny')
+    ->middleware('signed');
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
 
     Route::get('/', 'HomeController@index')->name('home');
@@ -43,6 +58,21 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('companies/media', 'CompanyController@storeMedia')->name('companies.storeMedia');
     Route::post('companies/ckmedia', 'CompanyController@storeCKEditorImages')->name('companies.storeCKEditorImages');
     Route::resource('companies', 'CompanyController');
+
+    // Company Claim Forms
+    Route::get('companies/{company}/claim-form', 'CompanyClaimFormController@index')->name('company-claim-forms.index');
+    Route::post('companies/{company}/claim-form/config', 'CompanyClaimFormController@updateConfig')->name('company-claim-forms.update-config');
+    Route::post('companies/{company}/claim-form/expiry', 'CompanyClaimFormController@updateExpirySettings')->name('company-claim-forms.update-expiry');
+    Route::post('companies/{company}/claim-form/token', 'CompanyClaimFormController@createToken')->name('company-claim-forms.create-token');
+    Route::patch('companies/{company}/claim-form/token/{token}', 'CompanyClaimFormController@toggleToken')->name('company-claim-forms.toggle-token');
+    Route::delete('companies/{company}/claim-form/token/{token}', 'CompanyClaimFormController@deleteToken')->name('company-claim-forms.delete-token');
+    Route::post('companies/{company}/claim-form/notification', 'CompanyClaimFormController@storeNotification')->name('company-claim-forms.store-notification');
+    Route::delete('companies/{company}/claim-form/notification/{notification}', 'CompanyClaimFormController@deleteNotification')->name('company-claim-forms.delete-notification');
+
+    // Draft Claims
+    Route::post('claims/{claim}/approve', 'DraftClaimController@approve')->name('claims.approve');
+    Route::post('claims/{claim}/deny', 'DraftClaimController@deny')->name('claims.deny');
+    Route::post('claims/{claim}/resubmit', 'DraftClaimController@resubmit')->name('claims.resubmit');
 
     // Task
     Route::delete('tasks/destroy', 'TaskController@massDestroy')->name('tasks.massDestroy');

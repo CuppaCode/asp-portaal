@@ -83,4 +83,19 @@ class Company extends Model implements HasMedia
     {
         return $this->hasMany(Contact::class);
     }
+
+    public function claimTokens()
+    {
+        return $this->hasMany(CompanyClaimToken::class);
+    }
+
+    public function claimFormConfigs()
+    {
+        return $this->hasMany(CompanyClaimFormConfig::class);
+    }
+
+    public function claimFormNotifications()
+    {
+        return $this->hasMany(CompanyClaimFormNotification::class);
+    }
 }

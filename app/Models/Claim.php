@@ -133,6 +133,8 @@ class Claim extends Model implements HasMedia
     ];
 
     public const STATUS_SELECT = [
+        'draft'                     => 'Concept',
+        'draft_denied'              => 'Concept afgewezen',
         'new'                       => 'Nieuw',
         'in_progress'               => 'In behandeling',
         'claim_denied'              => 'Claim afgewezen',        
