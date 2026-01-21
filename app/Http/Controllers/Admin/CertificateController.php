@@ -19,7 +19,12 @@ class CertificateController extends Controller
     public function index()
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        
+        // Show a single overview page grouping certificates by category
+        $categories = \App\Models\CertificateCategory::with(['certificates' => function($q) {
+            $q->with('driver')->orderBy('expiry_date');
+        }])->get();
+
+        return view('admin.certificate.index', compact('categories'));
     }
 
     /**
@@ -43,6 +48,7 @@ class CertificateController extends Controller
             [
                 'driver_id' => $driver->id,
                 'name' => $request->name,
+                'category_id' => $request->input('category_id'),
                 'notify_date' => $request->notify_date,
                 'expiry_date' => $request->expiry_date,
                 'team_id' => auth()->user()->team_id
@@ -69,7 +75,9 @@ class CertificateController extends Controller
     public function show(Certificate $certificate)
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        //
+        // Show single certificate details
+        $certificate->load('driver.contact', 'category');
+        return view('admin.certificate.show', compact('certificate'));
     }
 
     /**
@@ -78,7 +86,9 @@ class CertificateController extends Controller
     public function edit(Certificate $certificate)
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        //
+        // show edit form
+        $certificate->load('category', 'driver');
+        return view('admin.certificate.edit', compact('certificate'));
     }
 
     /**
@@ -87,7 +97,27 @@ class CertificateController extends Controller
     public function update(Request $request, Certificate $certificate)
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|integer|exists:certificate_categories,id',
+            'notify_date' => 'nullable|string',
+            'expiry_date' => 'nullable|string',
+        ]);
+
+        $certificate->update([
+            'name' => $data['name'],
+            'category_id' => $data['category_id'] ?? null,
+            'notify_date' => $data['notify_date'] ?? null,
+            'expiry_date' => $data['expiry_date'] ?? null,
+        ]);
+
+        // Respect optional back_to field
+        $back = $request->input('back_to');
+        if ($back && str_starts_with($back, url('/'))) {
+            return redirect($back)->with('success', 'Certificaat bijgewerkt');
+        }
+
+        return redirect()->route('admin.certificate.show', $certificate->id)->with('success', 'Certificaat bijgewerkt');
     }
 
     /**

@@ -91,6 +91,11 @@ class CertificateCategoryController extends Controller
     {
         abort_if(Gate::denies('certificate_category_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        // Eager-load certificates with driver for the detail view cards
+        $certificateCategory->load(['certificates' => function($q) {
+            $q->with('driver')->orderBy('expiry_date');
+        }]);
+
         return view('admin.certificate_categories.show', compact('certificateCategory'));
     }
 

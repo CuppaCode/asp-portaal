@@ -25,23 +25,26 @@ class HomeController
     {
         $user = auth()->user();
 
-        // Only fetch drivers that have certificates for admin users/agents
+        // Previously we fetched drivers with certificates. Now produce a collection grouped by
+        // CertificateCategory: each item is a CertificateCategory with its certificates eager-loaded.
         $drivers_with_certificates = null;
         if ($user->isAdminOrAgent()) {
-            $drivers_with_certificates = \App\Models\Driver::with(['certificates' => function($q) {
-                $q->orderBy('expiry_date');
-            }])->whereHas('certificates')->get();
+            // Load categories that have certificates and eager-load those certificates and drivers
+            $drivers_with_certificates = \App\Models\CertificateCategory::whereHas('certificates')
+                ->with(['certificates' => function($q) {
+                    $q->with('driver')->orderBy('expiry_date');
+                }])->get();
 
-            // Annotate drivers and certificates with an 'is_expiring_within_year' flag
-            $drivers_with_certificates->transform(function($driver) {
-                $driver->has_expiring_within_year = false;
+            // Annotate categories and certificates with expiry flags (within 1 year)
+            $drivers_with_certificates->transform(function($category) {
+                $category->has_expiring_within_year = false;
 
-                foreach ($driver->certificates as $certificate) {
+                foreach ($category->certificates as $certificate) {
                     if (!empty($certificate->expiry_date)) {
                         $expiry = \Carbon\Carbon::parse($certificate->expiry_date);
                         if ($expiry->lte(\Carbon\Carbon::now()->addYear())) {
                             $certificate->is_expiring_within_year = true;
-                            $driver->has_expiring_within_year = true;
+                            $category->has_expiring_within_year = true;
                         } else {
                             $certificate->is_expiring_within_year = false;
                         }
@@ -50,7 +53,7 @@ class HomeController
                     }
                 }
 
-                return $driver;
+                return $category;
             });
         }
         $claims = Claim::whereNot('status', 'finished')->with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->paginate(7, ['*'], 'claims');
@@ -109,24 +112,24 @@ class HomeController
         $users = User::get();
         $teams = Team::get();
         
-        // Pass drivers_with_certificates to the view
-        // Fetch certificate categories that have certificates expiring within 30 days (including already expired)
-        $categories_expiring_30 = null;
-        if ($user->isAdminOrAgent()) {
-            $limit = Carbon::now()->addDays(30)->endOfDay();
-            $limitDate = $limit->toDateString();
+                // Combined overview: fetch certificate categories that have certificates expired or expiring within 30 days
+                $categories_expiring_30 = null;
+                if ($user->isAdminOrAgent()) {
+                        $limit = Carbon::now()->addDays(30)->endOfDay();
+                        $limitDate = $limit->toDateString();
 
-            // Find categories that have at least one certificate with expiry_date <= $limitDate,
-            // and eager-load only those certificates (filtered) so the view can iterate them directly.
-            $categories_expiring_30 = CertificateCategory::whereHas('certificates', function($q) use ($limitDate) {
-                    $q->whereNotNull('expiry_date')
-                      ->whereDate('expiry_date', '<=', $limitDate);
-                        })->with(['certificates' => function($q) use ($limitDate) {
+                        // Find categories that have at least one certificate with expiry_date <= $limitDate,
+                        // eager-load those certificates (filtered) and include the driver relation for display.
+                        $categories_expiring_30 = CertificateCategory::whereHas('certificates', function($q) use ($limitDate) {
                                         $q->whereNotNull('expiry_date')
-                                            ->whereDate('expiry_date', '<=', $limitDate)
-                                            ->orderBy('expiry_date');
-                        }])->get();
-        }
+                                            ->whereDate('expiry_date', '<=', $limitDate);
+                                })->with(['certificates' => function($q) use ($limitDate) {
+                                        $q->whereNotNull('expiry_date')
+                                                ->whereDate('expiry_date', '<=', $limitDate)
+                                                ->orderBy('expiry_date')
+                                                ->with('driver');
+                                }])->get();
+                }
 
         // If you use a different dashboard view, update the view name accordingly
         return view('home', compact('claims', 'popular', 'claims_count', 'company_claims', 'personal_tasks', 'personal_claims', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'teams', 'vehicle_opposites', 'vehicles', 'tasks', 'teams', 'users', 'unassignedClaims', 'longestClaim', 'auditLogs', 'drivers_with_certificates', 'categories_expiring_30'));

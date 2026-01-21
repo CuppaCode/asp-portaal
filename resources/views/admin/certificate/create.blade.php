@@ -57,10 +57,11 @@
                 @endif
             </div>
 
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
+            <div class="form-group d-flex gap-2">
+                <button class="btn btn-danger btn-sm" type="submit">
                     {{ trans('global.save') }}
                 </button>
+                <a href="javascript:history.back()" class="btn btn-secondary btn-sm">Terug</a>
             </div>
         </form>
     </div>
