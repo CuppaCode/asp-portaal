@@ -93,6 +93,12 @@
                         <td>
                             {{ $certificate->expiry_date }}
                         </td>
+                        <td>
+                            @can('certificate_access')
+                                <a class="btn btn-xs btn-primary" href="{{ route('admin.certificate.show', $certificate->id) }}">{{ trans('global.view') }}</a>
+                                <a class="btn btn-xs btn-info" href="{{ route('admin.certificate.edit', $certificate->id) }}">{{ trans('global.edit') }}</a>
+                            @endcan
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 use App\Models\Driver;
+use App\Models\CertificateCategory;
 
 class Certificate extends Model
 {
@@ -22,6 +23,7 @@ class Certificate extends Model
 
     protected $fillable = [
         'driver_id',
+        'category_id',
         'created_at',
         'name',
         'notify_date',
@@ -34,6 +36,11 @@ class Certificate extends Model
     public function driver()
     {
         return $this->belongsTo(Driver::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(CertificateCategory::class, 'category_id');
     }
 
     public function setNotifyDateAttribute($value)
