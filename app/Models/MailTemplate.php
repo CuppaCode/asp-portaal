@@ -28,10 +28,18 @@ class MailTemplate extends Model implements HasMedia
         'name',
         'subject',
         'body',
+        'trigger_type',
+        'is_active',
+        'is_automatic',
         'created_at',
         'updated_at',
         'deleted_at',
         'team_id',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_automatic' => 'boolean',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -42,5 +50,30 @@ class MailTemplate extends Model implements HasMedia
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
+    }
+
+    public function mailings()
+    {
+        return $this->hasMany(Mailing::class, 'mail_template_id');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeByTrigger($query, $triggerType)
+    {
+        return $query->where('trigger_type', $triggerType);
+    }
+
+    public function scopeAutomatic($query)
+    {
+        return $query->where('is_automatic', true);
+    }
+
+    public function scopeManual($query)
+    {
+        return $query->where('is_automatic', false);
     }
 }

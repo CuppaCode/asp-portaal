@@ -113,6 +113,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
     Route::resource('mail-templates', 'MailTemplateController');
 
+    // Mailings
+    Route::delete('mailings/destroy', 'MailingController@massDestroy')->name('mailings.massDestroy');
+    Route::post('mailings/{mailing}/send', 'MailingController@send')->name('mailings.send');
+    Route::post('mailings/send-batch', 'MailingController@sendBatch')->name('mailings.sendBatch');
+    Route::resource('mailings', 'MailingController');
+
     // SLA
     Route::resource('sla', 'SLAController');
 

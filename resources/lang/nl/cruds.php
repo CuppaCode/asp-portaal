@@ -616,11 +616,90 @@ return [
             'subject' => 'Kenmerk WP',
             'subject_helper' => '',
             'body' => 'Sjabloon',
-            'body_helper' => ''
+            'body_helper' => '',
+            'trigger_type' => 'Trigger Type',
+            'trigger_type_helper' => 'Wanneer deze template wordt gebruikt',
+            'is_active' => 'Actief',
+            'is_active_helper' => 'Alleen actieve templates worden gebruikt',
+            'is_automatic' => 'Automatisch',
+            'is_automatic_helper' => 'Automatische templates worden verstuurd bij triggers'
         ]    
     ],
+    'mailings' => [
+        'title' => 'Mailings',
+        'title_singular' => 'Mailing',
+        'fields' => [
+            'id' => 'ID',
+            'subject' => 'Onderwerp',
+            'subject_helper' => '',
+            'body' => 'Inhoud',
+            'body_helper' => '',
+            'recipients' => 'Ontvangers',
+            'recipients_helper' => 'Email adressen van ontvangers',
+            'cc' => 'CC',
+            'cc_helper' => '',
+            'bcc' => 'BCC',
+            'bcc_helper' => '',
+            'reply_to' => 'Antwoord naar',
+            'reply_to_helper' => '',
+            'status' => 'Status',
+            'status_helper' => 'draft, ready, scheduled, sent, failed',
+            'sent_at' => 'Verzonden op',
+            'sent_at_helper' => '',
+            'user' => 'Aangemaakt door',
+            'user_helper' => '',
+            'mail_template' => 'Mail Sjabloon',
+            'mail_template_helper' => '',
+            'claims' => 'Schades',
+            'claims_helper' => ''
+        ]
+    ],
     'superAdmin' => [
-        'title' => 'Super Admin Tools'
+        'title' => 'Super Admin Tools',
+        'triggers' => [
+            'title' => 'Email Trigger Beheer',
+            'subtitle' => 'Configureer automatische email triggers en bekijk gekoppelde templates',
+            'trigger_type' => 'Trigger Type',
+            'description' => 'Omschrijving',
+            'active_templates' => 'Actieve Templates',
+            'total_templates' => 'Totaal Templates',
+            'actions' => 'Acties',
+            'view_templates' => 'Bekijk Templates',
+            'new_template' => 'Nieuw Template',
+            'automatic' => 'Automatisch',
+            'manual' => 'Handmatig',
+            'info_title' => 'Trigger Types Uitgelegd:',
+            'info_automatic' => 'Templates worden automatisch verstuurd wanneer de trigger gebeurtenis plaatsvindt (bijv. schade aangemaakt, status gewijzigd)',
+            'info_manual' => 'Templates verschijnen in dropdown menu\'s zodat gebruikers ze handmatig kunnen selecteren en verzenden',
+            'info_active' => 'Alleen templates gemarkeerd als "Actief" worden gebruikt door het systeem',
+            'statistics' => 'Snelle Statistieken',
+            'active_count' => 'Actieve Templates',
+            'automatic_count' => 'Automatische Templates',
+            'manual_count' => 'Handmatige Templates',
+            'total_count' => 'Totaal Templates',
+            'types' => [
+                'CLAIM_CREATED' => [
+                    'name' => 'Schade Aangemaakt',
+                    'description' => 'Getriggerd wanneer een nieuwe schade wordt aangemaakt',
+                ],
+                'CLAIM_STATUS_CHANGED' => [
+                    'name' => 'Schade Status Gewijzigd',
+                    'description' => 'Getriggerd wanneer de status van een schade wordt bijgewerkt',
+                ],
+                'TASK_ASSIGNED' => [
+                    'name' => 'Taak Toegewezen',
+                    'description' => 'Getriggerd wanneer een taak wordt toegewezen aan een gebruiker',
+                ],
+                'MANUAL_CLAIMS' => [
+                    'name' => 'Handmatig - Schades',
+                    'description' => 'Handmatig te selecteren templates beschikbaar in de schade sectie',
+                ],
+                'MANUAL_GENERAL' => [
+                    'name' => 'Handmatig - Algemeen',
+                    'description' => 'Handmatig te selecteren templates voor algemeen gebruik',
+                ],
+            ],
+        ],
     ],
     'certificate' => [
         'title'          => 'Certificaten',

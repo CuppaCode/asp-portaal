@@ -22,6 +22,18 @@ class StoreMailTemplateRequest extends FormRequest
             ],
             'body' => [
                 'required'
+            ],
+            'trigger_type' => [
+                'nullable',
+                'string'
+            ],
+            'is_active' => [
+                'nullable',
+                'boolean'
+            ],
+            'is_automatic' => [
+                'nullable',
+                'boolean'
             ]
         ];
     }

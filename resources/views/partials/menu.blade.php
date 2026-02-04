@@ -311,11 +311,22 @@
         @endif
         @can('mail_template_access')
         <li class="c-sidebar-nav-item">
-            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailTemplates") || request()->is("admin/mailTemplates/*") ? "c-active" : "" }}">
+            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mail-templates") || request()->is("admin/mail-templates/*") ? "c-active" : "" }}">
                 <i class="fa-fw fas fa-envelope c-sidebar-nav-icon">
 
                 </i>
                 {{ trans('cruds.mailTemplates.title') }}
+            </a>
+        </li>
+        @endcan
+
+        @can('mailing_access')
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.mailings.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailings") || request()->is("admin/mailings/*") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-paper-plane c-sidebar-nav-icon">
+
+                </i>
+                {{ trans('cruds.mailings.title') }}
             </a>
         </li>
         @endcan

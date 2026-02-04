@@ -504,7 +504,10 @@ class ClaimController extends Controller {
         ];
 
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
-        $mailTemplates = MailTemplate::all();
+        $mailTemplates = MailTemplate::active()
+            ->manual()
+            ->byTrigger('MANUAL_CLAIMS')
+            ->get();
       
         $assignee_name = null;
         
@@ -632,29 +635,37 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $message = new \App\Notifications\PlainMail(
-            $request->mailSubject ?? '',
-            $request->mailBody ?? '',
-            $request->mailAttachments ?? null,
-            $request->mailCc ?? [],
-            $request->mailBcc ?? []
-        );
+        // Create a Mailing record instead of sending directly
+        $mailing = \App\Models\Mailing::create([
+            'subject' => $request->mailSubject ?? '',
+            'body' => $request->mailBody ?? '',
+            'recipients' => $request->mailReceiver ?? [],
+            'cc' => $request->mailCc ? explode(',', $request->mailCc) : [],
+            'bcc' => $request->mailBcc ? explode(',', $request->mailBcc) : [],
+            'reply_to' => auth()->user()->email,
+            'status' => 'ready',
+            'user_id' => $request->input('user_id'),
+            'team_id' => auth()->user()->team->id
+        ]);
 
-        foreach($request->mailReceiver as $receiver) {
-            
-            Notification::route(
-                'mail', [
-                    $receiver ?? '' => ''
-                ]
-            )->notify($message);
-
+        // Attach files to mailing
+        if ($request->hasFile('mailAttachments')) {
+            foreach ($request->file('mailAttachments') as $image) {
+                $mailing->addMedia($image)->toMediaCollection('attachments');
+            }
         }
 
+        // Associate with claims
+        $mailing->claims()->sync($request->input('claims', []));
 
+        // Send the mailing immediately
+        $service = new \App\Services\MailTriggerService();
+        $service->sendMailing($mailing->id);
+
+        // Create a note for tracking (legacy compatibility)
         $receiverString = implode(', ', $request->mailReceiver);
-
         $noteDescription = "Ontvanger(s): {$receiverString}<br/>
-        CC: {$request->cc}<br/>
+        CC: {$request->mailCc}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -664,34 +675,6 @@ class ClaimController extends Controller {
             'description' => $noteDescription,
             'team_id' => auth()->user()->team->id
         ]);
-
-        if ($request->hasFile('mailAttachments')) {
-            foreach ($request->file('mailAttachments') as $image) {
-                $note->addMedia($image)->toMediaCollection('attachments');
-            }
-        }
-
-        // Example mail-sending logic with CC
-        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString, $note) {
-            $message->to(explode(',', $receiverString))
-                    ->subject($request->mailSubject);
-
-            // Add CC recipients if provided
-            if ($request->filled('cc')) {
-                $message->cc(explode(',', $request->cc));
-            }
-
-            // Add attachments if provided
-            if ($note->hasMedia('attachments')) {
-                //dd($request->file('mailAttachments'));
-                foreach ($note->getMedia('attachments') as $attachment) {
-                    $message->attach($attachment->getPath(), [
-                        'as' => $attachment->getAttribute('file_name'),
-                        'mime' => $attachment->mime_type,
-                    ]);
-                }
-            }
-        });
 
         $note->claims()->sync($request->input('claims', []));
 
