@@ -26,7 +26,7 @@ class MailTriggerService
         'TASK_ASSIGNED' => [
             'name' => 'Task Assigned',
             'description' => 'Triggered when a task is assigned to a user',
-            'available_tags' => ['task_title', 'task_due_date', 'assigned_to'],
+            'available_tags' => ['taak_titel', 'taak_beschrijving', 'taak_deadline', 'toegewezen_aan', 'toegewezen_email', 'aangemaakt_door', 'plus_alle_schade_tags'],
         ],
         'MANUAL_CLAIMS' => [
             'name' => 'Manual - Claims',
@@ -85,6 +85,9 @@ class MailTriggerService
             if (get_class($model) === 'App\Models\Claim') {
                 $mailing->claims()->attach($model->id);
             }
+
+            // Send the mailing immediately for automatic triggers
+            $this->sendMailing($mailing->id);
 
             $mailingIds[] = $mailing->id;
         }
@@ -186,12 +189,12 @@ class MailTriggerService
                 '[telnr]' => $model->company->phone ?? '',
                 '[onderwerp]' => $model->subject ?? '',
                 '[dossiernr]' => $model->claim_number ?? '',
-                '[status]' => $model->status ?? '',
+                '[status]' => \App\Models\Claim::STATUS_SELECT[$model->status] ?? $model->status ?? '',
                 '[datumschade]' => $model->accident_date ? $model->accident_date->format('d-m-Y') : '',
                 '[kenteken]' => $model->vehicle->plates ?? '',
-                '[schade_aard]' => $model->damaged_part ?? '',
-                '[schade_plaats]' => $model->damaged_area ?? '',
-                '[schade_oorzaak]' => $model->damage_origin ?? '',
+                '[schade_aard]' => \App\Models\Claim::DAMAGED_PART_SELECT[$model->damaged_part] ?? $model->damaged_part ?? '',
+                '[schade_plaats]' => \App\Models\Claim::DAMAGED_AREA_SELECT[$model->damaged_area] ?? $model->damaged_area ?? '',
+                '[schade_oorzaak]' => \App\Models\Claim::DAMAGE_ORIGIN[$model->damage_origin] ?? $model->damage_origin ?? '',
                 '[schade_bedrag]' => $model->damage_costs ?? '',
                 '[kenteken_wederpartij]' => $model->opposite->vehicle_plates ?? '',
                 '[verhaalbaar]' => $model->recoverable ? 'Ja' : 'Nee',
@@ -210,9 +213,9 @@ class MailTriggerService
                 '[wederpartij_postcode_stad]' => ($model->opposite->zipcode ?? '') . ' ' . ($model->opposite->city ?? ''),
                 '[wederpartij_telnr]' => $model->opposite->phone ?? '',
                 '[wederpartij_email]' => $model->opposite->email ?? '',
-                '[wederpartij_schade_aard]' => $model->opposite->damaged_part ?? '',
-                '[wederpartij_schade_plaats]' => $model->opposite->damaged_area ?? '',
-                '[wederpartij_schade_oorzaak]' => $model->opposite->damage_origin ?? '',
+                '[wederpartij_schade_aard]' => \App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT[$model->opposite->damaged_part] ?? $model->opposite->damaged_part ?? '',
+                '[wederpartij_schade_plaats]' => \App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$model->opposite->damaged_area] ?? $model->opposite->damaged_area ?? '',
+                '[wederpartij_schade_oorzaak]' => \App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE[$model->opposite->damage_origin] ?? $model->opposite->damage_origin ?? '',
             ];
 
             foreach ($replacements as $tag => $value) {
@@ -220,9 +223,25 @@ class MailTriggerService
             }
         }
 
-        // Add support for Task model tags if needed
+        // Add support for Task model tags
         if (get_class($model) === 'App\Models\Task') {
-            // Add task-specific tag replacements
+            $replacements = [
+                '[taak_titel]' => $model->name ?? '',
+                '[taak_beschrijving]' => $model->description ?? '',
+                '[taak_deadline]' => $model->due_date ? $model->due_date->format('d-m-Y') : '',
+                '[toegewezen_aan]' => $model->user->name ?? '',
+                '[toegewezen_email]' => $model->user->email ?? '',
+                '[aangemaakt_door]' => $model->createdBy->name ?? '',
+            ];
+
+            foreach ($replacements as $tag => $value) {
+                $content = str_replace($tag, $value, $content);
+            }
+            
+            // If task has a claim, also replace claim tags
+            if ($model->claim_id && $model->claim) {
+                $content = $this->replaceTags($content, $model->claim);
+            }
         }
 
         return $content;

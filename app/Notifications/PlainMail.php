@@ -45,10 +45,11 @@ class PlainMail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-
         $mailMessage = (new MailMessage)
-            ->view('emails.plain-email', ['body' => $this->message])
-            ->subject($this->subject);
+            ->subject($this->subject)
+            ->greeting('') // No greeting for template-based emails
+            ->line(new HtmlString($this->message))
+            ->salutation(new HtmlString("Bedankt, <br>" . config('app.name')));
 
         // Add CC recipients if provided
         if(!empty($this->cc)) {
@@ -61,11 +62,10 @@ class PlainMail extends Notification
       
         if($this->attachments) {
 
-            foreach($this->attachments as $index => $file) {
+            foreach($this->attachments as $attachment) {
                 
-                $mailMessage->attach($file, [
-                    'as' => $file->getClientOriginalName(),
-                    'mime' => $file->getMimeType()
+                $mailMessage->attach($attachment['path'], [
+                    'as' => $attachment['name'],
                 ]);
 
             }

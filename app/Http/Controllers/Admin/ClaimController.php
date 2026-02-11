@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\MailTemplate;
 use App\Models\Note;
 use App\Models\SLA;
+use App\Services\MailTriggerService;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -278,6 +279,33 @@ class ClaimController extends Controller {
         Notification::route('mail', [
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
+        // Trigger automatic emails for CLAIM_CREATED
+        $mailService = new MailTriggerService();
+        $recipients = [];
+        
+        // Add contact email if available
+        if ($claim->contact && $claim->contact->email) {
+            $recipients[] = $claim->contact->email;
+        }
+        
+        // Add driver email if available
+        if ($claim->driver && $claim->driver->email) {
+            $recipients[] = $claim->driver->email;
+        }
+        
+        // For testing: if no recipients in local/debug mode, send to test email
+        if (empty($recipients) && (config('app.env') === 'local' || config('app.debug'))) {
+            $recipients[] = 'test@example.com';
+        }
+        
+        if (!empty($recipients)) {
+            $mailService->dispatch('CLAIM_CREATED', $claim, [
+                'recipients' => array_unique($recipients),
+                'cc' => $claim->company && $claim->company->email ? [$claim->company->email] : [],
+                'reply_to' => auth()->user()->email ?? null
+            ]);
+        }
+
 
         if ($claim->assign_self == 1 || auth()->user()->roles->doesntContain(2) == true) {
             return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
@@ -409,7 +437,40 @@ class ClaimController extends Controller {
             ]);
         }
         $claim->closed_at = $request->input('closed_at');
+        
+        // Check if status is changing before update
+        $oldStatus = $claim->status;
+        
         $claim->update($request->except($multiSelects));
+        
+        // Trigger automatic emails if status changed
+        if ($claim->wasChanged('status')) {
+            $mailService = new MailTriggerService();
+            $recipients = [];
+            
+            // Add contact email if available
+            if ($claim->contact && $claim->contact->email) {
+                $recipients[] = $claim->contact->email;
+            }
+            
+            // Add driver email if available
+            if ($claim->driver && $claim->driver->email) {
+                $recipients[] = $claim->driver->email;
+            }
+            
+            // For testing: if no recipients in local/debug mode, send to test email
+            if (empty($recipients) && (config('app.env') === 'local' || config('app.debug'))) {
+                $recipients[] = 'test@example.com';
+            }
+            
+            if (!empty($recipients)) {
+                $mailService->dispatch('CLAIM_STATUS_CHANGED', $claim, [
+                    'recipients' => array_unique($recipients),
+                    'cc' => $claim->company && $claim->company->email ? [$claim->company->email] : [],
+                    'reply_to' => auth()->user()->email ?? null
+                ]);
+            }
+        }
 
         
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
@@ -622,6 +683,33 @@ class ClaimController extends Controller {
         $claim->status = $request->new_status;
 
         $claim->save();
+
+        // Trigger automatic emails for status change
+        $mailService = new MailTriggerService();
+        $recipients = [];
+        
+        // Add contact email if available
+        if ($claim->contact && $claim->contact->email) {
+            $recipients[] = $claim->contact->email;
+        }
+        
+        // Add driver email if available
+        if ($claim->driver && $claim->driver->email) {
+            $recipients[] = $claim->driver->email;
+        }
+        
+        // For testing: if no recipients in local/debug mode, send to test email
+        if (empty($recipients) && (config('app.env') === 'local' || config('app.debug'))) {
+            $recipients[] = 'test@example.com';
+        }
+        
+        if (!empty($recipients)) {
+            $mailService->dispatch('CLAIM_STATUS_CHANGED', $claim, [
+                'recipients' => array_unique($recipients),
+                'cc' => $claim->company && $claim->company->email ? [$claim->company->email] : [],
+                'reply_to' => auth()->user()->email ?? null
+            ]);
+        }
 
         return response()->json(
             [
