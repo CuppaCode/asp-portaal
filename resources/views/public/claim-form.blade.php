@@ -1,11 +1,11 @@
 @extends('layouts.public')
 
 @section('content')
-<div class="card">
+<div class="card" x-data="claimForm()">
     <div class="card-header bg-primary text-white">
-        <h3 class="mb-0">Schademelding Indienen - {{ $company->name }}</h3>
+        <h3 class="mb-0" x-text="formData.form_type === 'complaint' ? 'Klacht Indienen - {{ $company->name }}' : (formData.form_type === 'claim' ? 'Schademelding Indienen - {{ $company->name }}' : 'Formulier Indienen - {{ $company->name }}')"></h3>
     </div>
-    <div class="card-body" x-data="claimForm()">
+    <div class="card-body">
         <form action="{{ route('public.claim-form.store', $claimToken->token) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -19,14 +19,16 @@
                 </div>
             @endif
 
-            @foreach($formConfigs as $config)
-                @php
-                    $fieldName = $config->field_name;
-                    $isRequired = $config->is_required;
-                    $conditionalLogic = $config->conditional_logic;
-                    $hasCondition = !empty($conditionalLogic);
-                    $fieldLabel = $config->notification_label ?: $availableFields[$fieldName] ?? $fieldName;
-                @endphp
+            @foreach($allFields as $field)
+                @if($field['type'] === 'standard')
+                    @php
+                        $config = $field['data'];
+                        $fieldName = $config->field_name;
+                        $isRequired = $config->is_required;
+                        $conditionalLogic = $config->conditional_logic;
+                        $hasCondition = !empty($conditionalLogic);
+                        $fieldLabel = $config->notification_label ?: $availableFields[$fieldName] ?? $fieldName;
+                    @endphp
 
                 <div class="form-group" 
                     @if($hasCondition)
@@ -35,7 +37,34 @@
                         style="display: none;"
                     @endif>
                     
-                    @if($fieldName === 'subject')
+                    @if($fieldName === 'form_type')
+                        <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="form_type" id="form_type_claim" 
+                                    value="claim" {{ old('form_type', 'claim') === 'claim' ? 'checked' : '' }} 
+                                    {{ $isRequired ? 'required' : '' }} x-model="formData.form_type">
+                                <label class="form-check-label" for="form_type_claim">
+                                    Schademelding
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="form_type" id="form_type_complaint" 
+                                    value="complaint" {{ old('form_type') === 'complaint' ? 'checked' : '' }}
+                                    {{ $isRequired ? 'required' : '' }} x-model="formData.form_type">
+                                <label class="form-check-label" for="form_type_complaint">
+                                    Klacht
+                                </label>
+                            </div>
+                        </div>
+
+                    @elseif($fieldName === 'complaint_description')
+                        <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                        <textarea name="complaint_description" class="form-control" rows="6"
+                            {{ $isRequired ? 'required' : '' }}
+                            x-model="formData.complaint_description" placeholder="Beschrijf uw klacht in detail...">{{ old('complaint_description') }}</textarea>
+
+                    @elseif($fieldName === 'subject')
                         <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                         <input type="text" name="subject" class="form-control" 
                             value="{{ old('subject') }}" {{ $isRequired ? 'required' : '' }}
@@ -184,12 +213,62 @@
                         <small class="form-text text-muted">U kunt meerdere bestanden selecteren</small>
                     @endif
                 </div>
+                
+                @else
+                    {{-- Custom Field --}}
+                    @php
+                        $customField = $field['data'];
+                        $fieldKey = 'custom_' . $customField->field_name;
+                        $isRequired = $customField->is_required;
+                        $conditionalLogic = $customField->conditional_logic;
+                        $hasCondition = !empty($conditionalLogic);
+                        $fieldLabel = $customField->field_label;
+                    @endphp
+
+                <div class="form-group" 
+                    @if($hasCondition)
+                        x-show="evaluateCondition({{ json_encode($conditionalLogic) }})"
+                        x-cloak
+                        style="display: none;"
+                    @endif>
+                    
+                    @if($customField->field_type === 'html')
+                        <div class="alert alert-info">
+                            {!! $fieldLabel !!}
+                        </div>
+
+                    @elseif($customField->field_type === 'text')
+                        <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                        <input type="text" name="{{ $fieldKey }}" class="form-control" 
+                            value="{{ old($fieldKey) }}" {{ $isRequired ? 'required' : '' }}
+                            x-model="formData.{{ $fieldKey }}">
+
+                    @elseif($customField->field_type === 'textarea')
+                        <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                        <textarea name="{{ $fieldKey }}" class="form-control" rows="4" 
+                            {{ $isRequired ? 'required' : '' }}
+                            x-model="formData.{{ $fieldKey }}">{{ old($fieldKey) }}</textarea>
+
+                    @elseif($customField->field_type === 'select')
+                        <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                        <select name="{{ $fieldKey }}" class="form-control" {{ $isRequired ? 'required' : '' }}
+                            x-model="formData.{{ $fieldKey }}">
+                            <option value="">Selecteer...</option>
+                            @if(!empty($customField->options))
+                                @foreach($customField->options as $option)
+                                    <option value="{{ $option }}" {{ old($fieldKey) === $option ? 'selected' : '' }}>{{ $option }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    @endif
+                </div>
+                @endif
             @endforeach
 
             <hr>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">
-                    <i class="fa fa-paper-plane"></i> Schademelding Indienen
+                <button type="submit" class="btn btn-primary btn-lg btn-block" :disabled="!formData.form_type">
+                    <i class="fa fa-paper-plane"></i> <span x-text="formData.form_type === 'complaint' ? 'Klacht Indienen' : (formData.form_type === 'claim' ? 'Schademelding Indienen' : 'Selecteer Type Formulier')"></span>
                 </button>
             </div>
         </form>
@@ -202,6 +281,8 @@
 function claimForm() {
     return {
         formData: {
+            form_type: '',
+            complaint_description: '',
             subject: '',
             date_accident: '',
             injury: '',
@@ -223,7 +304,12 @@ function claimForm() {
             loading_photos: '',
             unloading_photos: '',
             waybill_signed_at_loading: '',
-            waybill_signed_at_unloading: ''
+            waybill_signed_at_unloading: '',
+            @foreach($allFields as $field)
+                @if($field['type'] === 'custom' && $field['data']->field_type !== 'html')
+                    custom_{{ $field['data']->field_name }}: '',
+                @endif
+            @endforeach
         },
         
         evaluateCondition(logic) {

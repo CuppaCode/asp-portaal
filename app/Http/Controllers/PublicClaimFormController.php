@@ -39,12 +39,39 @@ class PublicClaimFormController extends Controller
                 ->get();
         }
 
+        // Get custom fields
+        $customFields = $company->customClaimFields()
+            ->where('is_enabled', true)
+            ->orderBy('display_order')
+            ->get();
+
+        // Merge standard and custom fields into a unified collection sorted by display_order
+        $allFields = collect();
+        
+        foreach ($formConfigs as $config) {
+            $allFields->push([
+                'type' => 'standard',
+                'order' => $config->display_order,
+                'data' => $config,
+            ]);
+        }
+        
+        foreach ($customFields as $customField) {
+            $allFields->push([
+                'type' => 'custom',
+                'order' => $customField->display_order,
+                'data' => $customField,
+            ]);
+        }
+        
+        $allFields = $allFields->sortBy('order')->values();
+
         $availableFields = CompanyClaimFormConfig::getAvailableFields();
 
         return view('public.claim-form', compact(
             'claimToken',
             'company',
-            'formConfigs',
+            'allFields',
             'availableFields'
         ));
     }
@@ -66,6 +93,23 @@ class PublicClaimFormController extends Controller
         $rules = $this->buildValidationRules($formConfigs, $request->all());
 
         $validated = $request->validate($rules);
+
+        // Check form type - handle complaint vs claim
+        $formType = $validated['form_type'] ?? 'claim';
+
+        if ($formType === 'complaint') {
+            // Handle complaint - send notification only, no claim creation
+            $this->handleComplaint($validated, $company, $formConfigs);
+            
+            // Increment token usage
+            $claimToken->incrementUsage();
+            
+            return view('public.claim-form-success', [
+                'claim' => null,
+                'company' => $company,
+                'isComplaint' => true
+            ]);
+        }
 
         // Process vehicle if plates provided
         $vehicleId = null;
@@ -94,6 +138,16 @@ class PublicClaimFormController extends Controller
 
         // Calculate draft expiry
         $draftExpiresAt = now()->addDays($company->draft_expiry_days ?? 30);
+
+        // Extract custom fields data
+        $customFieldsData = [];
+        $customFields = $company->customClaimFields;
+        foreach ($customFields as $customField) {
+            $fieldKey = 'custom_' . $customField->field_name;
+            if (isset($validated[$fieldKey])) {
+                $customFieldsData[$customField->field_name] = $validated[$fieldKey];
+            }
+        }
 
         // Create claim
         $claim = Claim::create([
@@ -127,6 +181,7 @@ class PublicClaimFormController extends Controller
             'opposite_claim_no' => $validated['opposite_claim_no'] ?? null,
             'draft_expires_at' => $draftExpiresAt,
             'invoice_amount' => $company->claims_fee ?? 0,
+            'custom_fields_data' => !empty($customFieldsData) ? $customFieldsData : null,
         ]);
 
         // Create opposite party if data provided
@@ -200,6 +255,12 @@ class PublicClaimFormController extends Controller
 
             // Add type-specific validation
             switch ($config->field_name) {
+                case 'form_type':
+                    $fieldRules[] = 'in:claim,complaint';
+                    break;
+                case 'complaint_description':
+                    $fieldRules[] = 'string';
+                    break;
                 case 'date_accident':
                     $fieldRules[] = 'date_format:d-m-Y';
                     break;
@@ -230,7 +291,107 @@ class PublicClaimFormController extends Controller
             $rules[$config->field_name] = implode('|', $fieldRules);
         }
 
+        // Add custom fields validation
+        $company = Company::find($formConfigs->first()->company_id);
+        if ($company) {
+            $customFields = $company->customClaimFields()->where('is_enabled', true)->get();
+            foreach ($customFields as $customField) {
+                // Skip HTML fields (display only)
+                if ($customField->field_type === 'html') {
+                    continue;
+                }
+
+                // Skip if conditional logic doesn't match
+                if (!$this->evaluateCustomFieldCondition($customField, $formData)) {
+                    continue;
+                }
+
+                $fieldKey = 'custom_' . $customField->field_name;
+                $fieldRules = [];
+
+                if ($customField->is_required) {
+                    $fieldRules[] = 'required';
+                } else {
+                    $fieldRules[] = 'nullable';
+                }
+
+                // Add type-specific validation
+                switch ($customField->field_type) {
+                    case 'text':
+                        $fieldRules[] = 'string';
+                        $fieldRules[] = 'max:255';
+                        break;
+                    case 'textarea':
+                        $fieldRules[] = 'string';
+                        break;
+                    case 'select':
+                        $fieldRules[] = 'string';
+                        if (!empty($customField->options)) {
+                            $fieldRules[] = 'in:' . implode(',', $customField->options);
+                        }
+                        break;
+                }
+
+                $rules[$fieldKey] = implode('|', $fieldRules);
+            }
+        }
+
         return $rules;
+    }
+
+    private function evaluateCustomFieldCondition($customField, $formData)
+    {
+        if (empty($customField->conditional_logic)) {
+            return true;
+        }
+
+        $logic = $customField->conditional_logic;
+        $operator = $logic['operator'] ?? 'AND';
+        $conditions = $logic['conditions'] ?? [];
+
+        if (empty($conditions)) {
+            return true;
+        }
+
+        $results = [];
+        foreach ($conditions as $condition) {
+            $field = $condition['field'] ?? '';
+            $comparison = $condition['operator'] ?? 'equals';
+            $expectedValue = $condition['value'] ?? '';
+
+            // Handle custom_ prefix for custom fields
+            $actualValue = $formData[$field] ?? null;
+
+            $result = false;
+            switch ($comparison) {
+                case 'equals':
+                    $result = $actualValue == $expectedValue;
+                    break;
+                case 'not_equals':
+                    $result = $actualValue != $expectedValue;
+                    break;
+                case 'contains':
+                    $result = is_string($actualValue) && str_contains($actualValue, $expectedValue);
+                    break;
+                case 'not_contains':
+                    $result = is_string($actualValue) && !str_contains($actualValue, $expectedValue);
+                    break;
+                case 'empty':
+                    $result = empty($actualValue);
+                    break;
+                case 'not_empty':
+                    $result = !empty($actualValue);
+                    break;
+            }
+
+            $results[] = $result;
+        }
+
+        if ($operator === 'AND') {
+            return !in_array(false, $results);
+        } else {
+            return in_array(true, $results);
+        }
     }
 
     private function hasOppositeData($data)
@@ -276,6 +437,19 @@ class PublicClaimFormController extends Controller
             }
         }
 
+        // Add custom fields to summary
+        $customFields = $company->customClaimFields;
+        foreach ($customFields as $customField) {
+            // Skip HTML fields (display only)
+            if ($customField->field_type === 'html') {
+                continue;
+            }
+            
+            if ($customField->include_in_notification && !empty($claim->custom_fields_data[$customField->field_name])) {
+                $summary[$customField->field_label] = $claim->custom_fields_data[$customField->field_name];
+            }
+        }
+
         $notification = new DraftClaimNotification($claim, $summary);
 
         foreach ($recipients as $recipient) {
@@ -312,6 +486,84 @@ class PublicClaimFormController extends Controller
 
         if (in_array($fieldName, ['loading_photos', 'unloading_photos', 'waybill_signed_at_loading', 'waybill_signed_at_unloading']) && isset(Claim::WAYBILL_SELECT[$value])) {
             return Claim::WAYBILL_SELECT[$value];
+        }
+
+        if ($fieldName === 'form_type') {
+            return $value === 'claim' ? 'Schademelding' : 'Klacht';
+        }
+
+        return $value;
+    }
+
+    private function handleComplaint($validated, Company $company, $formConfigs)
+    {
+        $recipients = $company->claimFormNotifications;
+
+        if ($recipients->isEmpty()) {
+            return;
+        }
+
+        // Build notification summary
+        $summary = [];
+        foreach ($formConfigs as $config) {
+            if ($config->include_in_notification && $config->field_name !== 'form_type') {
+                $value = $this->getComplaintFieldValue($validated, $config->field_name);
+                if (!empty($value)) {
+                    $summary[$config->notification_label ?? $config->field_name] = $value;
+                }
+            }
+        }
+
+        // Add custom fields to summary
+        $customFields = $company->customClaimFields()->where('is_enabled', true)->get();
+        foreach ($customFields as $customField) {
+            // Skip HTML fields (display only)
+            if ($customField->field_type === 'html') {
+                continue;
+            }
+            
+            $fieldKey = 'custom_' . $customField->field_name;
+            if ($customField->include_in_notification && isset($validated[$fieldKey])) {
+                $summary[$customField->field_label] = $validated[$fieldKey];
+            }
+        }
+
+        $notification = new \App\Notifications\ComplaintNotification($company, $summary);
+
+        foreach ($recipients as $recipient) {
+            \Illuminate\Support\Facades\Notification::route('mail', $recipient->email)->notify($notification);
+        }
+    }
+
+    private function getComplaintFieldValue($validated, $fieldName)
+    {
+        $value = $validated[$fieldName] ?? null;
+
+        if (is_null($value)) {
+            return null;
+        }
+
+        // Handle complaint description
+        if ($fieldName === 'complaint_description') {
+            return $value;
+        }
+
+        // Handle JSON fields
+        if (in_array($fieldName, ['damaged_part', 'damaged_area', 'damage_origin', 'damaged_part_opposite', 'damaged_area_opposite', 'damage_origin_opposite'])) {
+            return is_array($value) ? implode(', ', $value) : $value;
+        }
+
+        // Handle select fields
+        if ($fieldName === 'injury' && isset(\App\Models\Claim::INJURY_SELECT[$value])) {
+            return \App\Models\Claim::INJURY_SELECT[$value];
+        }
+
+        if ($fieldName === 'damage_kind' && isset(\App\Models\Claim::DAMAGE_KIND[$value])) {
+            return \App\Models\Claim::DAMAGE_KIND[$value];
+        }
+
+        if ($fieldName === 'recoverable_claim' && isset(\App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$value])) {
+            return \App\Models\Claim::RECOVERABLE_CLAIM_SELECT[$value];
         }
 
         return $value;

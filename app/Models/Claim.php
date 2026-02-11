@@ -336,7 +336,15 @@ class Claim extends Model implements HasMedia
         'loading_photos',
         'unloading_photos',
         'waybill_signed_at_loading',
-        'waybill_signed_at_unloading'
+        'waybill_signed_at_unloading',
+        'denied_reason',
+        'draft_expires_at',
+        'last_reminder_sent_at',
+        'custom_fields_data',
+    ];
+
+    protected $casts = [
+        'custom_fields_data' => 'array',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

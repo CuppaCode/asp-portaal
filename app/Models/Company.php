@@ -98,4 +98,9 @@ class Company extends Model implements HasMedia
     {
         return $this->hasMany(CompanyClaimFormNotification::class);
     }
+
+    public function customClaimFields()
+    {
+        return $this->hasMany(CompanyCustomClaimField::class);
+    }
 }

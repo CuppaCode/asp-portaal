@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\CompanyClaimToken;
 use App\Models\CompanyClaimFormConfig;
 use App\Models\CompanyClaimFormNotification;
+use App\Models\CompanyCustomClaimField;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,7 @@ class CompanyClaimFormController extends Controller
         $tokens = $company->claimTokens()->latest()->get();
         $formConfigs = $company->claimFormConfigs()->orderBy('display_order')->get();
         $notifications = $company->claimFormNotifications()->get();
+        $customFields = $company->customClaimFields()->orderBy('display_order')->get();
         $availableFields = CompanyClaimFormConfig::getAvailableFields();
 
         return view('admin.company-claim-forms.index', compact(
@@ -27,6 +29,7 @@ class CompanyClaimFormController extends Controller
             'tokens',
             'formConfigs',
             'notifications',
+            'customFields',
             'availableFields'
         ));
     }
@@ -44,6 +47,20 @@ class CompanyClaimFormController extends Controller
                 $conditionalLogic = is_string($config['conditional_logic']) 
                     ? json_decode($config['conditional_logic'], true) 
                     : $config['conditional_logic'];
+            }
+
+            // Auto-set conditional logic for complaint_description if not provided
+            if ($fieldName === 'complaint_description' && empty($conditionalLogic)) {
+                $conditionalLogic = [
+                    'operator' => 'AND',
+                    'conditions' => [
+                        [
+                            'field' => 'form_type',
+                            'operator' => 'equals',
+                            'value' => 'complaint'
+                        ]
+                    ]
+                ];
             }
 
             CompanyClaimFormConfig::updateOrCreate(
@@ -165,5 +182,202 @@ class CompanyClaimFormController extends Controller
 
         return redirect()->route('admin.company-claim-forms.index', $company)
             ->with('message', 'Notificatie ontvanger verwijderd.');
+    }
+
+    public function storeCustomField(Request $request, Company $company)
+    {
+        abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $request->validate([
+            'field_type' => 'required|in:text,textarea,select,html',
+            'field_name' => 'nullable|string|max:255|regex:/^[a-z0-9_]+$/',
+            'field_label' => 'nullable|string|max:255',
+            'html_content' => 'nullable|string',
+            'options' => 'nullable|string',
+        ]);
+
+        $fieldType = $request->input('field_type');
+        
+        // For HTML fields, use html_content as field_label and generate unique field_name
+        if ($fieldType === 'html') {
+            $fieldName = 'html_' . uniqid();
+            $fieldLabel = $request->input('html_content');
+        } else {
+            $fieldName = $request->input('field_name');
+            $fieldLabel = $request->input('field_label');
+            
+            // Check if field_name is unique for this company
+            $exists = $company->customClaimFields()->where('field_name', $fieldName)->exists();
+            if ($exists) {
+                return redirect()->back()->with('error', 'Een veld met deze naam bestaat al.');
+            }
+        }
+
+        // Parse options if select field
+        $options = null;
+        if ($fieldType === 'select' && $request->input('options')) {
+            $options = array_map('trim', explode("\n", $request->input('options')));
+        }
+
+        CompanyCustomClaimField::create([
+            'company_id' => $company->id,
+            'field_type' => $fieldType,
+            'field_name' => $fieldName,
+            'field_label' => $fieldLabel,
+            'options' => $options,
+            'is_required' => false,
+            'include_in_notification' => false,
+            'display_order' => $company->customClaimFields()->max('display_order') + 1,
+        ]);
+
+        return redirect()->route('admin.company-claim-forms.index', $company)
+            ->with('message', 'Custom veld aangemaakt.');
+    }
+
+    public function updateCustomField(Request $request, Company $company, CompanyCustomClaimField $customField)
+    {
+        abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        if ($customField->company_id !== $company->id) {
+            abort(Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
+        // Check if this is a full edit (has field_label or html_content) or just checkbox update
+        $isFullEdit = $request->has('field_label') || $request->has('html_content');
+
+        if ($isFullEdit) {
+            // Full edit validation
+            $request->validate([
+                'field_label' => 'nullable|string|max:255',
+                'html_content' => 'nullable|string',
+                'options' => 'nullable|string',
+            ]);
+
+            $fieldType = $customField->field_type;
+            
+            // For HTML fields, use html_content as field_label
+            if ($fieldType === 'html') {
+                $fieldLabel = $request->input('html_content');
+            } else {
+                $fieldLabel = $request->input('field_label');
+            }
+
+            // Parse options if select field
+            $options = null;
+            if ($fieldType === 'select' && $request->input('options')) {
+                $options = array_map('trim', explode("\n", $request->input('options')));
+            }
+
+            $customField->update([
+                'field_label' => $fieldLabel,
+                'options' => $options,
+            ]);
+
+            return redirect()->route('admin.company-claim-forms.index', $company)
+                ->with('message', 'Custom veld bijgewerkt.');
+        } else {
+            // Checkbox/AJAX update validation
+            $request->validate([
+                'is_enabled' => 'nullable|boolean',
+                'is_required' => 'nullable|boolean',
+                'include_in_notification' => 'nullable|boolean',
+                'conditional_logic' => 'nullable|string',
+                'display_order' => 'nullable|integer',
+            ]);
+
+            $conditionalLogic = null;
+            if (!empty($request->input('conditional_logic'))) {
+                $conditionalLogic = is_string($request->input('conditional_logic')) 
+                    ? json_decode($request->input('conditional_logic'), true) 
+                    : $request->input('conditional_logic');
+            }
+
+            $customField->update([
+                'is_enabled' => $request->input('is_enabled', $customField->is_enabled),
+                'is_required' => $request->input('is_required', false),
+                'include_in_notification' => $request->input('include_in_notification', false),
+                'conditional_logic' => $conditionalLogic,
+                'display_order' => $request->input('display_order', $customField->display_order),
+            ]);
+
+            return response()->json(['success' => true]);
+        }
+    }
+
+    public function deleteCustomField(Request $request, Company $company, CompanyCustomClaimField $customField)
+    {
+        abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        if ($customField->company_id !== $company->id) {
+            abort(Response::HTTP_FORBIDDEN, '403 Forbidden');
+        }
+
+        $customField->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('admin.company-claim-forms.index', $company)
+            ->with('message', 'Custom veld verwijderd.');
+    }
+
+    public function copyFromCompany(Request $request, Company $company)
+    {
+        abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $request->validate([
+            'source_company_id' => 'required|exists:companies,id'
+        ]);
+
+        $sourceCompany = Company::findOrFail($request->source_company_id);
+
+        // Copy standard field configurations
+        $sourceConfigs = $sourceCompany->claimFormConfigs()->get();
+        
+        foreach ($sourceConfigs as $sourceConfig) {
+            CompanyClaimFormConfig::updateOrCreate(
+                [
+                    'company_id' => $company->id,
+                    'field_name' => $sourceConfig->field_name,
+                ],
+                [
+                    'is_enabled' => $sourceConfig->is_enabled,
+                    'is_required' => $sourceConfig->is_required,
+                    'include_in_notification' => $sourceConfig->include_in_notification,
+                    'display_order' => $sourceConfig->display_order,
+                    'conditional_logic' => $sourceConfig->conditional_logic,
+                    'notification_label' => $sourceConfig->notification_label,
+                ]
+            );
+        }
+
+        // Copy custom fields
+        $sourceCustomFields = $sourceCompany->customClaimFields()->get();
+        
+        // Get existing custom field names for the target company
+        $existingFieldNames = $company->customClaimFields()->pluck('field_name')->toArray();
+        
+        foreach ($sourceCustomFields as $sourceField) {
+            // Skip if field name already exists
+            if (in_array($sourceField->field_name, $existingFieldNames)) {
+                continue;
+            }
+
+            CompanyCustomClaimField::create([
+                'company_id' => $company->id,
+                'field_type' => $sourceField->field_type,
+                'field_name' => $sourceField->field_name,
+                'field_label' => $sourceField->field_label,
+                'options' => $sourceField->options,
+                'is_required' => $sourceField->is_required,
+                'include_in_notification' => $sourceField->include_in_notification,
+                'conditional_logic' => $sourceField->conditional_logic,
+                'display_order' => $sourceField->display_order,
+            ]);
+        }
+
+        return redirect()->route('admin.company-claim-forms.index', $company)
+            ->with('message', 'Velden succesvol gekopieerd van ' . $sourceCompany->name . '. Notificaties zijn niet gekopieerd omdat deze bedrijfsspecifiek zijn.');
     }
 }

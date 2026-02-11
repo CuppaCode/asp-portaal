@@ -6,7 +6,7 @@
         background-color: #f0f0f0;
         border: 2px dashed #ccc;
     }
-    #sortable-fields tr:hover {
+    #sortable-all-fields tr:hover {
         background-color: #f8f9fa;
     }
 </style>
@@ -19,9 +19,14 @@
         <h3>Claim Formulier Configuratie - {{ $company->name }}</h3>
     </div>
     <div class="card-body">
-        <a href="{{ route('admin.companies.show', $company->id) }}" class="btn btn-secondary mb-3">
-            <i class="fa fa-arrow-left"></i> Terug naar bedrijf
-        </a>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{{ route('admin.companies.show', $company->id) }}" class="btn btn-secondary">
+                <i class="fa fa-arrow-left"></i> Terug naar bedrijf
+            </a>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#copyFieldsModal">
+                <i class="fa fa-copy"></i> Kopieer Velden van Ander Bedrijf
+            </button>
+        </div>
 
         {{-- Tokens Section --}}
         <div class="card mb-4">
@@ -134,8 +139,14 @@
 
         {{-- Form Configuration Section --}}
         <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="mb-0">Formulier Velden Configuratie</h4>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">Formulier Velden Configuratie</h4>
+                    <small class="text-muted">Sleep velden om de volgorde te wijzigen</small>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addCustomFieldModal">
+                    <i class="fa fa-plus"></i> Aangepast Veld Toevoegen
+                </button>
             </div>
             <div class="card-body">
                 <form action="{{ route('admin.company-claim-forms.update-config', $company) }}" method="POST">
@@ -146,63 +157,192 @@
                                 <tr>
                                     <th style="width: 30px;"></th>
                                     <th>Veld</th>
+                                    <th>Type</th>
                                     <th>Ingeschakeld</th>
                                     <th>Verplicht</th>
                                     <th>In notificatie</th>
                                     <th>Label</th>
                                     <th>Voorwaardelijke logica</th>
+                                    <th style="width: 80px;">Acties</th>
                                 </tr>
                             </thead>
-                            <tbody id="sortable-fields">
+                            <tbody id="sortable-all-fields">
                                 @php
                                     $existingConfigs = $formConfigs->keyBy('field_name');
-                                @endphp
-                                @foreach($availableFields as $fieldName => $fieldLabel)
-                                    @php
+                                    
+                                    // Combine standard and custom fields with their display orders
+                                    $allFields = collect();
+                                    
+                                    // Add standard fields
+                                    foreach($availableFields as $fieldName => $fieldLabel) {
                                         $config = $existingConfigs->get($fieldName);
-                                        $isEnabled = $config ? $config->is_enabled : false;
-                                        $isRequired = $config ? $config->is_required : false;
-                                        $includeInNotification = $config ? $config->include_in_notification : false;
-                                        $notificationLabel = $config ? $config->notification_label : $fieldLabel;
-                                        $order = $config ? $config->display_order : 0;
-                                        $conditionalLogic = $config ? $config->conditional_logic : null;
-                                    @endphp
-                                    <tr data-field="{{ $fieldName }}" style="cursor: move;">
-                                        <td class="text-center" style="cursor: grab;">
-                                            <i class="fa fa-bars text-muted"></i>
-                                        </td>
-                                        <td><strong>{{ $fieldLabel }}</strong></td>
-                                        <td>
-                                            <input type="checkbox" name="fields[{{ $fieldName }}][is_enabled]" value="1" 
-                                                {{ $isEnabled ? 'checked' : '' }} class="field-enabled">
-                                        </td>
-                                        <td>
-                                            <input type="checkbox" name="fields[{{ $fieldName }}][is_required]" value="1" 
-                                                {{ $isRequired ? 'checked' : '' }}>
-                                        </td>
-                                        <td>
-                                            <input type="checkbox" name="fields[{{ $fieldName }}][include_in_notification]" value="1" 
-                                                {{ $includeInNotification ? 'checked' : '' }}>
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control form-control-sm" 
-                                                name="fields[{{ $fieldName }}][notification_label]" 
-                                                value="{{ $notificationLabel }}" placeholder="{{ $fieldLabel }}">
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                onclick="openConditionalModal('{{ $fieldName }}', '{{ $fieldLabel }}')">
-                                                <i class="fa fa-code-branch"></i> 
-                                                <span id="logic-indicator-{{ $fieldName }}">
-                                                    {{ $conditionalLogic ? 'Bewerken' : 'Instellen' }}
+                                        $allFields->push([
+                                            'type' => 'standard',
+                                            'name' => $fieldName,
+                                            'label' => $fieldLabel,
+                                            'order' => $config ? $config->display_order : 999,
+                                            'data' => $config
+                                        ]);
+                                    }
+                                    
+                                    // Add custom fields
+                                    foreach($customFields as $customField) {
+                                        $allFields->push([
+                                            'type' => 'custom',
+                                            'name' => $customField->field_name,
+                                            'label' => $customField->field_label,
+                                            'order' => $customField->display_order,
+                                            'data' => $customField
+                                        ]);
+                                    }
+                                    
+                                    // Sort by display order
+                                    $allFields = $allFields->sortBy('order')->values();
+                                @endphp
+                                
+                                @foreach($allFields as $field)
+                                    @if($field['type'] === 'standard')
+                                        @php
+                                            $config = $field['data'];
+                                            $fieldName = $field['name'];
+                                            $fieldLabel = $field['label'];
+                                            $isEnabled = $config ? $config->is_enabled : false;
+                                            $isRequired = $config ? $config->is_required : false;
+                                            // Default complaint_description to be included in notifications
+                                            $includeInNotification = $config ? $config->include_in_notification : ($fieldName === 'complaint_description');
+                                            $notificationLabel = $config ? $config->notification_label : $fieldLabel;
+                                            $conditionalLogic = $config ? $config->conditional_logic : null;
+                                            
+                                            // Auto-set conditional logic for complaint_description field
+                                            if ($fieldName === 'complaint_description' && !$conditionalLogic) {
+                                                $conditionalLogic = [
+                                                    'operator' => 'AND',
+                                                    'conditions' => [
+                                                        [
+                                                            'field' => 'form_type',
+                                                            'operator' => 'equals',
+                                                            'value' => 'complaint'
+                                                        ]
+                                                    ]
+                                                ];
+                                            }
+                                        @endphp
+                                        <tr data-field="{{ $fieldName }}" data-type="standard" style="cursor: move;">
+                                            <td class="text-center" style="cursor: grab;">
+                                                <i class="fa fa-bars text-muted"></i>
+                                            </td>
+                                            <td><strong>{{ $fieldLabel }}</strong></td>
+                                            <td><span class="badge badge-primary">Standaard</span></td>
+                                            <td>
+                                                <input type="checkbox" name="fields[{{ $fieldName }}][is_enabled]" value="1" 
+                                                    {{ $isEnabled ? 'checked' : '' }} class="field-enabled">
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" name="fields[{{ $fieldName }}][is_required]" value="1" 
+                                                    {{ $isRequired ? 'checked' : '' }}>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" name="fields[{{ $fieldName }}][include_in_notification]" value="1" 
+                                                    {{ $includeInNotification ? 'checked' : '' }}>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control form-control-sm" 
+                                                    name="fields[{{ $fieldName }}][notification_label]" 
+                                                    value="{{ $notificationLabel }}" placeholder="{{ $fieldLabel }}">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-outline-primary open-conditional-modal" 
+                                                    data-field-name="{{ $fieldName }}" 
+                                                    data-field-label="{{ $fieldLabel }}">
+                                                    <i class="fa fa-code-branch"></i> 
+                                                    <span id="logic-indicator-{{ $fieldName }}">
+                                                        {{ $conditionalLogic ? 'Bewerken' : 'Instellen' }}
+                                                    </span>
+                                                </button>
+                                                <input type="hidden" name="fields[{{ $fieldName }}][conditional_logic]" 
+                                                    id="conditional-logic-{{ $fieldName }}" 
+                                                    value='{{ $conditionalLogic ? json_encode($conditionalLogic) : "" }}'>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" name="fields[{{ $fieldName }}][display_order]" value="{{ $field['order'] }}" class="display-order">
+                                            </td>
+                                        </tr>
+                                    @else
+                                        @php
+                                            $customField = $field['data'];
+                                        @endphp
+                                        <tr data-field="custom_{{ $customField->field_name }}" data-type="custom" data-id="{{ $customField->id }}" style="cursor: move;">
+                                            <td class="text-center" style="cursor: grab;">
+                                                <i class="fa fa-bars text-muted"></i>
+                                            </td>
+                                            <td>
+                                                <strong>{{ $customField->field_label }}</strong><br>
+                                                <small class="text-muted"><code>{{ $customField->field_name }}</code></small>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-info">
+                                                    @if($customField->field_type === 'text') Tekst
+                                                    @elseif($customField->field_type === 'textarea') Tekstgebied  
+                                                    @elseif($customField->field_type === 'select') Selectie
+                                                    @elseif($customField->field_type === 'html') HTML
+                                                    @endif
                                                 </span>
-                                            </button>
-                                            <input type="hidden" name="fields[{{ $fieldName }}][conditional_logic]" 
-                                                id="conditional-logic-{{ $fieldName }}" 
-                                                value='{{ $conditionalLogic ? json_encode($conditionalLogic) : "" }}'>
-                                        </td>
-                                        <input type="hidden" name="fields[{{ $fieldName }}][display_order]" value="{{ $order }}" class="display-order">
-                                    </tr>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="custom-field-enabled" data-id="{{ $customField->id }}" 
+                                                    {{ $customField->is_enabled ? 'checked' : '' }}>
+                                            </td>
+                                            @if($customField->field_type === 'html')
+                                                <td colspan="2" class="text-muted">
+                                                    <small><em>Alleen voor weergave</em></small>
+                                                </td>
+                                            @else
+                                                <td>
+                                                    <input type="checkbox" class="custom-field-required" data-id="{{ $customField->id }}" 
+                                                        {{ $customField->is_required ? 'checked' : '' }}>
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" class="custom-field-notification" data-id="{{ $customField->id }}"
+                                                        {{ $customField->include_in_notification ? 'checked' : '' }}>
+                                                </td>
+                                            @endif
+                                            <td>
+                                                @if($customField->field_type === 'html')
+                                                    <textarea class="form-control form-control-sm" rows="2" disabled>{{ Str::limit(strip_tags($customField->field_label), 50) }}</textarea>
+                                                @else
+                                                    <input type="text" class="form-control form-control-sm" value="{{ $customField->field_label }}" disabled>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm {{ $customField->conditional_logic ? 'btn-success' : 'btn-secondary' }} open-conditional-modal" 
+                                                    data-field-name="custom_{{ $customField->field_name }}" 
+                                                    data-field-label="{{ strip_tags($customField->field_label) }}" 
+                                                    data-custom-field-id="{{ $customField->id }}">
+                                                    <i class="fa fa-code-branch"></i>
+                                                    <span id="logic-indicator-custom_{{ $customField->field_name }}">
+                                                        {{ $customField->conditional_logic ? 'Bewerken' : 'Instellen' }}
+                                                    </span>
+                                                </button>
+                                                <input type="hidden" id="conditional-logic-custom_{{ $customField->field_name }}" 
+                                                    value='{{ $customField->conditional_logic ? json_encode($customField->conditional_logic) : "" }}'>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-primary edit-custom-field mr-1" 
+                                                    data-id="{{ $customField->id }}"
+                                                    data-type="{{ $customField->field_type }}"
+                                                    data-name="{{ $customField->field_name }}"
+                                                    data-label="{{ $customField->field_label }}"
+                                                    data-options="{{ $customField->options ? implode("\n", $customField->options) : '' }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger delete-custom-field" 
+                                                    data-id="{{ $customField->id }}"
+                                                    data-url="{{ route('admin.company-claim-forms.delete-custom-field', [$company, $customField]) }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -348,6 +488,152 @@
     </div>
 </div>
 
+{{-- Add Custom Field Modal --}}
+<div class="modal fade" id="addCustomFieldModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.company-claim-forms.store-custom-field', $company) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Aangepast Veld Toevoegen</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="field_type">Veldtype *</label>
+                        <select class="form-control" id="field_type" name="field_type" required onchange="toggleOptions()">
+                            <option value="">Selecteer...</option>
+                            <option value="text">Tekstveld</option>
+                            <option value="textarea">Tekstgebied</option>
+                            <option value="select">Selectie (dropdown)</option>
+                            <option value="html">HTML Inhoud (alleen weergave)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="field_name">Veldnaam (technisch) *</label>
+                        <input type="text" class="form-control" id="field_name" name="field_name" required 
+                            pattern="[a-z0-9_]+" placeholder="bijv. extra_info">
+                        <small class="form-text text-muted">Alleen kleine letters, cijfers en underscores</small>
+                    </div>
+                    <div class="form-group" id="label_group">
+                        <label for="field_label">Label (weergave) *</label>
+                        <input type="text" class="form-control" id="field_label" name="field_label" required 
+                            placeholder="bijv. Extra Informatie">
+                    </div>
+                    <div class="form-group" id="html_content_group" style="display:none;">
+                        <label for="html_content">HTML Inhoud *</label>
+                        <textarea class="form-control" id="html_content" name="html_content" rows="5"
+                            placeholder="Voer HTML in voor instructies of notices..."></textarea>
+                        <small class="form-text text-muted">Deze inhoud wordt weergegeven in een blauwe notice box</small>
+                    </div>
+                    <div class="form-group" id="options_group" style="display:none;">
+                        <label for="options">Opties *</label>
+                        <textarea class="form-control" id="options" name="options" rows="5"
+                            placeholder="Eén optie per regel"></textarea>
+                        <small class="form-text text-muted">Voor selectie velden: elke optie op een nieuwe regel</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                    <button type="submit" class="btn btn-primary">Toevoegen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Edit Custom Field Modal --}}
+<div class="modal fade" id="editCustomFieldModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editCustomFieldForm" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-header">
+                    <h5 class="modal-title">Aangepast Veld Bewerken</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Veldtype</label>
+                        <input type="text" class="form-control" id="edit_field_type_display" disabled>
+                    </div>
+                    <div class="form-group" id="edit_field_name_group">
+                        <label for="edit_field_name">Veldnaam (technisch)</label>
+                        <input type="text" class="form-control" id="edit_field_name" disabled>
+                        <small class="form-text text-muted">Veldnaam kan niet gewijzigd worden</small>
+                    </div>
+                    <div class="form-group" id="edit_label_group">
+                        <label for="edit_field_label">Label (weergave) *</label>
+                        <input type="text" class="form-control" id="edit_field_label" name="field_label" required 
+                            placeholder="bijv. Extra Informatie">
+                    </div>
+                    <div class="form-group" id="edit_html_content_group" style="display:none;">
+                        <label for="edit_html_content">HTML Inhoud *</label>
+                        <textarea class="form-control" id="edit_html_content" name="html_content" rows="5"
+                            placeholder="Voer HTML in voor instructies of notices..."></textarea>
+                        <small class="form-text text-muted">Deze inhoud wordt weergegeven in een blauwe notice box</small>
+                    </div>
+                    <div class="form-group" id="edit_options_group" style="display:none;">
+                        <label for="edit_options">Opties *</label>
+                        <textarea class="form-control" id="edit_options" name="options" rows="5"
+                            placeholder="Eén optie per regel"></textarea>
+                        <small class="form-text text-muted">Voor selectie velden: elke optie op een nieuwe regel</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Copy Fields Modal --}}
+<div class="modal fade" id="copyFieldsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('admin.company-claim-forms.copy-from-company', $company) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Velden Kopiëren</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i> Hiermee kopieert u alle standaard- en aangepaste velden van een ander bedrijf naar dit bedrijf. Notificatie-ontvangers worden <strong>niet</strong> gekopieerd omdat deze bedrijfsspecifiek zijn.
+                    </div>
+                    <div class="form-group">
+                        <label for="source_company_id">Selecteer Bronbedrijf <span class="text-danger">*</span></label>
+                        <select name="source_company_id" id="source_company_id" class="form-control" required>
+                            <option value="">Selecteer een bedrijf...</option>
+                            @foreach(\App\Models\Company::where('id', '!=', $company->id)->orderBy('name')->get() as $otherCompany)
+                                <option value="{{ $otherCompany->id }}">{{ $otherCompany->name }}</option>
+                            @endforeach
+                        </select>
+                        <small class="form-text text-muted">
+                            Bestaande configuratie wordt overschreven voor standaard velden. Aangepaste velden met dezelfde naam worden overgeslagen.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                    <button type="submit" class="btn btn-info">
+                        <i class="fa fa-copy"></i> Velden Kopiëren
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -362,25 +648,199 @@ function copyToken(elementId) {
 
 // Make fields sortable
 $(document).ready(function() {
-    $('#sortable-fields').sortable({
+    $('#sortable-all-fields').sortable({
         handle: 'td:first-child',
         cursor: 'move',
         placeholder: 'ui-state-highlight',
         update: function(event, ui) {
-            // Update display order values
-            $('#sortable-fields tr').each(function(index) {
-                $(this).find('.display-order').val(index);
+            // Update display order for all fields
+            $('#sortable-all-fields tr').each(function(index) {
+                const $row = $(this);
+                const fieldType = $row.data('type');
+                
+                if (fieldType === 'standard') {
+                    // Update hidden input for standard fields (submitted via form)
+                    $row.find('.display-order').val(index);
+                } else if (fieldType === 'custom') {
+                    // Update via AJAX for custom fields
+                    const fieldId = $row.data('id');
+                    $.ajax({
+                        url: '{{ route("admin.company-claim-forms.update-custom-field", [$company, "__ID__"]) }}'.replace('__ID__', fieldId),
+                        method: 'PATCH',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            display_order: index
+                        }
+                    });
+                }
             });
         }
+    });
+
+    // Handle custom field checkbox changes
+    $('.custom-field-enabled, .custom-field-required, .custom-field-notification').on('change', function() {
+        let fieldId = $(this).data('id');
+        let isEnabled = $(`.custom-field-enabled[data-id="${fieldId}"]`).is(':checked');
+        let isRequired = $(`.custom-field-required[data-id="${fieldId}"]`).is(':checked');
+        let includeInNotification = $(`.custom-field-notification[data-id="${fieldId}"]`).is(':checked');
+        
+        $.ajax({
+            url: '{{ route("admin.company-claim-forms.update-custom-field", [$company, "__ID__"]) }}'.replace('__ID__', fieldId),
+            method: 'PATCH',
+            data: {
+                _token: '{{ csrf_token() }}',
+                is_enabled: isEnabled,
+                is_required: isRequired,
+                include_in_notification: includeInNotification
+            }
+        });
+    });
+
+    // Handle custom field edit
+    $('.edit-custom-field').on('click', function(e) {
+        e.preventDefault();
+        
+        const $button = $(this);
+        const fieldId = $button.data('id');
+        const fieldType = $button.data('type');
+        const fieldName = $button.data('name');
+        const fieldLabel = $button.data('label');
+        const fieldOptions = $button.data('options');
+        
+        // Set form action URL
+        const updateUrl = '{{ route("admin.company-claim-forms.update-custom-field", [$company, ":id"]) }}'.replace(':id', fieldId);
+        $('#editCustomFieldForm').attr('action', updateUrl);
+        
+        // Display field type
+        const typeLabels = {
+            'text': 'Tekstveld',
+            'textarea': 'Tekstgebied',
+            'select': 'Selectie (dropdown)',
+            'html': 'HTML Inhoud (alleen weergave)'
+        };
+        $('#edit_field_type_display').val(typeLabels[fieldType] || fieldType);
+        
+        // Show/hide fields based on type
+        if (fieldType === 'html') {
+            $('#edit_field_name_group').hide();
+            $('#edit_label_group').hide();
+            $('#edit_html_content_group').show();
+            $('#edit_options_group').hide();
+            $('#edit_html_content').val(fieldLabel).prop('required', true);
+            $('#edit_field_label').prop('required', false);
+            $('#edit_options').prop('required', false);
+        } else if (fieldType === 'select') {
+            $('#edit_field_name_group').show();
+            $('#edit_label_group').show();
+            $('#edit_html_content_group').hide();
+            $('#edit_options_group').show();
+            $('#edit_field_name').val(fieldName);
+            $('#edit_field_label').val(fieldLabel).prop('required', true);
+            $('#edit_options').val(fieldOptions).prop('required', true);
+            $('#edit_html_content').prop('required', false);
+        } else {
+            $('#edit_field_name_group').show();
+            $('#edit_label_group').show();
+            $('#edit_html_content_group').hide();
+            $('#edit_options_group').hide();
+            $('#edit_field_name').val(fieldName);
+            $('#edit_field_label').val(fieldLabel).prop('required', true);
+            $('#edit_options').prop('required', false);
+            $('#edit_html_content').prop('required', false);
+        }
+        
+        $('#editCustomFieldModal').modal('show');
+    });
+
+    // Handle custom field delete
+    $('.delete-custom-field').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (!confirm('Weet u zeker dat u dit veld wilt verwijderen?')) {
+            return;
+        }
+        
+        const $button = $(this);
+        const fieldId = $button.data('id');
+        const url = $button.data('url');
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                _method: 'DELETE'
+            },
+            success: function() {
+                $button.closest('tr').fadeOut(300, function() {
+                    $(this).remove();
+                });
+            },
+            error: function() {
+                alert('Er is een fout opgetreden bij het verwijderen.');
+            }
+        });
+    });
+
+    // Handle conditional modal opening
+    $(document).on('click', '.open-conditional-modal', function(e) {
+        e.preventDefault();
+        const fieldName = $(this).data('field-name');
+        const fieldLabel = $(this).data('field-label');
+        const customFieldId = $(this).data('custom-field-id') || null;
+        openConditionalModal(fieldName, fieldLabel, customFieldId);
     });
 });
 
 let currentFieldName = '';
+let currentCustomFieldId = null;
 let conditionCounter = 0;
 const availableFields = @json($availableFields);
+const customFields = @json($customFields->mapWithKeys(function($cf) {
+    return ['custom_' . $cf->field_name => $cf->field_label];
+})->toArray());
+const allFields = {...availableFields, ...customFields};
 
-function openConditionalModal(fieldName, fieldLabel) {
+function toggleOptions() {
+    const fieldType = document.getElementById('field_type').value;
+    const optionsGroup = document.getElementById('options_group');
+    const htmlContentGroup = document.getElementById('html_content_group');
+    const labelGroup = document.getElementById('label_group');
+    const fieldNameInput = document.getElementById('field_name');
+    const fieldLabelInput = document.getElementById('field_label');
+    const htmlContentInput = document.getElementById('html_content');
+    
+    if (fieldType === 'select') {
+        optionsGroup.style.display = 'block';
+        htmlContentGroup.style.display = 'none';
+        labelGroup.style.display = 'block';
+        document.getElementById('options').required = true;
+        htmlContentInput.required = false;
+        fieldNameInput.required = true;
+        fieldLabelInput.required = true;
+    } else if (fieldType === 'html') {
+        optionsGroup.style.display = 'none';
+        htmlContentGroup.style.display = 'block';
+        labelGroup.style.display = 'none';
+        document.getElementById('options').required = false;
+        htmlContentInput.required = true;
+        fieldNameInput.required = false;
+        fieldLabelInput.required = false;
+    } else {
+        optionsGroup.style.display = 'none';
+        htmlContentGroup.style.display = 'none';
+        labelGroup.style.display = 'block';
+        document.getElementById('options').required = false;
+        htmlContentInput.required = false;
+        fieldNameInput.required = true;
+        fieldLabelInput.required = true;
+    }
+}
+
+function openConditionalModal(fieldName, fieldLabel, customFieldId = null) {
     currentFieldName = fieldName;
+    currentCustomFieldId = customFieldId;
     document.getElementById('modal-field-label').textContent = fieldLabel;
     
     // Load existing conditions
@@ -417,7 +877,7 @@ function addCondition(condition = null) {
                         <label>Veld</label>
                         <select class="form-control form-control-sm condition-field" data-id="${id}">
                             <option value="">Selecteer veld...</option>
-                            ${Object.entries(availableFields).map(([name, label]) => 
+                            ${Object.entries(allFields).map(([name, label]) => 
                                 `<option value="${name}" ${condition && condition.field === name ? 'selected' : ''}>${label}</option>`
                             ).join('')}
                         </select>
@@ -488,15 +948,55 @@ function saveConditionalLogic() {
         };
     }
     
-    // Save to hidden input
-    const hiddenInput = document.getElementById('conditional-logic-' + currentFieldName);
-    hiddenInput.value = logicObject ? JSON.stringify(logicObject) : '';
+    // Determine if this is a custom field or standard field
+    const isCustomField = currentFieldName.startsWith('custom_');
     
-    // Update button text
-    const indicator = document.getElementById('logic-indicator-' + currentFieldName);
-    indicator.textContent = logicObject ? 'Bewerken' : 'Instellen';
-    
-    $('#conditionalLogicModal').modal('hide');
+    if (isCustomField && currentCustomFieldId) {
+        // Save via AJAX for custom fields
+        const url = '{{ route("admin.company-claim-forms.update-custom-field", ["company" => $company->id, "customField" => "__FIELD_ID__"]) }}'.replace('__FIELD_ID__', currentCustomFieldId);
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                _method: 'PATCH',
+                conditional_logic: logicObject ? JSON.stringify(logicObject) : ''
+            },
+            success: function(response) {
+                // Update hidden input
+                const hiddenInput = document.getElementById('conditional-logic-' + currentFieldName);
+                hiddenInput.value = logicObject ? JSON.stringify(logicObject) : '';
+                
+                // Update button appearance
+                const button = document.querySelector(`button[onclick*="${currentFieldName}"]`);
+                if (button) {
+                    if (logicObject) {
+                        button.classList.remove('btn-secondary');
+                        button.classList.add('btn-success');
+                    } else {
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-secondary');
+                    }
+                }
+                
+                $('#conditionalLogicModal').modal('hide');
+            },
+            error: function() {
+                alert('Er is een fout opgetreden bij het opslaan');
+            }
+        });
+    } else {
+        // For standard fields, just save to hidden input
+        const hiddenInput = document.getElementById('conditional-logic-' + currentFieldName);
+        hiddenInput.value = logicObject ? JSON.stringify(logicObject) : '';
+        
+        // Update button text
+        const indicator = document.getElementById('logic-indicator-' + currentFieldName);
+        indicator.textContent = logicObject ? 'Bewerken' : 'Instellen';
+        
+        $('#conditionalLogicModal').modal('hide');
+    }
 }
 </script>
 @endsection

@@ -38,6 +38,8 @@ class CompanyClaimFormConfig extends Model
     public static function getAvailableFields(): array
     {
         return [
+            'form_type' => 'Type formulier',
+            'complaint_description' => 'Klacht omschrijving',
             'subject' => 'Onderwerp',
             'date_accident' => 'Datum ongeval',
             'injury' => 'Letselschade',

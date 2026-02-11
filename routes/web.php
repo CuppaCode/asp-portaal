@@ -68,6 +68,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('companies/{company}/claim-form/token/{token}', 'CompanyClaimFormController@deleteToken')->name('company-claim-forms.delete-token');
     Route::post('companies/{company}/claim-form/notification', 'CompanyClaimFormController@storeNotification')->name('company-claim-forms.store-notification');
     Route::delete('companies/{company}/claim-form/notification/{notification}', 'CompanyClaimFormController@deleteNotification')->name('company-claim-forms.delete-notification');
+    Route::post('companies/{company}/claim-form/custom-field', 'CompanyClaimFormController@storeCustomField')->name('company-claim-forms.store-custom-field');
+    Route::patch('companies/{company}/claim-form/custom-field/{customField}', 'CompanyClaimFormController@updateCustomField')->name('company-claim-forms.update-custom-field');
+    Route::delete('companies/{company}/claim-form/custom-field/{customField}', 'CompanyClaimFormController@deleteCustomField')->name('company-claim-forms.delete-custom-field');
+    Route::post('companies/{company}/claim-form/copy', 'CompanyClaimFormController@copyFromCompany')->name('company-claim-forms.copy-from-company');
 
     // Draft Claims
     Route::post('claims/{claim}/approve', 'DraftClaimController@approve')->name('claims.approve');
