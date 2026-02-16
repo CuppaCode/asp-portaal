@@ -100,6 +100,14 @@
                             </a>
                         </li>
                         <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.concept") }}" class="c-sidebar-nav-link {{ request()->is("conceptclaims", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-file-alt c-sidebar-nav-icon">
+
+                                </i>
+                                 Concept {{ trans('cruds.claim.title') }}s
+                            </a>
+                        </li>
+                        <li class="c-sidebar-nav-item">
                             <a href="{{ route("admin.claims.closed") }}" class="c-sidebar-nav-link {{ request()->is("closedclaims", '') ? "c-active" : "" }}">
                                 <i class="fa-fw fas fa-building c-sidebar-nav-icon">
 

@@ -66,12 +66,33 @@ class PublicClaimFormController extends Controller
         
         $allFields = $allFields->sortBy('order')->values();
 
+        // Group fields by field_group
+        $groupedFields = [];
+        foreach ($allFields as $field) {
+            $group = null;
+            if ($field['type'] === 'standard') {
+                $group = $field['data']->field_group;
+            } else {
+                $group = $field['data']->field_group;
+            }
+            
+            if ($group) {
+                if (!isset($groupedFields[$group])) {
+                    $groupedFields[$group] = [];
+                }
+                $groupedFields[$group][] = $field;
+            } else {
+                $groupedFields['_ungrouped_' . $field['order']][] = $field;
+            }
+        }
+
         $availableFields = CompanyClaimFormConfig::getAvailableFields();
 
         return view('public.claim-form', compact(
             'claimToken',
             'company',
             'allFields',
+            'groupedFields',
             'availableFields'
         ));
     }

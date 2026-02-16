@@ -17,6 +17,8 @@ class CompanyClaimFormConfig extends Model
         'notification_label',
         'conditional_logic',
         'display_order',
+        'field_width',
+        'field_group',
     ];
 
     protected $casts = [

@@ -75,6 +75,8 @@ class CompanyClaimFormController extends Controller
                     'notification_label' => $config['notification_label'] ?? null,
                     'conditional_logic' => $conditionalLogic,
                     'display_order' => $config['display_order'] ?? 0,
+                    'field_width' => $config['field_width'] ?? 'full',
+                    'field_group' => $config['field_group'] ?? null,
                 ]
             );
         }
@@ -228,6 +230,8 @@ class CompanyClaimFormController extends Controller
             'is_required' => false,
             'include_in_notification' => false,
             'display_order' => $company->customClaimFields()->max('display_order') + 1,
+            'field_width' => 'full',
+            'field_group' => null,
         ]);
 
         return redirect()->route('admin.company-claim-forms.index', $company)
@@ -271,6 +275,8 @@ class CompanyClaimFormController extends Controller
             $customField->update([
                 'field_label' => $fieldLabel,
                 'options' => $options,
+                'field_width' => $request->input('field_width', 'full'),
+                'field_group' => $request->input('field_group'),
             ]);
 
             return redirect()->route('admin.company-claim-forms.index', $company)
@@ -283,6 +289,8 @@ class CompanyClaimFormController extends Controller
                 'include_in_notification' => 'nullable|boolean',
                 'conditional_logic' => 'nullable|string',
                 'display_order' => 'nullable|integer',
+                'field_width' => 'nullable|string',
+                'field_group' => 'nullable|string',
             ]);
 
             $conditionalLogic = null;
@@ -298,6 +306,8 @@ class CompanyClaimFormController extends Controller
                 'include_in_notification' => $request->input('include_in_notification', false),
                 'conditional_logic' => $conditionalLogic,
                 'display_order' => $request->input('display_order', $customField->display_order),
+                'field_width' => $request->input('field_width', $customField->field_width),
+                'field_group' => $request->input('field_group', $customField->field_group),
             ]);
 
             return response()->json(['success' => true]);
@@ -374,6 +384,8 @@ class CompanyClaimFormController extends Controller
                 'include_in_notification' => $sourceField->include_in_notification,
                 'conditional_logic' => $sourceField->conditional_logic,
                 'display_order' => $sourceField->display_order,
+                'field_width' => $sourceField->field_width ?? 'full',
+                'field_group' => $sourceField->field_group,
             ]);
         }
 

@@ -23,8 +23,7 @@ Route::get('/claim-draft/{claim}/deny-form', 'PublicDraftClaimController@showDen
     ->name('draft-claim.deny-form')
     ->middleware('signed');
 Route::post('/claim-draft/{claim}/deny', 'PublicDraftClaimController@deny')
-    ->name('draft-claim.deny')
-    ->middleware('signed');
+    ->name('draft-claim.deny');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
 
@@ -50,6 +49,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('claims/send-mail', 'ClaimController@sendMail')->name('claims.sendMail');
 
     Route::get('openclaims', 'ClaimController@open')->name('claims.open');
+    Route::get('conceptclaims', 'ClaimController@concept')->name('claims.concept');
     Route::get('unassignedclaims', 'ClaimController@unassigned')->name('claims.unassigned');
     Route::get('closedclaims', 'ClaimController@closed')->name('claims.closed');
 

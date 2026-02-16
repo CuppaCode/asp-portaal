@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('styles')
 <style>
+    /* Drag and drop styling */
     .ui-state-highlight {
         height: 50px;
         background-color: #f0f0f0;
@@ -8,15 +9,17 @@
     }
     #sortable-all-fields tr:hover {
         background-color: #f8f9fa;
+        cursor: move;
     }
 </style>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 @endsection
 
 @section('content')
 
 <div class="card">
     <div class="card-header">
-        <h3>Claim Formulier Configuratie - {{ $company->name }}</h3>
+        Claim Formulier Configuratie - {{ $company->name }}
     </div>
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -29,7 +32,7 @@
         </div>
 
         {{-- Tokens Section --}}
-        <div class="card mb-4">
+        <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Formulier Tokens</h4>
                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#createTokenModal">
@@ -60,8 +63,8 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control form-control-sm" value="{{ $token->url }}" id="token-{{ $token->id }}" readonly>
                                             <div class="input-group-append">
-                                                <button class="btn btn-sm btn-outline-secondary" onclick="copyToken('token-{{ $token->id }}')">
-                                                    <i class="fa fa-copy"></i>
+                                                <button class="btn btn-sm btn-outline-secondary" onclick="window.open('{{ $token->url }}', '_blank')" title="Open formulier">
+                                                    <i class="fas fa-external-link-alt"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -99,7 +102,7 @@
         </div>
 
         {{-- Expiry Settings Section --}}
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-header">
                 <h4 class="mb-0">Verval & Herinnering Instellingen</h4>
             </div>
@@ -138,7 +141,7 @@
         </div>
 
         {{-- Form Configuration Section --}}
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
                     <h4 class="mb-0">Formulier Velden Configuratie</h4>
@@ -162,6 +165,8 @@
                                     <th>Verplicht</th>
                                     <th>In notificatie</th>
                                     <th>Label</th>
+                                    <th>Breedte</th>
+                                    <th>Groep</th>
                                     <th>Voorwaardelijke logica</th>
                                     <th style="width: 80px;">Acties</th>
                                 </tr>
@@ -251,6 +256,20 @@
                                                     value="{{ $notificationLabel }}" placeholder="{{ $fieldLabel }}">
                                             </td>
                                             <td>
+                                                <select class="form-control form-control-sm" name="fields[{{ $fieldName }}][field_width]">
+                                                    <option value="full" {{ (!$config || $config->field_width === 'full') ? 'selected' : '' }}>Volledig</option>
+                                                    <option value="half" {{ $config && $config->field_width === 'half' ? 'selected' : '' }}>Half</option>
+                                                    <option value="third" {{ $config && $config->field_width === 'third' ? 'selected' : '' }}>Derde</option>
+                                                    <option value="quarter" {{ $config && $config->field_width === 'quarter' ? 'selected' : '' }}>Kwart</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control form-control-sm" 
+                                                    name="fields[{{ $fieldName }}][field_group]" 
+                                                    value="{{ $config ? $config->field_group : '' }}" 
+                                                    placeholder="Optioneel">
+                                            </td>
+                                            <td>
                                                 <button type="button" class="btn btn-sm btn-outline-primary open-conditional-modal" 
                                                     data-field-name="{{ $fieldName }}" 
                                                     data-field-label="{{ $fieldLabel }}">
@@ -314,6 +333,20 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                <select class="form-control form-control-sm custom-field-width" data-id="{{ $customField->id }}">
+                                                    <option value="full" {{ $customField->field_width === 'full' ? 'selected' : '' }}>Volledig</option>
+                                                    <option value="half" {{ $customField->field_width === 'half' ? 'selected' : '' }}>Half</option>
+                                                    <option value="third" {{ $customField->field_width === 'third' ? 'selected' : '' }}>Derde</option>
+                                                    <option value="quarter" {{ $customField->field_width === 'quarter' ? 'selected' : '' }}>Kwart</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control form-control-sm custom-field-group" 
+                                                    data-id="{{ $customField->id }}" 
+                                                    value="{{ $customField->field_group }}" 
+                                                    placeholder="Optioneel">
+                                            </td>
+                                            <td>
                                                 <button type="button" class="btn btn-sm {{ $customField->conditional_logic ? 'btn-success' : 'btn-secondary' }} open-conditional-modal" 
                                                     data-field-name="custom_{{ $customField->field_name }}" 
                                                     data-field-label="{{ strip_tags($customField->field_label) }}" 
@@ -353,7 +386,7 @@
         </div>
 
         {{-- Notification Recipients Section --}}
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Notificatie Ontvangers</h4>
                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNotificationModal">
@@ -692,6 +725,36 @@ $(document).ready(function() {
                 is_enabled: isEnabled,
                 is_required: isRequired,
                 include_in_notification: includeInNotification
+            }
+        });
+    });
+
+    // Handle custom field width changes
+    $(document).on('change', '.custom-field-width', function() {
+        const fieldId = $(this).data('id');
+        const width = $(this).val();
+        
+        $.ajax({
+            url: '{{ route("admin.company-claim-forms.update-custom-field", [$company, "__ID__"]) }}'.replace('__ID__', fieldId),
+            method: 'PATCH',
+            data: {
+                _token: '{{ csrf_token() }}',
+                field_width: width
+            }
+        });
+    });
+
+    // Handle custom field group changes
+    $(document).on('blur', '.custom-field-group', function() {
+        const fieldId = $(this).data('id');
+        const group = $(this).val();
+        
+        $.ajax({
+            url: '{{ route("admin.company-claim-forms.update-custom-field", [$company, "__ID__"]) }}'.replace('__ID__', fieldId),
+            method: 'PATCH',
+            data: {
+                _token: '{{ csrf_token() }}',
+                field_group: group
             }
         });
     });

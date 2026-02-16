@@ -17,6 +17,8 @@ class CompanyCustomClaimField extends Model
         'include_in_notification',
         'conditional_logic',
         'display_order',
+        'field_width',
+        'field_group',
     ];
 
     protected $casts = [

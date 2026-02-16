@@ -43,6 +43,7 @@ class Company extends Model implements HasMedia
         'country',
         'phone',
         'active',
+        'logo',
         'description',
         'created_at',
         'updated_at',
