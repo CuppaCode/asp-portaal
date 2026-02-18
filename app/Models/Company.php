@@ -43,6 +43,7 @@ class Company extends Model implements HasMedia
         'country',
         'phone',
         'active',
+        'logo',
         'description',
         'created_at',
         'updated_at',
@@ -82,5 +83,25 @@ class Company extends Model implements HasMedia
     public function contacts()
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function claimTokens()
+    {
+        return $this->hasMany(CompanyClaimToken::class);
+    }
+
+    public function claimFormConfigs()
+    {
+        return $this->hasMany(CompanyClaimFormConfig::class);
+    }
+
+    public function claimFormNotifications()
+    {
+        return $this->hasMany(CompanyClaimFormNotification::class);
+    }
+
+    public function customClaimFields()
+    {
+        return $this->hasMany(CompanyCustomClaimField::class);
     }
 }

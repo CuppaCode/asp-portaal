@@ -13,6 +13,19 @@
 
     @endif
 
+    {{-- Draft Status Badge --}}
+    @if(in_array($claim->status, ['draft', 'draft_denied']))
+        <div class="alert alert-{{ $claim->status === 'draft' ? 'warning' : 'danger' }}" role="alert">
+            @if($claim->status === 'draft')
+                <strong>Concept:</strong> Wacht op goedkeuring
+                @if($claim->draft_expires_at)
+                    <br><small>Verloopt over {{ now()->diffInDays($claim->draft_expires_at, false) }} dagen</small>
+                @endif
+            @else
+                <strong>Concept afgewezen:</strong> {{ $claim->denied_reason }}
+            @endif
+        </div>
+    @endif
 
     <div>
         @if($sla)
@@ -28,6 +41,31 @@
                 </button>
             @endcan
         @endif
+        
+        {{-- Draft Actions --}}
+        @if($claim->status === 'draft')
+            @can('approve_draft_claim', $claim)
+                <form action="{{ route('admin.claims.resubmit', $claim) }}" method="POST" class="d-inline" onsubmit="return confirm('Wilt u deze concept claim goedkeuren?')">
+                    @csrf
+                    <button type="button" class="btn btn-success" onclick="approveDraft({{ $claim->id }})">
+                        <i class="fa fa-check"></i> Goedkeuren
+                    </button>
+                </form>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#denyDraftModal">
+                    <i class="fa fa-times"></i> Afwijzen
+                </button>
+            @endcan
+        @elseif($claim->status === 'draft_denied')
+            @can('approve_draft_claim', $claim)
+                <form action="{{ route('admin.claims.resubmit', $claim) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa fa-redo"></i> Opnieuw Indienen
+                    </button>
+                </form>
+            @endcan
+        @endif
+        
         @if( $claim->assign_self || $isAdminOrAgent)
             <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                 {{ trans('global.edit') }}
@@ -35,6 +73,59 @@
         @endif
     </div>
 </div>
+
+{{-- Deny Draft Modal --}}
+@if($claim->status === 'draft')
+<div class="modal fade" id="denyDraftModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.claims.deny', $claim->id) }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Concept Claim Afwijzen</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="reason">Reden voor afwijzing *</label>
+                        <textarea name="reason" id="reason" class="form-control" rows="5" required 
+                            placeholder="Geef aan waarom deze claim wordt afgewezen..."></textarea>
+                        <small class="form-text text-muted">Minimaal 10 karakters vereist</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-times"></i> Claim Afwijzen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function approveDraft(claimId) {
+    if(confirm('Wilt u deze concept claim goedkeuren en omzetten naar een actieve claim?')) {
+        $.ajax({
+            url: '/admin/claims/' + claimId + '/approve',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                location.reload();
+            },
+            error: function(xhr) {
+                alert('Er is een fout opgetreden. Probeer het opnieuw.');
+            }
+        });
+    }
+}
+</script>
+@endif
 
 <div class="row">
     <div class="col-md-6 offset-md-6" style="position: relative;">
