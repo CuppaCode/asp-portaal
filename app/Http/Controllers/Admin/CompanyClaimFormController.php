@@ -10,6 +10,7 @@ use App\Models\CompanyClaimFormNotification;
 use App\Models\CompanyCustomClaimField;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class CompanyClaimFormController extends Controller
@@ -83,6 +84,92 @@ class CompanyClaimFormController extends Controller
 
         return redirect()->route('admin.company-claim-forms.index', $company)
             ->with('message', 'Formulier configuratie bijgewerkt.');
+    }
+
+    public function updateStandardField(Request $request, Company $company, $fieldName)
+    {
+        abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        // Get or create the config record
+        $config = CompanyClaimFormConfig::firstOrCreate(
+            [
+                'company_id' => $company->id,
+                'field_name' => $fieldName,
+            ],
+            [
+                'is_enabled' => false,
+                'is_required' => false,
+                'include_in_notification' => false,
+                'display_order' => 0,
+                'field_width' => 'full',
+            ]
+        );
+
+        // Update only the fields that are provided in the request
+        $updateData = [];
+
+        if ($request->has('is_enabled')) {
+            $updateData['is_enabled'] = filter_var($request->is_enabled, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if ($request->has('is_required')) {
+            $updateData['is_required'] = filter_var($request->is_required, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if ($request->has('include_in_notification')) {
+            $updateData['include_in_notification'] = filter_var($request->include_in_notification, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if ($request->has('notification_label')) {
+            $updateData['notification_label'] = $request->notification_label;
+        }
+
+        if ($request->has('field_width')) {
+            $updateData['field_width'] = $request->field_width;
+        }
+
+        if ($request->has('field_group')) {
+            $updateData['field_group'] = $request->field_group;
+        }
+
+        if ($request->has('display_order')) {
+            $updateData['display_order'] = (int) $request->display_order;
+        }
+
+        if ($request->has('conditional_logic')) {
+            $conditionalLogic = $request->conditional_logic;
+            if (!empty($conditionalLogic)) {
+                $conditionalLogic = is_string($conditionalLogic) 
+                    ? json_decode($conditionalLogic, true) 
+                    : $conditionalLogic;
+            }
+            $updateData['conditional_logic'] = $conditionalLogic;
+        }
+
+        // Auto-set conditional logic for complaint_description if not already set
+        if ($fieldName === 'complaint_description' && !$config->conditional_logic && !$request->has('conditional_logic')) {
+            $updateData['conditional_logic'] = [
+                'operator' => 'AND',
+                'conditions' => [
+                    [
+                        'field' => 'form_type',
+                        'operator' => 'equals',
+                        'value' => 'complaint'
+                    ]
+                ]
+            ];
+        }
+
+        // Perform the update
+        if (!empty($updateData)) {
+            $config->update($updateData);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Field updated successfully',
+            'config' => $config->fresh()
+        ]);
     }
 
     public function updateExpirySettings(Request $request, Company $company)
@@ -391,5 +478,182 @@ class CompanyClaimFormController extends Controller
 
         return redirect()->route('admin.company-claim-forms.index', $company)
             ->with('message', 'Velden succesvol gekopieerd van ' . $sourceCompany->name . '. Notificaties zijn niet gekopieerd omdat deze bedrijfsspecifiek zijn.');
+    }
+
+    public function bulkUpdate(Request $request, Company $company)
+    {
+        abort_if(Gate::denies('company_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $validated = $request->validate([
+            'action' => 'required|in:enable,disable,require,unrequire,include_notification,exclude_notification,set_width,set_group',
+            'fields' => 'required|array|min:1',
+            'fields.*.field_name' => 'required|string',
+            'fields.*.type' => 'required|in:standard,custom',
+            'fields.*.id' => 'nullable|integer',
+            'value' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+        
+        try {
+            $results = [
+                'success' => [],
+                'failed' => [],
+                'skipped' => []
+            ];
+
+            $action = $validated['action'];
+            $value = $validated['value'] ?? null;
+
+            foreach ($validated['fields'] as $fieldData) {
+                $fieldName = $fieldData['field_name'];
+                $fieldType = $fieldData['type'];
+
+                try {
+                    if ($fieldType === 'standard') {
+                        // Update or create standard field config
+                        $config = CompanyClaimFormConfig::firstOrCreate(
+                            [
+                                'company_id' => $company->id,
+                                'field_name' => $fieldName,
+                            ],
+                            [
+                                'is_enabled' => false,
+                                'is_required' => false,
+                                'include_in_notification' => false,
+                                'display_order' => 999,
+                            ]
+                        );
+
+                        switch ($action) {
+                            case 'enable':
+                                $config->is_enabled = true;
+                                break;
+                            case 'disable':
+                                $config->is_enabled = false;
+                                break;
+                            case 'require':
+                                $config->is_required = true;
+                                $config->is_enabled = true; // Auto-enable when requiring
+                                break;
+                            case 'unrequire':
+                                $config->is_required = false;
+                                break;
+                            case 'include_notification':
+                                $config->include_in_notification = true;
+                                break;
+                            case 'exclude_notification':
+                                $config->include_in_notification = false;
+                                break;
+                            case 'set_width':
+                                if (in_array($value, ['full', 'half', 'third', 'quarter'])) {
+                                    $config->field_width = $value;
+                                } else {
+                                    throw new \Exception('Invalid width value');
+                                }
+                                break;
+                            case 'set_group':
+                                $config->field_group = $value;
+                                break;
+                        }
+
+                        $config->save();
+                        $results['success'][] = $fieldName;
+
+                    } elseif ($fieldType === 'custom') {
+                        // Update custom field
+                        $customFieldId = $fieldData['id'] ?? null;
+                        
+                        if (!$customFieldId) {
+                            $results['failed'][] = [
+                                'field' => $fieldName,
+                                'error' => 'Custom field ID missing'
+                            ];
+                            continue;
+                        }
+
+                        $customField = CompanyCustomClaimField::where('company_id', $company->id)
+                            ->findOrFail($customFieldId);
+
+                        // Skip HTML fields for certain actions
+                        if ($customField->field_type === 'html' && 
+                            in_array($action, ['require', 'unrequire', 'include_notification', 'exclude_notification'])) {
+                            $results['skipped'][] = [
+                                'field' => $fieldName,
+                                'reason' => 'HTML fields cannot be required or included in notifications'
+                            ];
+                            continue;
+                        }
+
+                        switch ($action) {
+                            case 'enable':
+                                $customField->is_enabled = true;
+                                break;
+                            case 'disable':
+                                $customField->is_enabled = false;
+                                break;
+                            case 'require':
+                                $customField->is_required = true;
+                                $customField->is_enabled = true; // Auto-enable when requiring
+                                break;
+                            case 'unrequire':
+                                $customField->is_required = false;
+                                break;
+                            case 'include_notification':
+                                $customField->include_in_notification = true;
+                                break;
+                            case 'exclude_notification':
+                                $customField->include_in_notification = false;
+                                break;
+                            case 'set_width':
+                                if (in_array($value, ['full', 'half', 'third', 'quarter'])) {
+                                    $customField->field_width = $value;
+                                } else {
+                                    throw new \Exception('Invalid width value');
+                                }
+                                break;
+                            case 'set_group':
+                                $customField->field_group = $value;
+                                break;
+                        }
+
+                        $customField->save();
+                        $results['success'][] = $fieldName;
+                    }
+
+                } catch (\Exception $e) {
+                    $results['failed'][] = [
+                        'field' => $fieldName,
+                        'error' => $e->getMessage()
+                    ];
+                }
+            }
+
+            DB::commit();
+
+            $totalProcessed = count($results['success']);
+            $totalFailed = count($results['failed']);
+            $totalSkipped = count($results['skipped']);
+
+            return response()->json([
+                'success' => true,
+                'message' => "Bulk update completed: {$totalProcessed} updated, {$totalSkipped} skipped, {$totalFailed} failed",
+                'results' => $results,
+                'counts' => [
+                    'success' => $totalProcessed,
+                    'failed' => $totalFailed,
+                    'skipped' => $totalSkipped
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Bulk update failed: ' . $e->getMessage(),
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -11,6 +11,263 @@
         background-color: #f8f9fa;
         cursor: move;
     }
+    
+    /* Move button styling */
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    /* Vertical drag controls */
+    .drag-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+    
+    .drag-controls .btn-move {
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        border: none;
+        background: transparent;
+        color: #6c757d;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .drag-controls .btn-move:hover {
+        color: #007bff;
+        background-color: #e9ecef;
+        border-radius: 3px;
+    }
+    
+    .drag-controls .drag-handle {
+        cursor: grab;
+        font-size: 1rem;
+        color: #6c757d;
+        padding: 4px 0;
+    }
+    
+    .drag-controls .drag-handle:hover {
+        color: #495057;
+    }
+    
+    /* Smooth transition for row movement */
+    #sortable-all-fields tr {
+        transition: background-color 0.5s ease;
+    }
+    
+    /* Highlight moved row */
+    #sortable-all-fields tr.table-success {
+        background-color: #d4edda !important;
+    }
+    
+    /* Improve drag handle visibility */
+    #sortable-all-fields tr:hover td:first-child {
+        background-color: #f8f9fa;
+    }
+    
+    /* Auto-save indicators */
+    .save-indicator {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .save-indicator.show {
+        opacity: 1;
+    }
+    
+    .save-indicator.saving {
+        color: #ffc107;
+    }
+    
+    .save-indicator.saved {
+        color: #28a745;
+    }
+    
+    .save-indicator.error {
+        color: #dc3545;
+    }
+
+    /* Enhanced table styling */
+    .fields-config-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .fields-config-table thead th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.875rem;
+        padding: 0.75rem 0.5rem;
+        vertical-align: middle;
+    }
+
+    .fields-config-table tbody tr {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .fields-config-table tbody tr:nth-child(even) {
+        background-color: #fafbfc;
+    }
+
+    .fields-config-table tbody tr:hover {
+        background-color: #f1f3f5 !important;
+    }
+
+    .fields-config-table tbody td {
+        padding: 0.625rem 0.5rem;
+        vertical-align: middle;
+    }
+
+    /* Color-coded badges */
+    .badge-type-standard { background-color: #344a9b; color: #ffffff; }
+    .badge-type-text { background-color: #17a2b8; color: #ffffff; }
+    .badge-type-textarea { background-color: #6c757d; color: #ffffff; }
+    .badge-type-select { background-color: #28a745; color: #ffffff; }
+    .badge-type-html { background-color: #ffc107; color: #212529; }
+
+    /* Checkbox styling */
+    .field-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    /* Bulk operations */
+    .bulk-action-bar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #344a9b;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+        box-shadow: 0 4px 12px rgba(52, 74, 155, 0.3);
+    }
+
+    .bulk-action-bar.show {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        animation: slideDown 0.3s ease;
+    }
+
+    /* Column width optimizations */
+    .fields-config-table th:nth-child(11) {
+        width: 100px;
+        text-align: center;
+    }
+
+    .fields-config-table th:nth-child(12) {
+        width: 120px;
+    }
+
+    .action-buttons {
+        display: inline-flex;
+        gap: 0.25rem;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bulk-action-bar .btn {
+        margin: 0 0.25rem;
+    }
+
+    /* Conditional logic badge */
+    .logic-count-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #007bff;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+
+    .logic-button-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 991px) {
+        .fields-config-table th:nth-child(8),
+        .fields-config-table td:nth-child(8),
+        .fields-config-table th:nth-child(9),
+        .fields-config-table td:nth-child(9) {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .drag-controls .btn-move {
+            padding: 6px 8px;
+            font-size: 1rem;
+        }
+
+        .drag-controls .drag-handle {
+            font-size: 1.2rem;
+            padding: 8px 0;
+        }
+
+        .fields-config-table thead th,
+        .fields-config-table tbody td {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.25rem;
+        }
+
+        .field-checkbox {
+            width: 24px;
+            height: 24px;
+        }
+
+        .bulk-action-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .bulk-action-bar .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+
+    /* Touch-friendly on mobile */
+    @media (hover: none) {
+        .btn {
+            min-height: 44px;
+        }
+
+        .fields-config-table input[type="text"],
+        .fields-config-table select {
+            font-size: 16px; /* Prevents iOS zoom */
+        }
+    }
 </style>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 @endsection
@@ -152,13 +409,46 @@
                 </button>
             </div>
             <div class="card-body">
+                {{-- Bulk Action Bar --}}
+                <div class="bulk-action-bar" id="bulk-action-bar">
+                    <div>
+                        <strong><span id="selected-count">0</span> velden geselecteerd</strong>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-light" data-bulk-action="enable">
+                            <i class="fa fa-check"></i> Inschakelen
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light" data-bulk-action="disable">
+                            <i class="fa fa-times"></i> Uitschakelen
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light" data-bulk-action="require">
+                            <i class="fa fa-exclamation-circle"></i> Verplicht Maken
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light" data-bulk-action="unrequire">
+                            <i class="fa fa-circle-o"></i> Niet Verplicht
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light" data-bulk-action="set_width">
+                            <i class="fa fa-arrows-h"></i> Breedte Instellen
+                        </button>
+                        <button type="button" class="btn btn-sm btn-light" data-bulk-action="set_group">
+                            <i class="fa fa-tags"></i> Groep Instellen
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" id="clear-selection">
+                            <i class="fa fa-ban"></i> Selectie Wissen
+                        </button>
+                    </div>
+                </div>
+
                 <form action="{{ route('admin.company-claim-forms.update-config', $company) }}" method="POST">
                     @csrf
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table fields-config-table">
                             <thead>
                                 <tr>
                                     <th style="width: 30px;"></th>
+                                    <th style="width: 40px;">
+                                        <input type="checkbox" id="select-all" class="field-checkbox" title="Selecteer alles">
+                                    </th>
                                     <th>Veld</th>
                                     <th>Type</th>
                                     <th>Ingeschakeld</th>
@@ -167,8 +457,8 @@
                                     <th>Label</th>
                                     <th>Breedte</th>
                                     <th>Groep</th>
-                                    <th>Voorwaardelijke logica</th>
-                                    <th style="width: 80px;">Acties</th>
+                                    <th title="Voorwaardelijke logica"><i class="fa fa-code-branch"></i> Logica</th>
+                                    <th style="width: 120px;">Acties</th>
                                 </tr>
                             </thead>
                             <tbody id="sortable-all-fields">
@@ -232,31 +522,56 @@
                                                 ];
                                             }
                                         @endphp
-                                        <tr data-field="{{ $fieldName }}" data-type="standard" style="cursor: move;">
-                                            <td class="text-center" style="cursor: grab;">
-                                                <i class="fa fa-bars text-muted"></i>
+                                        <tr data-field="{{ $fieldName }}" data-type="standard" 
+                                            data-enabled="{{ $isEnabled ? '1' : '0' }}" 
+                                            data-required="{{ $isRequired ? '1' : '0' }}"
+                                            data-group="{{ $config ? $config->field_group : '' }}"
+                                            style="cursor: move;">
+                                            <td class="text-center">
+                                                <div class="drag-controls">
+                                                    <button type="button" class="btn-move move-to-top" 
+                                                            data-field="{{ $fieldName }}" data-type="standard"
+                                                            title="Naar boven">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <div class="drag-handle">
+                                                        <i class="fa fa-bars"></i>
+                                                    </div>
+                                                    <button type="button" class="btn-move move-to-bottom" 
+                                                            data-field="{{ $fieldName }}" data-type="standard"
+                                                            title="Naar beneden">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="field-checkbox row-select-checkbox" 
+                                                       data-field="{{ $fieldName }}" 
+                                                       data-type="standard">
                                             </td>
                                             <td><strong>{{ $fieldLabel }}</strong></td>
-                                            <td><span class="badge badge-primary">Standaard</span></td>
+                                            <td><span class="badge badge-type-standard">Standaard</span></td>
                                             <td>
                                                 <input type="checkbox" name="fields[{{ $fieldName }}][is_enabled]" value="1" 
-                                                    {{ $isEnabled ? 'checked' : '' }} class="field-enabled">
+                                                    {{ $isEnabled ? 'checked' : '' }} class="field-checkbox field-enabled standard-field-checkbox" data-field="{{ $fieldName }}" data-config="is_enabled">
                                             </td>
                                             <td>
                                                 <input type="checkbox" name="fields[{{ $fieldName }}][is_required]" value="1" 
-                                                    {{ $isRequired ? 'checked' : '' }}>
+                                                    {{ $isRequired ? 'checked' : '' }} class="field-checkbox standard-field-checkbox" data-field="{{ $fieldName }}" data-config="is_required">
                                             </td>
                                             <td>
                                                 <input type="checkbox" name="fields[{{ $fieldName }}][include_in_notification]" value="1" 
-                                                    {{ $includeInNotification ? 'checked' : '' }}>
+                                                    {{ $includeInNotification ? 'checked' : '' }} class="field-checkbox standard-field-checkbox" data-field="{{ $fieldName }}" data-config="include_in_notification">
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control form-control-sm" 
+                                                <input type="text" class="form-control form-control-sm standard-field-input" 
                                                     name="fields[{{ $fieldName }}][notification_label]" 
-                                                    value="{{ $notificationLabel }}" placeholder="{{ $fieldLabel }}">
+                                                    value="{{ $notificationLabel }}" placeholder="{{ $fieldLabel }}"
+                                                    data-field="{{ $fieldName }}" data-config="notification_label">
                                             </td>
                                             <td>
-                                                <select class="form-control form-control-sm" name="fields[{{ $fieldName }}][field_width]">
+                                                <select class="form-control form-control-sm standard-field-select" name="fields[{{ $fieldName }}][field_width]"
+                                                    data-field="{{ $fieldName }}" data-config="field_width">
                                                     <option value="full" {{ (!$config || $config->field_width === 'full') ? 'selected' : '' }}>Volledig</option>
                                                     <option value="half" {{ $config && $config->field_width === 'half' ? 'selected' : '' }}>Half</option>
                                                     <option value="third" {{ $config && $config->field_width === 'third' ? 'selected' : '' }}>Derde</option>
@@ -264,20 +579,30 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control form-control-sm" 
+                                                <input type="text" class="form-control form-control-sm standard-field-input" 
                                                     name="fields[{{ $fieldName }}][field_group]" 
                                                     value="{{ $config ? $config->field_group : '' }}" 
-                                                    placeholder="Optioneel">
+                                                    placeholder="Optioneel"
+                                                    data-field="{{ $fieldName }}" data-config="field_group">
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-outline-primary open-conditional-modal" 
-                                                    data-field-name="{{ $fieldName }}" 
-                                                    data-field-label="{{ $fieldLabel }}">
-                                                    <i class="fa fa-code-branch"></i> 
-                                                    <span id="logic-indicator-{{ $fieldName }}">
-                                                        {{ $conditionalLogic ? 'Bewerken' : 'Instellen' }}
-                                                    </span>
-                                                </button>
+                                                @php
+                                                    $conditionCount = 0;
+                                                    if ($conditionalLogic && isset($conditionalLogic['conditions'])) {
+                                                        $conditionCount = count($conditionalLogic['conditions']);
+                                                    }
+                                                @endphp
+                                                <div class="logic-button-wrapper">
+                                                    <button type="button" class="btn btn-sm {{ $conditionalLogic ? 'btn-success' : 'btn-outline-secondary' }} open-conditional-modal" 
+                                                        data-field-name="{{ $fieldName }}" 
+                                                        data-field-label="{{ $fieldLabel }}"
+                                                        title="{{ $conditionalLogic ? 'Bewerk voorwaardelijke logica' : 'Stel voorwaardelijke logica in' }}">
+                                                        <i class="fa fa-code-branch"></i>
+                                                    </button>
+                                                    @if($conditionCount > 0)
+                                                        <span class="logic-count-badge">{{ $conditionCount }}</span>
+                                                    @endif
+                                                </div>
                                                 <input type="hidden" name="fields[{{ $fieldName }}][conditional_logic]" 
                                                     id="conditional-logic-{{ $fieldName }}" 
                                                     value='{{ $conditionalLogic ? json_encode($conditionalLogic) : "" }}'>
@@ -290,16 +615,40 @@
                                         @php
                                             $customField = $field['data'];
                                         @endphp
-                                        <tr data-field="custom_{{ $customField->field_name }}" data-type="custom" data-id="{{ $customField->id }}" style="cursor: move;">
-                                            <td class="text-center" style="cursor: grab;">
-                                                <i class="fa fa-bars text-muted"></i>
+                                        <tr data-field="custom_{{ $customField->field_name }}" data-type="custom" data-id="{{ $customField->id }}" 
+                                            data-enabled="{{ $customField->is_enabled ? '1' : '0' }}"
+                                            data-required="{{ $customField->is_required ? '1' : '0' }}"
+                                            data-group="{{ $customField->field_group }}"
+                                            style="cursor: move;">
+                                            <td class="text-center">
+                                                <div class="drag-controls">
+                                                    <button type="button" class="btn-move move-to-top" 
+                                                            data-id="{{ $customField->id }}" data-type="custom"
+                                                            title="Naar boven">
+                                                        <i class="fa fa-angle-up"></i>
+                                                    </button>
+                                                    <div class="drag-handle">
+                                                        <i class="fa fa-bars"></i>
+                                                    </div>
+                                                    <button type="button" class="btn-move move-to-bottom" 
+                                                            data-id="{{ $customField->id }}" data-type="custom"
+                                                            title="Naar beneden">
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="field-checkbox row-select-checkbox" 
+                                                       data-field="custom_{{ $customField->field_name }}" 
+                                                       data-type="custom"
+                                                       data-id="{{ $customField->id }}">
                                             </td>
                                             <td>
-                                                <strong>{{ $customField->field_label }}</strong><br>
+                                                <strong>{{ strip_tags($customField->field_label) }}</strong><br>
                                                 <small class="text-muted"><code>{{ $customField->field_name }}</code></small>
                                             </td>
                                             <td>
-                                                <span class="badge badge-info">
+                                                <span class="badge {{ $customField->field_type === 'text' ? 'badge-type-text' : ($customField->field_type === 'textarea' ? 'badge-type-textarea' : ($customField->field_type === 'select' ? 'badge-type-select' : 'badge-type-html')) }}">
                                                     @if($customField->field_type === 'text') Tekst
                                                     @elseif($customField->field_type === 'textarea') Tekstgebied  
                                                     @elseif($customField->field_type === 'select') Selectie
@@ -308,7 +657,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <input type="checkbox" class="custom-field-enabled" data-id="{{ $customField->id }}" 
+                                                <input type="checkbox" class="field-checkbox custom-field-enabled" data-id="{{ $customField->id }}" 
                                                     {{ $customField->is_enabled ? 'checked' : '' }}>
                                             </td>
                                             @if($customField->field_type === 'html')
@@ -317,11 +666,11 @@
                                                 </td>
                                             @else
                                                 <td>
-                                                    <input type="checkbox" class="custom-field-required" data-id="{{ $customField->id }}" 
+                                                    <input type="checkbox" class="field-checkbox custom-field-required" data-id="{{ $customField->id }}" 
                                                         {{ $customField->is_required ? 'checked' : '' }}>
                                                 </td>
                                                 <td>
-                                                    <input type="checkbox" class="custom-field-notification" data-id="{{ $customField->id }}"
+                                                    <input type="checkbox" class="field-checkbox custom-field-notification" data-id="{{ $customField->id }}"
                                                         {{ $customField->include_in_notification ? 'checked' : '' }}>
                                                 </td>
                                             @endif
@@ -329,7 +678,7 @@
                                                 @if($customField->field_type === 'html')
                                                     <textarea class="form-control form-control-sm" rows="2" disabled>{{ Str::limit(strip_tags($customField->field_label), 50) }}</textarea>
                                                 @else
-                                                    <input type="text" class="form-control form-control-sm" value="{{ $customField->field_label }}" disabled>
+                                                    <input type="text" class="form-control form-control-sm" value="{{ strip_tags($customField->field_label) }}" disabled>
                                                 @endif
                                             </td>
                                             <td>
@@ -347,32 +696,45 @@
                                                     placeholder="Optioneel">
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm {{ $customField->conditional_logic ? 'btn-success' : 'btn-secondary' }} open-conditional-modal" 
-                                                    data-field-name="custom_{{ $customField->field_name }}" 
-                                                    data-field-label="{{ strip_tags($customField->field_label) }}" 
-                                                    data-custom-field-id="{{ $customField->id }}">
-                                                    <i class="fa fa-code-branch"></i>
-                                                    <span id="logic-indicator-custom_{{ $customField->field_name }}">
-                                                        {{ $customField->conditional_logic ? 'Bewerken' : 'Instellen' }}
-                                                    </span>
-                                                </button>
+                                                @php
+                                                    $customConditionCount = 0;
+                                                    if ($customField->conditional_logic && isset($customField->conditional_logic['conditions'])) {
+                                                        $customConditionCount = count($customField->conditional_logic['conditions']);
+                                                    }
+                                                @endphp
+                                                <div class="logic-button-wrapper">
+                                                    <button type="button" class="btn btn-sm {{ $customField->conditional_logic ? 'btn-success' : 'btn-outline-secondary' }} open-conditional-modal" 
+                                                        data-field-name="custom_{{ $customField->field_name }}" 
+                                                        data-field-label="{{ strip_tags($customField->field_label) }}" 
+                                                        data-custom-field-id="{{ $customField->id }}"
+                                                        title="{{ $customField->conditional_logic ? 'Bewerk voorwaardelijke logica' : 'Stel voorwaardelijke logica in' }}">
+                                                        <i class="fa fa-code-branch"></i>
+                                                    </button>
+                                                    @if($customConditionCount > 0)
+                                                        <span class="logic-count-badge">{{ $customConditionCount }}</span>
+                                                    @endif
+                                                </div>
                                                 <input type="hidden" id="conditional-logic-custom_{{ $customField->field_name }}" 
                                                     value='{{ $customField->conditional_logic ? json_encode($customField->conditional_logic) : "" }}'>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-primary edit-custom-field mr-1" 
-                                                    data-id="{{ $customField->id }}"
-                                                    data-type="{{ $customField->field_type }}"
-                                                    data-name="{{ $customField->field_name }}"
-                                                    data-label="{{ $customField->field_label }}"
-                                                    data-options="{{ $customField->options ? implode("\n", $customField->options) : '' }}">
-                                                    <i class="fa fa-edit"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger delete-custom-field" 
-                                                    data-id="{{ $customField->id }}"
-                                                    data-url="{{ route('admin.company-claim-forms.delete-custom-field', [$company, $customField]) }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                <div class="action-buttons">
+                                                    <button type="button" class="btn btn-sm btn-primary edit-custom-field" 
+                                                        title="Bewerken"
+                                                        data-id="{{ $customField->id }}"
+                                                        data-type="{{ $customField->field_type }}"
+                                                        data-name="{{ $customField->field_name }}"
+                                                        data-label="{{ $customField->field_label }}"
+                                                        data-options="{{ $customField->options ? implode("\n", $customField->options) : '' }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-danger delete-custom-field" 
+                                                        title="Verwijderen"
+                                                        data-id="{{ $customField->id }}"
+                                                        data-url="{{ route('admin.company-claim-forms.delete-custom-field', [$company, $customField]) }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endif
@@ -380,7 +742,12 @@
                             </tbody>
                         </table>
                     </div>
-                    <button type="submit" class="btn btn-primary">Configuratie Opslaan</button>
+                    <div class="alert alert-info mb-3">
+                        <i class="fa fa-info-circle"></i> <strong>Auto-opslaan ingeschakeld:</strong> Alle wijzigingen worden automatisch opgeslagen wanneer u een configuratie aanpast.
+                    </div>
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fa fa-save"></i> Handmatig Opslaan (optioneel)
+                    </button>
                 </form>
             </div>
         </div>
@@ -679,36 +1046,175 @@ function copyToken(elementId) {
     alert('Token URL gekopieerd naar klembord!');
 }
 
-// Make fields sortable
-$(document).ready(function() {
-    $('#sortable-all-fields').sortable({
-        handle: 'td:first-child',
-        cursor: 'move',
-        placeholder: 'ui-state-highlight',
-        update: function(event, ui) {
-            // Update display order for all fields
-            $('#sortable-all-fields tr').each(function(index) {
-                const $row = $(this);
-                const fieldType = $row.data('type');
-                
-                if (fieldType === 'standard') {
-                    // Update hidden input for standard fields (submitted via form)
-                    $row.find('.display-order').val(index);
-                } else if (fieldType === 'custom') {
-                    // Update via AJAX for custom fields
-                    const fieldId = $row.data('id');
-                    $.ajax({
-                        url: '{{ route("admin.company-claim-forms.update-custom-field", [$company, "__ID__"]) }}'.replace('__ID__', fieldId),
-                        method: 'PATCH',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            display_order: index
-                        }
-                    });
+// Shared function to update all field orders
+function updateAllFieldOrders() {
+    $('#sortable-all-fields tr').each(function(index) {
+        const $row = $(this);
+        const fieldType = $row.data('type');
+        
+        if (fieldType === 'standard') {
+            // Update hidden input for standard fields
+            $row.find('.display-order').val(index);
+            // Also trigger auto-save for standard field order
+            const fieldName = $row.data('field');
+            updateStandardField(fieldName, 'display_order', index);
+        } else if (fieldType === 'custom') {
+            // Update via AJAX for custom fields
+            const fieldId = $row.data('id');
+            $.ajax({
+                url: '{{ route("admin.company-claim-forms.update-custom-field", [$company, "__ID__"]) }}'.replace('__ID__', fieldId),
+                method: 'PATCH',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    display_order: index
+                },
+                success: function() {
+                    console.log('Order updated for field ' + fieldId);
                 }
             });
         }
     });
+}
+
+// Debounce function for text inputs
+let debounceTimers = {};
+function debounce(key, callback, delay = 1000) {
+    clearTimeout(debounceTimers[key]);
+    debounceTimers[key] = setTimeout(callback, delay);
+}
+
+// Show save indicator
+function showSaveIndicator($element, status = 'saving') {
+    let $indicator = $element.siblings('.save-indicator');
+    if ($indicator.length === 0) {
+        $indicator = $('<span class="save-indicator"></span>');
+        $element.after($indicator);
+    }
+    
+    $indicator.removeClass('saving saved error').addClass(status + ' show');
+    
+    if (status === 'saving') {
+        $indicator.html('<i class="fa fa-spinner fa-spin"></i>');
+    } else if (status === 'saved') {
+        $indicator.html('<i class="fa fa-check"></i>');
+        setTimeout(() => $indicator.removeClass('show'), 2000);
+    } else if (status === 'error') {
+        $indicator.html('<i class="fa fa-times"></i>');
+        setTimeout(() => $indicator.removeClass('show'), 3000);
+    }
+}
+
+// Update standard field via AJAX
+function updateStandardField(fieldName, configKey, value) {
+    console.log('Updating field:', fieldName, 'config:', configKey, 'value:', value);
+    
+    const data = {
+        _token: '{{ csrf_token() }}',
+        [configKey]: value
+    };
+    
+    $.ajax({
+        url: '{{ route("admin.company-claim-forms.update-standard-field", [$company, "__FIELD__"]) }}'.replace('__FIELD__', fieldName),
+        method: 'PATCH',
+        data: data,
+        success: function(response) {
+            console.log('✓ Standard field ' + fieldName + ' updated: ' + configKey, response);
+        },
+        error: function(xhr, status, error) {
+            console.error('✗ Error updating standard field:', fieldName, configKey);
+            console.error('Status:', status, 'Error:', error);
+            console.error('Response:', xhr.responseText);
+        }
+    });
+}
+
+// Make fields sortable
+$(document).ready(function() {
+    $('#sortable-all-fields').sortable({
+        handle: '.drag-handle',
+        cursor: 'move',
+        placeholder: 'ui-state-highlight',
+        update: function(event, ui) {
+            updateAllFieldOrders();
+        }
+    });
+    
+    // Move to Top functionality
+    $(document).on('click', '.move-to-top', function(e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const $tbody = $('#sortable-all-fields');
+        
+        // Move row to top
+        $tbody.prepend($row);
+        
+        // Add visual feedback
+        $row.addClass('table-success');
+        setTimeout(() => $row.removeClass('table-success'), 500);
+        
+        // Update orders
+        updateAllFieldOrders();
+    });
+    
+    // Move to Bottom functionality
+    $(document).on('click', '.move-to-bottom', function(e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const $tbody = $('#sortable-all-fields');
+        
+        // Move row to bottom
+        $tbody.append($row);
+        
+        // Add visual feedback
+        $row.addClass('table-success');
+        setTimeout(() => $row.removeClass('table-success'), 500);
+        
+        // Update orders
+        updateAllFieldOrders();
+    });
+    
+    // ===== AUTO-SAVE FOR STANDARD FIELDS =====
+    
+    // Handle standard field checkbox changes
+    $(document).on('change', '.standard-field-checkbox', function() {
+        const $checkbox = $(this);
+        const fieldName = $checkbox.data('field');
+        const configKey = $checkbox.data('config');
+        const value = $checkbox.is(':checked');
+        
+        showSaveIndicator($checkbox, 'saving');
+        updateStandardField(fieldName, configKey, value);
+        setTimeout(() => showSaveIndicator($checkbox, 'saved'), 300);
+    });
+    
+    // Handle standard field select changes
+    $(document).on('change', '.standard-field-select', function() {
+        const $select = $(this);
+        const fieldName = $select.data('field');
+        const configKey = $select.data('config');
+        const value = $select.val();
+        
+        showSaveIndicator($select, 'saving');
+        updateStandardField(fieldName, configKey, value);
+        setTimeout(() => showSaveIndicator($select, 'saved'), 300);
+    });
+    
+    // Handle standard field text input changes (debounced)
+    $(document).on('input', '.standard-field-input', function() {
+        const $input = $(this);
+        const fieldName = $input.data('field');
+        const configKey = $input.data('config');
+        const value = $input.val();
+        
+        showSaveIndicator($input, 'saving');
+        
+        debounce(fieldName + '_' + configKey, function() {
+            updateStandardField(fieldName, configKey, value);
+            setTimeout(() => showSaveIndicator($input, 'saved'), 300);
+        }, 1000);
+    });
+    
+    // ===== AUTO-SAVE FOR CUSTOM FIELDS =====
 
     // Handle custom field checkbox changes
     $('.custom-field-enabled, .custom-field-required, .custom-field-notification').on('change', function() {
@@ -853,6 +1359,165 @@ $(document).ready(function() {
         const fieldLabel = $(this).data('field-label');
         const customFieldId = $(this).data('custom-field-id') || null;
         openConditionalModal(fieldName, fieldLabel, customFieldId);
+    });
+
+    // ==================== BULK OPERATIONS ====================
+    
+    // Select All / Deselect All
+    $('#select-all').on('change', function() {
+        const isChecked = $(this).prop('checked');
+        $('.row-select-checkbox').prop('checked', isChecked);
+        updateBulkActionBar();
+    });
+
+    // Individual row selection
+    $(document).on('change', '.row-select-checkbox', function() {
+        updateBulkActionBar();
+        
+        // Update select-all checkbox state
+        const totalCheckboxes = $('.row-select-checkbox').length;
+        const totalSelected = $('.row-select-checkbox:checked').length;
+        $('#select-all').prop('checked', totalCheckboxes === totalSelected && totalCheckboxes > 0);
+    });
+
+    // Update bulk action bar visibility and count
+    function updateBulkActionBar() {
+        const selectedCount = $('.row-select-checkbox:checked').length;
+        $('#selected-count').text(selectedCount);
+        
+        if (selectedCount > 0) {
+            $('#bulk-action-bar').addClass('show');
+        } else {
+            $('#bulk-action-bar').removeClass('show');
+        }
+    }
+
+    // Clear selection
+    $('#clear-selection').on('click', function() {
+        $('.row-select-checkbox').prop('checked', false);
+        $('#select-all').prop('checked', false);
+        updateBulkActionBar();
+    });
+
+    // Bulk action buttons
+    $('[data-bulk-action]').on('click', function() {
+        const action = $(this).data('bulk-action');
+        const selectedFields = [];
+        
+        $('.row-select-checkbox:checked').each(function() {
+            const $row = $(this).closest('tr');
+            const fieldData = {
+                field_name: $(this).data('field'),
+                type: $(this).data('type')
+            };
+            
+            if (fieldData.type === 'custom') {
+                fieldData.id = $(this).data('id');
+            }
+            
+            selectedFields.push(fieldData);
+        });
+
+        if (selectedFields.length === 0) {
+            alert('Geen velden geselecteerd');
+            return;
+        }
+
+        // Special handling for set_width and set_group
+        let value = null;
+        if (action === 'set_width') {
+            value = prompt('Selecteer breedte:\n\nfull = Volledig\nhalf = Half\nthird = Derde\nquarter = Kwart\n\nVoer in:', 'full');
+            if (!value || !['full', 'half', 'third', 'quarter'].includes(value)) {
+                alert('Ongeldige breedte. Gebruik: full, half, third, of quarter');
+                return;
+            }
+        } else if (action === 'set_group') {
+            value = prompt('Voer groepsnaam in (of laat leeg om groep te wissen):', '');
+            if (value === null) return; // User cancelled
+        }
+
+        // Confirmation
+        const actionLabels = {
+            'enable': 'inschakelen',
+            'disable': 'uitschakelen',
+            'require': 'verplicht maken',
+            'unrequire': 'niet verplicht maken',
+            'include_notification': 'opnemen in notificaties',
+            'exclude_notification': 'uitsluiten van notificaties',
+            'set_width': 'breedte instellen op ' + value,
+            'set_group': value ? 'groep instellen op "' + value + '"' : 'groep wissen'
+        };
+
+        if (!confirm(`Weet u zeker dat u ${selectedFields.length} veld(en) wilt ${actionLabels[action]}?`)) {
+            return;
+        }
+
+        // Show loading indicator
+        const $btn = $(this);
+        const originalHtml = $btn.html();
+        $btn.html('<i class="fa fa-spinner fa-spin"></i> Bezig...').prop('disabled', true);
+
+        // Send bulk update request
+        $.ajax({
+            url: '{{ route("admin.company-claim-forms.bulk-update", $company) }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                action: action,
+                fields: selectedFields,
+                value: value
+            },
+            success: function(response) {
+                $btn.html(originalHtml).prop('disabled', false);
+                
+                if (response.success) {
+                    // Update UI for each field
+                    selectedFields.forEach(field => {
+                        const $row = $(`.row-select-checkbox[data-field="${field.field_name}"]`).closest('tr');
+                        
+                        // Update data attributes
+                        if (action === 'enable') {
+                            $row.attr('data-enabled', '1');
+                            $row.find('.field-enabled').prop('checked', true);
+                        } else if (action === 'disable') {
+                            $row.attr('data-enabled', '0');
+                            $row.find('.field-enabled').prop('checked', false);
+                        } else if (action === 'require') {
+                            $row.attr('data-required', '1');
+                            $row.attr('data-enabled', '1');
+                            $row.find('.standard-field-checkbox[data-config="is_required"], .custom-field-required').prop('checked', true);
+                            $row.find('.field-enabled').prop('checked', true);
+                        } else if (action === 'unrequire') {
+                            $row.attr('data-required', '0');
+                            $row.find('.standard-field-checkbox[data-config="is_required"], .custom-field-required').prop('checked', false);
+                        } else if (action === 'set_width') {
+                            $row.find('.standard-field-select[data-config="field_width"], .custom-field-width').val(value);
+                        } else if (action === 'set_group') {
+                            $row.attr('data-group', value);
+                            $row.find('.standard-field-input[data-config="field_group"], .custom-field-group').val(value);
+                        }
+                        
+                        // Visual feedback
+                        $row.addClass('table-success');
+                        setTimeout(() => $row.removeClass('table-success'), 1000);
+                    });
+
+                    // Clear selection
+                    $('.row-select-checkbox').prop('checked', false);
+                    $('#select-all').prop('checked', false);
+                    updateBulkActionBar();
+
+                    // Show success message
+                    alert(`✓ Bulk update voltooid\n\n${response.counts.success} bijgewerkt\n${response.counts.skipped} overgeslagen\n${response.counts.failed} mislukt`);
+                } else {
+                    alert('Fout: ' + response.message);
+                }
+            },
+            error: function(xhr) {
+                $btn.html(originalHtml).prop('disabled', false);
+                alert('Er is een fout opgetreden bij het bijwerken van de velden.\n\n' + (xhr.responseJSON ? xhr.responseJSON.message : 'Server error'));
+            }
+        });
     });
 });
 

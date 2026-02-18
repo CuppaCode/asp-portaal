@@ -62,6 +62,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Company Claim Forms
     Route::get('companies/{company}/claim-form', 'CompanyClaimFormController@index')->name('company-claim-forms.index');
     Route::post('companies/{company}/claim-form/config', 'CompanyClaimFormController@updateConfig')->name('company-claim-forms.update-config');
+    Route::patch('companies/{company}/claim-form/standard-field/{fieldName}', 'CompanyClaimFormController@updateStandardField')->name('company-claim-forms.update-standard-field');
     Route::post('companies/{company}/claim-form/expiry', 'CompanyClaimFormController@updateExpirySettings')->name('company-claim-forms.update-expiry');
     Route::post('companies/{company}/claim-form/token', 'CompanyClaimFormController@createToken')->name('company-claim-forms.create-token');
     Route::patch('companies/{company}/claim-form/token/{token}', 'CompanyClaimFormController@toggleToken')->name('company-claim-forms.toggle-token');
@@ -72,6 +73,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::patch('companies/{company}/claim-form/custom-field/{customField}', 'CompanyClaimFormController@updateCustomField')->name('company-claim-forms.update-custom-field');
     Route::delete('companies/{company}/claim-form/custom-field/{customField}', 'CompanyClaimFormController@deleteCustomField')->name('company-claim-forms.delete-custom-field');
     Route::post('companies/{company}/claim-form/copy', 'CompanyClaimFormController@copyFromCompany')->name('company-claim-forms.copy-from-company');
+    Route::post('companies/{company}/claim-form/bulk-update', 'CompanyClaimFormController@bulkUpdate')->name('company-claim-forms.bulk-update');
 
     // Draft Claims
     Route::post('claims/{claim}/approve', 'DraftClaimController@approve')->name('claims.approve');
