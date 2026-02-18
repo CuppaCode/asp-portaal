@@ -19,6 +19,8 @@ class Certificate extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'last_notification_sent_at',
+        'renewal_token_expires_at',
     ];
 
     protected $fillable = [
@@ -31,6 +33,12 @@ class Certificate extends Model
         'updated_at',
         'deleted_at',
         'team_id',
+        'last_notification_sent_at',
+        'renewal_token',
+        'renewal_token_expires_at',
+        'original_expiry_date',
+        'renewed_by_email',
+        'renewed_by_user_id',
     ];
 
     public function driver()
@@ -41,6 +49,31 @@ class Certificate extends Model
     public function category()
     {
         return $this->belongsTo(CertificateCategory::class, 'category_id');
+    }
+
+    public function renewedBy()
+    {
+        return $this->belongsTo(User::class, 'renewed_by_user_id');
+    }
+
+    public function renewals()
+    {
+        return $this->hasMany(CertificateRenewal::class);
+    }
+
+    public function isRenewed()
+    {
+        return $this->original_expiry_date !== null && $this->expiry_date > $this->original_expiry_date;
+    }
+
+    public function scopeNotRenewed($query)
+    {
+        return $query->whereNull('original_expiry_date');
+    }
+
+    public function scopeExpiredLongerThan($query, $days)
+    {
+        return $query->where('expiry_date', '<', Carbon::now()->subDays($days));
     }
 
     public function setNotifyDateAttribute($value)

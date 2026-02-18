@@ -28,6 +28,21 @@ class MailTriggerService
             'description' => 'Triggered when a task is assigned to a user',
             'available_tags' => ['taak_titel', 'taak_beschrijving', 'taak_deadline', 'toegewezen_aan', 'toegewezen_email', 'aangemaakt_door', 'plus_alle_schade_tags'],
         ],
+        'CERTIFICATE_EXPIRING' => [
+            'name' => 'Certificaat verloopt binnenkort',
+            'description' => 'Triggered when a certificate is about to expire',
+            'available_tags' => ['certificaat_naam', 'certificaat_categorie', 'certificaat_vervaldatum', 'chauffeur_naam', 'chauffeur_email', 'bedrijf', 'dagen_tot_verloop', 'verlenging_link'],
+        ],
+        'CERTIFICATE_RENEWED' => [
+            'name' => 'Certificaat verlengd',
+            'description' => 'Triggered when a certificate has been renewed',
+            'available_tags' => ['certificaat_naam', 'certificaat_categorie', 'oude_vervaldatum', 'nieuwe_vervaldatum', 'verlengd_door', 'certificaat_link'],
+        ],
+        'CERTIFICATE_NOTIFICATION_ERROR' => [
+            'name' => 'Certificaat notificatie fout',
+            'description' => 'Triggered when certificate notification fails (super admin only)',
+            'available_tags' => ['error_bericht', 'certificaat_naam', 'certificaat_id'],
+        ],
         'MANUAL_CLAIMS' => [
             'name' => 'Manual - Claims',
             'description' => 'Manually selected templates available in claims section',
@@ -241,6 +256,30 @@ class MailTriggerService
             // If task has a claim, also replace claim tags
             if ($model->claim_id && $model->claim) {
                 $content = $this->replaceTags($content, $model->claim);
+            }
+        }
+
+        // Add support for Certificate model tags
+        if (get_class($model) === 'App\Models\Certificate') {
+            $replacements = [
+                '[certificaat_naam]' => $model->name ?? '',
+                '[certificaat_categorie]' => $model->category->name ?? '',
+                '[certificaat_vervaldatum]' => $model->expiry_date ? $model->expiry_date->format('d-m-Y') : '',
+                '[chauffeur_naam]' => $model->driver->name ?? '',
+                '[chauffeur_email]' => $model->driver->email ?? '',
+                '[bedrijf]' => $model->driver->company->name ?? 'N/A',
+                '[dagen_tot_verloop]' => $model->expiry_date ? $model->expiry_date->diffInDays(\Carbon\Carbon::now()) : '',
+                '[verlenging_link]' => $model->renewal_token ? route('certificate.renew.form', $model->renewal_token) : '',
+                '[oude_vervaldatum]' => $model->original_expiry_date ? \Carbon\Carbon::parse($model->original_expiry_date)->format('d-m-Y') : '',
+                '[nieuwe_vervaldatum]' => $model->expiry_date ? $model->expiry_date->format('d-m-Y') : '',
+                '[verlengd_door]' => $model->renewed_by_email ?? ($model->renewedBy->name ?? 'Systeem'),
+                '[certificaat_link]' => url('/admin/certificates/' . $model->id),
+                '[error_bericht]' => $model->error_message ?? '',
+                '[certificaat_id]' => $model->id ?? '',
+            ];
+
+            foreach ($replacements as $tag => $value) {
+                $content = str_replace($tag, $value, $content);
             }
         }
 
