@@ -617,7 +617,7 @@ return [
             'subject_helper' => '',
             'body' => 'Sjabloon',
             'body_helper' => '',
-            'trigger_type' => 'Trigger Type',
+            'trigger_type' => 'Triggertype',
             'trigger_type_helper' => 'Wanneer deze template wordt gebruikt',
             'is_active' => 'Actief',
             'is_active_helper' => 'Alleen actieve templates worden gebruikt',

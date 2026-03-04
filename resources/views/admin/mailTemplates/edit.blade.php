@@ -59,6 +59,9 @@
                     <option value="CLAIM_CREATED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CLAIM_CREATED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_CREATED.name') }}</option>
                     <option value="CLAIM_STATUS_CHANGED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CLAIM_STATUS_CHANGED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_STATUS_CHANGED.name') }}</option>
                     <option value="TASK_ASSIGNED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'TASK_ASSIGNED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.TASK_ASSIGNED.name') }}</option>
+                    <option value="CERTIFICATE_EXPIRING" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CERTIFICATE_EXPIRING' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CERTIFICATE_EXPIRING.name') }}</option>
+                    <option value="CERTIFICATE_RENEWED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CERTIFICATE_RENEWED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CERTIFICATE_RENEWED.name') }}</option>
+                    <option value="CERTIFICATE_NOTIFICATION_ERROR" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CERTIFICATE_NOTIFICATION_ERROR' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CERTIFICATE_NOTIFICATION_ERROR.name') }}</option>
                     <option value="MANUAL_CLAIMS" {{ old('trigger_type', $mailTemplate->trigger_type) == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
                     <option value="MANUAL_GENERAL" {{ old('trigger_type', $mailTemplate->trigger_type) == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
                 </select>
