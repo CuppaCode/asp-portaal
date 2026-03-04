@@ -388,7 +388,10 @@
             <div class="opposite-vehicle-show d-none">
                 <div class="form-group">
                     <label for="vehicle_plates_opposite">{{ trans('cruds.claim.fields.vehicle_plates_opposite') }}</label>
-                    <input class="form-control {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" value="{{ old('vehicle_plates_opposite', $claim->vehicle_opposite->plates ?? null) }}">
+                    <input class="form-control text-uppercase {{ $errors->has('vehicle_plates_opposite') ? 'is-invalid' : '' }}" 
+                        type="text" name="vehicle_plates_opposite" id="vehicle_plates_opposite" 
+                        value="{{ old('vehicle_plates_opposite', $claim->vehicle_opposite->plates ?? null) }}"
+                        placeholder="XX-99-XX" maxlength="8">
                     @if($errors->has('vehicle_plates_opposite'))
                         <div class="invalid-feedback">
                             {{ $errors->first('vehicle_plates_opposite') }}
@@ -979,5 +982,47 @@ Dropzone.options.otherFilesDropzone = {
          return _results
      }
 }
+
+// License plate formatting
+function formatLicensePlate(plate) {
+    if (!plate) return '';
+    
+    let cleaned = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    
+    if (cleaned.length < 4 || cleaned.length > 8) {
+        return cleaned;
+    }
+    
+    const patterns = [
+        { regex: /^([A-Z]{2})(\d{2})(\d{2})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{2})(\d{2})([A-Z]{2})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{2})([A-Z]{2})(\d{2})$/, format: '$1-$2-$3' },
+        { regex: /^([A-Z]{2})(\d{2})([A-Z]{2})$/, format: '$1-$2-$3' },
+        { regex: /^([A-Z]{2})([A-Z]{2})(\d{2})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{2})([A-Z]{2})([A-Z]{2})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{2})([A-Z]{3})(\d{1})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{1})([A-Z]{3})(\d{2})$/, format: '$1-$2-$3' },
+        { regex: /^([A-Z]{2})(\d{3})([A-Z]{1})$/, format: '$1-$2-$3' },
+        { regex: /^([A-Z]{1})(\d{3})([A-Z]{2})$/, format: '$1-$2-$3' },
+        { regex: /^([A-Z]{3})(\d{2})([A-Z]{1})$/, format: '$1-$2-$3' },
+        { regex: /^([A-Z]{1})(\d{2})([A-Z]{3})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{1})([A-Z]{2})(\d{3})$/, format: '$1-$2-$3' },
+        { regex: /^(\d{3})([A-Z]{2})(\d{1})$/, format: '$1-$2-$3' }
+    ];
+    
+    for (let pattern of patterns) {
+        if (pattern.regex.test(cleaned)) {
+            return cleaned.replace(pattern.regex, pattern.format);
+        }
+    }
+    
+    return cleaned;
+}
+
+// Apply formatting to license plate input
+$('#vehicle_plates_opposite').on('input', function() {
+    var formatted = formatLicensePlate($(this).val());
+    $(this).val(formatted);
+});
 </script>
 @endsection

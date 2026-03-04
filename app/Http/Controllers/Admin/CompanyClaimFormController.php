@@ -50,7 +50,7 @@ class CompanyClaimFormController extends Controller
                     : $config['conditional_logic'];
             }
 
-            // Auto-set conditional logic for complaint_description if not provided
+            // Auto-set conditional logic for complaint_description and vehicle_plates_opposite if not provided
             if ($fieldName === 'complaint_description' && empty($conditionalLogic)) {
                 $conditionalLogic = [
                     'operator' => 'AND',
@@ -59,6 +59,19 @@ class CompanyClaimFormController extends Controller
                             'field' => 'form_type',
                             'operator' => 'equals',
                             'value' => 'complaint'
+                        ]
+                    ]
+                ];
+            }
+
+            if ($fieldName === 'vehicle_plates_opposite' && empty($conditionalLogic)) {
+                $conditionalLogic = [
+                    'operator' => 'AND',
+                    'conditions' => [
+                        [
+                            'field' => 'form_type',
+                            'operator' => 'equals',
+                            'value' => 'claim'
                         ]
                     ]
                 ];
@@ -146,7 +159,7 @@ class CompanyClaimFormController extends Controller
             $updateData['conditional_logic'] = $conditionalLogic;
         }
 
-        // Auto-set conditional logic for complaint_description if not already set
+        // Auto-set conditional logic for complaint_description and vehicle_plates_opposite if not already set
         if ($fieldName === 'complaint_description' && !$config->conditional_logic && !$request->has('conditional_logic')) {
             $updateData['conditional_logic'] = [
                 'operator' => 'AND',
@@ -155,6 +168,19 @@ class CompanyClaimFormController extends Controller
                         'field' => 'form_type',
                         'operator' => 'equals',
                         'value' => 'complaint'
+                    ]
+                ]
+            ];
+        }
+
+        if ($fieldName === 'vehicle_plates_opposite' && !$config->conditional_logic && !$request->has('conditional_logic')) {
+            $updateData['conditional_logic'] = [
+                'operator' => 'AND',
+                'conditions' => [
+                    [
+                        'field' => 'form_type',
+                        'operator' => 'equals',
+                        'value' => 'claim'
                     ]
                 ]
             ];

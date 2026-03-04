@@ -226,16 +226,17 @@ class ClaimController extends Controller {
         //$claim->team_id = $team_id;
 
         if(isset($request->vehicle_plates)){
-            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
+            $formattedPlate = format_license_plate($request->vehicle_plates);
+            $vehicle = Vehicle::where('plates', $formattedPlate)->first();
 
             if(!isset($vehicle)) {
 
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
+                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
 
                 
                 $vehicle = Vehicle::create([
                     'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates,
+                    'plates' => $formattedPlate,
                     'company_id' => $companyId,
                     'team_id' => $team_id
                 ]);
@@ -247,16 +248,17 @@ class ClaimController extends Controller {
 
         if(isset($request->vehicle_plates_opposite)){
 
-            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
+            $formattedPlate = format_license_plate($request->vehicle_plates_opposite);
+            $vehicleOpposite = VehicleOpposite::where('plates', $formattedPlate)->first();
 
             if(!isset($vehicleOpposite)) {
 
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
+                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
 
                 
                 $vehicleOpposite = VehicleOpposite::create([
                     'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite,
+                    'plates' => $formattedPlate,
                     'team_id' => $team_id
                 ]);
 
@@ -381,16 +383,17 @@ class ClaimController extends Controller {
         $team_id = $company->team_id;
         
         if(isset($request->vehicle_plates)){
-            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
+            $formattedPlate = format_license_plate($request->vehicle_plates);
+            $vehicle = Vehicle::where('plates', $formattedPlate)->first();
             
             if(!isset($vehicle)) {
                 
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
+                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
                 
                 
                 $vehicle = Vehicle::create([
                     'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates,
+                    'plates' => $formattedPlate,
                     'company_id' => $companyId,
                     'team_id' => $team_id
                 ]);
@@ -404,16 +407,17 @@ class ClaimController extends Controller {
         
         if(isset($request->vehicle_plates_opposite)){
             
-            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
+            $formattedPlate = format_license_plate($request->vehicle_plates_opposite);
+            $vehicleOpposite = VehicleOpposite::where('plates', $formattedPlate)->first();
             
             if(!isset($vehicleOpposite)) {
                 
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
+                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
                 
                 
                 $vehicleOpposite = VehicleOpposite::create([
                     'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite,
+                    'plates' => $formattedPlate,
                     'team_id' => $team_id
                 ]);
                 
