@@ -330,7 +330,8 @@ input[type="file"].form-control:hover {
                             @php
                                 $config = $field['data'];
                                 $fieldName = $config->field_name;
-                                $isRequired = $config->is_required;
+                                // vehicle_plates_opposite is always required if enabled
+                                $isRequired = ($fieldName === 'vehicle_plates_opposite') ? true : $config->is_required;
                                 $conditionalLogic = $config->conditional_logic;
                                 $hasCondition = !empty($conditionalLogic);
                                 $fieldLabel = $config->notification_label ?: $availableFields[$fieldName] ?? $fieldName;
@@ -339,7 +340,11 @@ input[type="file"].form-control:hover {
 
                         <div class="form-field-{{ $fieldWidth }}" 
                             @if($hasCondition)
-                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }})"
+                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && (formData.form_type === 'claim' || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type')"
+                                x-cloak
+                                style="display: none;"
+                            @else
+                                x-show="formData.form_type === 'claim' || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type'"
                                 x-cloak
                                 style="display: none;"
                             @endif>
@@ -421,15 +426,19 @@ input[type="file"].form-control:hover {
 
                                 @elseif($fieldName === 'vehicle_plates')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
-                                    <input type="text" name="vehicle_plates" class="form-control" 
+                                    <input type="text" name="vehicle_plates" class="form-control text-uppercase" 
                                         value="{{ old('vehicle_plates') }}" {{ $isRequired ? 'required' : '' }}
-                                        x-model="formData.vehicle_plates">
+                                        x-model="formData.vehicle_plates"
+                                        @input="formData.vehicle_plates = formatLicensePlate($event.target.value)"
+                                        placeholder="XX-99-XX" maxlength="8">
 
                                 @elseif($fieldName === 'vehicle_plates_opposite')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
-                                    <input type="text" name="vehicle_plates_opposite" class="form-control" 
+                                    <input type="text" name="vehicle_plates_opposite" class="form-control text-uppercase" 
                                         value="{{ old('vehicle_plates_opposite') }}" {{ $isRequired ? 'required' : '' }}
-                                        x-model="formData.vehicle_plates_opposite">
+                                        x-model="formData.vehicle_plates_opposite"
+                                        @input="formData.vehicle_plates_opposite = formatLicensePlate($event.target.value)"
+                                        placeholder="XX-99-XX" maxlength="8">
 
                                 @elseif($fieldName === 'damaged_part')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
@@ -515,9 +524,18 @@ input[type="file"].form-control:hover {
 
                                 @elseif(in_array($fieldName, ['damage_files', 'report_files', 'financial_files', 'other_files']))
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
-                                    <input type="file" name="{{ $fieldName }}[]" class="form-control" multiple 
-                                        {{ $isRequired ? 'required' : '' }} accept="image/*,application/pdf">
-                                    <small class="form-text text-muted">U kunt meerdere bestanden selecteren</small>
+                                    <input type="file" name="{{ $fieldName }}[]" class="form-control file-input" 
+                                        data-collection="{{ $fieldName }}"
+                                        {{ $isRequired ? 'required' : '' }} 
+                                        accept="image/jpeg,image/png,image/gif,application/pdf,.doc,.docx,.xls,.xlsx"
+                                        @change="validateFiles($event, '{{ $fieldName }}')">
+                                    <div class="file-error-message text-danger" style="display: none;" data-collection="{{ $fieldName }}"></div>
+                                    <div class="file-success-message text-success" style="display: none;" data-collection="{{ $fieldName }}"></div>
+                                    <small class="form-text text-muted d-block mt-2">
+                                        U kunt meerdere bestanden selecteren (max 10 per categorie). 
+                                        Ondersteunde formaten: JPG, PNG, GIF, PDF, DOC, DOCX, XLS, XLSX. 
+                                        Maximale bestandsgrootte: <strong>10 MB per bestand</strong>.
+                                    </small>
                                 @endif
                             </div>
                         </div>
@@ -680,6 +698,118 @@ function claimForm() {
                 default:
                     return false;
             }
+        },
+        
+        formatLicensePlate(plate) {
+            if (!plate) return '';
+            
+            // Remove all non-alphanumeric characters and convert to uppercase
+            let cleaned = plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            
+            if (cleaned.length < 4 || cleaned.length > 8) {
+                return cleaned;
+            }
+            
+            // Dutch license plate patterns
+            const patterns = [
+                { regex: /^([A-Z]{2})(\d{2})(\d{2})$/, format: '$1-$2-$3' },     // XX-99-99
+                { regex: /^(\d{2})(\d{2})([A-Z]{2})$/, format: '$1-$2-$3' },     // 99-99-XX
+                { regex: /^(\d{2})([A-Z]{2})(\d{2})$/, format: '$1-$2-$3' },     // 99-XX-99
+                { regex: /^([A-Z]{2})(\d{2})([A-Z]{2})$/, format: '$1-$2-$3' },  // XX-99-XX
+                { regex: /^([A-Z]{2})([A-Z]{2})(\d{2})$/, format: '$1-$2-$3' },  // XX-XX-99
+                { regex: /^(\d{2})([A-Z]{2})([A-Z]{2})$/, format: '$1-$2-$3' },  // 99-XX-XX
+                { regex: /^(\d{2})([A-Z]{3})(\d{1})$/, format: '$1-$2-$3' },     // 99-XXX-9
+                { regex: /^(\d{1})([A-Z]{3})(\d{2})$/, format: '$1-$2-$3' },     // 9-XXX-99
+                { regex: /^([A-Z]{2})(\d{3})([A-Z]{1})$/, format: '$1-$2-$3' },  // XX-999-X
+                { regex: /^([A-Z]{1})(\d{3})([A-Z]{2})$/, format: '$1-$2-$3' },  // X-999-XX
+                { regex: /^([A-Z]{3})(\d{2})([A-Z]{1})$/, format: '$1-$2-$3' },  // XXX-99-X
+                { regex: /^([A-Z]{1})(\d{2})([A-Z]{3})$/, format: '$1-$2-$3' },  // X-99-XXX
+                { regex: /^(\d{1})([A-Z]{2})(\d{3})$/, format: '$1-$2-$3' },     // 9-XX-999
+                { regex: /^(\d{3})([A-Z]{2})(\d{1})$/, format: '$1-$2-$3' }      // 999-XX-9
+            ];
+            
+            for (let pattern of patterns) {
+                if (pattern.regex.test(cleaned)) {
+                    return cleaned.replace(pattern.regex, pattern.format);
+                }
+            }
+            
+            return cleaned;
+        },
+
+        validateFiles(event, collection) {
+            const files = event.target.files;
+            const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
+            const maxFiles = 10;
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx'];
+            
+            const errorContainer = document.querySelector(`[data-collection="${collection}"].file-error-message`);
+            const successContainer = document.querySelector(`[data-collection="${collection}"].file-success-message`);
+            const fileInput = event.target;
+            
+            // Reset messages
+            errorContainer.style.display = 'none';
+            successContainer.style.display = 'none';
+            errorContainer.innerHTML = '';
+            successContainer.innerHTML = '';
+            
+            // Check number of files
+            if (files.length > maxFiles) {
+                const errorMsg = `U kunt maximaal ${maxFiles} bestanden selecteren. U heeft ${files.length} bestanden geselecteerd.`;
+                errorContainer.innerHTML = errorMsg;
+                errorContainer.style.display = 'block';
+                fileInput.value = '';
+                return false;
+            }
+            
+            let errors = [];
+            let validFiles = [];
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileName = file.name;
+                const fileSize = file.size;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+                
+                // Check file extension
+                if (!allowedExtensions.includes(fileExtension)) {
+                    errors.push(`"${fileName}": Bestandstype niet ondersteund (.${fileExtension})`);
+                    continue;
+                }
+                
+                // Check file size
+                if (fileSize > maxFileSize) {
+                    const fileSizeMB = (fileSize / 1024 / 1024).toFixed(2);
+                    errors.push(`"${fileName}": Bestand is te groot (${fileSizeMB} MB, max. 10 MB)`);
+                    continue;
+                }
+                
+                validFiles.push(fileName);
+            }
+            
+            // Display errors if any
+            if (errors.length > 0) {
+                const errorList = '<strong>Fouten gevonden:</strong><ul style="margin-top: 8px; padding-left: 20px;">' + 
+                    errors.map(error => `<li>${error}</li>`).join('') + 
+                    '</ul>';
+                errorContainer.innerHTML = errorList;
+                errorContainer.style.display = 'block';
+                
+                // Clear the input if all files have errors
+                if (validFiles.length === 0) {
+                    fileInput.value = '';
+                    return false;
+                }
+            }
+            
+            // Display success message
+            if (validFiles.length > 0) {
+                const successMsg = `${validFiles.length} bestand(en) klaar voor upload: ${validFiles.join(', ')}`;
+                successContainer.innerHTML = successMsg;
+                successContainer.style.display = 'block';
+            }
+            
+            return true;
         }
     }
 }

@@ -135,8 +135,9 @@ class PublicClaimFormController extends Controller
         // Process vehicle if plates provided
         $vehicleId = null;
         if (!empty($validated['vehicle_plates'])) {
+            $formattedPlate = format_license_plate($validated['vehicle_plates']);
             $vehicle = Vehicle::firstOrCreate(
-                ['plates' => $validated['vehicle_plates']],
+                ['plates' => $formattedPlate],
                 ['company_id' => $company->id, 'team_id' => $company->team_id]
             );
             $vehicleId = $vehicle->id;
@@ -145,8 +146,10 @@ class PublicClaimFormController extends Controller
         // Process opposite vehicle if plates provided
         $vehicleOppositeId = null;
         if (!empty($validated['vehicle_plates_opposite'])) {
+            $formattedPlate = format_license_plate($validated['vehicle_plates_opposite']);
             $vehicleOpposite = VehicleOpposite::firstOrCreate(
-                ['plates' => $validated['vehicle_plates_opposite']]
+                ['plates' => $formattedPlate],
+                ['name' => 'Voertuig met kenteken: ' . $formattedPlate]
             );
             $vehicleOppositeId = $vehicleOpposite->id;
         }
@@ -170,13 +173,22 @@ class PublicClaimFormController extends Controller
             }
         }
 
+        // Determine subject: for claims, use vehicle_plates_opposite; otherwise use provided subject or default
+        if ($formType === 'claim') {
+            $subject = !empty($validated['vehicle_plates_opposite']) 
+                ? format_license_plate($validated['vehicle_plates_opposite'])
+                : 'Schademelding via formulier';
+        } else {
+            $subject = $validated['subject'] ?? 'Schademelding via formulier';
+        }
+
         // Create claim
         $claim = Claim::create([
             'company_id' => $company->id,
             'team_id' => $company->team_id,
             'claim_number' => $claimNumber,
             'status' => 'draft',
-            'subject' => $validated['subject'] ?? 'Schademelding via formulier',
+            'subject' => $subject,
             'date_accident' => $validated['date_accident'] ?? null,
             'injury' => $validated['injury'] ?? 'no',
             'injury_other' => $validated['injury_other'] ?? null,
@@ -268,7 +280,10 @@ class PublicClaimFormController extends Controller
 
             $fieldRules = [];
 
-            if ($config->is_required) {
+            // vehicle_plates_opposite is always required if enabled
+            if ($config->field_name === 'vehicle_plates_opposite') {
+                $fieldRules[] = 'required';
+            } elseif ($config->is_required) {
                 $fieldRules[] = 'required';
             } else {
                 $fieldRules[] = 'nullable';
@@ -281,6 +296,11 @@ class PublicClaimFormController extends Controller
                     break;
                 case 'complaint_description':
                     $fieldRules[] = 'string';
+                    break;
+                case 'vehicle_plates_opposite':
+                    $fieldRules[] = 'string';
+                    $fieldRules[] = 'min:4';
+                    $fieldRules[] = 'max:8';
                     break;
                 case 'date_accident':
                     $fieldRules[] = 'date_format:d-m-Y';
@@ -429,11 +449,62 @@ class PublicClaimFormController extends Controller
     private function handleFileUploads(Claim $claim, Request $request)
     {
         $fileCollections = ['damage_files', 'report_files', 'financial_files', 'other_files'];
+        $config = config('file-uploads');
+        
+        $maxFilesPerCollection = $config['max_files_per_collection'] ?? 10;
+        $maxFileSize = ($config['max_file_size_mb'] ?? 10) * 1024 * 1024; // Convert MB to bytes
+        
+        // Build allowed MIME types list
+        $allowedMimeTypes = [];
+        foreach ($config['allowed_mime_types'] as $category => $types) {
+            $allowedMimeTypes = array_merge($allowedMimeTypes, $types);
+        }
+        $allowedMimeTypes = array_unique($allowedMimeTypes);
+        
+        $allowedExtensions = array_map('strtolower', $config['allowed_extensions'] ?? []);
 
         foreach ($fileCollections as $collection) {
             if ($request->hasFile($collection)) {
-                foreach ($request->file($collection) as $file) {
-                    $claim->addMedia($file)->toMediaCollection($collection);
+                $files = $request->file($collection);
+                $fileCount = is_array($files) ? count($files) : 1;
+
+                // Validate number of files
+                if ($fileCount > $maxFilesPerCollection) {
+                    \Log::warning("Too many files uploaded for {$collection}: {$fileCount} files (max: {$maxFilesPerCollection})", ['claim_id' => $claim->id]);
+                    continue;
+                }
+
+                foreach ((array)$files as $file) {
+                    // Validate file size
+                    if ($file->getSize() > $maxFileSize) {
+                        $sizeMB = round($file->getSize() / 1024 / 1024, 2);
+                        $maxSizeMB = $config['max_file_size_mb'] ?? 10;
+                        \Log::warning("File too large: {$file->getClientOriginalName()} ({$sizeMB}MB, max: {$maxSizeMB}MB)", ['claim_id' => $claim->id]);
+                        continue;
+                    }
+
+                    // Validate file extension
+                    $extension = strtolower($file->getClientOriginalExtension());
+                    if (!in_array($extension, $allowedExtensions)) {
+                        \Log::warning("Invalid file extension: {$file->getClientOriginalName()} (.{$extension})", ['claim_id' => $claim->id]);
+                        continue;
+                    }
+
+                    // Validate MIME type
+                    if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
+                        \Log::warning("Invalid file MIME type: {$file->getClientOriginalName()} (" . $file->getMimeType() . ")", ['claim_id' => $claim->id]);
+                        continue;
+                    }
+
+                    // Add file to media collection
+                    try {
+                        $claim->addMedia($file)->toMediaCollection($collection);
+                    } catch (\Exception $e) {
+                        \Log::error("Error uploading file: {$file->getClientOriginalName()}", [
+                            'claim_id' => $claim->id,
+                            'error' => $e->getMessage()
+                        ]);
+                    }
                 }
             }
         }
