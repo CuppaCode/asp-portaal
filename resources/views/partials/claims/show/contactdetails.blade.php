@@ -32,7 +32,6 @@
             @else
                 Nog geen contactpersoon bekend.
             @endisset
-
         </div>
     </div>
 </div>

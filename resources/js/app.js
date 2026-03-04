@@ -186,7 +186,29 @@ $(document).ready(function () {
     });
 
     $('#sla-toggle').on('click', function (e) {
+        $('.company-details-show, .contact-details-show, .insurance-details-show').slideUp();
         $('.sla-show').slideToggle();
+    });
+
+    // Company details toggle - close other cards
+    $('#company-details-toggle').on('click', function (e) {
+        $('.sla-show').slideUp();
+        $('.contact-details-show, .insurance-details-show').slideUp();
+        $('.company-details-show').slideToggle();
+    });
+
+    // Contact details toggle - close other cards
+    $('#contact-details-toggle').on('click', function (e) {
+        $('.sla-show').slideUp();
+        $('.company-details-show, .insurance-details-show').slideUp();
+        $('.contact-details-show').slideToggle();
+    });
+
+    // Insurance details toggle - close other cards
+    $('#insurance-details-toggle').on('click', function (e) {
+        $('.sla-show').slideUp();
+        $('.company-details-show, .contact-details-show').slideUp();
+        $('.insurance-details-show').slideToggle();
     });
 
 

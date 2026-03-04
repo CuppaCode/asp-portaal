@@ -123,6 +123,8 @@ return [
             'company_helper'                   => ' ',
             'injury_office'                    => 'Letselbureau',
             'injury_office_helper'             => ' ',
+            'insurance_company'                => 'Verzekeraar',
+            'insurance_company_helper'         => ' ',
             'vehicle'                          => 'Voertuig',
             'vehicle_helper'                   => ' ',
             'vehicle_plates'                   => 'Voertuig kenteken',

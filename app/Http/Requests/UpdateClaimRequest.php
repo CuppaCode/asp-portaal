@@ -21,6 +21,10 @@ class UpdateClaimRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'insurance_company_id' => [
+                'nullable',
+                'integer',
+            ],
             'subject' => [
                 'string',
                 'required',

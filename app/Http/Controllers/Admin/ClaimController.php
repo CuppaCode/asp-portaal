@@ -22,7 +22,6 @@ use App\Models\User;
 use App\Models\MailTemplate;
 use App\Models\Note;
 use App\Models\SLA;
-use App\Services\MailTriggerService;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -73,27 +72,12 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
-        ->whereNotIn('status', ['finished', 'draft', 'draft_denied'])
-        ->get();
+    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
     $companies = Company::get();
     $contacts = Contact::get(); 
     $opposite = Opposite::get();   
     // No year filter for open claims
     return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
-    }
-    
-    public function concept()
-    {
-        abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
-            ->where('status', 'draft')
-            ->get();
-        $companies = Company::get();
-        $contacts = Contact::get(); 
-        $opposite = Opposite::get();   
-        return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
     }
     
     public function unassigned()
@@ -226,17 +210,16 @@ class ClaimController extends Controller {
         //$claim->team_id = $team_id;
 
         if(isset($request->vehicle_plates)){
-            $formattedPlate = format_license_plate($request->vehicle_plates);
-            $vehicle = Vehicle::where('plates', $formattedPlate)->first();
+            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
 
             if(!isset($vehicle)) {
 
-                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
 
                 
                 $vehicle = Vehicle::create([
                     'name' => $vehicleName,
-                    'plates' => $formattedPlate,
+                    'plates' => $request->vehicle_plates,
                     'company_id' => $companyId,
                     'team_id' => $team_id
                 ]);
@@ -248,17 +231,16 @@ class ClaimController extends Controller {
 
         if(isset($request->vehicle_plates_opposite)){
 
-            $formattedPlate = format_license_plate($request->vehicle_plates_opposite);
-            $vehicleOpposite = VehicleOpposite::where('plates', $formattedPlate)->first();
+            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
 
             if(!isset($vehicleOpposite)) {
 
-                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
 
                 
                 $vehicleOpposite = VehicleOpposite::create([
                     'name' => $vehicleName,
-                    'plates' => $formattedPlate,
+                    'plates' => $request->vehicle_plates_opposite,
                     'team_id' => $team_id
                 ]);
 
@@ -296,33 +278,6 @@ class ClaimController extends Controller {
         Notification::route('mail', [
             'patrick@autoschadeplan.nl' => 'Patrick'])->notify($message);
 
-        // Trigger automatic emails for CLAIM_CREATED
-        $mailService = new MailTriggerService();
-        $recipients = [];
-        
-        // Add contact email if available
-        if ($claim->contact && $claim->contact->email) {
-            $recipients[] = $claim->contact->email;
-        }
-        
-        // Add driver email if available
-        if ($claim->driver && $claim->driver->email) {
-            $recipients[] = $claim->driver->email;
-        }
-        
-        // For testing: if no recipients in local/debug mode, send to test email
-        if (empty($recipients) && (config('app.env') === 'local' || config('app.debug'))) {
-            $recipients[] = 'test@example.com';
-        }
-        
-        if (!empty($recipients)) {
-            $mailService->dispatch('CLAIM_CREATED', $claim, [
-                'recipients' => array_unique($recipients),
-                'cc' => $claim->company && $claim->company->email ? [$claim->company->email] : [],
-                'reply_to' => auth()->user()->email ?? null
-            ]);
-        }
-
 
         if ($claim->assign_self == 1 || auth()->user()->roles->doesntContain(2) == true) {
             return redirect()->route('admin.claims.edit', $claim->id)->with('message', 'Schadedossier: Stap 1 voltooid');
@@ -353,15 +308,17 @@ class ClaimController extends Controller {
 
         $expertise_offices = ExpertiseOffice::with('company')->get()->pluck('company.name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
+        $insurance_companies = Company::where('company_type', 'insurance')->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 
         $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
 
         $drivers = Driver::where('team_id', $claim->company->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team');
+        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'insuranceCompany');
 
-        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite', 'assignee_options'));
+        return view('admin.claims.edit', compact('claim', 'companies', 'expertise_offices', 'injury_offices', 'recovery_offices', 'vehicle_opposite', 'vehicle', 'drivers', 'opposite', 'assignee_options', 'insurance_companies'));
     }
 
     public function update(UpdateClaimRequest $request, Claim $claim)
@@ -383,17 +340,16 @@ class ClaimController extends Controller {
         $team_id = $company->team_id;
         
         if(isset($request->vehicle_plates)){
-            $formattedPlate = format_license_plate($request->vehicle_plates);
-            $vehicle = Vehicle::where('plates', $formattedPlate)->first();
+            $vehicle = Vehicle::where('plates', $request->vehicle_plates)->first();
             
             if(!isset($vehicle)) {
                 
-                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates;
                 
                 
                 $vehicle = Vehicle::create([
                     'name' => $vehicleName,
-                    'plates' => $formattedPlate,
+                    'plates' => $request->vehicle_plates,
                     'company_id' => $companyId,
                     'team_id' => $team_id
                 ]);
@@ -407,17 +363,16 @@ class ClaimController extends Controller {
         
         if(isset($request->vehicle_plates_opposite)){
             
-            $formattedPlate = format_license_plate($request->vehicle_plates_opposite);
-            $vehicleOpposite = VehicleOpposite::where('plates', $formattedPlate)->first();
+            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
             
             if(!isset($vehicleOpposite)) {
                 
-                $vehicleName = 'Voertuig met kenteken: ' . $formattedPlate;
+                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
                 
                 
                 $vehicleOpposite = VehicleOpposite::create([
                     'name' => $vehicleName,
-                    'plates' => $formattedPlate,
+                    'plates' => $request->vehicle_plates_opposite,
                     'team_id' => $team_id
                 ]);
                 
@@ -456,40 +411,7 @@ class ClaimController extends Controller {
             ]);
         }
         $claim->closed_at = $request->input('closed_at');
-        
-        // Check if status is changing before update
-        $oldStatus = $claim->status;
-        
         $claim->update($request->except($multiSelects));
-        
-        // Trigger automatic emails if status changed
-        if ($claim->wasChanged('status')) {
-            $mailService = new MailTriggerService();
-            $recipients = [];
-            
-            // Add contact email if available
-            if ($claim->contact && $claim->contact->email) {
-                $recipients[] = $claim->contact->email;
-            }
-            
-            // Add driver email if available
-            if ($claim->driver && $claim->driver->email) {
-                $recipients[] = $claim->driver->email;
-            }
-            
-            // For testing: if no recipients in local/debug mode, send to test email
-            if (empty($recipients) && (config('app.env') === 'local' || config('app.debug'))) {
-                $recipients[] = 'test@example.com';
-            }
-            
-            if (!empty($recipients)) {
-                $mailService->dispatch('CLAIM_STATUS_CHANGED', $claim, [
-                    'recipients' => array_unique($recipients),
-                    'cc' => $claim->company && $claim->company->email ? [$claim->company->email] : [],
-                    'reply_to' => auth()->user()->email ?? null
-                ]);
-            }
-        }
 
         
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
@@ -584,10 +506,7 @@ class ClaimController extends Controller {
         ];
 
         $allContactsInCompany = Contact::where('company_id', $claim->company->id)->get();
-        $mailTemplates = MailTemplate::active()
-            ->manual()
-            ->byTrigger('MANUAL_CLAIMS')
-            ->get();
+        $mailTemplates = MailTemplate::all();
       
         $assignee_name = null;
         
@@ -626,7 +545,7 @@ class ClaimController extends Controller {
             ];
         }
 
-        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks');
+        $claim->load('company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'notes', 'tasks', 'insuranceCompany');
 
         return view('admin.claims.show', compact('claim', 'firstContact', 'allContactsInCompany', 'opposite', 'users', 'notesAndTasks', 'mailTemplates', 'assignee_name', 'parentMediaArray', 'sla', 'driver', 'oppositeVehicleInfo'));
     }
@@ -703,33 +622,6 @@ class ClaimController extends Controller {
 
         $claim->save();
 
-        // Trigger automatic emails for status change
-        $mailService = new MailTriggerService();
-        $recipients = [];
-        
-        // Add contact email if available
-        if ($claim->contact && $claim->contact->email) {
-            $recipients[] = $claim->contact->email;
-        }
-        
-        // Add driver email if available
-        if ($claim->driver && $claim->driver->email) {
-            $recipients[] = $claim->driver->email;
-        }
-        
-        // For testing: if no recipients in local/debug mode, send to test email
-        if (empty($recipients) && (config('app.env') === 'local' || config('app.debug'))) {
-            $recipients[] = 'test@example.com';
-        }
-        
-        if (!empty($recipients)) {
-            $mailService->dispatch('CLAIM_STATUS_CHANGED', $claim, [
-                'recipients' => array_unique($recipients),
-                'cc' => $claim->company && $claim->company->email ? [$claim->company->email] : [],
-                'reply_to' => auth()->user()->email ?? null
-            ]);
-        }
-
         return response()->json(
             [
                 'status' => $claim->status,
@@ -742,37 +634,29 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        // Create a Mailing record instead of sending directly
-        $mailing = \App\Models\Mailing::create([
-            'subject' => $request->mailSubject ?? '',
-            'body' => $request->mailBody ?? '',
-            'recipients' => $request->mailReceiver ?? [],
-            'cc' => $request->mailCc ? explode(',', $request->mailCc) : [],
-            'bcc' => $request->mailBcc ? explode(',', $request->mailBcc) : [],
-            'reply_to' => auth()->user()->email,
-            'status' => 'ready',
-            'user_id' => $request->input('user_id'),
-            'team_id' => auth()->user()->team->id
-        ]);
+        $message = new \App\Notifications\PlainMail(
+            $request->mailSubject ?? '',
+            $request->mailBody ?? '',
+            $request->mailAttachments ?? null,
+            $request->mailCc ?? [],
+            $request->mailBcc ?? []
+        );
 
-        // Attach files to mailing
-        if ($request->hasFile('mailAttachments')) {
-            foreach ($request->file('mailAttachments') as $image) {
-                $mailing->addMedia($image)->toMediaCollection('attachments');
-            }
+        foreach($request->mailReceiver as $receiver) {
+            
+            Notification::route(
+                'mail', [
+                    $receiver ?? '' => ''
+                ]
+            )->notify($message);
+
         }
 
-        // Associate with claims
-        $mailing->claims()->sync($request->input('claims', []));
 
-        // Send the mailing immediately
-        $service = new \App\Services\MailTriggerService();
-        $service->sendMailing($mailing->id);
-
-        // Create a note for tracking (legacy compatibility)
         $receiverString = implode(', ', $request->mailReceiver);
+
         $noteDescription = "Ontvanger(s): {$receiverString}<br/>
-        CC: {$request->mailCc}<br/>
+        CC: {$request->cc}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -782,6 +666,34 @@ class ClaimController extends Controller {
             'description' => $noteDescription,
             'team_id' => auth()->user()->team->id
         ]);
+
+        if ($request->hasFile('mailAttachments')) {
+            foreach ($request->file('mailAttachments') as $image) {
+                $note->addMedia($image)->toMediaCollection('attachments');
+            }
+        }
+
+        // Example mail-sending logic with CC
+        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString, $note) {
+            $message->to(explode(',', $receiverString))
+                    ->subject($request->mailSubject);
+
+            // Add CC recipients if provided
+            if ($request->filled('cc')) {
+                $message->cc(explode(',', $request->cc));
+            }
+
+            // Add attachments if provided
+            if ($note->hasMedia('attachments')) {
+                //dd($request->file('mailAttachments'));
+                foreach ($note->getMedia('attachments') as $attachment) {
+                    $message->attach($attachment->getPath(), [
+                        'as' => $attachment->getAttribute('file_name'),
+                        'mime' => $attachment->mime_type,
+                    ]);
+                }
+            }
+        });
 
         $note->claims()->sync($request->input('claims', []));
 

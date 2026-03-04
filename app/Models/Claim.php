@@ -324,6 +324,7 @@ class Claim extends Model implements HasMedia
         'expert_report_is_in',
         'requested_at',
         'report_received_at',
+        'insurance_company_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -371,6 +372,11 @@ class Claim extends Model implements HasMedia
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function insuranceCompany()
+    {
+        return $this->belongsTo(Company::class, 'insurance_company_id');
     }
 
     public function getDateAccidentAttribute($value)

@@ -517,6 +517,28 @@
             </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header">
+            Verzekeraar
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="insurance_company_id">{{ trans('cruds.claim.fields.insurance_company') }}</label>
+                <select class="form-control select2 {{ $errors->has('insurance_company_id') ? 'is-invalid' : '' }}" name="insurance_company_id" id="insurance_company_id">
+                    @foreach($insurance_companies as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('insurance_company_id') ? old('insurance_company_id') : $claim->insuranceCompany->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('insurance_company_id'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('insurance_company_id') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.insurance_company_helper') }}</span>
+            </div>
+        </div>
+    </div>
+
     <div  class="card">
         <div class="card-header">
             Expertise
