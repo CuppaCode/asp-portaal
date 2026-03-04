@@ -215,9 +215,9 @@ class MailTriggerService
                 '[status]' => \App\Models\Claim::STATUS_SELECT[$model->status] ?? $model->status ?? '',
                 '[datumschade]' => $model->accident_date ? $model->accident_date->format('d-m-Y') : '',
                 '[kenteken]' => $model->vehicle->plates ?? '',
-                '[schade_aard]' => \App\Models\Claim::DAMAGED_PART_SELECT[$model->damaged_part] ?? $model->damaged_part ?? '',
-                '[schade_plaats]' => \App\Models\Claim::DAMAGED_AREA_SELECT[$model->damaged_area] ?? $model->damaged_area ?? '',
-                '[schade_oorzaak]' => \App\Models\Claim::DAMAGE_ORIGIN[$model->damage_origin] ?? $model->damage_origin ?? '',
+                '[schade_aard]' => rtrim($model->damaged_part_x ?? '', ', '),
+                '[schade_plaats]' => rtrim($model->damaged_area_x ?? '', ', '),
+                '[schade_oorzaak]' => rtrim($model->damaged_origin_x ?? '', ', '),
                 '[schade_bedrag]' => $model->damage_costs ?? '',
                 '[kenteken_wederpartij]' => $model->opposite->vehicle_plates ?? '',
                 '[verhaalbaar]' => $model->recoverable ? 'Ja' : 'Nee',
@@ -236,9 +236,9 @@ class MailTriggerService
                 '[wederpartij_postcode_stad]' => ($model->opposite->zipcode ?? '') . ' ' . ($model->opposite->city ?? ''),
                 '[wederpartij_telnr]' => $model->opposite->phone ?? '',
                 '[wederpartij_email]' => $model->opposite->email ?? '',
-                '[wederpartij_schade_aard]' => \App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT[$model->opposite->damaged_part] ?? $model->opposite->damaged_part ?? '',
-                '[wederpartij_schade_plaats]' => \App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$model->opposite->damaged_area] ?? $model->opposite->damaged_area ?? '',
-                '[wederpartij_schade_oorzaak]' => \App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE[$model->opposite->damage_origin] ?? $model->opposite->damage_origin ?? '',
+                '[wederpartij_schade_aard]' => rtrim($model->damaged_part_opposite_x ?? '', ', '),
+                '[wederpartij_schade_plaats]' => rtrim($model->damaged_area_opposite_x ?? '', ', '),
+                '[wederpartij_schade_oorzaak]' => rtrim($model->damaged_origin_opposite_x ?? '', ', '),
             ];
 
             foreach ($replacements as $tag => $value) {
