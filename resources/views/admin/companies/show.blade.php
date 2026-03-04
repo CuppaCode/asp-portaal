@@ -9,9 +9,14 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">{{ $company->name }}</h3>
-                <a href="{{ route('admin.companies.edit', $company->id) }}" class="btn btn-sm btn-primary">
-                    <i class="fa fa-edit"></i> Edit
-                </a>
+                <div>
+                    <a href="{{ route('admin.company-claim-forms.index', $company->id) }}" class="btn btn-sm btn-info mr-2">
+                        <i class="fa fa-file-text"></i> Claim Formulier
+                    </a>
+                    <a href="{{ route('admin.companies.edit', $company->id) }}" class="btn btn-sm btn-primary">
+                        <i class="fa fa-edit"></i> Edit
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <span class="badge bg-info">{{ App\Models\Company::COMPANY_TYPE_SELECT[$company->company_type] ?? '' }}</span>

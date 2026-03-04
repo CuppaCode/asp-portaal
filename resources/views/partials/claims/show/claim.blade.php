@@ -128,4 +128,35 @@
         </div>
 
     @endif
+
+    @if (!empty($claim->custom_fields_data))
+        @php
+            $customFields = $claim->company->customClaimFields;
+        @endphp
+
+        @if ($customFields->isNotEmpty())
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Aanvullende Gegevens
+
+                    @if( $claim->assign_self || $isAdminOrAgent)
+                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                            {{ trans('global.edit') }}
+                        </a>
+                    @endif
+                </div>
+
+                <div class="card-body">
+                    @foreach($customFields as $customField)
+                        @if(isset($claim->custom_fields_data[$customField->field_name]))
+                            <div class="card-title">
+                                {{ $customField->field_label }}
+                            </div>
+                            <p class="card-text">{{ $claim->custom_fields_data[$customField->field_name] }}</p>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    @endif
 </div>

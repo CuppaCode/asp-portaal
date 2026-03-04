@@ -42,6 +42,12 @@ class StoreCompanyRequest extends FormRequest
                 'string',
                 'required',
             ],
+            'logo' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,jpg,png,gif,svg',
+                'max:2048',
+            ],
         ];
     }
 }

@@ -73,12 +73,27 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
+    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+        ->whereNotIn('status', ['finished', 'draft', 'draft_denied'])
+        ->get();
     $companies = Company::get();
     $contacts = Contact::get(); 
     $opposite = Opposite::get();   
     // No year filter for open claims
     return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
+    }
+    
+    public function concept()
+    {
+        abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+            ->where('status', 'draft')
+            ->get();
+        $companies = Company::get();
+        $contacts = Contact::get(); 
+        $opposite = Opposite::get();   
+        return view('admin.claims.index', compact('claims', 'companies', 'contacts', 'opposite'));
     }
     
     public function unassigned()
