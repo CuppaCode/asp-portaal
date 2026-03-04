@@ -318,12 +318,39 @@
             </li>
         @endif
         @can('mail_template_access')
-        <li class="c-sidebar-nav-item">
-            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailTemplates") || request()->is("admin/mailTemplates/*") ? "c-active" : "" }}">
+        <li class="c-sidebar-nav-dropdown {{ request()->is("admin/mail-templates") || request()->is("admin/mail-templates/*") ? "c-show" : "" }}">
+            <a class="c-sidebar-nav-dropdown-toggle" href="#">
                 <i class="fa-fw fas fa-envelope c-sidebar-nav-icon">
 
                 </i>
                 {{ trans('cruds.mailTemplates.title') }}
+            </a>
+            <ul class="c-sidebar-nav-dropdown-items">
+                <li class="c-sidebar-nav-item">
+                    <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mail-templates") && !request()->is("admin/mail-templates/triggers") ? "c-active" : "" }}">
+                        <i class="fa-fw fas fa-list c-sidebar-nav-icon">
+                        </i>
+                        {{ trans('cruds.mailTemplates.title') }}
+                    </a>
+                </li>
+                <li class="c-sidebar-nav-item">
+                    <a href="{{ route("admin.mail-templates.triggers") }}" class="c-sidebar-nav-link {{ request()->is("admin/mail-templates/triggers") ? "c-active" : "" }}">
+                        <i class="fa-fw fas fa-bolt c-sidebar-nav-icon">
+                        </i>
+                        {{ trans('cruds.superAdmin.triggers.title') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+        @endcan
+
+        @can('mailing_access')
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.mailings.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailings") || request()->is("admin/mailings/*") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-paper-plane c-sidebar-nav-icon">
+
+                </i>
+                {{ trans('cruds.mailings.title') }}
             </a>
         </li>
         @endcan

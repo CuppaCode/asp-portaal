@@ -11,6 +11,9 @@ Route::get('/home', function () {
 
 Auth::routes();
 
+// Public certificate renewal routes (no auth required)
+Route::get('/certificaat/verlengen/{token}', 'CertificateRenewalController@showRenewalForm')->name('certificate.renew.form');
+Route::post('/certificaat/verlengen/{token}', 'CertificateRenewalController@processRenewal')->name('certificate.renew.process');
 // Public Claim Form Routes (no authentication required)
 Route::get('/claim-form/{token}', 'PublicClaimFormController@show')->name('public.claim-form.show');
 Route::post('/claim-form/{token}', 'PublicClaimFormController@store')->name('public.claim-form.store');
@@ -107,6 +110,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('drivers', 'DriverController');
     Route::get('certificate/create/{driver}', 'CertificateController@create')->name('certificate.create');
     Route::post('certificate/{driver}', 'CertificateController@store')->name('certificate.store');
+    Route::post('certificate/{certificate}/renew', 'CertificateController@renew')->name('certificate.renew');
+    Route::post('certificate/bulk-renew', 'CertificateController@bulkRenew')->name('certificate.bulk-renew');
     Route::resource('certificate', 'CertificateController')->except(['create', 'store']);
     // Certificate categories
     Route::get('certificate-categories/search', 'CertificateCategoryController@search')->name('certificate-categories.search');
@@ -146,8 +151,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('/comments/{comment}', 'CommentController@destroy')->name('comments.delete');
 
     // Mail Templates
+    Route::get('mail-templates/triggers', 'MailTemplateController@triggers')->name('mail-templates.triggers');
     Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
     Route::resource('mail-templates', 'MailTemplateController');
+
+    // Mailings
+    Route::delete('mailings/destroy', 'MailingController@massDestroy')->name('mailings.massDestroy');
+    Route::post('mailings/{mailing}/send', 'MailingController@send')->name('mailings.send');
+    Route::post('mailings/send-batch', 'MailingController@sendBatch')->name('mailings.sendBatch');
+    Route::resource('mailings', 'MailingController');
 
     // SLA
     Route::resource('sla', 'SLAController');

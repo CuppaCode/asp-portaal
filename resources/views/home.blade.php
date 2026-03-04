@@ -289,6 +289,10 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                                                         $expiryLabel = '-';
                                                     }
                                                     $driverName = $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden');
+                                                    
+                                                    // Check renewal status
+                                                    $hasRenewalToken = !empty($certificate->renewal_token) && !empty($certificate->renewal_token_expires_at) && \Carbon\Carbon::parse($certificate->renewal_token_expires_at)->gte(\Carbon\Carbon::now());
+                                                    $isRenewed = $certificate->isRenewed();
                                                 @endphp
                                                 <li class="list-group-item d-flex align-items-center py-1 clickable-row" data-href="{{ route('admin.certificate.show', $certificate->id) }}">
                                                     <div class="me-3 d-flex align-items-center" style="min-width:90px;">
@@ -297,6 +301,11 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                                                     <div class="flex-grow-1">
                                                         <div class="fw-medium">{{ $driverName }}</div>
                                                         <div class="text-muted small">{{ $certificate->name }}</div>
+                                                        @if($hasRenewalToken)
+                                                            <span class="badge bg-info text-white small mt-1">Verlenging aangevraagd</span>
+                                                        @elseif($isRenewed)
+                                                            <span class="badge bg-success text-white small mt-1">Verlengd</span>
+                                                        @endif
                                                     </div>
                                                     <div class="d-flex align-items-center ms-3">
                                                         @can('driver_show')

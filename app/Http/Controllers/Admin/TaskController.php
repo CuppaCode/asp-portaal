@@ -11,6 +11,7 @@ use App\Models\Claim;
 use App\Models\Task;
 use App\Models\Team;
 use App\Models\User;
+use App\Services\MailTriggerService;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -61,6 +62,16 @@ class TaskController extends Controller
         $message = new \App\Notifications\TaskCreation($task, $claim, $user);
         Notification::route('mail', [
             $task->user->email => $task->user->name])->notify($message);
+
+        // Trigger automatic emails for TASK_ASSIGNED
+        if ($task->user && $task->user->email) {
+            $mailService = new MailTriggerService();
+            $mailService->dispatch('TASK_ASSIGNED', $task, [
+                'recipients' => [$task->user->email],
+                'cc' => $created_by->email ? [$created_by->email] : [],
+                'reply_to' => $created_by->email ?? null
+            ]);
+        }
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $task->id]);

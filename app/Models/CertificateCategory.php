@@ -16,6 +16,15 @@ class CertificateCategory extends Model
     protected $fillable = [
         'name',
         'duration',
+        'notify_days_before',
+        'enable_notifications',
+        'notification_recipients',
+        'reminder_frequency_days',
+    ];
+
+    protected $casts = [
+        'enable_notifications' => 'boolean',
+        'notification_recipients' => 'array',
     ];
 
     public function certificates()

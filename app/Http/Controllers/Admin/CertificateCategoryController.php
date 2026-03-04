@@ -33,11 +33,34 @@ class CertificateCategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'duration' => 'required|integer|min:0',
+            'notify_days_before' => 'nullable|integer|min:1|max:365',
+            'enable_notifications' => 'nullable|boolean',
+            'notification_recipients' => 'required_if:enable_notifications,1|nullable|string',
+            'reminder_frequency_days' => 'nullable|integer|min:1|max:30',
         ]);
+
+        // Process notification_recipients from comma-separated string to array
+        if (!empty($data['notification_recipients'])) {
+            $emails = array_map('trim', explode(',', $data['notification_recipients']));
+            // Validate each email
+            foreach ($emails as $email) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    return back()->withErrors(['notification_recipients' => "Ongeldig email adres: {$email}"])->withInput();
+                }
+            }
+            $data['notification_recipients'] = $emails;
+        } else {
+            $data['notification_recipients'] = null;
+        }
+
+        // Set defaults
+        $data['enable_notifications'] = $request->has('enable_notifications');
+        $data['notify_days_before'] = $data['notify_days_before'] ?? 30;
+        $data['reminder_frequency_days'] = $data['reminder_frequency_days'] ?? 7;
 
         $category = CertificateCategory::create($data);
 
-    return redirect()->route('admin.certificate-categories.index')->with('success', 'Categorie aangemaakt');
+        return redirect()->route('admin.certificate-categories.index')->with('success', 'Categorie aangemaakt');
     }
 
     /**
@@ -80,11 +103,34 @@ class CertificateCategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'duration' => 'required|integer|min:0',
+            'notify_days_before' => 'nullable|integer|min:1|max:365',
+            'enable_notifications' => 'nullable|boolean',
+            'notification_recipients' => 'required_if:enable_notifications,1|nullable|string',
+            'reminder_frequency_days' => 'nullable|integer|min:1|max:30',
         ]);
+
+        // Process notification_recipients from comma-separated string to array
+        if (!empty($data['notification_recipients'])) {
+            $emails = array_map('trim', explode(',', $data['notification_recipients']));
+            // Validate each email
+            foreach ($emails as $email) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    return back()->withErrors(['notification_recipients' => "Ongeldig email adres: {$email}"])->withInput();
+                }
+            }
+            $data['notification_recipients'] = $emails;
+        } else {
+            $data['notification_recipients'] = null;
+        }
+
+        // Set defaults
+        $data['enable_notifications'] = $request->has('enable_notifications');
+        $data['notify_days_before'] = $data['notify_days_before'] ?? 30;
+        $data['reminder_frequency_days'] = $data['reminder_frequency_days'] ?? 7;
 
         $certificateCategory->update($data);
 
-    return redirect()->route('admin.certificate-categories.index')->with('success', 'Categorie bijgewerkt');
+        return redirect()->route('admin.certificate-categories.index')->with('success', 'Categorie bijgewerkt');
     }
 
     public function show(CertificateCategory $certificateCategory)

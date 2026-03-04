@@ -413,6 +413,26 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => 101,
                 'title' => 'certificate_category_access',
+            ],
+            [
+                'id'    => 102,
+                'title' => 'mailing_access',
+            ],
+            [
+                'id'    => 103,
+                'title' => 'mailing_create',
+            ],
+            [
+                'id'    => 104,
+                'title' => 'mailing_edit',
+            ],
+            [
+                'id'    => 105,
+                'title' => 'mailing_show',
+            ],
+            [
+                'id'    => 106,
+                'title' => 'mailing_delete',
             ]
         ];
 

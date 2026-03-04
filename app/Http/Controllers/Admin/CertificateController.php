@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
+use App\Models\CertificateRenewal;
 use App\Models\Driver;
 use App\Models\Claim;
+use App\Services\MailTriggerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,5 +129,141 @@ class CertificateController extends Controller
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
+    }
+
+    /**
+     * Manually renew a single certificate
+     */
+    public function renew(Certificate $certificate, Request $request)
+    {
+        abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $validated = $request->validate([
+            'new_expiry_date' => 'required|date|after:' . $certificate->expiry_date,
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $oldExpiryDate = $certificate->expiry_date;
+        
+        // If first renewal, store original expiry date
+        if (empty($certificate->original_expiry_date)) {
+            $certificate->original_expiry_date = $oldExpiryDate;
+        }
+
+        // Update certificate
+        $certificate->expiry_date = $validated['new_expiry_date'];
+        $certificate->renewed_by_user_id = auth()->id();
+        $certificate->renewal_token = null;
+        $certificate->renewal_token_expires_at = null;
+        $certificate->last_notification_sent_at = null;
+        $certificate->save();
+
+        // Create renewal history record
+        CertificateRenewal::create([
+            'certificate_id' => $certificate->id,
+            'old_expiry_date' => $oldExpiryDate,
+            'new_expiry_date' => $validated['new_expiry_date'],
+            'renewed_by_user_id' => auth()->id(),
+            'renewal_method' => 'admin_manual',
+            'notes' => $validated['notes'] ?? null,
+        ]);
+
+        // Send confirmation email to driver and admins
+        $mailTriggerService = app(MailTriggerService::class);
+        
+        // Collect recipients: driver + category notification recipients
+        $recipients = [];
+        if (!empty($certificate->driver->contact->email)) {
+            $recipients[] = $certificate->driver->contact->email;
+        }
+        if (!empty($certificate->category->notification_recipients)) {
+            $recipients = array_merge($recipients, $certificate->category->notification_recipients);
+        }
+        $recipients = array_unique(array_filter($recipients));
+
+        if (count($recipients) > 0) {
+            try {
+                $mailTriggerService->trigger('CERTIFICATE_RENEWED', $certificate, $recipients);
+            } catch (\Exception $e) {
+                \Log::error('Failed to send renewal confirmation for certificate ' . $certificate->id . ': ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.certificate.show', $certificate->id)
+            ->with('success', 'Certificaat succesvol verlengd tot ' . \Carbon\Carbon::parse($validated['new_expiry_date'])->format('d-m-Y'));
+    }
+
+    /**
+     * Bulk renew multiple certificates
+     */
+    public function bulkRenew(Request $request)
+    {
+        abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $validated = $request->validate([
+            'certificate_ids' => 'required|array|min:1',
+            'certificate_ids.*' => 'exists:certificates,id',
+            'new_expiry_date' => 'required|date',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $certificates = Certificate::whereIn('id', $validated['certificate_ids'])->get();
+        $successCount = 0;
+        $mailTriggerService = app(MailTriggerService::class);
+
+        foreach ($certificates as $certificate) {
+            // Validate new date is after current expiry
+            if (\Carbon\Carbon::parse($validated['new_expiry_date'])->lte(\Carbon\Carbon::parse($certificate->expiry_date))) {
+                continue; // Skip certificates where new date isn't later
+            }
+
+            $oldExpiryDate = $certificate->expiry_date;
+            
+            // If first renewal, store original expiry date
+            if (empty($certificate->original_expiry_date)) {
+                $certificate->original_expiry_date = $oldExpiryDate;
+            }
+
+            // Update certificate
+            $certificate->expiry_date = $validated['new_expiry_date'];
+            $certificate->renewed_by_user_id = auth()->id();
+            $certificate->renewal_token = null;
+            $certificate->renewal_token_expires_at = null;
+            $certificate->last_notification_sent_at = null;
+            $certificate->save();
+
+            // Create renewal history record
+            CertificateRenewal::create([
+                'certificate_id' => $certificate->id,
+                'old_expiry_date' => $oldExpiryDate,
+                'new_expiry_date' => $validated['new_expiry_date'],
+                'renewed_by_user_id' => auth()->id(),
+                'renewal_method' => 'admin_bulk',
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            // Send confirmation email
+            $recipients = [];
+            if (!empty($certificate->driver->contact->email)) {
+                $recipients[] = $certificate->driver->contact->email;
+            }
+            if (!empty($certificate->category->notification_recipients)) {
+                $recipients = array_merge($recipients, $certificate->category->notification_recipients);
+            }
+            $recipients = array_unique(array_filter($recipients));
+
+            if (count($recipients) > 0) {
+                try {
+                    $mailTriggerService->trigger('CERTIFICATE_RENEWED', $certificate, $recipients);
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send renewal confirmation for certificate ' . $certificate->id . ': ' . $e->getMessage());
+                }
+            }
+
+            $successCount++;
+        }
+
+        return redirect()->route('admin.certificate.index')
+            ->with('success', $successCount . ' certificaten succesvol verlengd tot ' . \Carbon\Carbon::parse($validated['new_expiry_date'])->format('d-m-Y'));
     }
 }

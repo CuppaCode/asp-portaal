@@ -53,6 +53,44 @@
             </div>
 
             <div class="form-group">
+                <label for="trigger_type">{{ trans('cruds.mailTemplates.fields.trigger_type') }}</label>
+                <select class="form-control {{ $errors->has('trigger_type') ? 'is-invalid' : '' }}" name="trigger_type" id="trigger_type">
+                    <option value="">{{ trans('global.pleaseSelect') }}</option>
+                    <option value="CLAIM_CREATED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CLAIM_CREATED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_CREATED.name') }}</option>
+                    <option value="CLAIM_STATUS_CHANGED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CLAIM_STATUS_CHANGED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_STATUS_CHANGED.name') }}</option>
+                    <option value="TASK_ASSIGNED" {{ old('trigger_type', $mailTemplate->trigger_type) == 'TASK_ASSIGNED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.TASK_ASSIGNED.name') }}</option>
+                    <option value="MANUAL_CLAIMS" {{ old('trigger_type', $mailTemplate->trigger_type) == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
+                    <option value="MANUAL_GENERAL" {{ old('trigger_type', $mailTemplate->trigger_type) == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
+                </select>
+                @if($errors->has('trigger_type'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('trigger_type') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.trigger_type_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $mailTemplate->is_active) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_active">
+                        {{ trans('cruds.mailTemplates.fields.is_active') }}
+                    </label>
+                </div>
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.is_active_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="is_automatic" id="is_automatic" value="1" {{ old('is_automatic', $mailTemplate->is_automatic) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_automatic">
+                        {{ trans('cruds.mailTemplates.fields.is_automatic') }}
+                    </label>
+                </div>
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.is_automatic_helper') }}</span>
+            </div>
+
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

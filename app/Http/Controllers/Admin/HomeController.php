@@ -122,10 +122,12 @@ class HomeController
                         // eager-load those certificates (filtered) and include the driver relation for display.
                         $categories_expiring_30 = CertificateCategory::whereHas('certificates', function($q) use ($limitDate) {
                                         $q->whereNotNull('expiry_date')
-                                            ->whereDate('expiry_date', '<=', $limitDate);
+                                            ->whereDate('expiry_date', '<=', $limitDate)
+                                            ->notRenewed();
                                 })->with(['certificates' => function($q) use ($limitDate) {
                                         $q->whereNotNull('expiry_date')
                                                 ->whereDate('expiry_date', '<=', $limitDate)
+                                                ->notRenewed()
                                                 ->orderBy('expiry_date')
                                                 ->with('driver');
                                 }])->get();
