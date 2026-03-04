@@ -661,6 +661,7 @@ return [
             'subtitle' => 'Configureer automatische email triggers en bekijk gekoppelde templates',
             'trigger_type' => 'Trigger Type',
             'description' => 'Omschrijving',
+            'recipients' => 'Ontvangers',
             'active_templates' => 'Actieve Templates',
             'total_templates' => 'Totaal Templates',
             'actions' => 'Acties',
@@ -681,22 +682,42 @@ return [
                 'CLAIM_CREATED' => [
                     'name' => 'Schade Aangemaakt',
                     'description' => 'Getriggerd wanneer een nieuwe schade wordt aangemaakt',
+                    'recipients' => 'Contactpersoon van de schade / het bedrijf',
                 ],
                 'CLAIM_STATUS_CHANGED' => [
                     'name' => 'Schade Status Gewijzigd',
                     'description' => 'Getriggerd wanneer de status van een schade wordt bijgewerkt',
+                    'recipients' => 'Contactpersoon van de schade / het bedrijf',
                 ],
                 'TASK_ASSIGNED' => [
                     'name' => 'Taak Toegewezen',
                     'description' => 'Getriggerd wanneer een taak wordt toegewezen aan een gebruiker',
+                    'recipients' => 'De gebruiker aan wie de taak is toegewezen',
+                ],
+                'CERTIFICATE_EXPIRING' => [
+                    'name' => 'Certificaat verloopt binnenkort',
+                    'description' => 'Getriggerd wanneer een certificaat binnenkort verloopt',
+                    'recipients' => 'Chauffeur en/of contactpersoon van het bedrijf',
+                ],
+                'CERTIFICATE_RENEWED' => [
+                    'name' => 'Certificaat verlengd',
+                    'description' => 'Getriggerd wanneer een certificaat is verlengd',
+                    'recipients' => 'Chauffeur en/of contactpersoon van het bedrijf',
+                ],
+                'CERTIFICATE_NOTIFICATION_ERROR' => [
+                    'name' => 'Certificaat notificatie fout',
+                    'description' => 'Getriggerd wanneer een certificaatnotificatie mislukt (alleen voor super admin)',
+                    'recipients' => 'Super admin',
                 ],
                 'MANUAL_CLAIMS' => [
                     'name' => 'Handmatig - Schades',
                     'description' => 'Handmatig te selecteren templates beschikbaar in de schade sectie',
+                    'recipients' => 'Handmatig te selecteren door de gebruiker bij het versturen',
                 ],
                 'MANUAL_GENERAL' => [
                     'name' => 'Handmatig - Algemeen',
                     'description' => 'Handmatig te selecteren templates voor algemeen gebruik',
+                    'recipients' => 'Handmatig te selecteren door de gebruiker bij het versturen',
                 ],
             ],
         ],

@@ -14,6 +14,7 @@
                             <tr>
                                 <th>{{ trans('cruds.superAdmin.triggers.trigger_type') }}</th>
                                 <th>{{ trans('cruds.superAdmin.triggers.description') }}</th>
+                                <th>{{ trans('cruds.superAdmin.triggers.recipients') }}</th>
                                 <th>{{ trans('cruds.superAdmin.triggers.active_templates') }}</th>
                                 <th>{{ trans('cruds.superAdmin.triggers.total_templates') }}</th>
                                 <th>{{ trans('cruds.superAdmin.triggers.actions') }}</th>
@@ -35,11 +36,13 @@
                                     // Get Dutch translations if available
                                     $triggerName = trans('cruds.superAdmin.triggers.types.' . $key . '.name');
                                     $triggerDesc = trans('cruds.superAdmin.triggers.types.' . $key . '.description');
+                                    $triggerRecipients = trans('cruds.superAdmin.triggers.types.' . $key . '.recipients');
                                     
                                     // Fallback to English if translation not found
                                     if (str_starts_with($triggerName, 'cruds.superAdmin')) {
                                         $triggerName = $trigger['name'];
                                         $triggerDesc = $trigger['description'];
+                                        $triggerRecipients = $trigger['recipients'] ?? '';
                                     }
                                 @endphp
                                 <tr>
@@ -52,6 +55,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $triggerDesc }}</td>
+                                    <td><i class="fas fa-user text-muted mr-1"></i>{{ $triggerRecipients }}</td>
                                     <td>
                                         <span class="badge badge-success">{{ $activeCount }}</span>
                                     </td>

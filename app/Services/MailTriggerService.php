@@ -16,41 +16,49 @@ class MailTriggerService
         'CLAIM_CREATED' => [
             'name' => 'Claim Created',
             'description' => 'Triggered when a new claim is created',
+            'recipients' => 'Contact person of the claim / company',
             'available_tags' => ['bedrijf', 'dossiernr', 'contact_naam', 'kenteken', 'datumschade'],
         ],
         'CLAIM_STATUS_CHANGED' => [
             'name' => 'Claim Status Changed',
             'description' => 'Triggered when a claim status is updated',
+            'recipients' => 'Contact person of the claim / company',
             'available_tags' => ['bedrijf', 'dossiernr', 'status', 'contact_naam'],
         ],
         'TASK_ASSIGNED' => [
             'name' => 'Task Assigned',
             'description' => 'Triggered when a task is assigned to a user',
+            'recipients' => 'The user the task is assigned to',
             'available_tags' => ['taak_titel', 'taak_beschrijving', 'taak_deadline', 'toegewezen_aan', 'toegewezen_email', 'aangemaakt_door', 'plus_alle_schade_tags'],
         ],
         'CERTIFICATE_EXPIRING' => [
             'name' => 'Certificaat verloopt binnenkort',
             'description' => 'Triggered when a certificate is about to expire',
+            'recipients' => 'Driver and/or company contact',
             'available_tags' => ['certificaat_naam', 'certificaat_categorie', 'certificaat_vervaldatum', 'chauffeur_naam', 'chauffeur_email', 'bedrijf', 'dagen_tot_verloop', 'verlenging_link'],
         ],
         'CERTIFICATE_RENEWED' => [
             'name' => 'Certificaat verlengd',
             'description' => 'Triggered when a certificate has been renewed',
+            'recipients' => 'Driver and/or company contact',
             'available_tags' => ['certificaat_naam', 'certificaat_categorie', 'oude_vervaldatum', 'nieuwe_vervaldatum', 'verlengd_door', 'certificaat_link'],
         ],
         'CERTIFICATE_NOTIFICATION_ERROR' => [
             'name' => 'Certificaat notificatie fout',
             'description' => 'Triggered when certificate notification fails (super admin only)',
+            'recipients' => 'Super admin',
             'available_tags' => ['error_bericht', 'certificaat_naam', 'certificaat_id'],
         ],
         'MANUAL_CLAIMS' => [
             'name' => 'Manual - Claims',
             'description' => 'Manually selected templates available in claims section',
+            'recipients' => 'Selected manually by the user when sending',
             'available_tags' => ['all_claim_tags'],
         ],
         'MANUAL_GENERAL' => [
             'name' => 'Manual - General',
             'description' => 'Manually selected templates for general use',
+            'recipients' => 'Selected manually by the user when sending',
             'available_tags' => [],
         ],
     ];
