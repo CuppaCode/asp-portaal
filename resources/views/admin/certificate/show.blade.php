@@ -36,7 +36,7 @@
             <div class="card mt-3">
                 <div class="card-header">Handmatige verlenging</div>
                 <div class="card-body">
-                    <form action="{{ route('certificate.renew', $certificate->id) }}" method="POST">
+                    <form action="{{ route('admin.certificate.renew', $certificate->id) }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
