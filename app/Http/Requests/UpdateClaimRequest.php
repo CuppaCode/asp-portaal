@@ -66,36 +66,32 @@ class UpdateClaimRequest extends FormRequest
                 'max:10',
             ],
             'damage_files.*' => [
-                'file',
-                'max:10240', // 10MB
-                'mimetypes:image/jpeg,image/png,image/gif,application/pdf',
+                'nullable',
+                'string',
             ],
             'report_files' => [
                 'array',
                 'max:10',
             ],
             'report_files.*' => [
-                'file',
-                'max:10240', // 10MB
-                'mimetypes:image/jpeg,image/png,image/gif,application/pdf',
+                'nullable',
+                'string',
             ],
             'financial_files' => [
                 'array',
                 'max:10',
             ],
             'financial_files.*' => [
-                'file',
-                'max:10240', // 10MB
-                'mimetypes:image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'nullable',
+                'string',
             ],
             'other_files' => [
                 'array',
                 'max:10',
             ],
             'other_files.*' => [
-                'file',
-                'max:10240', // 10MB
-                'mimetypes:image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'nullable',
+                'string',
             ],
             'bevestiging_kl_at'      => ['nullable', 'date_format:' . config('panel.date_format')],
             'saf_binnen_at'          => ['nullable', 'date_format:' . config('panel.date_format')],
