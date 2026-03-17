@@ -25,6 +25,8 @@ class Vehicle extends Model
         'company_id',
         'name',
         'plates',
+        'brand',
+        'chassis_number',
         'created_at',
         'updated_at',
         'deleted_at',

@@ -440,6 +440,19 @@ input[type="file"].form-control:hover {
                                         @input="formData.vehicle_plates_opposite = formatLicensePlate($event.target.value)"
                                         placeholder="XX-99-XX" maxlength="8">
 
+                                @elseif($fieldName === 'vehicle_chassis_number_opposite')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <input type="text" name="vehicle_chassis_number_opposite" class="form-control"
+                                        value="{{ old('vehicle_chassis_number_opposite') }}" {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.vehicle_chassis_number_opposite">
+
+                                @elseif($fieldName === 'vehicle_build_year_opposite')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <input type="text" name="vehicle_build_year_opposite" class="form-control"
+                                        value="{{ old('vehicle_build_year_opposite') }}" {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.vehicle_build_year_opposite"
+                                        placeholder="bijv. 2018" maxlength="4">
+
                                 @elseif($fieldName === 'damaged_part')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <select name="damaged_part[]" class="form-control" multiple {{ $isRequired ? 'required' : '' }}
@@ -621,6 +634,8 @@ function claimForm() {
             recoverable_claim: '',
             vehicle_plates: '',
             vehicle_plates_opposite: '',
+            vehicle_chassis_number_opposite: '',
+            vehicle_build_year_opposite: '',
             damaged_part: [],
             damaged_area: [],
             opposite_type: '',

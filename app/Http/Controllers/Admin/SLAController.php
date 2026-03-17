@@ -49,6 +49,7 @@ class SLAController extends Controller
 
 
         $sla->analytics_options = $request->input('analytics_options') ? json_encode($request->input('analytics_options')) : null;
+        $sla->verwijtbaar_mail_enabled = $request->boolean('verwijtbaar_mail_enabled');
         $sla->save();
 
         return redirect()->route('admin.sla.index')->with('message', 'SLA toegevoegd');
@@ -88,6 +89,7 @@ public function update(UpdateSLARequest $request, SLA $sla)
         $sla->update($request->except($multiSelects));
 
         $sla->analytics_options = $request->input('analytics_options') ? json_encode($request->input('analytics_options')) : null;
+        $sla->verwijtbaar_mail_enabled = $request->boolean('verwijtbaar_mail_enabled');
         $sla->save();
 
         $company = Company::where('id', $sla->company)->first();

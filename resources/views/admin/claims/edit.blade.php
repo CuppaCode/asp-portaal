@@ -149,6 +149,13 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.injury_office_helper') }}</span>
                 </div>
+                <div class="form-group col-md-6 injury-office-show d-none">
+                    <label for="injury_requested_at">Aangevraagd op</label>
+                    <input class="form-control date custom_datepicker {{ $errors->has('injury_requested_at') ? 'is-invalid' : '' }}" type="text" name="injury_requested_at" id="injury_requested_at" value="{{ old('injury_requested_at', $claim->injury_requested_at) }}">
+                    @if($errors->has('injury_requested_at'))
+                        <div class="invalid-feedback">{{ $errors->first('injury_requested_at') }}</div>
+                    @endif
+                </div>
                 <div class="form-group col-md-9 injury-other-show d-none">
                     <label for="injury_other">{{ trans('cruds.claim.fields.injury_other') }}</label>
                 <input class="form-control {{ $errors->has('injury_other') ? 'is-invalid' : '' }}" type="text" name="injury_other" id="injury_other" value="{{ old('injury_other', $claim->injury_other) }}">
@@ -190,165 +197,374 @@
                     @endif
             </div>
 
+            <div class="form-group">
+                <label>Verwijtbaar</label>
+                <select class="form-control {{ $errors->has('verwijtbaar') ? 'is-invalid' : '' }}" name="verwijtbaar" id="verwijtbaar">
+                    <option value="">{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Claim::VERWIJTBAAR_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('verwijtbaar', $claim->verwijtbaar) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('verwijtbaar'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('verwijtbaar') }}
+                    </div>
+                @endif
+            </div>
+
         </div>
     </div>
-    <div id="claim-waybill" class="card">
+
+    <div id="dossier-datums" class="card">
         <div class="card-header">
-            Vrachtbrief
+            Dossier datums
         </div>
         <div class="card-body">
+            @php
+                $dossierFields = [
+                    'bevestiging_kl_at'      => trans('cruds.claim.fields.bevestiging_kl_at'),
+                    'saf_binnen_at'          => trans('cruds.claim.fields.saf_binnen_at'),
+                    'info_chf_at'            => trans('cruds.claim.fields.info_chf_at'),
+                    'info_kl_wp_at'          => trans('cruds.claim.fields.info_kl_wp_at'),
+                    'beoordeling_at'         => trans('cruds.claim.fields.beoordeling_at'),
+                    'schadebedrag_bekend_at' => trans('cruds.claim.fields.schadebedrag_bekend_at'),
+                    'naar_vzk_at'            => trans('cruds.claim.fields.naar_vzk_at'),
+                    'naar_shb_gge_at'        => trans('cruds.claim.fields.naar_shb_gge_at'),
+                    'goedkeuring_og_at'      => trans('cruds.claim.fields.goedkeuring_og_at'),
+                    'factuur_ontvangen_at'   => trans('cruds.claim.fields.factuur_ontvangen_at'),
+                    'factuur_adm_at'         => trans('cruds.claim.fields.factuur_adm_at'),
+                    'brief_chf_at'           => trans('cruds.claim.fields.brief_chf_at'),
+                    'dossier_controle_at'    => trans('cruds.claim.fields.dossier_controle_at'),
+                ];
+                $dossierNvt = old('dossier_nvt', $claim->dossier_nvt ?? []);
+            @endphp
             <div class="form-row">
-
-                <div class="form-group col-md-6">
-
-                    <label for="loading_photos">{{ trans('cruds.claim.fields.loading_photos') }}</label>
-                    <select class="form-control {{ $errors->has('loading_photos') ? 'is-invalid' : '' }}" name="loading_photos" id="loading_photos">
-                        <option value disabled {{ old('loading_photos', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('loading_photos', $claim->loading_photos) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    
+                @foreach ($dossierFields as $field => $label)
+                <div class="form-group col-md-3">
+                    <label for="{{ $field }}">{{ $label }}</label>
+                    <input class="form-control date custom_datepicker {{ $errors->has($field) ? 'is-invalid' : '' }}"
+                        type="text"
+                        name="{{ $field }}"
+                        id="{{ $field }}"
+                        value="{{ old($field, $claim->$field) }}"
+                        {{ in_array($field, $dossierNvt) ? 'disabled' : '' }}>
+                    @if($errors->has($field))
+                        <div class="invalid-feedback">{{ $errors->first($field) }}</div>
+                    @endif
+                    <div class="form-check mt-1">
+                        <input class="form-check-input dossier-nvt-check" type="checkbox"
+                            name="dossier_nvt[]"
+                            id="{{ $field }}_nvt"
+                            value="{{ $field }}"
+                            data-target="{{ $field }}"
+                            {{ in_array($field, $dossierNvt) ? 'checked' : '' }}>
+                        <label class="form-check-label text-muted small" for="{{ $field }}_nvt">N/A (nvt)</label>
+                    </div>
                 </div>
-                <div class="form-group col-md-6">
-
-                    <label for="unloading_photos">{{ trans('cruds.claim.fields.unloading_photos') }}</label>
-                    <select class="form-control {{ $errors->has('unloading_photos') ? 'is-invalid' : '' }}" name="unloading_photos" id="unloading_photos">
-                        <option value disabled {{ old('unloading_photos', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('unloading_photos', $claim->unloading_photos) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-
-                    <label for="waybill_signed_at_loading">{{ trans('cruds.claim.fields.waybill_signed_at_loading') }}</label>
-                    <select class="form-control {{ $errors->has('waybill_signed_at_loading') ? 'is-invalid' : '' }}" name="waybill_signed_at_loading" id="waybill_signed_at_loading">
-                        <option value disabled {{ old('waybill_signed_at_loading', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('waybill_signed_at_loading', $claim->waybill_signed_at_loading) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-
-                </div>
-                <div class="form-group col-md-6">
-
-                    <label for="waybill_signed_at_unloading">{{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}</label>
-                    <select class="form-control {{ $errors->has('waybill_signed_at_unloading') ? 'is-invalid' : '' }}" name="waybill_signed_at_unloading" id="waybill_signed_at_unloading">
-                        <option value disabled {{ old('waybill_signed_at_unloading', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                        @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
-                            <option value="{{ $key }}" {{ old('waybill_signed_at_unloading', $claim->waybill_signed_at_unloading) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
+
+    {{-- Gegevens opdrachtgever: Rit 1 | Rit 2 --}}
     <div id="info-car" class="card">
         <div class="card-header">
-            Gegevens wagenpark
+            Gegevens opdrachtgever
         </div>
         <div class="card-body">
             <input type="hidden" name="vehicle_id" value="1"/>
-            
-            <div class="form-group">
-                <small>Gelieve het kenteken in te vullen met streepjes, bijv.: "XX-123-XX"</small>
-                <br/>
-                <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
-                
-                <select class="form-control select2 {{ $errors->has('vehicle') ? 'is-invalid' : '' }}" name="vehicle_plates" id="vehicle_plates">
-                    @foreach($vehicle as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('vehicle') ? old('vehicle') : $claim->vehicle->plates ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('vehicle'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('vehicle') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_helper') }}</span>
-            </div>
+            @php $hasRit2Data = $claim->loading_photos_2 || $claim->unloading_photos_2 || $claim->waybill_signed_at_loading_2 || $claim->waybill_signed_at_unloading_2 || $claim->damaged_part_2 || $claim->damage_origin_2 || $claim->damaged_area_2 || $claim->vehicle_2_id; @endphp
 
+            <div class="row">
 
-            <div class="form-group">
+                {{-- Rit 1 --}}
+                <div class="col-md-6">
+                    <h6 class="font-weight-bold border-bottom pb-2 mb-3">Rit 1</h6>
 
-                <label for="driver_vehicle">{{ trans('cruds.claim.fields.driver_vehicle') }}</label>
-                <select class="form-control select2 {{ $errors->has('driver_vehicle') ? 'is-invalid' : '' }}" name="driver_vehicle" id="driver_vehicle">
-                    @foreach($drivers as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('driver_vehicle') ? old('driver_vehicle') : $claim->driver_vehicle ?? '' ) == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('driver_vehicle'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('driver_vehicle') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.driver_vehicle_helper') }}</span>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
-                    <select class="form-control select2 {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part[]" id="damaged_part" aria-label="multiple select" multiple>
-                        @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
-                            @if ( $claim->damaged_part !== null )
-                            <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damaged_part, true )) ? 'selected' : '' }}>{{ $label }}</option>
-                            @else
-                            <option value="{{ $key }}" {{ old('damaged_part', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                    @if($errors->has('damaged_part'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('damaged_part') }}
-                        </div>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_part_helper') }}</span>
-                </div>
-                <div class="form-group col-md-6">
-                    <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
-                    @php is_array($claim->damaged_area) ? $claim->damaged_area : array(); @endphp
-                    <select class="form-control select2 {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" aria-label="multiple select" multiple>
-                        @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
-                            @if ( $claim->damaged_area !== null )
-                            <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damaged_area )) ? 'selected' : '' }}>{{ $label }}</option>
-                            @else
-                            <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                    @if($errors->has('damaged_area'))
-                        <div class="invalid-feedback">
-                            {{ $errors->first('damaged_area') }}
-                        </div>
-                    @endif
-                    <span class="help-block">{{ trans('cruds.claim.fields.damaged_area_helper') }}</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
-                <select class="form-control select2 {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin[]" id="damage_origin" multiple>
-                    @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
-                        @if ( $claim->damage_origin !== null )
-                        <option value="{{ $key }}" {{ in_array($key, (array) json_decode( $claim->damage_origin )) ? 'selected' : '' }}>{{ $label }}</option>
-                        @else
-                        <option value="{{ $key }}" {{ old('damage_origin', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    <div class="form-group">
+                        <small>Gelieve het kenteken in te vullen met streepjes, bijv.: "XX-123-XX"</small><br/>
+                        <label for="vehicle_plates">{{ trans('cruds.claim.fields.vehicle_plates') }}</label>
+                        <select class="form-control select2 {{ $errors->has('vehicle') ? 'is-invalid' : '' }}" name="vehicle_plates" id="vehicle_plates">
+                            @foreach($vehicle as $id => $entry)
+                                <option value="{{ $id }}" {{ (old('vehicle') ? old('vehicle') : $claim->vehicle->plates ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                            @endforeach
+                        </select>
+                        @if($errors->has('vehicle'))
+                            <div class="invalid-feedback">{{ $errors->first('vehicle') }}</div>
                         @endif
-                    @endforeach
-                </select>
-                @if($errors->has('damage_origin'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('damage_origin') }}
                     </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.claim.fields.damage_origin_helper') }}</span>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="vehicle_brand">Merk/type</label>
+                            <input class="form-control" type="text" name="vehicle_brand" id="vehicle_brand"
+                                value="{{ old('vehicle_brand', $claim->vehicle->brand ?? '') }}"
+                                placeholder="bijv. Mercedes Atego">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="vehicle_chassis_number">Chassisnummer</label>
+                            <input class="form-control" type="text" name="vehicle_chassis_number" id="vehicle_chassis_number"
+                                value="{{ old('vehicle_chassis_number', $claim->vehicle->chassis_number ?? '') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
+                        <select class="form-control select2 {{ $errors->has('damaged_part') ? 'is-invalid' : '' }}" name="damaged_part[]" id="damaged_part" aria-label="multiple select" multiple>
+                            @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
+                                @if ($claim->damaged_part !== null)
+                                <option value="{{ $key }}" {{ in_array($key, (array) json_decode($claim->damaged_part, true)) ? 'selected' : '' }}>{{ $label }}</option>
+                                @else
+                                <option value="{{ $key }}" {{ old('damaged_part', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
+                        <select class="form-control select2 {{ $errors->has('damaged_area') ? 'is-invalid' : '' }}" name="damaged_area[]" id="damaged_area" aria-label="multiple select" multiple>
+                            @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
+                                @if ($claim->damaged_area !== null)
+                                <option value="{{ $key }}" {{ in_array($key, (array) json_decode($claim->damaged_area)) ? 'selected' : '' }}>{{ $label }}</option>
+                                @else
+                                <option value="{{ $key }}" {{ old('damaged_area', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="damage_origin">{{ trans('cruds.claim.fields.damage_origin') }}</label>
+                        <select class="form-control select2 {{ $errors->has('damage_origin') ? 'is-invalid' : '' }}" name="damage_origin[]" id="damage_origin" multiple>
+                            @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
+                                @if ($claim->damage_origin !== null)
+                                <option value="{{ $key }}" {{ in_array($key, (array) json_decode($claim->damage_origin)) ? 'selected' : '' }}>{{ $label }}</option>
+                                @else
+                                <option value="{{ $key }}" {{ old('damage_origin', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- Rit 2 --}}
+                <div class="col-md-6 border-left pl-4">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h6 class="font-weight-bold mb-0">Rit 2</h6>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="rit2Toggle"
+                                {{ $hasRit2Data ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="rit2Toggle">Inschakelen</label>
+                        </div>
+                    </div>
+
+                    <div id="rit2Fields" class="{{ $hasRit2Data ? '' : 'd-none' }}">
+                        <div class="form-group">
+                            <small>Gelieve het kenteken in te vullen met streepjes, bijv.: "XX-123-XX"</small><br/>
+                            <label for="vehicle_plates_2">Voertuig kenteken</label>
+                            <select class="form-control select2" name="vehicle_plates_2" id="vehicle_plates_2">
+                                <option value="">{{ trans('global.pleaseSelect') }}</option>
+                                @foreach($vehicle as $id => $entry)
+                                    <option value="{{ $id }}" {{ (old('vehicle_plates_2') ? old('vehicle_plates_2') : $claim->vehicle2->plates ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="vehicle_brand_2">Merk/type</label>
+                                <input class="form-control" type="text" name="vehicle_brand_2" id="vehicle_brand_2"
+                                    value="{{ old('vehicle_brand_2', $claim->vehicle2->brand ?? '') }}"
+                                    placeholder="bijv. Mercedes Atego">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="vehicle_chassis_number_2">Chassisnummer</label>
+                                <input class="form-control" type="text" name="vehicle_chassis_number_2" id="vehicle_chassis_number_2"
+                                    value="{{ old('vehicle_chassis_number_2', $claim->vehicle2->chassis_number ?? '') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ trans('cruds.claim.fields.damaged_part') }}</label>
+                            <select class="form-control select2 {{ $errors->has('damaged_part_2') ? 'is-invalid' : '' }}" name="damaged_part_2[]" id="damaged_part_2" aria-label="multiple select" multiple>
+                                @foreach(App\Models\Claim::DAMAGED_PART_SELECT as $key => $label)
+                                    @if ($claim->damaged_part_2 !== null)
+                                    <option value="{{ $key }}" {{ in_array($key, (array) json_decode($claim->damaged_part_2, true)) ? 'selected' : '' }}>{{ $label }}</option>
+                                    @else
+                                    <option value="{{ $key }}" {{ old('damaged_part_2', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>{{ trans('cruds.claim.fields.damaged_area') }}</label>
+                            <select class="form-control select2 {{ $errors->has('damaged_area_2') ? 'is-invalid' : '' }}" name="damaged_area_2[]" id="damaged_area_2" aria-label="multiple select" multiple>
+                                @foreach(App\Models\Claim::DAMAGED_AREA_SELECT as $key => $label)
+                                    @if ($claim->damaged_area_2 !== null)
+                                    <option value="{{ $key }}" {{ in_array($key, (array) json_decode($claim->damaged_area_2)) ? 'selected' : '' }}>{{ $label }}</option>
+                                    @else
+                                    <option value="{{ $key }}" {{ old('damaged_area_2', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="damage_origin_2">{{ trans('cruds.claim.fields.damage_origin') }}</label>
+                            <select class="form-control select2 {{ $errors->has('damage_origin_2') ? 'is-invalid' : '' }}" name="damage_origin_2[]" id="damage_origin_2" multiple>
+                                @foreach(App\Models\Claim::DAMAGE_ORIGIN as $key => $label)
+                                    @if ($claim->damage_origin_2 !== null)
+                                    <option value="{{ $key }}" {{ in_array($key, (array) json_decode($claim->damage_origin_2)) ? 'selected' : '' }}>{{ $label }}</option>
+                                    @else
+                                    <option value="{{ $key }}" {{ old('damage_origin_2', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
+    {{-- Details AO: Chauffeur 1 | Chauffeur 2 --}}
+    <div id="claim-waybill" class="card">
+        <div class="card-header">
+            Details AO
+        </div>
+        <div class="card-body">
+            @php $hasChauffeur2 = $claim->driver_vehicle_2 || $claim->vehicle_2_id; @endphp
+
+            <div class="row">
+
+                {{-- Chauffeur 1 --}}
+                <div class="col-md-6">
+                    <h6 class="font-weight-bold border-bottom pb-2 mb-3">Chauffeur 1</h6>
+
+                    <div class="form-group">
+                        <label for="driver_vehicle">{{ trans('cruds.claim.fields.driver_vehicle') }}</label>
+                        <select class="form-control select2 {{ $errors->has('driver_vehicle') ? 'is-invalid' : '' }}" name="driver_vehicle" id="driver_vehicle">
+                            @foreach($drivers as $id => $entry)
+                                <option value="{{ $id }}" {{ (old('driver_vehicle') ? old('driver_vehicle') : $claim->driver_vehicle ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                            @endforeach
+                        </select>
+                        @if($errors->has('driver_vehicle'))
+                            <div class="invalid-feedback">{{ $errors->first('driver_vehicle') }}</div>
+                        @endif
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loading_photos">{{ trans('cruds.claim.fields.loading_photos') }}</label>
+                        <select class="form-control {{ $errors->has('loading_photos') ? 'is-invalid' : '' }}" name="loading_photos" id="loading_photos">
+                            <option value disabled {{ old('loading_photos', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                            @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                <option value="{{ $key }}" {{ old('loading_photos', $claim->loading_photos) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="unloading_photos">{{ trans('cruds.claim.fields.unloading_photos') }}</label>
+                        <select class="form-control {{ $errors->has('unloading_photos') ? 'is-invalid' : '' }}" name="unloading_photos" id="unloading_photos">
+                            <option value disabled {{ old('unloading_photos', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                            @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                <option value="{{ $key }}" {{ old('unloading_photos', $claim->unloading_photos) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="waybill_signed_at_loading">{{ trans('cruds.claim.fields.waybill_signed_at_loading') }}</label>
+                        <select class="form-control {{ $errors->has('waybill_signed_at_loading') ? 'is-invalid' : '' }}" name="waybill_signed_at_loading" id="waybill_signed_at_loading">
+                            <option value disabled {{ old('waybill_signed_at_loading', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                            @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                <option value="{{ $key }}" {{ old('waybill_signed_at_loading', $claim->waybill_signed_at_loading) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="waybill_signed_at_unloading">{{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}</label>
+                        <select class="form-control {{ $errors->has('waybill_signed_at_unloading') ? 'is-invalid' : '' }}" name="waybill_signed_at_unloading" id="waybill_signed_at_unloading">
+                            <option value disabled {{ old('waybill_signed_at_unloading', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                            @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                <option value="{{ $key }}" {{ old('waybill_signed_at_unloading', $claim->waybill_signed_at_unloading) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- Chauffeur 2 --}}
+                <div class="col-md-6 border-left pl-4">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h6 class="font-weight-bold mb-0">Chauffeur 2</h6>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="chauffeur2Toggle"
+                                {{ $hasChauffeur2 ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="chauffeur2Toggle">Inschakelen</label>
+                        </div>
+                    </div>
+
+                    <div id="chauffeur2Fields" class="{{ $hasChauffeur2 ? '' : 'd-none' }}">
+                        <div class="form-group">
+                            <label for="driver_vehicle_2">Chauffeur 2</label>
+                            <select class="form-control select2" name="driver_vehicle_2" id="driver_vehicle_2">
+                                <option value="">{{ trans('global.pleaseSelect') }}</option>
+                                @foreach($drivers as $id => $entry)
+                                    <option value="{{ $id }}" {{ (old('driver_vehicle_2') ? old('driver_vehicle_2') : $claim->driver_vehicle_2 ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="loading_photos_2">{{ trans('cruds.claim.fields.loading_photos') }}</label>
+                            <select class="form-control" name="loading_photos_2" id="loading_photos_2">
+                                <option value="">{{ trans('global.pleaseSelect') }}</option>
+                                @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                    <option value="{{ $key }}" {{ old('loading_photos_2', $claim->loading_photos_2) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="unloading_photos_2">{{ trans('cruds.claim.fields.unloading_photos') }}</label>
+                            <select class="form-control" name="unloading_photos_2" id="unloading_photos_2">
+                                <option value="">{{ trans('global.pleaseSelect') }}</option>
+                                @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                    <option value="{{ $key }}" {{ old('unloading_photos_2', $claim->unloading_photos_2) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="waybill_signed_at_loading_2">{{ trans('cruds.claim.fields.waybill_signed_at_loading') }}</label>
+                            <select class="form-control" name="waybill_signed_at_loading_2" id="waybill_signed_at_loading_2">
+                                <option value="">{{ trans('global.pleaseSelect') }}</option>
+                                @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                    <option value="{{ $key }}" {{ old('waybill_signed_at_loading_2', $claim->waybill_signed_at_loading_2) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="waybill_signed_at_unloading_2">{{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}</label>
+                            <select class="form-control" name="waybill_signed_at_unloading_2" id="waybill_signed_at_unloading_2">
+                                <option value="">{{ trans('global.pleaseSelect') }}</option>
+                                @foreach(App\Models\Claim::WAYBILL_SELECT as $key => $label)
+                                    <option value="{{ $key }}" {{ old('waybill_signed_at_unloading_2', $claim->waybill_signed_at_unloading_2) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div id="info-opposite" class="card">
         <div class="card-header">
             Gegevens wederpartij
@@ -398,6 +614,19 @@
                         </div>
                     @endif
                     <span class="help-block">{{ trans('cruds.claim.fields.vehicle_plates_opposite_helper') }}</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="vehicle_chassis_number_opposite">{{ trans('cruds.claim.fields.vehicle_chassis_number_opposite') }}</label>
+                        <input class="form-control" type="text" name="vehicle_chassis_number_opposite" id="vehicle_chassis_number_opposite"
+                            value="{{ old('vehicle_chassis_number_opposite', $claim->vehicle_opposite->chassis_number ?? '') }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="vehicle_build_year_opposite">{{ trans('cruds.claim.fields.vehicle_build_year_opposite') }}</label>
+                        <input class="form-control" type="text" name="vehicle_build_year_opposite" id="vehicle_build_year_opposite"
+                            value="{{ old('vehicle_build_year_opposite', $claim->vehicle_opposite->build_year ?? '') }}"
+                            placeholder="bijv. 2018" maxlength="4">
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -515,8 +744,37 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.recovery_office_helper') }}</span>
             </div>
+            <div class="form-group">
+                <label for="herstel_op">Herstel op</label>
+                <input class="form-control date custom_datepicker {{ $errors->has('herstel_op') ? 'is-invalid' : '' }}" type="text" name="herstel_op" id="herstel_op" value="{{ old('herstel_op', $claim->herstel_op) }}">
+                @if($errors->has('herstel_op'))
+                    <div class="invalid-feedback">{{ $errors->first('herstel_op') }}</div>
+                @endif
+            </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header">
+            Verzekeraar
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="insurance_company_id">{{ trans('cruds.claim.fields.insurance_company') }}</label>
+                <select class="form-control select2 {{ $errors->has('insurance_company_id') ? 'is-invalid' : '' }}" name="insurance_company_id" id="insurance_company_id">
+                    @foreach($insurance_companies as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('insurance_company_id') ? old('insurance_company_id') : $claim->insuranceCompany->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('insurance_company_id'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('insurance_company_id') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.claim.fields.insurance_company_helper') }}</span>
+            </div>
+        </div>
+    </div>
+
     <div  class="card">
         <div class="card-header">
             Expertise
@@ -1023,6 +1281,36 @@ function formatLicensePlate(plate) {
 $('#vehicle_plates_opposite').on('input', function() {
     var formatted = formatLicensePlate($(this).val());
     $(this).val(formatted);
+});
+
+// Rit 2 toggle
+$('#rit2Toggle').on('change', function() {
+    if ($(this).is(':checked')) {
+        $('#rit2Fields').removeClass('d-none');
+    } else {
+        $('#rit2Fields').addClass('d-none');
+        $('#rit2Fields select').val('');
+    }
+});
+
+// Chauffeur 2 toggle
+$('#chauffeur2Toggle').on('change', function() {
+    if ($(this).is(':checked')) {
+        $('#chauffeur2Fields').removeClass('d-none');
+    } else {
+        $('#chauffeur2Fields').addClass('d-none');
+        $('#chauffeur2Fields select').val('').trigger('change');
+    }
+});
+
+// Dossier datums N/A toggle
+$(document).on('change', '.dossier-nvt-check', function() {
+    var input = $('#' + $(this).data('target'));
+    if ($(this).is(':checked')) {
+        input.val('').prop('disabled', true);
+    } else {
+        input.prop('disabled', false);
+    }
 });
 </script>
 @endsection

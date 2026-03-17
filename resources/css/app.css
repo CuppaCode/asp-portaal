@@ -495,7 +495,26 @@ div.dt-buttons {
     border: none;
 }
 
+.company-details-show td,
+.company-details-show th,
+.contact-details-show td,
+.contact-details-show th,
+.insurance-details-show td,
+.insurance-details-show th {
+    border: none;
+}
+
 .card-sla {
+    position: absolute;
+    z-index: 10;
+    right: 15px;
+    left: 15px;
+    margin-top: 1px;
+}
+
+.card-company,
+.card-contact,
+.card-insurance {
     position: absolute;
     z-index: 10;
     right: 15px;
@@ -505,4 +524,12 @@ div.dt-buttons {
 
 .bg-blue-asp {
     background-color: #344A9B;
+}
+
+.bg-red-asp {
+    background-color: #D32F2F;
+}
+
+.bg-green-asp {
+    background-color: #689F38;
 }
