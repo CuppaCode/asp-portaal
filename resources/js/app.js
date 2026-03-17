@@ -637,8 +637,17 @@ function sendFlashMessage( message, type ) {
 
 }
 
-function translationParseHelper(key, value) {
-    return " " + value;
+function translateJsonArray(jsonString, translations) {
+    if (!jsonString) return '';
+    try {
+        const arr = JSON.parse(jsonString);
+        if (Array.isArray(arr)) {
+            return arr.map(key => translations[key] || key).join(', ');
+        }
+        return translations[jsonString] || jsonString;
+    } catch (e) {
+        return translations[jsonString] || jsonString;
+    }
 }
 
 async function setupMailBody() {
@@ -688,16 +697,16 @@ async function setupMailBody() {
         claimJson.company ? '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>' : 'N/A', 
         claimJson.subject, 
         claimJson.claim_number, 
-        claimJson.status, 
+        allMailTranslations[claimJson.status] || claimJson.status, 
         claimJson.date_accident, 
         claimJson.vehicle ? claimJson.vehicle.plates : 'N/A',
-        JSON.parse(claimJson.damaged_part, translationParseHelper), 
-        JSON.parse(claimJson.damaged_area, translationParseHelper), 
-        JSON.parse(claimJson.damage_origin, translationParseHelper), 
+        translateJsonArray(claimJson.damaged_part, allMailTranslations), 
+        translateJsonArray(claimJson.damaged_area, allMailTranslations), 
+        translateJsonArray(claimJson.damage_origin, allMailTranslations), 
         claimJson.damage_costs, 
         claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : 'N/A', 
-        claimJson.recoverable_claim, 
-        claimJson.damage_kind
+        allMailTranslations[claimJson.recoverable_claim] || claimJson.recoverable_claim, 
+        allMailTranslations[claimJson.damage_kind] || claimJson.damage_kind
     ];
 
     const contactText = $('#contactJson');
@@ -795,9 +804,9 @@ async function setupMailBody() {
             oppositeJson.zipcode + ' ' + oppositeJson.city, 
             oppositeJson.phone, 
             oppositeJson.email,
-            oppositeJson.damaged_part ? JSON.parse(oppositeJson.damaged_part, translationParseHelper) : 'N/A', 
-            oppositeJson.damaged_area ? JSON.parse(oppositeJson.damaged_area, translationParseHelper) : 'N/A', 
-            oppositeJson.damage_origin ? JSON.parse(oppositeJson.damage_origin, translationParseHelper) : 'N/A' 
+            oppositeJson.damaged_part ? translateJsonArray(oppositeJson.damaged_part, allMailTranslations) : 'N/A', 
+            oppositeJson.damaged_area ? translateJsonArray(oppositeJson.damaged_area, allMailTranslations) : 'N/A', 
+            oppositeJson.damage_origin ? translateJsonArray(oppositeJson.damage_origin, allMailTranslations) : 'N/A' 
         ]);
 
     }
