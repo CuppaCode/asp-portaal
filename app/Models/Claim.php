@@ -161,10 +161,27 @@ class Claim extends Model implements HasMedia
         'date_accident',
         'requested_at',
         'report_received_at',
+        'herstel_op',
+        'injury_requested_at',
         'created_at',
         'updated_at',
         'deleted_at',
         'closed_at',
+        'verwijtbaar_mail_sent_at',
+        'bevestiging_kl_at',
+        'saf_binnen_at',
+        'info_chf_at',
+        'info_kl_wp_at',
+        'beoordeling_at',
+        'schadebedrag_bekend_at',
+        'naar_vzk_at',
+        'naar_shb_gge_at',
+        'goedkeuring_og_at',
+        'factuur_ontvangen_at',
+        'factuur_adm_at',
+        'brief_chf_at',
+        'dossier_controle_at',
+        'dossier_heropend_at',
     ];
 
     public const RECOVERABLE_CLAIM_SELECT = [
@@ -197,6 +214,11 @@ class Claim extends Model implements HasMedia
     public const DAMAGE_KIND = [
         'traffic'   => 'Verkeer',
         'transport' => 'Transport',
+    ];
+
+    public const VERWIJTBAAR_SELECT = [
+        'yes' => 'Ja',
+        'no'  => 'Nee',
     ];
 
     public const DAMAGE_ORIGIN = [
@@ -299,20 +321,27 @@ class Claim extends Model implements HasMedia
         'recoverable_claim',
         'injury_other',
         'injury_office_id',
+        'injury_requested_at',
         'vehicle_id',
+        'vehicle_2_id',
         'vehicle_opposite_id',
         'driver_vehicle',
+        'driver_vehicle_2',
         'driver_vehicle_opposite',
         'opposite_type',
         'obstacle',
         'damaged_part',
         'damage_origin',
         'damaged_area',
+        'damaged_part_2',
+        'damage_origin_2',
+        'damaged_area_2',
         'damage_kind',
         'damaged_part_opposite',
         'damage_origin_opposite',
         'damaged_area_opposite',
         'recovery_office_id',
+        'herstel_op',
         'damage_costs',
         'recovery_costs',
         'replacement_vehicle_costs',
@@ -338,14 +367,36 @@ class Claim extends Model implements HasMedia
         'unloading_photos',
         'waybill_signed_at_loading',
         'waybill_signed_at_unloading',
+        'loading_photos_2',
+        'unloading_photos_2',
+        'waybill_signed_at_loading_2',
+        'waybill_signed_at_unloading_2',
         'denied_reason',
         'draft_expires_at',
         'last_reminder_sent_at',
         'custom_fields_data',
+        'verwijtbaar',
+        'verwijtbaar_mail_sent_at',
+        'bevestiging_kl_at',
+        'saf_binnen_at',
+        'info_chf_at',
+        'info_kl_wp_at',
+        'beoordeling_at',
+        'schadebedrag_bekend_at',
+        'naar_vzk_at',
+        'naar_shb_gge_at',
+        'goedkeuring_og_at',
+        'factuur_ontvangen_at',
+        'factuur_adm_at',
+        'brief_chf_at',
+        'dossier_controle_at',
+        'dossier_heropend_at',
+        'dossier_nvt',
     ];
 
     protected $casts = [
         'custom_fields_data' => 'array',
+        'dossier_nvt'        => 'array',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -409,6 +460,11 @@ class Claim extends Model implements HasMedia
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 
+    public function vehicle2()
+    {
+        return $this->belongsTo(Vehicle::class, 'vehicle_2_id');
+    }
+
     public function vehicle_opposite()
     {
         return $this->belongsTo(VehicleOpposite::class, 'vehicle_opposite_id');
@@ -442,6 +498,166 @@ class Claim extends Model implements HasMedia
     public function setReportReceivedAtAttribute($value)
     {
         $this->attributes['report_received_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getHerstelOpAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setHerstelOpAttribute($value)
+    {
+        $this->attributes['herstel_op'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getInjuryRequestedAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setInjuryRequestedAtAttribute($value)
+    {
+        $this->attributes['injury_requested_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getBevestigingKlAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setBevestigingKlAtAttribute($value)
+    {
+        $this->attributes['bevestiging_kl_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getSafBinnenAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setSafBinnenAtAttribute($value)
+    {
+        $this->attributes['saf_binnen_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getInfoChfAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setInfoChfAtAttribute($value)
+    {
+        $this->attributes['info_chf_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getInfoKlWpAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setInfoKlWpAtAttribute($value)
+    {
+        $this->attributes['info_kl_wp_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getBeoordelingAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setBeoordelingAtAttribute($value)
+    {
+        $this->attributes['beoordeling_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getSchadebedragBekendAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setSchadebedragBekendAtAttribute($value)
+    {
+        $this->attributes['schadebedrag_bekend_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getNaarVzkAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setNaarVzkAtAttribute($value)
+    {
+        $this->attributes['naar_vzk_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getNaarShbGgeAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setNaarShbGgeAtAttribute($value)
+    {
+        $this->attributes['naar_shb_gge_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getGoedkeuringOgAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setGoedkeuringOgAtAttribute($value)
+    {
+        $this->attributes['goedkeuring_og_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getFactuurOntvangenAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setFactuurOntvangenAtAttribute($value)
+    {
+        $this->attributes['factuur_ontvangen_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getFactuurAdmAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setFactuurAdmAtAttribute($value)
+    {
+        $this->attributes['factuur_adm_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getBriefChfAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setBriefChfAtAttribute($value)
+    {
+        $this->attributes['brief_chf_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getDossierControleAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setDossierControleAtAttribute($value)
+    {
+        $this->attributes['dossier_controle_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function getDossierHeropendAtAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('Y-m-d', $value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setDossierHeropendAtAttribute($value)
+    {
+        $this->attributes['dossier_heropend_at'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
     public function getDamageFilesAttribute()

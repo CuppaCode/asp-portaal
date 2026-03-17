@@ -30,53 +30,31 @@
     <div>
         <!-- Company Details Toggle Button -->
         <button id="company-details-toggle" type="button" class="btn" style="background-color: #D32F2F; color: white; border: none;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-arrow-down" viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                    d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1">
-                </path>
-            </svg>
-            Bedrijfsgegevens
+            <i class="fa fa-arrow-down"></i> Bedrijfsgegevens
         </button>
 
         <!-- Contact Person Toggle Button -->
+        @if($firstContact)
         <button id="contact-details-toggle" type="button" class="btn" style="background-color: #689F38; color: white; border: none;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-arrow-down" viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                    d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1">
-                </path>
-            </svg>
-            Contactpersoon
+            <i class="fa fa-arrow-down"></i> Contactpersoon
         </button>
+        @endif
 
         <!-- Insurance Company Toggle Button (if exists) -->
         @if($claim->insurance_company_id)
-            <button id="insurance-details-toggle" type="button" class="btn" style="background-color: #344A9B; color: white; border: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                    class="bi bi-arrow-down" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1">
-                    </path>
-                </svg>
-                Verzekeraar
-            </button>
+        <button id="insurance-details-toggle" type="button" class="btn" style="background-color: #344A9B; color: white; border: none;">
+            <i class="fa fa-arrow-down"></i> Verzekeraar
+        </button>
         @endif
 
         @if($sla)
             @can('sla_access')
                 <button id="sla-toggle" type="button" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-arrow-down" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1">
-                        </path>
-                    </svg>
-                    SLA details
+                    <i class="fa fa-arrow-down"></i> SLA details
                 </button>
             @endcan
         @endif
-        
+
         {{-- Draft Actions --}}
         @if($claim->status === 'draft')
             @can('approve_draft_claim', $claim)
@@ -100,7 +78,7 @@
                 </form>
             @endcan
         @endif
-        
+
         @if( $claim->assign_self || $isAdminOrAgent)
             <a class="btn btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
                 {{ trans('global.edit') }}
@@ -159,6 +137,26 @@ function approveDraft(claimId) {
         });
     }
 }
+</script>
+
+<script>
+$(function() {
+    $('#company-details-toggle').on('click', function () {
+        $('.sla-show').slideUp();
+        $('.contact-details-show, .insurance-details-show').slideUp();
+        $('.company-details-show').slideToggle();
+    });
+    $('#contact-details-toggle').on('click', function () {
+        $('.sla-show').slideUp();
+        $('.company-details-show, .insurance-details-show').slideUp();
+        $('.contact-details-show').slideToggle();
+    });
+    $('#insurance-details-toggle').on('click', function () {
+        $('.sla-show').slideUp();
+        $('.company-details-show, .contact-details-show').slideUp();
+        $('.insurance-details-show').slideToggle();
+    });
+});
 </script>
 @endif
 

@@ -8,7 +8,7 @@
 
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                Gegevens wederpartij
+                Gegevens wederpartij    
 
                 @if( $claim->assign_self || $isAdminOrAgent)
                     <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}#info-opposite">
@@ -24,6 +24,14 @@
                             {{ trans('cruds.claim.fields.vehicle_opposite') }}
                         </div>
                         <p class="card-text">{{ $claim->vehicle_opposite->name ?? '' }}</p>
+                        @if (!empty($claim->vehicle_opposite->chassis_number))
+                            <div class="card-title">{{ trans('cruds.claim.fields.vehicle_chassis_number_opposite') }}</div>
+                            <p class="card-text">{{ $claim->vehicle_opposite->chassis_number }}</p>
+                        @endif
+                        @if (!empty($claim->vehicle_opposite->build_year))
+                            <div class="card-title">{{ trans('cruds.claim.fields.vehicle_build_year_opposite') }}</div>
+                            <p class="card-text">{{ $claim->vehicle_opposite->build_year }}</p>
+                        @endif
                     @endif
                     @if (!empty($claim->damaged_part_opposite))
                         <div class="card-title">
@@ -83,6 +91,9 @@
             </div>
         </div>
     @endif
+</div>
+
+<div class="col-md-6">
     @if (!empty($opposite))
         @if (!empty($opposite->name) || !empty($opposite->street) || !empty($opposite->phone) || !empty($opposite->email))
             <div class="card">

@@ -53,6 +53,14 @@ class UpdateClaimRequest extends FormRequest
                 'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
+            'herstel_op' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
+            'injury_requested_at' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
             'damage_files' => [
                 'array',
                 'max:10',
@@ -89,6 +97,22 @@ class UpdateClaimRequest extends FormRequest
                 'max:10240', // 10MB
                 'mimetypes:image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ],
+            'bevestiging_kl_at'      => ['nullable', 'date_format:' . config('panel.date_format')],
+            'saf_binnen_at'          => ['nullable', 'date_format:' . config('panel.date_format')],
+            'info_chf_at'            => ['nullable', 'date_format:' . config('panel.date_format')],
+            'info_kl_wp_at'          => ['nullable', 'date_format:' . config('panel.date_format')],
+            'beoordeling_at'         => ['nullable', 'date_format:' . config('panel.date_format')],
+            'schadebedrag_bekend_at' => ['nullable', 'date_format:' . config('panel.date_format')],
+            'naar_vzk_at'            => ['nullable', 'date_format:' . config('panel.date_format')],
+            'naar_shb_gge_at'        => ['nullable', 'date_format:' . config('panel.date_format')],
+            'goedkeuring_og_at'      => ['nullable', 'date_format:' . config('panel.date_format')],
+            'factuur_ontvangen_at'   => ['nullable', 'date_format:' . config('panel.date_format')],
+            'factuur_adm_at'         => ['nullable', 'date_format:' . config('panel.date_format')],
+            'brief_chf_at'           => ['nullable', 'date_format:' . config('panel.date_format')],
+            'dossier_controle_at'    => ['nullable', 'date_format:' . config('panel.date_format')],
+            'dossier_heropend_at'    => ['nullable', 'date_format:' . config('panel.date_format')],
+            'dossier_nvt'            => ['nullable', 'array'],
+            'dossier_nvt.*'          => ['string'],
         ];
     }
 }

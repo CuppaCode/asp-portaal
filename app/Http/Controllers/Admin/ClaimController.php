@@ -28,6 +28,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
+use App\Services\MailTriggerService;
 
 
 class ClaimController extends Controller {
@@ -85,6 +86,19 @@ class ClaimController extends Controller {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->Where('assignee_id', null)->WhereNot('status', 'finished')->get();
+
+        $companies = Company::get();
+
+        return view('admin.claims.index', compact('claims', 'companies'));
+    }
+
+    public function concept()
+    {
+        abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+            ->whereIn('status', ['draft', 'draft_denied'])
+            ->get();
 
         $companies = Company::get();
 
@@ -157,7 +171,7 @@ class ClaimController extends Controller {
         $user = auth()->user();
         $isAdminOrAgent = $user->isAdminOrAgent();
 
-        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
+        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_2', 'damage_origin_2', 'damaged_area_2', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite'];
         
         $data = $request->except($multiSelects);
         if (isset($data['company_id'])) {
@@ -171,6 +185,9 @@ class ClaimController extends Controller {
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
         $claim->damaged_part = $request->input('damaged_part') ? json_encode($request->input('damaged_part')) : null;
         $claim->damage_origin = $request->input('damage_origin') ? json_encode($request->input('damage_origin')) : null;
+        $claim->damaged_area_2 = $request->input('damaged_area_2') ? json_encode($request->input('damaged_area_2')) : null;
+        $claim->damaged_part_2 = $request->input('damaged_part_2') ? json_encode($request->input('damaged_part_2')) : null;
+        $claim->damage_origin_2 = $request->input('damage_origin_2') ? json_encode($request->input('damage_origin_2')) : null;
         $claim->damaged_part_opposite = $request->input('damaged_part_opposite') ? json_encode($request->input('damaged_part_opposite')) : null;
         $claim->damage_origin_opposite = $request->input('damage_origin_opposite') ? json_encode($request->input('damage_origin_opposite')) : null;
         $claim->damaged_area_opposite = $request->input('damaged_area_opposite') ? json_encode($request->input('damaged_area_opposite')) : null;
@@ -229,22 +246,38 @@ class ClaimController extends Controller {
             $claim->vehicle_id = $vehicle->id;
         }
 
+        if (!empty($request->vehicle_plates_2)) {
+            $vehicle2 = Vehicle::where('plates', $request->vehicle_plates_2)->first();
+
+            if (!isset($vehicle2)) {
+                $vehicle2 = Vehicle::create([
+                    'name'       => 'Voertuig met kenteken: ' . $request->vehicle_plates_2,
+                    'plates'     => $request->vehicle_plates_2,
+                    'company_id' => $companyId,
+                    'team_id'    => $team_id,
+                ]);
+            }
+
+            $vehicle2->brand          = $request->vehicle_brand_2 ?? $vehicle2->brand;
+            $vehicle2->chassis_number = $request->vehicle_chassis_number_2 ?? $vehicle2->chassis_number;
+            $vehicle2->save();
+
+            $claim->vehicle_2_id = $vehicle2->id;
+        }
+
         if(isset($request->vehicle_plates_opposite)){
 
-            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
+            $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
 
-            if(!isset($vehicleOpposite)) {
-
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
-
-                
-                $vehicleOpposite = VehicleOpposite::create([
-                    'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite,
-                    'team_id' => $team_id
-                ]);
-
-            }
+            $vehicleOpposite = VehicleOpposite::updateOrCreate(
+                ['plates' => $request->vehicle_plates_opposite],
+                [
+                    'name'            => $vehicleName,
+                    'chassis_number'  => $request->vehicle_chassis_number_opposite ?? null,
+                    'build_year'      => $request->vehicle_build_year_opposite ?? null,
+                    'team_id'         => $team_id,
+                ]
+            );
 
             $claim->vehicle_opposite_id = $vehicleOpposite->id;
         
@@ -312,7 +345,7 @@ class ClaimController extends Controller {
 
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 
-        $assignee_options = User::where('team_id', $claim->team->id)->orWhere('team_id', 1)->get();
+        $assignee_options = User::where('team_id', $claim->team_id)->orWhere('team_id', 1)->get();
 
         $drivers = Driver::where('team_id', $claim->company->team_id)->with('contact', 'company')->get()->pluck('driver_full_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -355,34 +388,55 @@ class ClaimController extends Controller {
                 ]);
                 
             }
+
+            // Update brand and chassis_number on the vehicle
+            $vehicle->brand = $request->vehicle_brand ?? $vehicle->brand;
+            $vehicle->chassis_number = $request->vehicle_chassis_number ?? $vehicle->chassis_number;
+            $vehicle->save();
             
             $claim->vehicle_id = $vehicle->id;
+        }
+
+        if (!empty($request->vehicle_plates_2)) {
+            $vehicle2 = Vehicle::where('plates', $request->vehicle_plates_2)->first();
+
+            if (!isset($vehicle2)) {
+                $vehicle2 = Vehicle::create([
+                    'name'       => 'Voertuig met kenteken: ' . $request->vehicle_plates_2,
+                    'plates'     => $request->vehicle_plates_2,
+                    'company_id' => $companyId,
+                    'team_id'    => $team_id,
+                ]);
+            }
+
+            $vehicle2->brand          = $request->vehicle_brand_2 ?? $vehicle2->brand;
+            $vehicle2->chassis_number = $request->vehicle_chassis_number_2 ?? $vehicle2->chassis_number;
+            $vehicle2->save();
+
+            $claim->vehicle_2_id = $vehicle2->id;
         }
         
         //
         
         if(isset($request->vehicle_plates_opposite)){
-            
-            $vehicleOpposite = VehicleOpposite::where('plates', $request->vehicle_plates_opposite)->first();
-            
-            if(!isset($vehicleOpposite)) {
-                
-                $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
-                
-                
-                $vehicleOpposite = VehicleOpposite::create([
-                    'name' => $vehicleName,
-                    'plates' => $request->vehicle_plates_opposite,
-                    'team_id' => $team_id
-                ]);
-                
-            }
-            
+
+            $vehicleName = 'Voertuig met kenteken: ' . $request->vehicle_plates_opposite;
+
+            $vehicleOpposite = VehicleOpposite::updateOrCreate(
+                ['plates' => $request->vehicle_plates_opposite],
+                [
+                    'name'            => $vehicleName,
+                    'chassis_number'  => $request->vehicle_chassis_number_opposite ?? null,
+                    'build_year'      => $request->vehicle_build_year_opposite ?? null,
+                    'team_id'         => $team_id,
+                ]
+            );
+
             $claim->vehicle_opposite_id = $vehicleOpposite->id;
-            
+
         }
         
-        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite', 'vehicle_id', 'vehicle_opposite_id'];
+        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_2', 'damage_origin_2', 'damaged_area_2', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite', 'vehicle_id', 'vehicle_2_id', 'vehicle_opposite_id', 'vehicle_brand', 'vehicle_chassis_number', 'vehicle_brand_2', 'vehicle_chassis_number_2', 'dossier_nvt'];
         
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 
@@ -411,17 +465,37 @@ class ClaimController extends Controller {
             ]);
         }
         $claim->closed_at = $request->input('closed_at');
+        $claim->dossier_nvt = $request->input('dossier_nvt', []);
         $claim->update($request->except($multiSelects));
 
         
         $claim->damaged_area = $request->input('damaged_area') ? json_encode($request->input('damaged_area')) : null;
         $claim->damaged_part = $request->input('damaged_part') ? json_encode($request->input('damaged_part')) : null;
         $claim->damage_origin = $request->input('damage_origin') ? json_encode($request->input('damage_origin')) : null;
+        $claim->damaged_area_2 = $request->input('damaged_area_2') ? json_encode($request->input('damaged_area_2')) : null;
+        $claim->damaged_part_2 = $request->input('damaged_part_2') ? json_encode($request->input('damaged_part_2')) : null;
+        $claim->damage_origin_2 = $request->input('damage_origin_2') ? json_encode($request->input('damage_origin_2')) : null;
         $claim->damaged_part_opposite = $request->input('damaged_part_opposite') ? json_encode($request->input('damaged_part_opposite')) : null;
         $claim->damage_origin_opposite = $request->input('damage_origin_opposite') ? json_encode($request->input('damage_origin_opposite')) : null;
         $claim->damaged_area_opposite = $request->input('damaged_area_opposite') ? json_encode($request->input('damaged_area_opposite')) : null;
 
         $claim->save();
+
+        // Send verwijtbaar mail once per claim if SLA feature is enabled and primary contact has an email
+        if ($claim->verwijtbaar === 'yes' && is_null($claim->verwijtbaar_mail_sent_at)) {
+            $sla = SLA::where('company_id', $claim->company_id)->first();
+            if ($sla && $sla->verwijtbaar_mail_enabled) {
+                $firstContact = Contact::where('id', $claim->company->contact_id)->first();
+                if ($firstContact && $firstContact->email) {
+                    $mailService = new MailTriggerService();
+                    $mailService->dispatch('VERWIJTBAAR_SET', $claim, [
+                        'recipients' => [$firstContact->email],
+                    ]);
+                    $claim->verwijtbaar_mail_sent_at = now();
+                    $claim->saveQuietly();
+                }
+            }
+        }
 
         if (count($claim->damage_files) > 0) {
             foreach ($claim->damage_files as $media) {
@@ -619,6 +693,10 @@ class ClaimController extends Controller {
         
 
         $claim->status = $request->new_status;
+
+        if ($claim->getOriginal('status') === 'finished' && $request->new_status !== 'finished') {
+            $claim->dossier_heropend_at = now()->format('d-m-Y');
+        }
 
         $claim->save();
 

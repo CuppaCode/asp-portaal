@@ -51,6 +51,14 @@ class StoreClaimRequest extends FormRequest
                 'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
+            'herstel_op' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
+            'injury_requested_at' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
             'damage_files' => [
                 'array',
                 'max:10',

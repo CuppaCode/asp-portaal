@@ -33,6 +33,7 @@ class SLA extends Model
         'reports',
         'analytics_options',
         'other',
+        'verwijtbaar_mail_enabled',
     ];
 
     public const REPORT_SELECT = [

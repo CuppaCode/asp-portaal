@@ -10,7 +10,7 @@
     <div class="card">
 
         <div class="card-header">
-          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag] [kenteken_wederpartij] [verhaalbaar] [schade_soort]</pre>
+          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag] [kenteken_wederpartij] [verhaalbaar] [schade_soort] [verwijtbaar]</pre>
           <pre>[contact_naam] [contact_email]</pre>
           <pre>[herstel_adres] [herstel_postcode] [herstel_telnr] [herstel_contact_naam] [herstel_email]</pre>
           <pre>[chauffeur_naam] [chauffeur_email]</pre>
@@ -56,12 +56,14 @@
             <div class="form-group">
                 <label for="trigger_type">{{ trans('cruds.mailTemplates.fields.trigger_type') }}</label>
                 <select class="form-control {{ $errors->has('trigger_type') ? 'is-invalid' : '' }}" name="trigger_type" id="trigger_type">
+                    @php $selectedTrigger = old('trigger_type', request('trigger_type')); @endphp
                     <option value="">{{ trans('global.pleaseSelect') }}</option>
-                    <option value="CLAIM_CREATED" {{ old('trigger_type') == 'CLAIM_CREATED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_CREATED.name') }}</option>
-                    <option value="CLAIM_STATUS_CHANGED" {{ old('trigger_type') == 'CLAIM_STATUS_CHANGED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_STATUS_CHANGED.name') }}</option>
-                    <option value="TASK_ASSIGNED" {{ old('trigger_type') == 'TASK_ASSIGNED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.TASK_ASSIGNED.name') }}</option>
-                    <option value="MANUAL_CLAIMS" {{ old('trigger_type') == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
-                    <option value="MANUAL_GENERAL" {{ old('trigger_type') == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
+                    <option value="CLAIM_CREATED" {{ $selectedTrigger == 'CLAIM_CREATED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_CREATED.name') }}</option>
+                    <option value="CLAIM_STATUS_CHANGED" {{ $selectedTrigger == 'CLAIM_STATUS_CHANGED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_STATUS_CHANGED.name') }}</option>
+                    <option value="TASK_ASSIGNED" {{ $selectedTrigger == 'TASK_ASSIGNED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.TASK_ASSIGNED.name') }}</option>
+                    <option value="MANUAL_CLAIMS" {{ $selectedTrigger == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
+                    <option value="MANUAL_GENERAL" {{ $selectedTrigger == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
+                    <option value="VERWIJTBAAR_SET" {{ $selectedTrigger == 'VERWIJTBAAR_SET' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.VERWIJTBAAR_SET.name') }}</option>
                 </select>
                 @if($errors->has('trigger_type'))
                     <div class="invalid-feedback">

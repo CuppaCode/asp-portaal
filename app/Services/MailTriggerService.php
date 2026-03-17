@@ -61,6 +61,12 @@ class MailTriggerService
             'recipients' => 'Selected manually by the user when sending',
             'available_tags' => [],
         ],
+        'VERWIJTBAAR_SET' => [
+            'name' => 'Verwijtbaar ingesteld',
+            'description' => 'Triggered when a claim is marked as verwijtbaar (blameworthy)',
+            'recipients' => 'Primary contact person of the company',
+            'available_tags' => ['bedrijf', 'dossiernr', 'contact_naam', 'kenteken', 'datumschade', 'verwijtbaar'],
+        ],
     ];
 
     /**
@@ -239,6 +245,7 @@ class MailTriggerService
                 '[wederpartij_schade_aard]' => \App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT[$model->opposite->damaged_part] ?? $model->opposite->damaged_part ?? '',
                 '[wederpartij_schade_plaats]' => \App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT[$model->opposite->damaged_area] ?? $model->opposite->damaged_area ?? '',
                 '[wederpartij_schade_oorzaak]' => \App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE[$model->opposite->damage_origin] ?? $model->opposite->damage_origin ?? '',
+                '[verwijtbaar]' => \App\Models\Claim::VERWIJTBAAR_SELECT[$model->verwijtbaar] ?? '',
             ];
 
             foreach ($replacements as $tag => $value) {

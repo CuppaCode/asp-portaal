@@ -140,6 +140,23 @@
                 </div>
 
                 <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            name="verwijtbaar_mail_enabled"
+                            id="verwijtbaar_mail_enabled"
+                            value="1"
+                            {{ old('verwijtbaar_mail_enabled') ? 'checked' : '' }}
+                        >
+                        <label class="custom-control-label" for="verwijtbaar_mail_enabled">
+                            Verwijtbaar e-mail inschakelen
+                        </label>
+                    </div>
+                    <span class="help-block">Stuur automatisch een e-mail naar de contactpersoon als een schade als verwijtbaar wordt gemarkeerd.</span>
+                </div>
+
+                <div class="form-group">
                     <button class="btn btn-danger" type="submit">
                         {{ trans('global.submit') }}
                     </button>
