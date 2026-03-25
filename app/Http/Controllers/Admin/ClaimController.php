@@ -73,7 +73,9 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])->WhereNot('status', 'finished')->get();
+    $claims = Claim::with(['company', 'injury_office', 'vehicle', 'vehicle_opposite', 'recovery_office', 'expertise_office', 'team', 'media'])
+        ->whereNotIn('status', ['finished', 'draft', 'draft_denied'])
+        ->get();
     $companies = Company::get();
     $contacts = Contact::get(); 
     $opposite = Opposite::get();   
@@ -436,7 +438,58 @@ class ClaimController extends Controller {
 
         }
         
-        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_2', 'damage_origin_2', 'damaged_area_2', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite', 'vehicle_id', 'vehicle_2_id', 'vehicle_opposite_id', 'vehicle_brand', 'vehicle_chassis_number', 'vehicle_brand_2', 'vehicle_chassis_number_2', 'dossier_nvt'];
+        // Handle driver_vehicle: if a name string was submitted (AJAX didn't replace it), create driver server-side
+        if (!empty($request->driver_vehicle)) {
+            if (is_numeric($request->driver_vehicle)) {
+                $claim->driver_vehicle = (int) $request->driver_vehicle;
+            } else {
+                $nameParts = explode(' ', trim($request->driver_vehicle), 2);
+                $contact = Contact::create([
+                    'first_name'  => $nameParts[0],
+                    'last_name'   => $nameParts[1] ?? '',
+                    'email'       => '',
+                    'company_id'  => $companyId,
+                    'team_id'     => $team_id,
+                    'is_driver'   => true,
+                    'create_user' => 0,
+                ]);
+                $newDriver = Driver::create([
+                    'contact_id' => $contact->id,
+                    'company_id' => $companyId,
+                    'team_id'    => $team_id,
+                ]);
+                $claim->driver_vehicle = $newDriver->id;
+            }
+        } elseif ($request->exists('driver_vehicle')) {
+            $claim->driver_vehicle = null;
+        }
+
+        if (!empty($request->driver_vehicle_2)) {
+            if (is_numeric($request->driver_vehicle_2)) {
+                $claim->driver_vehicle_2 = (int) $request->driver_vehicle_2;
+            } else {
+                $nameParts = explode(' ', trim($request->driver_vehicle_2), 2);
+                $contact2 = Contact::create([
+                    'first_name'  => $nameParts[0],
+                    'last_name'   => $nameParts[1] ?? '',
+                    'email'       => '',
+                    'company_id'  => $companyId,
+                    'team_id'     => $team_id,
+                    'is_driver'   => true,
+                    'create_user' => 0,
+                ]);
+                $newDriver2 = Driver::create([
+                    'contact_id' => $contact2->id,
+                    'company_id' => $companyId,
+                    'team_id'    => $team_id,
+                ]);
+                $claim->driver_vehicle_2 = $newDriver2->id;
+            }
+        } elseif ($request->exists('driver_vehicle_2')) {
+            $claim->driver_vehicle_2 = null;
+        }
+
+        $multiSelects = ['damaged_area', 'damaged_part', 'damage_origin', 'damaged_part_2', 'damage_origin_2', 'damaged_area_2', 'damaged_part_opposite', 'damage_origin_opposite', 'damaged_area_opposite', 'vehicle_id', 'vehicle_2_id', 'vehicle_opposite_id', 'vehicle_brand', 'vehicle_chassis_number', 'vehicle_brand_2', 'vehicle_chassis_number_2', 'dossier_nvt', 'driver_vehicle', 'driver_vehicle_2'];
         
         $opposite = Opposite::where('claim_id', $claim->id)->get()->first();
 

@@ -63,7 +63,8 @@ class Certificate extends Model
 
     public function isRenewed()
     {
-        return $this->original_expiry_date !== null && $this->expiry_date > $this->original_expiry_date;
+        return $this->original_expiry_date !== null
+            && Carbon::parse($this->expiry_date)->gt(Carbon::parse($this->original_expiry_date));
     }
 
     public function scopeNotRenewed($query)
@@ -76,13 +77,23 @@ class Certificate extends Model
         return $query->where('expiry_date', '<', Carbon::now()->subDays($days));
     }
 
+    public function getNotifyDateAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
+
+    public function getExpiryDateAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
+
     public function setNotifyDateAttribute($value)
     {
-        $this->attributes['notify_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['notify_date'] = $value ? \Carbon\Carbon::parse($value)->format('Y-m-d') : null;
     }
 
     public function setExpiryDateAttribute($value)
     {
-        $this->attributes['expiry_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['expiry_date'] = $value ? \Carbon\Carbon::parse($value)->format('Y-m-d') : null;
     }
 }

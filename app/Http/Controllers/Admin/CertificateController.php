@@ -138,19 +138,21 @@ class CertificateController extends Controller
     {
         abort_if(Gate::denies('certificate_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $currentExpiryDate = $certificate->getRawOriginal('expiry_date'); // raw Y-m-d from DB
+
         $validated = $request->validate([
-            'new_expiry_date' => 'required|date|after:' . $certificate->expiry_date,
+            'new_expiry_date' => 'required|date|after:' . $currentExpiryDate,
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        $oldExpiryDate = $certificate->expiry_date;
+        $oldExpiryDate = $currentExpiryDate;
         
         // If first renewal, store original expiry date
         if (empty($certificate->original_expiry_date)) {
             $certificate->original_expiry_date = $oldExpiryDate;
         }
 
-        // Update certificate
+        // Update certificate (mutator accepts any parseable date format)
         $certificate->expiry_date = $validated['new_expiry_date'];
         $certificate->renewed_by_user_id = auth()->id();
         $certificate->renewal_token = null;
@@ -161,7 +163,7 @@ class CertificateController extends Controller
         // Create renewal history record
         CertificateRenewal::create([
             'certificate_id' => $certificate->id,
-            'old_expiry_date' => $oldExpiryDate,
+            'old_expiry_date' => $oldExpiryDate, // Y-m-d
             'new_expiry_date' => $validated['new_expiry_date'],
             'renewed_by_user_id' => auth()->id(),
             'renewal_method' => 'admin_manual',
@@ -170,8 +172,7 @@ class CertificateController extends Controller
 
         // Send confirmation email to driver and admins
         $mailTriggerService = app(MailTriggerService::class);
-        
-        // Collect recipients: driver + category notification recipients
+
         $recipients = [];
         if (!empty($certificate->driver->contact->email)) {
             $recipients[] = $certificate->driver->contact->email;
@@ -183,7 +184,7 @@ class CertificateController extends Controller
 
         if (count($recipients) > 0) {
             try {
-                $mailTriggerService->trigger('CERTIFICATE_RENEWED', $certificate, $recipients);
+                $mailTriggerService->dispatch('CERTIFICATE_RENEWED', $certificate, ['recipients' => $recipients]);
             } catch (\Exception $e) {
                 \Log::error('Failed to send renewal confirmation for certificate ' . $certificate->id . ': ' . $e->getMessage());
             }
@@ -212,19 +213,21 @@ class CertificateController extends Controller
         $mailTriggerService = app(MailTriggerService::class);
 
         foreach ($certificates as $certificate) {
+            $currentExpiryDate = $certificate->getRawOriginal('expiry_date'); // raw Y-m-d from DB
+
             // Validate new date is after current expiry
-            if (\Carbon\Carbon::parse($validated['new_expiry_date'])->lte(\Carbon\Carbon::parse($certificate->expiry_date))) {
+            if (\Carbon\Carbon::parse($validated['new_expiry_date'])->lte(\Carbon\Carbon::parse($currentExpiryDate))) {
                 continue; // Skip certificates where new date isn't later
             }
 
-            $oldExpiryDate = $certificate->expiry_date;
+            $oldExpiryDate = $currentExpiryDate;
             
             // If first renewal, store original expiry date
             if (empty($certificate->original_expiry_date)) {
                 $certificate->original_expiry_date = $oldExpiryDate;
             }
 
-            // Update certificate
+            // Update certificate (mutator accepts any parseable date format)
             $certificate->expiry_date = $validated['new_expiry_date'];
             $certificate->renewed_by_user_id = auth()->id();
             $certificate->renewal_token = null;
@@ -235,7 +238,7 @@ class CertificateController extends Controller
             // Create renewal history record
             CertificateRenewal::create([
                 'certificate_id' => $certificate->id,
-                'old_expiry_date' => $oldExpiryDate,
+                'old_expiry_date' => $oldExpiryDate, // Y-m-d
                 'new_expiry_date' => $validated['new_expiry_date'],
                 'renewed_by_user_id' => auth()->id(),
                 'renewal_method' => 'admin_bulk',
@@ -254,7 +257,7 @@ class CertificateController extends Controller
 
             if (count($recipients) > 0) {
                 try {
-                    $mailTriggerService->trigger('CERTIFICATE_RENEWED', $certificate, $recipients);
+                    $mailTriggerService->dispatch('CERTIFICATE_RENEWED', $certificate, ['recipients' => $recipients]);
                 } catch (\Exception $e) {
                     \Log::error('Failed to send renewal confirmation for certificate ' . $certificate->id . ': ' . $e->getMessage());
                 }

@@ -512,7 +512,6 @@
                         <div class="form-group">
                             <label for="driver_vehicle_2">Chauffeur 2</label>
                             <select class="form-control select2" name="driver_vehicle_2" id="driver_vehicle_2">
-                                <option value="">{{ trans('global.pleaseSelect') }}</option>
                                 @foreach($drivers as $id => $entry)
                                     <option value="{{ $id }}" {{ (old('driver_vehicle_2') ? old('driver_vehicle_2') : $claim->driver_vehicle_2 ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                                 @endforeach
@@ -991,9 +990,34 @@
             </div>
         </form>
     </div>
-</div
+</div>
 
-
+{{-- Quick-create driver modal --}}
+<div class="modal fade" id="driverCreateModal" tabindex="-1" aria-labelledby="driverCreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="driverCreateModalLabel">Nieuwe chauffeur aanmaken</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Sluiten"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="driverModalName" class="form-label">Naam <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="driverModalName" placeholder="Voor- en achternaam">
+                    <div class="invalid-feedback">Vul een naam in.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="driverModalEmail" class="form-label">E-mailadres <small class="text-muted">(optioneel)</small></label>
+                    <input type="email" class="form-control" id="driverModalEmail" placeholder="chauffeur@bedrijf.nl">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                <button type="button" class="btn btn-primary" id="driverModalConfirm">Aanmaken</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 

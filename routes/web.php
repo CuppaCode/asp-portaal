@@ -200,6 +200,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::post('companies/quick-store', 'CompanyController@quickStore');
     Route::post('comments/quick-store', 'CommentController@quickStore');
+    Route::post('drivers/quick-store', 'DriverController@quickStore');
     
     Route::post('analytics/get-data', 'AnalyticsController@getData');
 
