@@ -19,7 +19,7 @@ class CertificateObserver
             
             if ($category && $category->notify_days_before) {
                 $expiryDate = Carbon::parse($certificate->expiry_date);
-                $certificate->notify_date = $expiryDate->copy()->subDays($category->notify_days_before)->format('Y-m-d');
+                $certificate->notify_date = $expiryDate->copy()->subDays($category->notify_days_before)->format(config('panel.date_format'));
             }
         }
     }
