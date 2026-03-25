@@ -1,3 +1,7 @@
+<style>
+    .c-sidebar .c-sidebar-nav-icon { flex: 0 0 36px !important; }
+    .c-sidebar .c-sidebar-nav-link .badge { margin-right: 1rem; }
+</style>
 <div id="sidebar" class="c-sidebar c-sidebar-fixed c-sidebar-lg-show">
 
     <div class="c-sidebar-brand d-md-down-none">
@@ -96,7 +100,10 @@
                                 <i class="fa-fw fas fa-building c-sidebar-nav-icon">
 
                                 </i>
-                                 Open {{ trans('cruds.claim.title') }}s
+                                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;"> Open {{ trans('cruds.claim.title') }}s</span>
+                                @if(!empty($openClaimsCount))
+                                    <span class="badge badge-pill badge-warning" style="margin-left:auto;flex-shrink:0;align-self:center;font-size:0.7rem;">{{ $openClaimsCount }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="c-sidebar-nav-item">
@@ -104,7 +111,10 @@
                                 <i class="fa-fw fas fa-file-alt c-sidebar-nav-icon">
 
                                 </i>
-                                 Concept {{ trans('cruds.claim.title') }}s
+                                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;"> Concept {{ trans('cruds.claim.title') }}s</span>
+                                @if(!empty($conceptClaimsCount))
+                                    <span class="badge badge-pill badge-secondary" style="margin-left:auto;flex-shrink:0;align-self:center;font-size:0.7rem;">{{ $conceptClaimsCount }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="c-sidebar-nav-item">

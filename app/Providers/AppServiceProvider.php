@@ -7,7 +7,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use App\Models\Certificate;
+use App\Models\Claim;
 use App\Observers\CertificateObserver;
+use Illuminate\Support\Facades\View;
 
 
 
@@ -30,6 +32,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Register Certificate Observer
         Certificate::observe(CertificateObserver::class);
+
+        // Share claim counts with the menu
+        View::composer('partials.menu', function ($view) {
+            if (auth()->check()) {
+                $openClaimsCount = Claim::whereNotIn('status', ['finished', 'draft', 'draft_denied'])->count();
+                $conceptClaimsCount = Claim::whereIn('status', ['draft', 'draft_denied'])->count();
+                $view->with(compact('openClaimsCount', 'conceptClaimsCount'));
+            }
+        });
 
         Collection::macro('paginate', function ($perPage, $total = null, $page = null, $pageName = 'page') {
             $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
