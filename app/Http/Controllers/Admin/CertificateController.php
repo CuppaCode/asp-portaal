@@ -8,6 +8,7 @@ use App\Models\CertificateRenewal;
 use App\Models\Driver;
 use App\Models\Claim;
 use App\Services\MailTriggerService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -151,7 +152,7 @@ class CertificateController extends Controller
         }
 
         // Update certificate
-        $certificate->expiry_date = $validated['new_expiry_date'];
+        $certificate->expiry_date = Carbon::parse($validated['new_expiry_date'])->format(config('panel.date_format'));
         $certificate->renewed_by_user_id = auth()->id();
         $certificate->renewal_token = null;
         $certificate->renewal_token_expires_at = null;
@@ -183,7 +184,7 @@ class CertificateController extends Controller
 
         if (count($recipients) > 0) {
             try {
-                $mailTriggerService->trigger('CERTIFICATE_RENEWED', $certificate, $recipients);
+                $mailTriggerService->dispatch('CERTIFICATE_RENEWED', $certificate, ['recipients' => $recipients]);
             } catch (\Exception $e) {
                 \Log::error('Failed to send renewal confirmation for certificate ' . $certificate->id . ': ' . $e->getMessage());
             }
@@ -225,7 +226,7 @@ class CertificateController extends Controller
             }
 
             // Update certificate
-            $certificate->expiry_date = $validated['new_expiry_date'];
+            $certificate->expiry_date = Carbon::parse($validated['new_expiry_date'])->format(config('panel.date_format'));
             $certificate->renewed_by_user_id = auth()->id();
             $certificate->renewal_token = null;
             $certificate->renewal_token_expires_at = null;
@@ -254,7 +255,7 @@ class CertificateController extends Controller
 
             if (count($recipients) > 0) {
                 try {
-                    $mailTriggerService->trigger('CERTIFICATE_RENEWED', $certificate, $recipients);
+                    $mailTriggerService->dispatch('CERTIFICATE_RENEWED', $certificate, ['recipients' => $recipients]);
                 } catch (\Exception $e) {
                     \Log::error('Failed to send renewal confirmation for certificate ' . $certificate->id . ': ' . $e->getMessage());
                 }
