@@ -57,6 +57,8 @@ class CompanyClaimFormConfig extends Model
             'opposite_type' => 'Type wederpartij',
             'obstacle' => 'Obstakel',
             'vehicle_plates_opposite' => 'Kenteken wederpartij',
+            'vehicle_brand_opposite' => 'Merk/type wederpartij',
+            'vehicle_chassis_number_opposite' => 'Chassisnummer wederpartij',
             'driver_vehicle_opposite' => 'Bestuurder wederpartij',
             'damaged_part_opposite' => 'Beschadigd onderdeel wederpartij',
             'damaged_area_opposite' => 'Beschadigd gebied wederpartij',

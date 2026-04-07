@@ -336,15 +336,17 @@ input[type="file"].form-control:hover {
                                 $hasCondition = !empty($conditionalLogic);
                                 $fieldLabel = $config->notification_label ?: $availableFields[$fieldName] ?? $fieldName;
                                 $fieldWidth = $config->field_width ?? 'full';
+                                $fieldsForBothTypes = ['op_name', 'op_street', 'op_zipcode', 'op_city', 'op_phone', 'op_email'];
+                                $showForBothTypes = in_array($fieldName, $fieldsForBothTypes) ? 'true' : 'false';
                             @endphp
 
                         <div class="form-field-{{ $fieldWidth }}" 
                             @if($hasCondition)
-                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && (formData.form_type === 'claim' || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type')"
+                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && (formData.form_type === 'claim' || {{ $showForBothTypes }} || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type')"
                                 x-cloak
                                 style="display: none;"
                             @else
-                                x-show="formData.form_type === 'claim' || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type'"
+                                x-show="formData.form_type === 'claim' || {{ $showForBothTypes }} || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type'"
                                 x-cloak
                                 style="display: none;"
                             @endif>
@@ -426,32 +428,52 @@ input[type="file"].form-control:hover {
 
                                 @elseif($fieldName === 'vehicle_plates')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <input type="hidden" name="vehicle_plates_foreign" :value="formData.vehicle_plates_foreign ? '1' : '0'">
                                     <input type="text" name="vehicle_plates" class="form-control text-uppercase" 
                                         value="{{ old('vehicle_plates') }}" {{ $isRequired ? 'required' : '' }}
                                         x-model="formData.vehicle_plates"
-                                        @input="formData.vehicle_plates = formatLicensePlate($event.target.value)"
-                                        placeholder="XX-99-XX" maxlength="8">
+                                        @input="formData.vehicle_plates = formData.vehicle_plates_foreign ? $event.target.value.toUpperCase() : formatLicensePlate($event.target.value)"
+                                        :placeholder="formData.vehicle_plates_foreign ? 'Buitenlands kenteken' : 'XX-99-XX'"
+                                        :maxlength="formData.vehicle_plates_foreign ? 20 : 8">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="vehicle_plates_foreign_check"
+                                            x-model="formData.vehicle_plates_foreign"
+                                            @change="formData.vehicle_plates = ''">
+                                        <label class="form-check-label text-muted small" for="vehicle_plates_foreign_check">
+                                            Buitenlands kenteken
+                                        </label>
+                                    </div>
 
                                 @elseif($fieldName === 'vehicle_plates_opposite')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <input type="hidden" name="vehicle_plates_opposite_foreign" :value="formData.vehicle_plates_opposite_foreign ? '1' : '0'">
                                     <input type="text" name="vehicle_plates_opposite" class="form-control text-uppercase" 
                                         value="{{ old('vehicle_plates_opposite') }}" {{ $isRequired ? 'required' : '' }}
                                         x-model="formData.vehicle_plates_opposite"
-                                        @input="formData.vehicle_plates_opposite = formatLicensePlate($event.target.value)"
-                                        placeholder="XX-99-XX" maxlength="8">
+                                        @input="formData.vehicle_plates_opposite = formData.vehicle_plates_opposite_foreign ? $event.target.value.toUpperCase() : formatLicensePlate($event.target.value)"
+                                        :placeholder="formData.vehicle_plates_opposite_foreign ? 'Buitenlands kenteken' : 'XX-99-XX'"
+                                        :maxlength="formData.vehicle_plates_opposite_foreign ? 20 : 8">
+                                    <div class="form-check mt-2">
+                                        <input class="form-check-input" type="checkbox" id="vehicle_plates_opposite_foreign_check"
+                                            x-model="formData.vehicle_plates_opposite_foreign"
+                                            @change="formData.vehicle_plates_opposite = ''">
+                                        <label class="form-check-label text-muted small" for="vehicle_plates_opposite_foreign_check">
+                                            Buitenlands kenteken
+                                        </label>
+                                    </div>
+
+                                @elseif($fieldName === 'vehicle_brand_opposite')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <input type="text" name="vehicle_brand_opposite" class="form-control"
+                                        value="{{ old('vehicle_brand_opposite') }}" {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.vehicle_brand_opposite"
+                                        placeholder="bijv. Mercedes Atego">
 
                                 @elseif($fieldName === 'vehicle_chassis_number_opposite')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <input type="text" name="vehicle_chassis_number_opposite" class="form-control"
                                         value="{{ old('vehicle_chassis_number_opposite') }}" {{ $isRequired ? 'required' : '' }}
                                         x-model="formData.vehicle_chassis_number_opposite">
-
-                                @elseif($fieldName === 'vehicle_build_year_opposite')
-                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
-                                    <input type="text" name="vehicle_build_year_opposite" class="form-control"
-                                        value="{{ old('vehicle_build_year_opposite') }}" {{ $isRequired ? 'required' : '' }}
-                                        x-model="formData.vehicle_build_year_opposite"
-                                        placeholder="bijv. 2018" maxlength="4">
 
                                 @elseif($fieldName === 'damaged_part')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
@@ -633,9 +655,11 @@ function claimForm() {
             damage_kind: '',
             recoverable_claim: '',
             vehicle_plates: '',
+            vehicle_plates_foreign: {{ old('vehicle_plates_foreign') ? 'true' : 'false' }},
             vehicle_plates_opposite: '',
+            vehicle_plates_opposite_foreign: {{ old('vehicle_plates_opposite_foreign') ? 'true' : 'false' }},
+            vehicle_brand_opposite: '',
             vehicle_chassis_number_opposite: '',
-            vehicle_build_year_opposite: '',
             damaged_part: [],
             damaged_area: [],
             opposite_type: '',

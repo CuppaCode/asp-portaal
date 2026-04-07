@@ -616,15 +616,15 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="vehicle_chassis_number_opposite">{{ trans('cruds.claim.fields.vehicle_chassis_number_opposite') }}</label>
-                        <input class="form-control" type="text" name="vehicle_chassis_number_opposite" id="vehicle_chassis_number_opposite"
-                            value="{{ old('vehicle_chassis_number_opposite', $claim->vehicle_opposite->chassis_number ?? '') }}">
+                        <label for="vehicle_brand_opposite">Merk/type</label>
+                        <input class="form-control" type="text" name="vehicle_brand_opposite" id="vehicle_brand_opposite"
+                            value="{{ old('vehicle_brand_opposite', $claim->vehicle_opposite->brand ?? '') }}"
+                            placeholder="bijv. Mercedes Atego">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="vehicle_build_year_opposite">{{ trans('cruds.claim.fields.vehicle_build_year_opposite') }}</label>
-                        <input class="form-control" type="text" name="vehicle_build_year_opposite" id="vehicle_build_year_opposite"
-                            value="{{ old('vehicle_build_year_opposite', $claim->vehicle_opposite->build_year ?? '') }}"
-                            placeholder="bijv. 2018" maxlength="4">
+                        <label for="vehicle_chassis_number_opposite">Chassisnummer</label>
+                        <input class="form-control" type="text" name="vehicle_chassis_number_opposite" id="vehicle_chassis_number_opposite"
+                            value="{{ old('vehicle_chassis_number_opposite', $claim->vehicle_opposite->chassis_number ?? '') }}">
                     </div>
                 </div>
                 <div class="form-row">
