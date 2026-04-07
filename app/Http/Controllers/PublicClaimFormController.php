@@ -135,7 +135,9 @@ class PublicClaimFormController extends Controller
         // Process vehicle if plates provided
         $vehicleId = null;
         if (!empty($validated['vehicle_plates'])) {
-            $formattedPlate = format_license_plate($validated['vehicle_plates']);
+            $formattedPlate = !empty($validated['vehicle_plates_foreign'])
+                ? strtoupper($validated['vehicle_plates'])
+                : format_license_plate($validated['vehicle_plates']);
             $vehicle = Vehicle::firstOrCreate(
                 ['plates' => $formattedPlate],
                 ['company_id' => $company->id, 'team_id' => $company->team_id]
@@ -146,10 +148,17 @@ class PublicClaimFormController extends Controller
         // Process opposite vehicle if plates provided
         $vehicleOppositeId = null;
         if (!empty($validated['vehicle_plates_opposite'])) {
-            $formattedPlate = format_license_plate($validated['vehicle_plates_opposite']);
-            $vehicleOpposite = VehicleOpposite::firstOrCreate(
+            $formattedPlate = !empty($validated['vehicle_plates_opposite_foreign'])
+                ? strtoupper($validated['vehicle_plates_opposite'])
+                : format_license_plate($validated['vehicle_plates_opposite']);
+            $vehicleOpposite = VehicleOpposite::updateOrCreate(
                 ['plates' => $formattedPlate],
-                ['name' => 'Voertuig met kenteken: ' . $formattedPlate]
+                [
+                    'name'           => 'Voertuig met kenteken: ' . $formattedPlate,
+                    'brand'          => $validated['vehicle_brand_opposite'] ?? null,
+                    'chassis_number' => $validated['vehicle_chassis_number_opposite'] ?? null,
+                    'build_year'     => $validated['vehicle_build_year_opposite'] ?? null,
+                ]
             );
             $vehicleOppositeId = $vehicleOpposite->id;
         }
@@ -299,8 +308,12 @@ class PublicClaimFormController extends Controller
                     break;
                 case 'vehicle_plates_opposite':
                     $fieldRules[] = 'string';
-                    $fieldRules[] = 'min:4';
-                    $fieldRules[] = 'max:8';
+                    if (empty($formData['vehicle_plates_opposite_foreign'])) {
+                        $fieldRules[] = 'min:4';
+                        $fieldRules[] = 'max:8';
+                    } else {
+                        $fieldRules[] = 'max:20';
+                    }
                     break;
                 case 'date_accident':
                     $fieldRules[] = 'date_format:d-m-Y';
@@ -331,6 +344,10 @@ class PublicClaimFormController extends Controller
 
             $rules[$config->field_name] = implode('|', $fieldRules);
         }
+
+        // Add validation for foreign plate flags
+        $rules['vehicle_plates_foreign'] = 'nullable|boolean';
+        $rules['vehicle_plates_opposite_foreign'] = 'nullable|boolean';
 
         // Add custom fields validation
         $company = Company::find($formConfigs->first()->company_id);

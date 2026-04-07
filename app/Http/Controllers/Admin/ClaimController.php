@@ -275,6 +275,7 @@ class ClaimController extends Controller {
                 ['plates' => $request->vehicle_plates_opposite],
                 [
                     'name'            => $vehicleName,
+                    'brand'           => $request->vehicle_brand_opposite ?? null,
                     'chassis_number'  => $request->vehicle_chassis_number_opposite ?? null,
                     'build_year'      => $request->vehicle_build_year_opposite ?? null,
                     'team_id'         => $team_id,
@@ -428,6 +429,7 @@ class ClaimController extends Controller {
                 ['plates' => $request->vehicle_plates_opposite],
                 [
                     'name'            => $vehicleName,
+                    'brand'           => $request->vehicle_brand_opposite ?? null,
                     'chassis_number'  => $request->vehicle_chassis_number_opposite ?? null,
                     'build_year'      => $request->vehicle_build_year_opposite ?? null,
                     'team_id'         => $team_id,

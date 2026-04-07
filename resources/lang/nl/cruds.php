@@ -139,6 +139,8 @@ return [
             'vehicle_chassis_number_opposite_helper'   => ' ',
             'vehicle_build_year_opposite'              => 'Bouwjaar wederpartij',
             'vehicle_build_year_opposite_helper'       => ' ',
+            'vehicle_brand_opposite'                   => 'Merk/type wederpartij',
+            'vehicle_brand_opposite_helper'            => ' ',
             'driver_vehicle_opposite'                  => 'Chauffeur voertuig wederpartij',
             'driver_vehicle_opposite_helper'   => '',
             'opposite_type'                    => 'Wederpartij type',
