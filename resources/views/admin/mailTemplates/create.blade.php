@@ -10,7 +10,7 @@
     <div class="card">
 
         <div class="card-header">
-          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag] [kenteken_wederpartij] [verhaalbaar] [schade_soort]</pre>
+          Gebruik de volgende tags: <pre>[bedrijf] [telnr] [onderwerp] [dossiernr] [status] [datumschade] [kenteken] [schade_aard] [schade_plaats] [schade_oorzaak] [schade_bedrag] [kenteken_wederpartij] [verhaalbaar] [schade_soort] [verwijtbaar]</pre>
           <pre>[contact_naam] [contact_email]</pre>
           <pre>[herstel_adres] [herstel_postcode] [herstel_telnr] [herstel_contact_naam] [herstel_email]</pre>
           <pre>[chauffeur_naam] [chauffeur_email]</pre>
@@ -51,6 +51,46 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.mailTemplates.fields.body_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+                <label for="trigger_type">{{ trans('cruds.mailTemplates.fields.trigger_type') }}</label>
+                <select class="form-control {{ $errors->has('trigger_type') ? 'is-invalid' : '' }}" name="trigger_type" id="trigger_type">
+                    @php $selectedTrigger = old('trigger_type', request('trigger_type')); @endphp
+                    <option value="">{{ trans('global.pleaseSelect') }}</option>
+                    <option value="CLAIM_CREATED" {{ $selectedTrigger == 'CLAIM_CREATED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_CREATED.name') }}</option>
+                    <option value="CLAIM_STATUS_CHANGED" {{ $selectedTrigger == 'CLAIM_STATUS_CHANGED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CLAIM_STATUS_CHANGED.name') }}</option>
+                    <option value="TASK_ASSIGNED" {{ $selectedTrigger == 'TASK_ASSIGNED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.TASK_ASSIGNED.name') }}</option>
+                    <option value="MANUAL_CLAIMS" {{ $selectedTrigger == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
+                    <option value="MANUAL_GENERAL" {{ $selectedTrigger == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
+                    <option value="VERWIJTBAAR_SET" {{ $selectedTrigger == 'VERWIJTBAAR_SET' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.VERWIJTBAAR_SET.name') }}</option>
+                </select>
+                @if($errors->has('trigger_type'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('trigger_type') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.trigger_type_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_active">
+                        {{ trans('cruds.mailTemplates.fields.is_active') }}
+                    </label>
+                </div>
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.is_active_helper') }}</span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="is_automatic" id="is_automatic" value="1" {{ old('is_automatic', false) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_automatic">
+                        {{ trans('cruds.mailTemplates.fields.is_automatic') }}
+                    </label>
+                </div>
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.is_automatic_helper') }}</span>
             </div>
 
             <div class="form-group">

@@ -50,6 +50,13 @@ class CompanyController extends Controller
                 $data[$field] = str_replace(',', '.', $data[$field]);
             }
         }
+        
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('company-logos', 'public');
+            $data['logo'] = $logoPath;
+        }
+        
         $company = Company::create($data);
 
         if ($media = $request->input('ck-media', false)) {
@@ -125,6 +132,19 @@ class CompanyController extends Controller
                 $data[$field] = str_replace(',', '.', $data[$field]);
             }
         }
+        
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($company->logo && \Storage::disk('public')->exists($company->logo)) {
+                \Storage::disk('public')->delete($company->logo);
+            }
+            
+            // Store new logo
+            $logoPath = $request->file('logo')->store('company-logos', 'public');
+            $data['logo'] = $logoPath;
+        }
+        
         $company->update($data);
 
         return redirect()->route('admin.companies.index');

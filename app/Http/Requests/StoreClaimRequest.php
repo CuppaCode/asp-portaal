@@ -51,17 +51,49 @@ class StoreClaimRequest extends FormRequest
                 'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
+            'herstel_op' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
+            'injury_requested_at' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
             'damage_files' => [
                 'array',
+                'max:10',
+            ],
+            'damage_files.*' => [
+                'file',
+                'max:10240', // 10MB
+                'mimetypes:image/jpeg,image/png,image/gif,application/pdf',
             ],
             'report_files' => [
                 'array',
+                'max:10',
+            ],
+            'report_files.*' => [
+                'file',
+                'max:10240', // 10MB
+                'mimetypes:image/jpeg,image/png,image/gif,application/pdf',
             ],
             'financial_files' => [
                 'array',
+                'max:10',
+            ],
+            'financial_files.*' => [
+                'file',
+                'max:10240', // 10MB
+                'mimetypes:image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ],
             'other_files' => [
                 'array',
+                'max:10',
+            ],
+            'other_files.*' => [
+                'file',
+                'max:10240', // 10MB
+                'mimetypes:image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ],
         ];
     }

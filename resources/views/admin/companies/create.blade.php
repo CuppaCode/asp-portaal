@@ -114,6 +114,16 @@
                         @endif
                         <span class="help-block">{{ trans('cruds.company.fields.active_helper') }}</span>
                     </div>
+                    <div class="form-group">
+                        <label for="logo">Company Logo</label>
+                        <input class="form-control {{ $errors->has('logo') ? 'is-invalid' : '' }}" type="file" name="logo" id="logo" accept="image/*">
+                        @if($errors->has('logo'))
+                            <div class="invalid-feedback">
+                                {{ $errors->first('logo') }}
+                            </div>
+                        @endif
+                        <span class="help-block">Upload een logo dat wordt weergegeven op het publieke formulier. Aanbevolen formaat: PNG of SVG met transparante achtergrond.</span>
+                    </div>
                 </div>
             </div>
         </div>

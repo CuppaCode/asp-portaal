@@ -24,6 +24,9 @@ class VehicleOpposite extends Model
     protected $fillable = [
         'name',
         'plates',
+        'brand',
+        'chassis_number',
+        'build_year',
         'created_at',
         'updated_at',
         'deleted_at',

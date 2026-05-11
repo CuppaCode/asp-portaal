@@ -1,4 +1,4 @@
-<div class="col-md-6">
+<div class="col-md-5">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             Schademelding
@@ -30,16 +30,7 @@
                 </div>
                 <p class="card-text">{{ App\Models\Claim::INJURY_SELECT[$claim->injury] ?? '' }}</p>
             @endif
-            @if ($claim->injury == 'yes')
-                <div class="card-title">
-                    {{ trans('cruds.claim.fields.injury_office') }}
-                </div>
-                <p class="card-text text-capitalize">
-                    @if ($claim->injury_office != null)
-                        {{ substr($claim->injury_office->identifier, 7) ?? '' }}
-                    @endif
-                </p>
-            @elseif ($claim->injury == 'other')
+            @if ($claim->injury == 'other')
                 <div class="card-title">
                     {{ trans('cruds.claim.fields.injury_other') }}
                 </div>
@@ -57,75 +48,42 @@
                 </div>
                 <p class="card-text">{{ App\Models\Claim::DAMAGE_KIND[$claim->damage_kind] ?? '' }}</p>
             @endif
+
+            <div class="card-title">
+                Verwijtbaar
+            </div>
+            <p class="card-text">{{ App\Models\Claim::VERWIJTBAAR_SELECT[$claim->verwijtbaar] ?? '-' }}</p>
         </div>
     </div>
 
-    @if ($claim->loading_photos || $claim->unloading_photos || $claim->waybill_signed_at_loading || $claim->waybill_signed_at_unloading)
+    @if (!empty($claim->custom_fields_data))
+        @php
+            $customFields = $claim->company->customClaimFields;
+        @endphp
 
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                Vrachtbrief
+        @if ($customFields->isNotEmpty())
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Aanvullende Gegevens
 
-                @if( $claim->assign_self || $isAdminOrAgent)
-                    <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
-                        {{ trans('global.edit') }}
-                    </a>
-                @endif
-            </div>
-
-            <div class="card-body">
-
-                <div class="row">
-
-                    @if ($claim->loading_photos)
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.loading_photos') }}
-                            </div>
-                            <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->loading_photos] }}</p>
-                        </div>
-
+                    @if( $claim->assign_self || $isAdminOrAgent)
+                        <a class="btn btn-xs btn-success" href="{{ route('admin.claims.edit', $claim->id) }}">
+                            {{ trans('global.edit') }}
+                        </a>
                     @endif
-
-                    @if ($claim->unloading_photos)
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.unloading_photos') }}
-                            </div>
-                            <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->unloading_photos] }}</p>
-                        </div>
-                    
-                    @endif
-
-
-                    @if ($claim->waybill_signed_at_loading)
-
-                        <div class="col-md-6">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.waybill_signed_at_loading') }}
-                            </div>
-                            <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->waybill_signed_at_loading] }}</p>
-                        </div>
-
-                    @endif
-                    
-                    @if ($claim->waybill_signed_at_unloading)
-
-                        <div class="col-md-6">
-                            <div class="card-title">
-                                {{ trans('cruds.claim.fields.waybill_signed_at_unloading') }}
-                            </div>
-                            <p class="card-text">{{ App\Models\Claim::WAYBILL_SELECT[$claim->waybill_signed_at_unloading] }}</p>
-                        </div>
-
-                    @endif
-
                 </div>
 
+                <div class="card-body">
+                    @foreach($customFields as $customField)
+                        @if(isset($claim->custom_fields_data[$customField->field_name]))
+                            <div class="card-title">
+                                {{ $customField->field_label }}
+                            </div>
+                            <p class="card-text">{{ $claim->custom_fields_data[$customField->field_name] }}</p>
+                        @endif
+                    @endforeach
+                </div>
             </div>
-        </div>
-
+        @endif
     @endif
 </div>

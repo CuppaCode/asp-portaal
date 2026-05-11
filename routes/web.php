@@ -11,6 +11,23 @@ Route::get('/home', function () {
 
 Auth::routes();
 
+// Public certificate renewal routes (no auth required)
+Route::get('/certificaat/verlengen/{token}', 'CertificateRenewalController@showRenewalForm')->name('certificate.renew.form');
+Route::post('/certificaat/verlengen/{token}', 'CertificateRenewalController@processRenewal')->name('certificate.renew.process');
+// Public Claim Form Routes (no authentication required)
+Route::get('/claim-form/{token}', 'PublicClaimFormController@show')->name('public.claim-form.show');
+Route::post('/claim-form/{token}', 'PublicClaimFormController@store')->name('public.claim-form.store');
+
+// Draft Claim Actions (signed URLs for email links - no auth)
+Route::get('/claim-draft/{claim}/approve', 'PublicDraftClaimController@approve')
+    ->name('draft-claim.approve')
+    ->middleware('signed');
+Route::get('/claim-draft/{claim}/deny-form', 'PublicDraftClaimController@showDenyForm')
+    ->name('draft-claim.deny-form')
+    ->middleware('signed');
+Route::post('/claim-draft/{claim}/deny', 'PublicDraftClaimController@deny')
+    ->name('draft-claim.deny');
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
 
     Route::get('/', 'HomeController@index')->name('home');
@@ -35,6 +52,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('claims/send-mail', 'ClaimController@sendMail')->name('claims.sendMail');
 
     Route::get('openclaims', 'ClaimController@open')->name('claims.open');
+    Route::get('conceptclaims', 'ClaimController@concept')->name('claims.concept');
     Route::get('unassignedclaims', 'ClaimController@unassigned')->name('claims.unassigned');
     Route::get('closedclaims', 'ClaimController@closed')->name('claims.closed');
 
@@ -43,6 +61,27 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('companies/media', 'CompanyController@storeMedia')->name('companies.storeMedia');
     Route::post('companies/ckmedia', 'CompanyController@storeCKEditorImages')->name('companies.storeCKEditorImages');
     Route::resource('companies', 'CompanyController');
+
+    // Company Claim Forms
+    Route::get('companies/{company}/claim-form', 'CompanyClaimFormController@index')->name('company-claim-forms.index');
+    Route::post('companies/{company}/claim-form/config', 'CompanyClaimFormController@updateConfig')->name('company-claim-forms.update-config');
+    Route::patch('companies/{company}/claim-form/standard-field/{fieldName}', 'CompanyClaimFormController@updateStandardField')->name('company-claim-forms.update-standard-field');
+    Route::post('companies/{company}/claim-form/expiry', 'CompanyClaimFormController@updateExpirySettings')->name('company-claim-forms.update-expiry');
+    Route::post('companies/{company}/claim-form/token', 'CompanyClaimFormController@createToken')->name('company-claim-forms.create-token');
+    Route::patch('companies/{company}/claim-form/token/{token}', 'CompanyClaimFormController@toggleToken')->name('company-claim-forms.toggle-token');
+    Route::delete('companies/{company}/claim-form/token/{token}', 'CompanyClaimFormController@deleteToken')->name('company-claim-forms.delete-token');
+    Route::post('companies/{company}/claim-form/notification', 'CompanyClaimFormController@storeNotification')->name('company-claim-forms.store-notification');
+    Route::delete('companies/{company}/claim-form/notification/{notification}', 'CompanyClaimFormController@deleteNotification')->name('company-claim-forms.delete-notification');
+    Route::post('companies/{company}/claim-form/custom-field', 'CompanyClaimFormController@storeCustomField')->name('company-claim-forms.store-custom-field');
+    Route::patch('companies/{company}/claim-form/custom-field/{customField}', 'CompanyClaimFormController@updateCustomField')->name('company-claim-forms.update-custom-field');
+    Route::delete('companies/{company}/claim-form/custom-field/{customField}', 'CompanyClaimFormController@deleteCustomField')->name('company-claim-forms.delete-custom-field');
+    Route::post('companies/{company}/claim-form/copy', 'CompanyClaimFormController@copyFromCompany')->name('company-claim-forms.copy-from-company');
+    Route::post('companies/{company}/claim-form/bulk-update', 'CompanyClaimFormController@bulkUpdate')->name('company-claim-forms.bulk-update');
+
+    // Draft Claims
+    Route::post('claims/{claim}/approve', 'DraftClaimController@approve')->name('claims.approve');
+    Route::post('claims/{claim}/deny', 'DraftClaimController@deny')->name('claims.deny');
+    Route::post('claims/{claim}/resubmit', 'DraftClaimController@resubmit')->name('claims.resubmit');
 
     // Task
     Route::delete('tasks/destroy', 'TaskController@massDestroy')->name('tasks.massDestroy');
@@ -71,7 +110,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('drivers', 'DriverController');
     Route::get('certificate/create/{driver}', 'CertificateController@create')->name('certificate.create');
     Route::post('certificate/{driver}', 'CertificateController@store')->name('certificate.store');
+    Route::post('certificate/{certificate}/renew', 'CertificateController@renew')->name('certificate.renew');
+    Route::post('certificate/bulk-renew', 'CertificateController@bulkRenew')->name('certificate.bulk-renew');
     Route::resource('certificate', 'CertificateController')->except(['create', 'store']);
+    // Certificate categories
+    Route::get('certificate-categories/search', 'CertificateCategoryController@search')->name('certificate-categories.search');
+    Route::post('certificate-categories/quick-store', 'CertificateCategoryController@quickStore')->name('certificate-categories.quickStore');
+    Route::resource('certificate-categories', 'CertificateCategoryController');
 
     // Vehicle Opposite
     Route::delete('vehicle-opposites/destroy', 'VehicleOppositeController@massDestroy')->name('vehicle-opposites.massDestroy');
@@ -106,8 +151,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('/comments/{comment}', 'CommentController@destroy')->name('comments.delete');
 
     // Mail Templates
+    Route::get('mail-templates/triggers', 'MailTemplateController@triggers')->name('mail-templates.triggers');
     Route::delete('mail-templates/destroy', 'MailTemplateController@massDestroy')->name('mail-templates.massDestroy');
     Route::resource('mail-templates', 'MailTemplateController');
+
+    // Mailings
+    Route::delete('mailings/destroy', 'MailingController@massDestroy')->name('mailings.massDestroy');
+    Route::post('mailings/{mailing}/send', 'MailingController@send')->name('mailings.send');
+    Route::post('mailings/send-batch', 'MailingController@sendBatch')->name('mailings.sendBatch');
+    Route::resource('mailings', 'MailingController');
 
     // SLA
     Route::resource('sla', 'SLAController');
@@ -148,6 +200,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::post('companies/quick-store', 'CompanyController@quickStore');
     Route::post('comments/quick-store', 'CommentController@quickStore');
+    Route::post('drivers/quick-store', 'DriverController@quickStore');
     
     Route::post('analytics/get-data', 'AnalyticsController@getData');
 

@@ -19,21 +19,27 @@
 
         @include('partials.claims.show.claim')
 
-        @include('partials.claims.show.contactdetails')
+        @include('partials.claims.show.dossier-datums')
+
+    </div>
+
+    <div class="row">
+
+        @include('partials.claims.show.gegevens-opdrachtgever')
+
+        @include('partials.claims.show.details-ao')
 
     </div>
 
     <div class="row">
         
-        @include('partials.claims.show.cardetails')
-
         @include('partials.claims.show.opponentdetails')
 
     </div>
 
     <div class="row">
-        
-        @include('partials.claims.show.extradetails')
+
+        @include('partials.claims.show.offices')
 
     </div>
 

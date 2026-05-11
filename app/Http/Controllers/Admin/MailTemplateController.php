@@ -8,6 +8,7 @@ use App\Http\Requests\MassDestroyMailTemplateRequest;
 use App\Http\Requests\StoreMailTemplateRequest;
 use App\Http\Requests\UpdateMailTemplateRequest;
 use App\Models\MailTemplate;
+use App\Services\MailTriggerService;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -90,5 +91,15 @@ class MailTemplateController extends Controller
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
+    }
+
+    public function triggers()
+    {
+        abort_if(Gate::denies('mail_template_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $triggers = MailTriggerService::getAvailableTriggers();
+        $templates = MailTemplate::all();
+
+        return view('admin.mailTemplates.triggers', compact('triggers', 'templates'));
     }
 }

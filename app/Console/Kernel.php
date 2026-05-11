@@ -12,7 +12,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Check for expiring certificates daily at 8:00 AM
+        $schedule->command('certificates:check-expiring')->dailyAt('08:00');
+        
+        // Cleanup expired certificates weekly on Sundays at 2:00 AM
+        $schedule->command('certificates:cleanup-expired')->weekly()->sundays()->at('02:00');
+      
+        // Expire draft claims daily at 00:00
+        $schedule->command('claims:expire-drafts')->daily();
+        
+        // Send draft claim reminders daily at 09:00
+        $schedule->command('claims:remind-drafts')->dailyAt('09:00');
     }
 
     /**

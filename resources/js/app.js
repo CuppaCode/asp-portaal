@@ -186,8 +186,31 @@ $(document).ready(function () {
     });
 
     $('#sla-toggle').on('click', function (e) {
+        $('.company-details-show, .contact-details-show, .insurance-details-show').slideUp();
         $('.sla-show').slideToggle();
     });
+
+    // Company details toggle - close other cards
+    $('#company-details-toggle').on('click', function (e) {
+        $('.sla-show').slideUp();
+        $('.contact-details-show, .insurance-details-show').slideUp();
+        $('.company-details-show').slideToggle();
+    });
+
+    // Contact details toggle - close other cards
+    $('#contact-details-toggle').on('click', function (e) {
+        $('.sla-show').slideUp();
+        $('.company-details-show, .insurance-details-show').slideUp();
+        $('.contact-details-show').slideToggle();
+    });
+
+    // Insurance details toggle - close other cards
+    $('#insurance-details-toggle').on('click', function (e) {
+        $('.sla-show').slideUp();
+        $('.company-details-show, .contact-details-show').slideUp();
+        $('.insurance-details-show').slideToggle();
+    });
+
 
 
     // Claims AJAX requests
@@ -256,6 +279,13 @@ $(document).ready(function () {
     // Vehicle creation
     var vehicleID = $('#vehicle_plates');
     bindTags( vehicleID );
+
+    // Driver creation
+    var driverID = $('#driver_vehicle');
+    ajaxCreateDriver(driverID);
+
+    var driverID2 = $('#driver_vehicle_2');
+    ajaxCreateDriver(driverID2);
 
     // Submitted check
     $('button[type="submit"]').on('click', function() {
@@ -414,6 +444,87 @@ $(document).ready(function () {
 //         ajaxDeleteComment(commentID, commentDOM);
 //     }
 // });
+
+function ajaxCreateDriver( inputID ) {
+
+    if(isAdminOrAgent < 1 || !isAdminOrAgent || isAdminOrAgent != 1){
+
+        return;
+
+    }
+
+    inputID.select2({
+        tags: true
+    });
+
+    inputID.on('select2:select', function (e) {
+
+        var selected = e.params.data;
+
+        if( !selected.element ) {
+
+            var companyId = $('#company_id').val();
+
+            if (!companyId) {
+                sendFlashMessage('Selecteer eerst een bedrijf voordat je een chauffeur aanmaakt.', 'alert-warning');
+                return;
+            }
+
+            // Pre-fill modal and open it
+            $('#driverModalName').val(selected.text).removeClass('is-invalid');
+            $('#driverModalEmail').val('');
+
+            var modal = new bootstrap.Modal(document.getElementById('driverCreateModal'));
+            modal.show();
+
+            // Remove stacked handlers, bind fresh for this select
+            $('#driverModalConfirm').off('click').on('click', function () {
+
+                var name  = $('#driverModalName').val().trim();
+                var email = $('#driverModalEmail').val().trim();
+
+                if (!name) {
+                    $('#driverModalName').addClass('is-invalid');
+                    return;
+                }
+
+                $('#driverModalConfirm').prop('disabled', true).text('Aanmaken...');
+
+                $.post('/admin/drivers/quick-store', { name: name, email: email, company_id: companyId }, function(res) {
+
+                    modal.hide();
+                    $('#driverModalConfirm').prop('disabled', false).text('Aanmaken');
+
+                    var newOption = inputID.find('option[value="'+ selected.id +'"]');
+                    var inputName = inputID.attr('name');
+
+                    sendFlashMessage(res.message, res.type);
+                    newOption.text(name).attr('value', res.driver_id);
+                    inputID.val(res.driver_id).trigger('change');
+                    inputID.attr('disabled', 'disabled');
+
+                    var newInputID = $(`<input type="hidden" name="${inputName}" value="${res.driver_id}">`);
+
+                    inputID.removeAttr('name');
+                    inputID.after(newInputID);
+
+                }).fail(function() {
+
+                    modal.hide();
+                    $('#driverModalConfirm').prop('disabled', false).text('Aanmaken');
+                    sendFlashMessage('Er is een fout opgetreden bij het aanmaken van de chauffeur.', 'alert-danger');
+
+                });
+
+            });
+
+        }
+
+    });
+
+    return;
+
+}
 
 function ajaxCreateCompany( inputID, typeID = null ) {
 
@@ -614,8 +725,17 @@ function sendFlashMessage( message, type ) {
 
 }
 
-function translationParseHelper(key, value) {
-    return " " + value;
+function translateJsonArray(jsonString, translations) {
+    if (!jsonString) return '';
+    try {
+        const arr = JSON.parse(jsonString);
+        if (Array.isArray(arr)) {
+            return arr.map(key => translations[key] || key).join(', ');
+        }
+        return translations[jsonString] || jsonString;
+    } catch (e) {
+        return translations[jsonString] || jsonString;
+    }
 }
 
 async function setupMailBody() {
@@ -665,16 +785,16 @@ async function setupMailBody() {
         claimJson.company ? '<a href="tel:'+ claimJson.company.phone +'" target="_blank">' + claimJson.company.phone + '</a>' : 'N/A', 
         claimJson.subject, 
         claimJson.claim_number, 
-        claimJson.status, 
+        allMailTranslations[claimJson.status] || claimJson.status, 
         claimJson.date_accident, 
         claimJson.vehicle ? claimJson.vehicle.plates : 'N/A',
-        JSON.parse(claimJson.damaged_part, translationParseHelper), 
-        JSON.parse(claimJson.damaged_area, translationParseHelper), 
-        JSON.parse(claimJson.damage_origin, translationParseHelper), 
+        translateJsonArray(claimJson.damaged_part, allMailTranslations), 
+        translateJsonArray(claimJson.damaged_area, allMailTranslations), 
+        translateJsonArray(claimJson.damage_origin, allMailTranslations), 
         claimJson.damage_costs, 
         claimJson.vehicle_opposite ? claimJson.vehicle_opposite.plates : 'N/A', 
-        claimJson.recoverable_claim, 
-        claimJson.damage_kind
+        allMailTranslations[claimJson.recoverable_claim] || claimJson.recoverable_claim, 
+        allMailTranslations[claimJson.damage_kind] || claimJson.damage_kind
     ];
 
     const contactText = $('#contactJson');
@@ -772,9 +892,9 @@ async function setupMailBody() {
             oppositeJson.zipcode + ' ' + oppositeJson.city, 
             oppositeJson.phone, 
             oppositeJson.email,
-            oppositeJson.damaged_part ? JSON.parse(oppositeJson.damaged_part, translationParseHelper) : 'N/A', 
-            oppositeJson.damaged_area ? JSON.parse(oppositeJson.damaged_area, translationParseHelper) : 'N/A', 
-            oppositeJson.damage_origin ? JSON.parse(oppositeJson.damage_origin, translationParseHelper) : 'N/A' 
+            oppositeJson.damaged_part ? translateJsonArray(oppositeJson.damaged_part, allMailTranslations) : 'N/A', 
+            oppositeJson.damaged_area ? translateJsonArray(oppositeJson.damaged_area, allMailTranslations) : 'N/A', 
+            oppositeJson.damage_origin ? translateJsonArray(oppositeJson.damage_origin, allMailTranslations) : 'N/A' 
         ]);
 
     }

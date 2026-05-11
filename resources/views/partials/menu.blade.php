@@ -1,3 +1,7 @@
+<style>
+    .c-sidebar .c-sidebar-nav-icon { flex: 0 0 36px !important; }
+    .c-sidebar .c-sidebar-nav-link .badge { margin-right: 1rem; }
+</style>
 <div id="sidebar" class="c-sidebar c-sidebar-fixed c-sidebar-lg-show">
 
     <div class="c-sidebar-brand d-md-down-none">
@@ -96,7 +100,21 @@
                                 <i class="fa-fw fas fa-building c-sidebar-nav-icon">
 
                                 </i>
-                                 Open {{ trans('cruds.claim.title') }}s
+                                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;"> Open {{ trans('cruds.claim.title') }}s</span>
+                                @if(!empty($openClaimsCount))
+                                    <span class="badge badge-pill badge-warning" style="margin-left:auto;flex-shrink:0;align-self:center;font-size:0.7rem;">{{ $openClaimsCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.claims.concept") }}" class="c-sidebar-nav-link {{ request()->is("conceptclaims", '') ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-file-alt c-sidebar-nav-icon">
+
+                                </i>
+                                <span style="flex:1;overflow:hidden;text-overflow:ellipsis;"> Concept {{ trans('cruds.claim.title') }}s</span>
+                                @if(!empty($conceptClaimsCount))
+                                    <span class="badge badge-pill badge-secondary" style="margin-left:auto;flex-shrink:0;align-self:center;font-size:0.7rem;">{{ $conceptClaimsCount }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="c-sidebar-nav-item">
@@ -165,6 +183,14 @@
 
                                 </i>
                                 {{ trans('cruds.driver.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('certificate_category_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route('admin.certificate-categories.index') }}" class="c-sidebar-nav-link {{ request()->is('admin/certificate-categories') || request()->is('admin/certificate-categories/*') ? 'c-active' : '' }}">
+                                <i class="fa-fw fas fa-certificate c-sidebar-nav-icon"></i>
+                                {{ trans('cruds.certificateCategory.title') ?? 'Certificate categories' }}
                             </a>
                         </li>
                     @endcan
@@ -302,12 +328,39 @@
             </li>
         @endif
         @can('mail_template_access')
-        <li class="c-sidebar-nav-item">
-            <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailTemplates") || request()->is("admin/mailTemplates/*") ? "c-active" : "" }}">
+        <li class="c-sidebar-nav-dropdown {{ request()->is("admin/mail-templates") || request()->is("admin/mail-templates/*") ? "c-show" : "" }}">
+            <a class="c-sidebar-nav-dropdown-toggle" href="#">
                 <i class="fa-fw fas fa-envelope c-sidebar-nav-icon">
 
                 </i>
                 {{ trans('cruds.mailTemplates.title') }}
+            </a>
+            <ul class="c-sidebar-nav-dropdown-items">
+                <li class="c-sidebar-nav-item">
+                    <a href="{{ route("admin.mail-templates.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mail-templates") && !request()->is("admin/mail-templates/triggers") ? "c-active" : "" }}">
+                        <i class="fa-fw fas fa-list c-sidebar-nav-icon">
+                        </i>
+                        {{ trans('cruds.mailTemplates.title') }}
+                    </a>
+                </li>
+                <li class="c-sidebar-nav-item">
+                    <a href="{{ route("admin.mail-templates.triggers") }}" class="c-sidebar-nav-link {{ request()->is("admin/mail-templates/triggers") ? "c-active" : "" }}">
+                        <i class="fa-fw fas fa-bolt c-sidebar-nav-icon">
+                        </i>
+                        {{ trans('cruds.superAdmin.triggers.title') }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+        @endcan
+
+        @can('mailing_access')
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.mailings.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/mailings") || request()->is("admin/mailings/*") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-paper-plane c-sidebar-nav-icon">
+
+                </i>
+                {{ trans('cruds.mailings.title') }}
             </a>
         </li>
         @endcan
