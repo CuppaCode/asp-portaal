@@ -547,6 +547,36 @@ input[type="file"].form-control:hover {
                                         value="{{ old('op_email') }}" {{ $isRequired ? 'required' : '' }}
                                         x-model="formData.op_email">
 
+                                @elseif($fieldName === 'damaged_part_opposite')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <select name="damaged_part_opposite[]" class="form-control" multiple {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.damaged_part_opposite">
+                                        @foreach(\App\Models\Claim::DAMAGED_PART_OPPOSITE_SELECT as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">Houd Ctrl ingedrukt voor meerdere selecties</small>
+
+                                @elseif($fieldName === 'damaged_area_opposite')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <select name="damaged_area_opposite[]" class="form-control" multiple {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.damaged_area_opposite">
+                                        @foreach(\App\Models\Claim::DAMAGED_AREA_OPPOSITE_SELECT as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">Houd Ctrl ingedrukt voor meerdere selecties</small>
+
+                                @elseif($fieldName === 'damage_origin_opposite')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <select name="damage_origin_opposite[]" class="form-control" multiple {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.damage_origin_opposite">
+                                        @foreach(\App\Models\Claim::DAMAGE_ORIGIN_OPPOSITE as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="form-text text-muted">Houd Ctrl ingedrukt voor meerdere selecties</small>
+
                                 @elseif(in_array($fieldName, ['loading_photos', 'unloading_photos', 'waybill_signed_at_loading', 'waybill_signed_at_unloading']))
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <select name="{{ $fieldName }}" class="form-control" {{ $isRequired ? 'required' : '' }}
@@ -662,6 +692,9 @@ function claimForm() {
             vehicle_chassis_number_opposite: '',
             damaged_part: [],
             damaged_area: [],
+            damaged_part_opposite: [],
+            damaged_area_opposite: [],
+            damage_origin_opposite: [],
             opposite_type: '',
             obstacle: '',
             op_name: '',
