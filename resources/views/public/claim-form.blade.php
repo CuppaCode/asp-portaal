@@ -589,9 +589,10 @@ input[type="file"].form-control:hover {
 
                                 @elseif(in_array($fieldName, ['damage_files', 'report_files', 'financial_files', 'other_files']))
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
-                                    <input type="file" name="{{ $fieldName }}[]" class="form-control file-input" 
+                                    <input type="file" name="{{ $fieldName }}[]" class="form-control file-input"
                                         data-collection="{{ $fieldName }}"
-                                        {{ $isRequired ? 'required' : '' }} 
+                                        {{ $isRequired ? 'required' : '' }}
+                                        multiple
                                         accept="image/jpeg,image/png,image/gif,application/pdf,.doc,.docx,.xls,.xlsx"
                                         @change="validateFiles($event, '{{ $fieldName }}')">
                                     <div class="file-error-message text-danger" style="display: none;" data-collection="{{ $fieldName }}"></div>
