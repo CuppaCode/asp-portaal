@@ -63,7 +63,6 @@ class UpdateClaimRequest extends FormRequest
             ],
             'damage_files' => [
                 'array',
-                'max:10',
             ],
             'damage_files.*' => [
                 'nullable',
@@ -71,7 +70,6 @@ class UpdateClaimRequest extends FormRequest
             ],
             'report_files' => [
                 'array',
-                'max:10',
             ],
             'report_files.*' => [
                 'nullable',
@@ -79,7 +77,6 @@ class UpdateClaimRequest extends FormRequest
             ],
             'financial_files' => [
                 'array',
-                'max:10',
             ],
             'financial_files.*' => [
                 'nullable',
@@ -87,7 +84,6 @@ class UpdateClaimRequest extends FormRequest
             ],
             'other_files' => [
                 'array',
-                'max:10',
             ],
             'other_files.*' => [
                 'nullable',
