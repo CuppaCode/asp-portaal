@@ -113,6 +113,7 @@
 Dropzone.options.damageFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
     maxFilesize: 5, // MB
+    maxFiles: 10,
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -161,6 +162,10 @@ Dropzone.options.damageFilesDropzone = {
          }
 
          return _results
+     },
+     maxfilesexceeded: function (file) {
+         this.removeFile(file)
+         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
      }
 }
 </script>
@@ -169,6 +174,7 @@ Dropzone.options.damageFilesDropzone = {
 Dropzone.options.reportFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
     maxFilesize: 5, // MB
+    maxFiles: 10,
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -217,6 +223,10 @@ Dropzone.options.reportFilesDropzone = {
          }
 
          return _results
+     },
+     maxfilesexceeded: function (file) {
+         this.removeFile(file)
+         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
      }
 }
 </script>
@@ -225,6 +235,7 @@ Dropzone.options.reportFilesDropzone = {
 Dropzone.options.financialFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
     maxFilesize: 5, // MB
+    maxFiles: 10,
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -273,6 +284,10 @@ Dropzone.options.financialFilesDropzone = {
          }
 
          return _results
+     },
+     maxfilesexceeded: function (file) {
+         this.removeFile(file)
+         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
      }
 }
 </script>
@@ -281,6 +296,7 @@ Dropzone.options.financialFilesDropzone = {
 Dropzone.options.otherFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
     maxFilesize: 5, // MB
+    maxFiles: 10,
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -329,6 +345,10 @@ Dropzone.options.otherFilesDropzone = {
          }
 
          return _results
+     },
+     maxfilesexceeded: function (file) {
+         this.removeFile(file)
+         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
      }
 }
 </script>
