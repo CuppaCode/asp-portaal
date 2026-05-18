@@ -767,10 +767,18 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $attachments = null;
+        if ($request->hasFile('mailAttachments')) {
+            $attachments = array_map(fn($file) => [
+                'path' => $file->getPathname(),
+                'name' => $file->getClientOriginalName(),
+            ], $request->file('mailAttachments'));
+        }
+
         $message = new \App\Notifications\PlainMail(
             $request->mailSubject ?? '',
             $request->mailBody ?? '',
-            $request->mailAttachments ?? null,
+            $attachments,
             $request->mailCc ?? [],
             $request->mailBcc ?? []
         );
