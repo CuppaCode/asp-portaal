@@ -336,17 +336,17 @@ input[type="file"].form-control:hover {
                                 $hasCondition = !empty($conditionalLogic);
                                 $fieldLabel = $config->notification_label ?: $availableFields[$fieldName] ?? $fieldName;
                                 $fieldWidth = $config->field_width ?? 'full';
-                                $fieldsForBothTypes = ['op_name', 'op_street', 'op_zipcode', 'op_city', 'op_phone', 'op_email'];
+                                $fieldsForBothTypes = ['op_name', 'op_street', 'op_zipcode', 'op_city', 'op_country', 'op_phone', 'op_email'];
                                 $showForBothTypes = in_array($fieldName, $fieldsForBothTypes) ? 'true' : 'false';
                             @endphp
 
                         <div class="form-field-{{ $fieldWidth }}" 
                             @if($hasCondition)
-                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && (formData.form_type === 'claim' || {{ $showForBothTypes }} || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type')"
+                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && (formData.form_type === 'claim' || {{ $showForBothTypes }} || (formData.form_type === 'complaint' && '{{ $fieldName }}' === 'complaint_description') || '{{ $fieldName }}' === 'form_type')"
                                 x-cloak
                                 style="display: none;"
                             @else
-                                x-show="formData.form_type === 'claim' || {{ $showForBothTypes }} || '{{ $fieldName }}' === 'complaint_description' || '{{ $fieldName }}' === 'form_type'"
+                                x-show="formData.form_type === 'claim' || {{ $showForBothTypes }} || (formData.form_type === 'complaint' && '{{ $fieldName }}' === 'complaint_description') || '{{ $fieldName }}' === 'form_type'"
                                 x-cloak
                                 style="display: none;"
                             @endif>
@@ -375,7 +375,7 @@ input[type="file"].form-control:hover {
                                 @elseif($fieldName === 'complaint_description')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <textarea name="complaint_description" class="form-control" rows="6"
-                                        {{ $isRequired ? ':required="formData.form_type === \'complaint\'"' : '' }}
+                                        {{ $isRequired ? 'required' : '' }}
                                         x-model="formData.complaint_description" placeholder="Beschrijf uw klacht in detail...">{{ old('complaint_description') }}</textarea>
 
                                 @elseif($fieldName === 'subject')
@@ -547,6 +547,12 @@ input[type="file"].form-control:hover {
                                         value="{{ old('op_email') }}" {{ $isRequired ? 'required' : '' }}
                                         x-model="formData.op_email">
 
+                                @elseif($fieldName === 'op_country')
+                                    <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
+                                    <input type="text" name="op_country" class="form-control" 
+                                        value="{{ old('op_country') }}" {{ $isRequired ? 'required' : '' }}
+                                        x-model="formData.op_country">
+
                                 @elseif($fieldName === 'damaged_part_opposite')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <select name="damaged_part_opposite[]" class="form-control" multiple {{ $isRequired ? 'required' : '' }}
@@ -704,6 +710,7 @@ function claimForm() {
             op_city: '',
             op_phone: '',
             op_email: '',
+            op_country: '',
             loading_photos: '',
             unloading_photos: '',
             waybill_signed_at_loading: '',
