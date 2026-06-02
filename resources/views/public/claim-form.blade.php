@@ -375,7 +375,7 @@ input[type="file"].form-control:hover {
                                 @elseif($fieldName === 'complaint_description')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <textarea name="complaint_description" class="form-control" rows="6"
-                                        {{ $isRequired ? 'required' : '' }}
+                                        {{ $isRequired ? ':required="formData.form_type === \'complaint\'"' : '' }}
                                         x-model="formData.complaint_description" placeholder="Beschrijf uw klacht in detail...">{{ old('complaint_description') }}</textarea>
 
                                 @elseif($fieldName === 'subject')
