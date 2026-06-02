@@ -342,11 +342,11 @@ input[type="file"].form-control:hover {
 
                         <div class="form-field-{{ $fieldWidth }}" 
                             @if($hasCondition)
-                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && (formData.form_type === 'claim' || {{ $showForBothTypes }} || (formData.form_type === 'complaint' && '{{ $fieldName }}' === 'complaint_description') || '{{ $fieldName }}' === 'form_type')"
+                                x-show="evaluateCondition({{ json_encode($conditionalLogic) }}) && ((formData.form_type === 'claim' && '{{ $fieldName }}' !== 'complaint_description') || {{ $showForBothTypes }} || (formData.form_type === 'complaint' && '{{ $fieldName }}' === 'complaint_description') || '{{ $fieldName }}' === 'form_type')"
                                 x-cloak
                                 style="display: none;"
                             @else
-                                x-show="formData.form_type === 'claim' || {{ $showForBothTypes }} || (formData.form_type === 'complaint' && '{{ $fieldName }}' === 'complaint_description') || '{{ $fieldName }}' === 'form_type'"
+                                x-show="(formData.form_type === 'claim' && '{{ $fieldName }}' !== 'complaint_description') || {{ $showForBothTypes }} || (formData.form_type === 'complaint' && '{{ $fieldName }}' === 'complaint_description') || '{{ $fieldName }}' === 'form_type'"
                                 x-cloak
                                 style="display: none;"
                             @endif>
@@ -375,7 +375,7 @@ input[type="file"].form-control:hover {
                                 @elseif($fieldName === 'complaint_description')
                                     <label class="{{ $isRequired ? 'required-field' : '' }}">{{ $fieldLabel }}</label>
                                     <textarea name="complaint_description" class="form-control" rows="6"
-                                        {{ $isRequired ? 'required' : '' }}
+                                        @if($isRequired)x-bind:required="formData.form_type === 'complaint'"@endif
                                         x-model="formData.complaint_description" placeholder="Beschrijf uw klacht in detail...">{{ old('complaint_description') }}</textarea>
 
                                 @elseif($fieldName === 'subject')
@@ -683,7 +683,7 @@ input[type="file"].form-control:hover {
 function claimForm() {
     return {
         formData: {
-            form_type: '',
+            form_type: '{{ old('form_type', 'claim') }}',
             complaint_description: '',
             subject: '',
             date_accident: '',
