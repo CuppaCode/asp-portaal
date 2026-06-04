@@ -309,7 +309,7 @@ input[type="file"].form-control:hover {
         <h3 x-text="formData.form_type === 'complaint' ? 'Klacht Indienen - {{ $company->name }}' : (formData.form_type === 'claim' ? 'Schademelding Indienen - {{ $company->name }}' : 'Formulier Indienen - {{ $company->name }}')"></h3>
     </div>
     <div class="claim-form-body card-body">
-        <form action="{{ route('public.claim-form.store', $claimToken->token) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('public.claim-form.store', $claimToken->token) }}" method="POST" enctype="multipart/form-data" novalidate @submit.prevent="handleSubmit($event)">
             @csrf
 
             @if($errors->any())
@@ -780,6 +780,57 @@ function claimForm() {
             }
         },
         
+        handleSubmit(event) {
+            const form = event.target;
+            const requiredFields = form.querySelectorAll('input[required], textarea[required], select[required]');
+            const checkedRadioGroups = new Set();
+            let firstInvalid = null;
+
+            // Clear any previous custom validity messages
+            requiredFields.forEach(field => field.setCustomValidity(''));
+
+            for (const field of requiredFields) {
+                // Skip fields hidden by x-show (ancestor has display:none)
+                if (!this._isVisible(field)) {
+                    continue;
+                }
+
+                let isValid = true;
+
+                if (field.type === 'radio') {
+                    // Only check each radio group once
+                    if (checkedRadioGroups.has(field.name)) continue;
+                    checkedRadioGroups.add(field.name);
+                    isValid = form.querySelector(`input[type="radio"][name="${field.name}"]:checked`) !== null;
+                } else if (field.type === 'checkbox') {
+                    isValid = field.checked;
+                } else {
+                    isValid = field.value.trim() !== '';
+                }
+
+                if (!isValid && !firstInvalid) {
+                    firstInvalid = field;
+                }
+            }
+
+            if (firstInvalid) {
+                firstInvalid.setCustomValidity('Dit veld is verplicht.');
+                firstInvalid.reportValidity();
+                return;
+            }
+
+            form.submit();
+        },
+
+        _isVisible(el) {
+            let node = el;
+            while (node && node !== document.documentElement) {
+                if (window.getComputedStyle(node).display === 'none') return false;
+                node = node.parentElement;
+            }
+            return true;
+        },
+
         formatLicensePlate(plate) {
             if (!plate) return '';
             

@@ -1228,9 +1228,9 @@ $(document).ready(function() {
             method: 'PATCH',
             data: {
                 _token: '{{ csrf_token() }}',
-                is_enabled: isEnabled,
-                is_required: isRequired,
-                include_in_notification: includeInNotification
+                is_enabled: isEnabled ? 1 : 0,
+                is_required: isRequired ? 1 : 0,
+                include_in_notification: includeInNotification ? 1 : 0
             }
         });
     });
