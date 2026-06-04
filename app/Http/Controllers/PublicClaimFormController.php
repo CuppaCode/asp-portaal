@@ -282,6 +282,11 @@ class PublicClaimFormController extends Controller
         $rules = [];
 
         foreach ($formConfigs as $config) {
+            // complaint_description is only shown/required for complaints, regardless of stored conditional logic
+            if ($config->field_name === 'complaint_description' && ($formData['form_type'] ?? 'claim') !== 'complaint') {
+                continue;
+            }
+
             // Skip if conditional logic doesn't match
             if (!$config->evaluateCondition($formData)) {
                 continue;
