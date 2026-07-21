@@ -203,6 +203,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('drivers/quick-store', 'DriverController@quickStore');
     
     Route::post('analytics/get-data', 'AnalyticsController@getData');
+    Route::get('analytics/export', 'AnalyticsController@export')->name('analytics.export');
 
 });
 
