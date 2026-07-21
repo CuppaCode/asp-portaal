@@ -55,7 +55,7 @@
                                 @endif
                             </td>
                             <td>{{ $mailing->sent_at ? $mailing->sent_at->format('d-m-Y H:i') : '' }}</td>
-                            <td>{{ $mailing->user?->trashed() ? 'Verwijderde gebruiker' : ($mailing->user?->name ?? '') }}</td>
+                            <td>{{ $mailing->user->name ?? '' }}</td>
                             <td>
                                 @foreach($mailing->claims as $claim)
                                     <span class="badge badge-info">{{ $claim->claim_number }}</span>

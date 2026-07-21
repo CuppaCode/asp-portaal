@@ -239,7 +239,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
 
                                         @endisset
                                     </td>
-                                    <td>{{ $task->user?->trashed() ? 'Verwijderde gebruiker' : ($task->user?->name ?? '') }}</td>
+                                    <td>{{ $task->user->name ?? '' }}</td>
                                 </tr>
                             @endforeach
 
@@ -288,7 +288,7 @@ $isAdminOrAgent = $user->isAdminOrAgent();
                                                     } else {
                                                         $expiryLabel = '-';
                                                     }
-                                                    $driverName = $certificate->driver?->trashed() ? 'Verwijderde chauffeur' : ($certificate->driver?->driver_name ?? ($certificate->driver?->contact?->first_name . ' ' . $certificate->driver?->contact?->last_name ?? 'Niet gevonden'));
+                                                    $driverName = $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden');
                                                     
                                                     // Check renewal status
                                                     $hasRenewalToken = !empty($certificate->renewal_token) && !empty($certificate->renewal_token_expires_at) && \Carbon\Carbon::parse($certificate->renewal_token_expires_at)->gte(\Carbon\Carbon::now());

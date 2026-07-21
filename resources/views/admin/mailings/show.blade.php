@@ -77,7 +77,7 @@
                     </tr>
                     <tr>
                         <th>{{ trans('cruds.mailings.fields.user') }}</th>
-                        <td>{{ $mailing->user?->trashed() ? 'Verwijderde gebruiker' : ($mailing->user?->name ?? '') }}</td>
+                        <td>{{ $mailing->user->name ?? '' }}</td>
                     </tr>
                     <tr>
                         <th>{{ trans('cruds.mailings.fields.mail_template') }}</th>

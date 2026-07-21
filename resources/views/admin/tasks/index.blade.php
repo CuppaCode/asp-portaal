@@ -52,7 +52,7 @@
                                 {{ $task->id ?? '' }}
                             </td>
                             <td>
-                                {{ $task->user?->trashed() ? 'Verwijderde gebruiker' : ($task->user?->name ?? '') }}
+                                {{ $task->user->name ?? '' }}
                             </td>
                             <td>
                                 {{ $task->claim->claim_number ?? '' }}

@@ -280,10 +280,6 @@ $(document).ready(function () {
     var vehicleID = $('#vehicle_plates');
     bindTags( vehicleID );
 
-    // Vehicle 2 creation (Rit 2)
-    var vehicleID2 = $('#vehicle_plates_2');
-    bindTags( vehicleID2 );
-
     // Driver creation
     var driverID = $('#driver_vehicle');
     ajaxCreateDriver(driverID);

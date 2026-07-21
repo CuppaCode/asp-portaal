@@ -75,12 +75,11 @@
                         </p>
                     @endif
                     @if (!empty($claim->driver_vehicle_opposite))
-                        @php $oppDriver = \App\Models\Driver::withTrashed()->find($claim->driver_vehicle_opposite); @endphp
                         <div class="card-title">
                             {{ trans('cruds.claim.fields.driver_vehicle_opposite') }}
                         </div>
                         <p class="card-text">
-                            {{ $oppDriver?->trashed() ? 'Verwijderde chauffeur' : ($oppDriver?->driver_full_name ?? '') }}
+                            {{ App\Models\Driver::find($claim->driver_vehicle_opposite)->driver_full_name ?? '' }}
                         </p>
                     @endif
                 @else
