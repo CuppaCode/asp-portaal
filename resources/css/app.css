@@ -158,22 +158,39 @@ div.dt-buttons {
     flex: 0 0 280px;
 }
 
+html:not([dir=rtl]) .c-sidebar.c-sidebar-lg-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper,
+html:not([dir=rtl]) .c-sidebar.c-sidebar-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper {
+    margin-left: 280px;
+}
+
+/* ── Sidebar nav: top-level items ─────────────────────────────────────────── */
 .c-sidebar .c-sidebar-nav-link,
 .c-sidebar .c-sidebar-nav-dropdown-toggle {
     padding-left: 40px;
+    padding-right: 16px;
 }
 
-#sidebar.c-sidebar .c-sidebar-nav-dropdown-toggle:hover {
-    background: #fff;
-    color: #000;
+/* ── Sidebar nav: first-level sub-menu items ──────────────────────────────── */
+html:not([dir=rtl]) .c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-link,
+html:not([dir=rtl]) .c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-dropdown-toggle {
+    padding-left: 78px; /* 40px base + 38px indent to clear parent icon + gap */
 }
 
+/* ── Sidebar nav: second-level (nested) sub-menu items ────────────────────── */
+html:not([dir=rtl]) .c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-dropdown-items .c-sidebar-nav-link,
+html:not([dir=rtl]) .c-sidebar .c-sidebar-nav-dropdown-items .c-sidebar-nav-dropdown-items .c-sidebar-nav-dropdown-toggle {
+    padding-left: 98px;
+}
+
+/* ── Sidebar nav: hover states ────────────────────────────────────────────── */
+#sidebar.c-sidebar .c-sidebar-nav-dropdown-toggle:hover,
 #sidebar.c-sidebar .c-sidebar-nav-link:hover {
     background: #fff;
     color: #000;
 }
 
-.c-sidebar .c-sidebar-nav-dropdown-toggle:hover .c-sidebar-nav-icon, .c-sidebar .c-sidebar-nav-link:hover .c-sidebar-nav-icon {
+.c-sidebar .c-sidebar-nav-dropdown-toggle:hover .c-sidebar-nav-icon,
+.c-sidebar .c-sidebar-nav-link:hover .c-sidebar-nav-icon {
     color: #000;
 }
 

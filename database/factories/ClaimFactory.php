@@ -16,18 +16,8 @@ class ClaimFactory extends Factory
             'claim_number' => 'CLAIM-' . $this->faker->unique()->randomNumber(6),
             'company_id' => Company::factory(),
             'subject' => $this->faker->sentence(),
-            'description' => $this->faker->paragraph(),
-            'status' => 'open',
-            'date_accident' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'time_accident' => $this->faker->time(),
-            'location_accident' => $this->faker->address(),
-            'name_counterparty' => $this->faker->name(),
-            'street_counterparty' => $this->faker->streetAddress(),
-            'zipcode_counterparty' => $this->faker->postcode(),
-            'city_counterparty' => $this->faker->city(),
-            'country_counterparty' => 'Nederland',
-            'email_counterparty' => $this->faker->safeEmail(),
-            'phone_counterparty' => $this->faker->phoneNumber(),
+            'status' => 'new',
+            'date_accident' => $this->faker->dateTimeBetween('-1 month', 'now')->format('d-m-Y'),
         ];
     }
 

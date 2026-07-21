@@ -20,7 +20,7 @@
                             {{ trans('cruds.driver.fields.company') }}
                         </th>
                         <td>
-                            {{ $driver->contact->company->name ?? '' }}
+                            {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->company?->name ?? '') }}
                         </td>
                     </tr>
                     <tr>
@@ -28,7 +28,7 @@
                             {{ trans('cruds.driver.fields.last_name') }}
                         </th>
                         <td>
-                            {{ $driver->contact->last_name ?? '' }}
+                            {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->last_name ?? '') }}
                         </td>
                     </tr>
                     <tr>
@@ -36,7 +36,7 @@
                             {{ trans('cruds.driver.fields.email') }}
                         </th>
                         <td>
-                            {{ $driver->contact->email ?? '' }}
+                            {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->email ?? '') }}
                         </td>
                     </tr>
                     <tr>
@@ -44,7 +44,7 @@
                             {{ trans('cruds.driver.fields.phone') }}
                         </th>
                         <td>
-                            {{ $driver->contact->company->phone ?? '' }}
+                            {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->company?->phone ?? '') }}
                         </td>
                     </tr>
                 </tbody>

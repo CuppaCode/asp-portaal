@@ -10,8 +10,10 @@
                     <h5>{{ $certificate->name }}</h5>
                     <p><strong>Categorie:</strong> {{ $certificate->category->name ?? 'Onbekend' }}</p>
                     <p><strong>Chauffeur:</strong>
-                        @if(isset($certificate->driver->id))
-                            <a href="{{ route('admin.drivers.show', $certificate->driver->id) }}">{{ $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden') }}</a>
+                        @if($certificate->driver && !$certificate->driver->trashed())
+                            <a href="{{ route('admin.drivers.show', $certificate->driver->id) }}">{{ $certificate->driver->driver_name ?? ($certificate->driver->contact?->first_name . ' ' . $certificate->driver->contact?->last_name ?? 'Niet gevonden') }}</a>
+                        @elseif($certificate->driver?->trashed())
+                            Verwijderde chauffeur
                         @else
                             Niet gevonden
                         @endif

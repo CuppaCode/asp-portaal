@@ -41,7 +41,7 @@
                             {{ trans('cruds.task.fields.user') }}
                         </th>
                         <td>
-                            {{ $task->user->name ?? '' }}
+                            {{ $task->user?->trashed() ? 'Verwijderde gebruiker' : ($task->user?->name ?? '') }}
                         </td>
                     </tr>
                     <tr>
