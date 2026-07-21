@@ -46,7 +46,6 @@ class Mailing extends Model implements HasMedia
         'recipients' => 'array',
         'cc' => 'array',
         'bcc' => 'array',
-        'sent_at' => 'datetime',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -61,7 +60,7 @@ class Mailing extends Model implements HasMedia
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withTrashed();
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function team()

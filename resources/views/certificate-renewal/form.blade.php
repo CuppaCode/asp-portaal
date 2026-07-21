@@ -43,7 +43,7 @@
                         </tr>
                         <tr>
                             <th>Chauffeur:</th>
-                            <td>{{ $certificate->driver?->trashed() ? 'Verwijderde chauffeur' : ($certificate->driver?->name ?? 'N/A') }}</td>
+                            <td>{{ $certificate->driver->name ?? 'N/A' }}</td>
                         </tr>
                         <tr>
                             <th>Huidige vervaldatum:</th>
@@ -85,7 +85,7 @@
                            class="form-control @error('email') is-invalid @enderror" 
                            id="email" 
                            name="email" 
-                           value="{{ old('email', $certificate->driver?->trashed() ? '' : ($certificate->driver?->email ?? '')) }}"
+                           value="{{ old('email', $certificate->driver->email ?? '') }}"
                            placeholder="uw@email.nl"
                            required>
                     @error('email')

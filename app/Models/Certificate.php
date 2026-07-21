@@ -43,7 +43,7 @@ class Certificate extends Model
 
     public function driver()
     {
-        return $this->belongsTo(Driver::class)->withTrashed();
+        return $this->belongsTo(Driver::class);
     }
 
     public function category()

@@ -1327,20 +1327,6 @@ $('#vehicle_plates_opposite').on('input', function() {
     $(this).val(formatted);
 });
 
-// Format license plate for Rit 2 vehicle (select2 tags)
-$('#vehicle_plates_2').on('select2:select', function(e) {
-    var data = e.params.data;
-    if (data.id === data.text) { // new typed tag, not an existing option
-        var formatted = formatLicensePlate(data.text);
-        if (formatted !== data.text) {
-            var $select = $(this);
-            $select.find('option[value="' + data.id + '"]').remove();
-            $select.append(new Option(formatted, formatted, true, true));
-            $select.trigger('change');
-        }
-    }
-});
-
 // Rit 2 toggle
 $('#rit2Toggle').on('change', function() {
     if ($(this).is(':checked')) {

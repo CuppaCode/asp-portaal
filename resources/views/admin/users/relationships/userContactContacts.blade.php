@@ -51,7 +51,7 @@
                                     {{ $contactContact->company->company_name ?? '' }}
                                 </td>
                                 <td>
-                                    {{ $contactContact->user?->trashed() ? 'Verwijderde gebruiker' : ($contactContact->user?->name ?? '') }}
+                                    {{ $contactContact->user->name ?? '' }}
                                 </td>
                                 <td>
                                     {{ $contactContact->contact_phone_1 ?? '' }}

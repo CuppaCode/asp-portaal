@@ -56,16 +56,16 @@
 
                             </td>
                             <td>
-                                {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->company?->name ?? '') }}
+                                {{ $driver->contact->company->name ?? '' }}
                             </td>
                             <td>
-                                {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->last_name ?? '') }}
+                                {{ $driver->contact->last_name ?? '' }}
                             </td>
                             <td>
-                                {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->email ?? '') }}
+                                {{ $driver->contact->email ?? '' }}
                             </td>
                             <td>
-                                {{ $driver->contact?->trashed() ? 'Verwijderd contact' : ($driver->contact?->company?->phone ?? '') }}
+                                {{ $driver->contact->company->phone ?? '' }}
                             </td>
                             <td>
                                 @can('driver_show')
