@@ -56,7 +56,7 @@
                                 @endforeach
                             </td>
                             <td>
-                                {{ $note->user->email ?? '' }}
+                                {{ $note->user?->trashed() ? 'Verwijderde gebruiker' : ($note->user?->email ?? '') }}
                             </td>
                             <td>
                                 @can('note_show')
