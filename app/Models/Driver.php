@@ -57,7 +57,7 @@ class Driver extends Model
 
     public function contact()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->belongsTo(Contact::class)->withTrashed();
     }
 
     public function certificates()

@@ -50,7 +50,7 @@
                                 @php
                                     $expiry = $certificate->expiry_date ? \Carbon\Carbon::parse($certificate->expiry_date) : null;
                                     $expired = $expiry ? $expiry->lte(\Carbon\Carbon::now()) : false;
-                                    $driverName = $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden');
+                                    $driverName = $certificate->driver?->trashed() ? 'Verwijderde chauffeur' : ($certificate->driver?->driver_name ?? ($certificate->driver?->contact?->first_name . ' ' . $certificate->driver?->contact?->last_name ?? 'Niet gevonden'));
                                 @endphp
                                 <tr class="@if($expired) table-danger @endif">
                                     <td>{{ $certificate->id }}</td>

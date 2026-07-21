@@ -14,7 +14,7 @@
                         <div class="col-2 date-holder text-right">
                             <div class="icon"><i class="fa fa-user"></i></div>
                             <div class="date">
-                                <span>{{ $note->user->name ?? "Verwijderde gebruiker" }}</span><br>
+                                <span>{{ $note->user?->trashed() ? 'Verwijderde gebruiker' : ($note->user?->name ?? 'Verwijderde gebruiker') }}</span><br>
                                 <span class="text-info">{{ $note->created_at }}</span>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                                             class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
                                     @endif
                                     <span class="badge bg-primary">{{ $deadline }}</span>
-                                    <span class="badge bg-info">{{ $task->user->name }}</span>
+                                    <span class="badge bg-info">{{ $task->user->trashed() ? 'Verwijderde gebruiker' : $task->user->name }}</span>
                                 @endif
                                 
 
@@ -126,7 +126,7 @@
                             <div class="date">
             
                                 @if ($comment->user)
-                                    <span>{{ $comment->user->name }}</span>
+                                    <span>{{ $comment->user->trashed() ? 'Verwijderde gebruiker' : $comment->user->name }}</span>
                                 @endif
                                 <br>
                                 <span class="text-info">{{ $comment->created_at }}</span>

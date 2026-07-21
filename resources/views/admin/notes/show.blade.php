@@ -54,7 +54,7 @@
                             {{ trans('cruds.note.fields.user') }}
                         </th>
                         <td>
-                            {{ $note->user->email ?? '' }}
+                            {{ $note->user?->trashed() ? 'Verwijderde gebruiker' : ($note->user?->email ?? '') }}
                         </td>
                     </tr>
                 </tbody>

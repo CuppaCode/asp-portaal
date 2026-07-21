@@ -41,7 +41,7 @@
                             {{ trans('cruds.contact.fields.user') }}
                         </th>
                         <td>
-                            {{ $contact->user->name ?? '' }}
+                            {{ $contact->user?->trashed() ? 'Verwijderde gebruiker' : ($contact->user?->name ?? '') }}
                         </td>
                     </tr>
                     <tr>
