@@ -170,3 +170,38 @@ a.btn.buttons-columnVisibility.active {
 a.btn.buttons-columnVisibility {
     margin: 2px;
 }
+
+/* ========================================================
+   Sidebar width: 270px (overrides CoreUI default 256px)
+   ======================================================== */
+
+/* Sidebar flex/width */
+.c-sidebar {
+    -ms-flex: 0 0 270px;
+    flex: 0 0 270px;
+    width: 270px;
+}
+
+/* Hidden state: pull the sidebar fully off-screen (LTR) */
+html:not([dir=rtl]) .c-sidebar:not(.c-sidebar-right) {
+    margin-left: -270px;
+}
+
+/* c-wrapper margin when sidebar is fixed + shown on desktop (≥992px) */
+@media (min-width: 992px) {
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper,
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-lg-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper,
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-md-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper,
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-sm-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper,
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-xl-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper,
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-xxl-show:not(.c-sidebar-right).c-sidebar-fixed ~ .c-wrapper {
+        margin-left: 270px;
+    }
+
+    /* Minimized sidebar stays at 56px — no change needed */
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-show:not(.c-sidebar-right).c-sidebar-fixed.c-sidebar-minimized ~ .c-wrapper,
+    html:not([dir=rtl]) .c-sidebar.c-sidebar-lg-show:not(.c-sidebar-right).c-sidebar-fixed.c-sidebar-minimized ~ .c-wrapper {
+        margin-left: 56px;
+    }
+}
+}
