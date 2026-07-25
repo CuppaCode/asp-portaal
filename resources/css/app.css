@@ -154,6 +154,13 @@ div.dt-buttons {
 
 .c-sidebar {
     background: #344A9B;
+    width: 280px;
+    flex: 0 0 280px;
+}
+
+.c-sidebar .c-sidebar-nav-link,
+.c-sidebar .c-sidebar-nav-dropdown-toggle {
+    padding-left: 40px;
 }
 
 #sidebar.c-sidebar .c-sidebar-nav-dropdown-toggle:hover {

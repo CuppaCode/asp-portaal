@@ -743,6 +743,22 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.claim.fields.recovery_office_helper') }}</span>
             </div>
+            @php
+                $recoveryCompanyObj = $claim->recovery_office?->company;
+                $recoveryEmail = null;
+                if ($recoveryCompanyObj) {
+                    $rContact = $recoveryCompanyObj->contact_id
+                        ? \App\Models\Contact::find($recoveryCompanyObj->contact_id)
+                        : $recoveryCompanyObj->contacts->first();
+                    $recoveryEmail = $rContact?->email;
+                }
+            @endphp
+            @if ($recoveryEmail)
+            <div class="form-group">
+                <label>E-mailadres schadehersteller</label>
+                <p class="form-control-plaintext">{{ $recoveryEmail }}</p>
+            </div>
+            @endif
             <div class="form-group">
                 <label for="herstel_op">Herstel op</label>
                 <input class="form-control date custom_datepicker {{ $errors->has('herstel_op') ? 'is-invalid' : '' }}" type="text" name="herstel_op" id="herstel_op" value="{{ old('herstel_op', $claim->herstel_op) }}">
@@ -1325,6 +1341,20 @@ function formatLicensePlate(plate) {
 $('#vehicle_plates_opposite').on('input', function() {
     var formatted = formatLicensePlate($(this).val());
     $(this).val(formatted);
+});
+
+// Format license plate for Rit 2 vehicle (select2 tags)
+$('#vehicle_plates_2').on('select2:select', function(e) {
+    var data = e.params.data;
+    if (data.id === data.text) { // new typed tag, not an existing option
+        var formatted = formatLicensePlate(data.text);
+        if (formatted !== data.text) {
+            var $select = $(this);
+            $select.find('option[value="' + data.id + '"]').remove();
+            $select.append(new Option(formatted, formatted, true, true));
+            $select.trigger('change');
+        }
+    }
 });
 
 // Rit 2 toggle

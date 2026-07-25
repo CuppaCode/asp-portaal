@@ -36,7 +36,11 @@
                     <p class="card-text">{{ $recoveryCompany->phone }}</p>
                 @endif
 
-                @php $recoveryContact = $recoveryCompany->contacts->first(); @endphp
+                @php
+                    $recoveryContact = $recoveryCompany->contact_id
+                        ? \App\Models\Contact::find($recoveryCompany->contact_id)
+                        : $recoveryCompany->contacts->first();
+                @endphp
                 @if ($recoveryContact?->email)
                     <div class="card-title">E-mail</div>
                     <p class="card-text">{{ $recoveryContact->email }}</p>
