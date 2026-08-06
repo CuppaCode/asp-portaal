@@ -65,9 +65,11 @@
                         <div class="col-10 content">
                             <div class="status">
 
+                                @php $isAdmin = auth()->user()->isAdmin ?? false; @endphp
                                 @if (isset($task->user->id))
-                                    @if (auth()->user()->id == $task->user->id)
-                                        <select class="js-task-status badge bg-success"
+                                    @if (auth()->user()->id == $task->user->id || $isAdmin)
+                                        <select class="js-task-status badge bg-success border-0 text-white text-center align-middle"
+                                            style="width:auto;display:inline-flex;align-items:center;justify-content:center;padding:0.25em 0.6em;font-size:0.85em;font-weight:700;line-height:1.2;border-radius:0.25rem;vertical-align:middle;height:2em;min-height:2em;text-align:center;"
                                             data-task-id="{{ $task->id }}">
 
                                             @foreach (App\Models\Task::STATUS_SELECT as $key => $status)
@@ -77,17 +79,42 @@
                                             @endforeach
 
                                         </select>
+                                            <span class="badge bg-warning js-task-edit-btn" data-task-id="{{ $task->id }}" style="cursor:pointer; width:auto; display:inline-flex; align-items:center; justify-content:center; padding:0.25em 0.6em; font-size:0.85em; font-weight:700; line-height:1.2; border-radius:0.25rem; vertical-align:middle; height:2em; min-height:2em; text-align:center;">Bewerk</span>
                                     @else
                                         <span
-                                            class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
+                                            class="badge bg-success" style="width:auto; display:inline-flex; align-items:center; justify-content:center; padding:0.25em 0.6em; font-size:0.85em; font-weight:700; line-height:1.2; border-radius:0.25rem; vertical-align:middle; height:2em; min-height:2em; text-align:center;">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
                                     @endif
-                                    <span class="badge bg-primary">{{ $deadline }}</span>
-                                    <span class="badge bg-info">{{ $task->user->name }}</span>
+                                    <span class="badge bg-primary" style="width:auto; display:inline-flex; align-items:center; justify-content:center; padding:0.25em 0.6em; font-size:0.85em; font-weight:700; line-height:1.2; border-radius:0.25rem; vertical-align:middle; height:2em; min-height:2em; text-align:center;">{{ $deadline }}</span>
+                                    <span class="badge bg-info" style="width:auto; display:inline-flex; align-items:center; justify-content:center; padding:0.25em 0.6em; font-size:0.85em; font-weight:700; line-height:1.2; border-radius:0.25rem; vertical-align:middle; height:2em; min-height:2em; text-align:center;">{{ $task->user->name }}</span>
                                 @endif
                                 
 
                             </div>
-                            {!! nl2br($task->description) !!}
+                            <div class="task-desc">{!! nl2br($task->description) !!}</div>
+                                <form class="js-task-edit-form" data-task-id="{{ $task->id }}" style="display:none;">
+                                    <div class="mb-2">
+                                        <label for="task-desc-{{ $task->id }}">Omschrijving</label>
+                                        <textarea class="form-control" id="task-desc-{{ $task->id }}" name="description">{{ $task->description }}</textarea>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="task-status-{{ $task->id }}">Status</label>
+                                        <select class="form-control" id="task-status-{{ $task->id }}" name="status">
+                                            @foreach (App\Models\Task::STATUS_SELECT as $key => $status)
+                                                <option value="{{ $key }}" {{ $task->status == $key ? 'selected' : '' }}>{{ $status }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="task-user-{{ $task->id }}">Toewijzen aan</label>
+                                        <select class="form-control" id="task-user-{{ $task->id }}" name="user_id">
+                                            @foreach (\App\Models\User::all() as $user)
+                                                <option value="{{ $user->id }}" {{ $task->user_id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">Opslaan</button>
+                                    <button type="button" class="btn btn-link btn-sm js-task-edit-cancel">Annuleren</button>
+                                </form>
 
                 @else
 

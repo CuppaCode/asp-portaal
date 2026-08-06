@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\TaskController;
 
 Route::group([
     'prefix' => 'v1',
@@ -8,6 +9,7 @@ Route::group([
     'namespace' => 'Admin',
     'middleware' => ['auth:sanctum']
 ], function () {
+    Route::post('/task/{task}', [TaskController::class, 'updateInline'])->middleware('auth:sanctum');
     
     
 });
