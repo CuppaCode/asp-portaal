@@ -125,3 +125,47 @@ Add to your pipeline:
 - name: Run Claim Form Tests
   run: php artisan test --filter PublicClaimFormTest
 ```
+
+## Manual Regression Checklist: Claim Mail Attachments
+
+Scope: claim dossier mail tab for logged-in users, including attachment size/count restrictions and attachment editing before submit.
+
+### Preconditions
+1. Logged in as admin or agent.
+2. Open a claim dossier and switch to the Mail tab.
+3. Ensure server upload limits are at least as high as app limits for this environment.
+
+### Attachment Queue Behavior (Remove/Add/Replace)
+1. Add 2 attachments and verify they appear in the selected attachments list.
+2. Remove 1 attachment and verify it disappears from the list and is not submitted.
+3. Add a new attachment after removal and verify it is appended and accepted.
+4. Replace an attachment using the "Vervangen" action and verify the file name and size update correctly.
+5. Use "Alle bijlagen wissen" and verify the list resets to no selected files.
+
+### Size/Count Validation (Backoffice)
+1. Upload 1 file larger than configured backoffice mail max size (default 25 MB) and verify submit is blocked with a clear error.
+2. Upload more than configured max file count (default 20) and verify submit is blocked with a clear error.
+3. Upload unsupported extension and verify validation message is shown.
+4. Upload valid files within limits and verify submit succeeds.
+
+### Oversized Request Recovery (PostTooLarge)
+1. Simulate request body larger than server POST limit.
+2. Verify user is redirected back to same claim page.
+3. Verify mail tab is active after redirect.
+4. Verify a clear recovery error is shown for attachments.
+
+### Public Claim Form Strictness
+1. Open token-based public claim form (not logged in).
+2. Upload a file larger than public max size (default 10 MB) and verify it is rejected.
+3. Upload more than public max file count (default 10) and verify it is rejected.
+4. Verify allowed extension checks are still enforced.
+
+### Activity Recovery
+1. Send a valid mail so a mail note appears in activities.
+2. Verify note delete button is visible only with note delete permission.
+3. Delete the note and verify it is removed from the activities list.
+
+### Suggested Follow-up Automation
+1. Add feature tests for claim mail request validation rules in the send endpoint.
+2. Add browser test coverage for client-side add/remove/replace queue behavior.
+3. Add browser test for redirect and error visibility on oversized requests.

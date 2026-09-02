@@ -870,9 +870,10 @@ function claimForm() {
 
         validateFiles(event, collection) {
             const files = event.target.files;
-            const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
-            const maxFiles = 10;
-            const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx'];
+            const maxFileSizeMb = {{ (int) config('file-uploads.contexts.public_claim_form.max_file_size_mb', 10) }};
+            const maxFileSize = maxFileSizeMb * 1024 * 1024;
+            const maxFiles = {{ (int) config('file-uploads.contexts.public_claim_form.max_files_per_collection', 10) }};
+            const allowedExtensions = @json(config('file-uploads.allowed_extensions', []));
             
             const errorContainer = document.querySelector(`[data-collection="${collection}"].file-error-message`);
             const successContainer = document.querySelector(`[data-collection="${collection}"].file-success-message`);
@@ -911,7 +912,7 @@ function claimForm() {
                 // Check file size
                 if (fileSize > maxFileSize) {
                     const fileSizeMB = (fileSize / 1024 / 1024).toFixed(2);
-                    errors.push(`"${fileName}": Bestand is te groot (${fileSizeMB} MB, max. 10 MB)`);
+                    errors.push(`"${fileName}": Bestand is te groot (${fileSizeMB} MB, max. ${maxFileSizeMb} MB)`);
                     continue;
                 }
                 

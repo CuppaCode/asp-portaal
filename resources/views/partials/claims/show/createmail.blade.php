@@ -1,5 +1,5 @@
 <div class="tab-pane pt-3" id="mailSection" role="tabpanel" aria-labelledby="mail-tab">
-    <form method="POST" action="{{ route('admin.claims.sendMail') }}"
+    <form id="claimMailForm" method="POST" action="{{ route('admin.claims.sendMail') }}"
         enctype="multipart/form-data">
         @csrf
         <div class="form-group">
@@ -83,7 +83,41 @@
             <div class="form-group">
 
                 <label for="mailAttachments">Bijlage</label>
-                <input type="file" name="mailAttachments[]" id="mailAttachments" multiple>
+                <input
+                    type="file"
+                    name="mailAttachments[]"
+                    id="mailAttachments"
+                    class="d-none"
+                    multiple
+                    data-max-files="{{ (int) config('file-uploads.contexts.backoffice_claim_mail.max_files', 20) }}"
+                    data-max-file-size-mb="{{ (int) config('file-uploads.contexts.backoffice_claim_mail.max_file_size_mb', 25) }}"
+                    data-allowed-extensions='@json(config('file-uploads.allowed_extensions', []))'
+                >
+                <small class="form-text text-muted">
+                    Maximaal {{ (int) config('file-uploads.contexts.backoffice_claim_mail.max_files', 20) }} bijlagen,
+                    {{ (int) config('file-uploads.contexts.backoffice_claim_mail.max_file_size_mb', 25) }} MB per bestand.
+                </small>
+                <div id="mailAttachmentErrors" class="alert alert-danger mt-2 d-none"></div>
+                <div id="mailAttachmentsList" class="mt-2"></div>
+                <div class="mt-2">
+                    <button type="button" id="mailAttachmentAddButton" class="btn btn-sm btn-outline-primary">Bestand toevoegen</button>
+                    <button type="button" id="mailAttachmentClearButton" class="btn btn-sm btn-outline-secondary">Alle bijlagen wissen</button>
+                </div>
+
+                @if ($errors->has('mailAttachments') || $errors->has('mailAttachments.*'))
+                    <div id="mailValidationErrors" class="alert alert-danger mt-2">
+                        @if ($errors->has('mailAttachments'))
+                            <div>{{ $errors->first('mailAttachments') }}</div>
+                        @endif
+                        @if ($errors->has('mailAttachments.*'))
+                            @foreach ($errors->get('mailAttachments.*') as $messages)
+                                @foreach ($messages as $message)
+                                    <div>{{ $message }}</div>
+                                @endforeach
+                            @endforeach
+                        @endif
+                    </div>
+                @endif
 
             </div>
             

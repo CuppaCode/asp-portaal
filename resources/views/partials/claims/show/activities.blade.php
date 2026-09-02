@@ -14,7 +14,7 @@
                         <div class="col-2 date-holder text-right">
                             <div class="icon"><i class="fa fa-user"></i></div>
                             <div class="date">
-                                <span>{{ $note->user->name ?? "Verwijderde gebruiker" }}</span><br>
+                                <span>{{ $note->user?->trashed() ? 'Verwijderde gebruiker' : ($note->user?->name ?? 'Verwijderde gebruiker') }}</span><br>
                                 <span class="text-info">{{ $note->created_at }}</span>
                             </div>
                         </div>
@@ -22,6 +22,16 @@
                         <div class="col-10 content">
     
                             <h5> {{ $note->title }}</h5>
+                            @can('note_delete')
+                                <form action="{{ route('admin.notes.destroy', $note->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" class="mb-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                        Verwijder notitie
+                                    </button>
+                                </form>
+                            @endcan
                             {!! nl2br($note->description) !!}
                             
                             @if($item->hasMedia('attachments'))
@@ -82,7 +92,7 @@
                                             class="badge bg-success">{{ App\Models\Task::STATUS_SELECT[$task->status] }}</span>
                                     @endif
                                     <span class="badge bg-primary">{{ $deadline }}</span>
-                                    <span class="badge bg-info">{{ $task->user->name }}</span>
+                                    <span class="badge bg-info">{{ $task->user->trashed() ? 'Verwijderde gebruiker' : $task->user->name }}</span>
                                 @endif
                                 
 
@@ -126,7 +136,7 @@
                             <div class="date">
             
                                 @if ($comment->user)
-                                    <span>{{ $comment->user->name }}</span>
+                                    <span>{{ $comment->user->trashed() ? 'Verwijderde gebruiker' : $comment->user->name }}</span>
                                 @endif
                                 <br>
                                 <span class="text-info">{{ $comment->created_at }}</span>

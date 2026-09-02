@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -43,6 +44,18 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (PostTooLargeException $e, $request) {
+            if ($request->routeIs('admin.claims.sendMail')) {
+                return redirect()
+                    ->back()
+                    ->withFragment('mailSection')
+                    ->withInput($request->except('mailAttachments'))
+                    ->withErrors([
+                        'mailAttachments' => 'De totale uploadgrootte is te groot. Verwijder of vervang bijlagen en probeer opnieuw.',
+                    ]);
+            }
         });
     }
 }

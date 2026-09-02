@@ -24,6 +24,12 @@ max_input_time = 300
 # File upload configuration
 FILE_UPLOAD_MAX_SIZE_MB=10         # Max individual file size
 FILE_UPLOAD_MAX_FILES=10           # Max files per collection
+FILE_UPLOAD_PUBLIC_MAX_SIZE_MB=10  # Public claim form (strict)
+FILE_UPLOAD_PUBLIC_MAX_FILES=10    # Public claim form (strict)
+FILE_UPLOAD_BACKOFFICE_MAX_SIZE_MB=25    # Logged-in claim create/edit
+FILE_UPLOAD_BACKOFFICE_MAX_FILES=20      # Logged-in claim create/edit
+FILE_UPLOAD_BACKOFFICE_MAIL_MAX_SIZE_MB=25   # Logged-in claim mail attachments
+FILE_UPLOAD_BACKOFFICE_MAIL_MAX_FILES=20     # Logged-in claim mail attachments
 FILE_UPLOAD_DISK=local             # Storage disk
 FILE_UPLOAD_PATH=uploads           # Storage path
 FILE_UPLOAD_VIRUS_SCAN=false       # Enable virus scanning (ClamAV)

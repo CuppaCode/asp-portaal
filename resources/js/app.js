@@ -430,6 +430,7 @@ $(document).ready(function () {
 
     // Handle template change
     setupMailBody();
+    setupMailAttachments();
 
     createWysiwyg(document.querySelectorAll('.ckeditor'));
 
@@ -528,6 +529,234 @@ function ajaxCreateDriver( inputID ) {
 
     return;
 
+}
+
+function setupMailAttachments() {
+    const mailForm = document.querySelector('#claimMailForm');
+    const input = document.querySelector('#mailAttachments');
+
+    if (!mailForm || !input) {
+        return;
+    }
+
+    const list = document.querySelector('#mailAttachmentsList');
+    const addButton = document.querySelector('#mailAttachmentAddButton');
+    const clearButton = document.querySelector('#mailAttachmentClearButton');
+    const errorContainer = document.querySelector('#mailAttachmentErrors');
+    const serverErrorContainer = document.querySelector('#mailValidationErrors');
+    const maxFiles = parseInt(input.dataset.maxFiles || '20', 10);
+    const maxFileSizeMb = parseInt(input.dataset.maxFileSizeMb || '25', 10);
+    const maxFileSizeBytes = maxFileSizeMb * 1024 * 1024;
+    const allowedExtensions = JSON.parse(input.dataset.allowedExtensions || '[]').map(item => String(item).toLowerCase());
+
+    let selectedFiles = [];
+
+    const mailTabToggle = document.querySelector('a[href="#mailSection"]');
+    if (mailTabToggle && serverErrorContainer) {
+        $(mailTabToggle).tab('show');
+    }
+
+    function getFileKey(file) {
+        return `${file.name}:${file.size}:${file.lastModified}`;
+    }
+
+    function bytesToMb(size) {
+        return (size / 1024 / 1024).toFixed(2);
+    }
+
+    function showErrors(messages) {
+        if (!errorContainer) {
+            return;
+        }
+
+        if (!messages.length) {
+            errorContainer.classList.add('d-none');
+            errorContainer.innerHTML = '';
+            return;
+        }
+
+        const html = '<ul class="mb-0 pl-3">' + messages.map(message => `<li>${message}</li>`).join('') + '</ul>';
+        errorContainer.innerHTML = html;
+        errorContainer.classList.remove('d-none');
+    }
+
+    function syncInputFiles() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+    }
+
+    function renderList() {
+        if (!list) {
+            return;
+        }
+
+        if (selectedFiles.length === 0) {
+            list.innerHTML = '<small class="text-muted">Geen bijlagen geselecteerd.</small>';
+            return;
+        }
+
+        const items = selectedFiles.map((file, index) => {
+            const escapedName = file.name.replace(/"/g, '&quot;');
+            return `
+                <div class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mb-2">
+                    <div>
+                        <strong>${escapedName}</strong>
+                        <small class="text-muted">(${bytesToMb(file.size)} MB)</small>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary mr-1" data-replace-index="${index}">Vervangen</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-remove-index="${index}">Verwijderen</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        list.innerHTML = items.join('');
+
+        list.querySelectorAll('[data-remove-index]').forEach(button => {
+            button.addEventListener('click', function () {
+                const index = parseInt(this.dataset.removeIndex, 10);
+                selectedFiles.splice(index, 1);
+                syncInputFiles();
+                renderList();
+                showErrors([]);
+            });
+        });
+
+        list.querySelectorAll('[data-replace-index]').forEach(button => {
+            button.addEventListener('click', function () {
+                const index = parseInt(this.dataset.replaceIndex, 10);
+                const replacementInput = document.createElement('input');
+                replacementInput.type = 'file';
+                replacementInput.style.display = 'none';
+
+                replacementInput.addEventListener('change', function () {
+                    const replacementFile = replacementInput.files && replacementInput.files[0] ? replacementInput.files[0] : null;
+                    if (!replacementFile) {
+                        document.body.removeChild(replacementInput);
+                        return;
+                    }
+
+                    const errors = [];
+                    const extension = replacementFile.name.includes('.') ? replacementFile.name.split('.').pop().toLowerCase() : '';
+
+                    if (allowedExtensions.length && !allowedExtensions.includes(extension)) {
+                        errors.push(`Bestand ${replacementFile.name} heeft een niet-ondersteunde extensie (.${extension}).`);
+                    }
+
+                    if (replacementFile.size > maxFileSizeBytes) {
+                        errors.push(`Bestand ${replacementFile.name} is ${bytesToMb(replacementFile.size)} MB. Maximaal ${maxFileSizeMb} MB toegestaan.`);
+                    }
+
+                    if (errors.length > 0) {
+                        showErrors(errors);
+                        document.body.removeChild(replacementInput);
+                        return;
+                    }
+
+                    selectedFiles[index] = replacementFile;
+                    syncInputFiles();
+                    renderList();
+                    showErrors([]);
+                    document.body.removeChild(replacementInput);
+                });
+
+                document.body.appendChild(replacementInput);
+                replacementInput.click();
+            });
+        });
+    }
+
+    function mergeSelectedFiles(newFiles) {
+        const errors = [];
+        const currentKeys = new Set(selectedFiles.map(getFileKey));
+
+        newFiles.forEach(file => {
+            if (selectedFiles.length >= maxFiles) {
+                errors.push(`Maximaal ${maxFiles} bijlagen toegestaan.`);
+                return;
+            }
+
+            const extension = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+            if (allowedExtensions.length && !allowedExtensions.includes(extension)) {
+                errors.push(`Bestand ${file.name} heeft een niet-ondersteunde extensie (.${extension}).`);
+                return;
+            }
+
+            if (file.size > maxFileSizeBytes) {
+                errors.push(`Bestand ${file.name} is ${bytesToMb(file.size)} MB. Maximaal ${maxFileSizeMb} MB toegestaan.`);
+                return;
+            }
+
+            const fileKey = getFileKey(file);
+            if (currentKeys.has(fileKey)) {
+                return;
+            }
+
+            selectedFiles.push(file);
+            currentKeys.add(fileKey);
+        });
+
+        syncInputFiles();
+        renderList();
+        showErrors(errors);
+    }
+
+    input.addEventListener('change', function () {
+        const newFiles = Array.from(input.files || []);
+        if (newFiles.length === 0) {
+            return;
+        }
+
+        if (serverErrorContainer) {
+            serverErrorContainer.remove();
+        }
+
+        mergeSelectedFiles(newFiles);
+    });
+
+    if (addButton) {
+        addButton.addEventListener('click', function () {
+            input.click();
+        });
+    }
+
+    if (clearButton) {
+        clearButton.addEventListener('click', function () {
+            selectedFiles = [];
+            syncInputFiles();
+            renderList();
+            showErrors([]);
+            input.value = '';
+        });
+    }
+
+    mailForm.addEventListener('submit', function (event) {
+        if (selectedFiles.length > maxFiles) {
+            event.preventDefault();
+            showErrors([`Maximaal ${maxFiles} bijlagen toegestaan.`]);
+            return;
+        }
+
+        const validationErrors = [];
+        selectedFiles.forEach(file => {
+            const extension = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+            if (allowedExtensions.length && !allowedExtensions.includes(extension)) {
+                validationErrors.push(`Bestand ${file.name} heeft een niet-ondersteunde extensie (.${extension}).`);
+            }
+            if (file.size > maxFileSizeBytes) {
+                validationErrors.push(`Bestand ${file.name} is ${bytesToMb(file.size)} MB. Maximaal ${maxFileSizeMb} MB toegestaan.`);
+            }
+        });
+
+        if (validationErrors.length > 0) {
+            event.preventDefault();
+            showErrors(validationErrors);
+        }
+    });
+
+    renderList();
 }
 
 function ajaxCreateCompany( inputID, typeID = null ) {
