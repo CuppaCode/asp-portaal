@@ -33,6 +33,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Context Specific Upload Limits
+    |--------------------------------------------------------------------------
+    |
+    | Separate limits for public and authenticated claim flows.
+    |
+    */
+    'contexts' => [
+        'public_claim_form' => [
+            'max_file_size_mb' => env('FILE_UPLOAD_PUBLIC_MAX_SIZE_MB', 10),
+            'max_files_per_collection' => env('FILE_UPLOAD_PUBLIC_MAX_FILES', 10),
+        ],
+        'backoffice_claim' => [
+            'max_file_size_mb' => env('FILE_UPLOAD_BACKOFFICE_MAX_SIZE_MB', 25),
+            'max_files_per_collection' => env('FILE_UPLOAD_BACKOFFICE_MAX_FILES', 20),
+        ],
+        'backoffice_claim_mail' => [
+            'max_file_size_mb' => env('FILE_UPLOAD_BACKOFFICE_MAIL_MAX_SIZE_MB', 25),
+            'max_files' => env('FILE_UPLOAD_BACKOFFICE_MAIL_MAX_FILES', 20),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Allowed MIME Types
     |--------------------------------------------------------------------------
     |

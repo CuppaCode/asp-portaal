@@ -1058,17 +1058,20 @@ $(document).ready(function() {
     });
 });
 
+const claimUploadMaxFileSizeMb = {{ (int) config('file-uploads.contexts.backoffice_claim.max_file_size_mb', 25) }};
+const claimUploadMaxFiles = {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) }};
+
 var uploadedDamageFilesMap = {}
 Dropzone.options.damageFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
-    maxFilesize: 5, // MB
-    maxFiles: {{ 10 + $claim->damage_files->count() }},
+    maxFilesize: claimUploadMaxFileSizeMb,
+    maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->damage_files->count() }},
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
     params: {
-      size: 5
+            size: claimUploadMaxFileSizeMb
     },
     success: function (file, response) {
       $('form').append('<input type="hidden" name="damage_files[]" value="' + response.name + '">')
@@ -1114,7 +1117,7 @@ Dropzone.options.damageFilesDropzone = {
      },
      maxfilesexceeded: function (file) {
          this.removeFile(file)
-         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
+         alert(`U kunt maximaal ${claimUploadMaxFiles} nieuwe bestanden per categorie uploaden.`)
      }
 }
 </script>
@@ -1122,14 +1125,14 @@ Dropzone.options.damageFilesDropzone = {
     var uploadedReportFilesMap = {}
 Dropzone.options.reportFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
-    maxFilesize: 5, // MB
-    maxFiles: {{ 10 + $claim->report_files->count() }},
+    maxFilesize: claimUploadMaxFileSizeMb,
+    maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->report_files->count() }},
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
     params: {
-      size: 5
+            size: claimUploadMaxFileSizeMb
     },
     success: function (file, response) {
       $('form').append('<input type="hidden" name="report_files[]" value="' + response.name + '">')
@@ -1175,7 +1178,7 @@ Dropzone.options.reportFilesDropzone = {
      },
      maxfilesexceeded: function (file) {
          this.removeFile(file)
-         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
+         alert(`U kunt maximaal ${claimUploadMaxFiles} nieuwe bestanden per categorie uploaden.`)
      }
 }
 </script>
@@ -1183,14 +1186,14 @@ Dropzone.options.reportFilesDropzone = {
     var uploadedFinancialFilesMap = {}
 Dropzone.options.financialFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
-    maxFilesize: 5, // MB
-    maxFiles: {{ 10 + $claim->financial_files->count() }},
+    maxFilesize: claimUploadMaxFileSizeMb,
+    maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->financial_files->count() }},
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
     params: {
-      size: 5
+            size: claimUploadMaxFileSizeMb
     },
     success: function (file, response) {
       $('form').append('<input type="hidden" name="financial_files[]" value="' + response.name + '">')
@@ -1236,7 +1239,7 @@ Dropzone.options.financialFilesDropzone = {
      },
      maxfilesexceeded: function (file) {
          this.removeFile(file)
-         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
+         alert(`U kunt maximaal ${claimUploadMaxFiles} nieuwe bestanden per categorie uploaden.`)
      }
 }
 </script>
@@ -1244,14 +1247,14 @@ Dropzone.options.financialFilesDropzone = {
     var uploadedOtherFilesMap = {}
 Dropzone.options.otherFilesDropzone = {
     url: '{{ route('admin.claims.storeMedia') }}',
-    maxFilesize: 5, // MB
-    maxFiles: {{ 10 + $claim->other_files->count() }},
+    maxFilesize: claimUploadMaxFileSizeMb,
+    maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->other_files->count() }},
     addRemoveLinks: true,
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
     params: {
-      size: 5
+            size: claimUploadMaxFileSizeMb
     },
     success: function (file, response) {
       $('form').append('<input type="hidden" name="other_files[]" value="' + response.name + '">')
@@ -1297,7 +1300,7 @@ Dropzone.options.otherFilesDropzone = {
      },
      maxfilesexceeded: function (file) {
          this.removeFile(file)
-         alert('U kunt maximaal 10 nieuwe bestanden per categorie uploaden.')
+         alert(`U kunt maximaal ${claimUploadMaxFiles} nieuwe bestanden per categorie uploaden.`)
      }
 }
 

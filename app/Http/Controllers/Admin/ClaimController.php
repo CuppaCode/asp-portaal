@@ -767,6 +767,45 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $uploadConfig = config('file-uploads');
+        $mailContext = $uploadConfig['contexts']['backoffice_claim_mail'] ?? [];
+        $maxFiles = (int) ($mailContext['max_files'] ?? 20);
+        $maxFileSizeMb = (int) ($mailContext['max_file_size_mb'] ?? 25);
+
+        $allowedExtensions = array_map('strtolower', $uploadConfig['allowed_extensions'] ?? []);
+
+        $allowedMimeTypes = [];
+        foreach (($uploadConfig['allowed_mime_types'] ?? []) as $types) {
+            $allowedMimeTypes = array_merge($allowedMimeTypes, $types);
+        }
+        $allowedMimeTypes = array_values(array_unique($allowedMimeTypes));
+
+        $request->validate([
+            'mailReceiver' => ['required', 'array', 'min:1'],
+            'mailReceiver.*' => ['required', 'email'],
+            'mailCc' => ['nullable', 'array'],
+            'mailCc.*' => ['email'],
+            'mailBcc' => ['nullable', 'array'],
+            'mailBcc.*' => ['email'],
+            'mailSubject' => ['required', 'string', 'max:255'],
+            'mailBody' => ['required', 'string'],
+            'mailReplyTo' => ['nullable', 'email'],
+            'claims' => ['required', 'array', 'min:1'],
+            'claims.*' => ['integer'],
+            'mailAttachments' => ['nullable', 'array', 'max:' . $maxFiles],
+            'mailAttachments.*' => [
+                'file',
+                'max:' . ($maxFileSizeMb * 1024),
+                'mimetypes:' . implode(',', $allowedMimeTypes),
+                'mimes:' . implode(',', $allowedExtensions),
+            ],
+        ], [
+            'mailAttachments.max' => "U kunt maximaal {$maxFiles} bijlagen toevoegen.",
+            'mailAttachments.*.max' => "Een bijlage is te groot. Maximum is {$maxFileSizeMb} MB per bestand.",
+            'mailAttachments.*.mimes' => 'Een of meer bijlagen hebben een niet-ondersteunde extensie.',
+            'mailAttachments.*.mimetypes' => 'Een of meer bijlagen hebben een niet-ondersteund bestandstype.',
+        ]);
+
         $replyTo = trim((string) ($request->input('mailReplyTo') ?: $request->input('reply_to') ?: config('mail.reply_to_default', 'schade@autoschadeplan.nl')));
 
         $attachments = null;
@@ -854,7 +893,7 @@ class ClaimController extends Controller {
         $note->claims()->sync($request->input('claims', []));
 
 
-        return redirect()->back()->with('message', 'Mail is verstuurd en gelogd in dossier');
+        return redirect()->back()->withFragment('mailSection')->with('message', 'Mail is verstuurd en gelogd in dossier');
 
     }
 

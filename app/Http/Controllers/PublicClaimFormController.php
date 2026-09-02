@@ -472,9 +472,11 @@ class PublicClaimFormController extends Controller
     {
         $fileCollections = ['damage_files', 'report_files', 'financial_files', 'other_files'];
         $config = config('file-uploads');
+        $publicContext = $config['contexts']['public_claim_form'] ?? [];
         
-        $maxFilesPerCollection = $config['max_files_per_collection'] ?? 10;
-        $maxFileSize = ($config['max_file_size_mb'] ?? 10) * 1024 * 1024; // Convert MB to bytes
+        $maxFilesPerCollection = (int) ($publicContext['max_files_per_collection'] ?? ($config['max_files_per_collection'] ?? 10));
+        $maxFileSizeMb = (int) ($publicContext['max_file_size_mb'] ?? ($config['max_file_size_mb'] ?? 10));
+        $maxFileSize = $maxFileSizeMb * 1024 * 1024; // Convert MB to bytes
         
         // Build allowed MIME types list
         $allowedMimeTypes = [];
@@ -500,7 +502,7 @@ class PublicClaimFormController extends Controller
                     // Validate file size
                     if ($file->getSize() > $maxFileSize) {
                         $sizeMB = round($file->getSize() / 1024 / 1024, 2);
-                        $maxSizeMB = $config['max_file_size_mb'] ?? 10;
+                        $maxSizeMB = $maxFileSizeMb;
                         \Log::warning("File too large: {$file->getClientOriginalName()} ({$sizeMB}MB, max: {$maxSizeMB}MB)", ['claim_id' => $claim->id]);
                         continue;
                     }
