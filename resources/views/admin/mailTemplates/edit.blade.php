@@ -74,6 +74,17 @@
             </div>
 
             <div class="form-group">
+                <label for="reply_to">{{ trans('cruds.mailTemplates.fields.reply_to') }}</label>
+                <input class="form-control {{ $errors->has('reply_to') ? 'is-invalid' : '' }}" type="email" name="reply_to" id="reply_to" value="{{ old('reply_to', $mailTemplate->reply_to) }}">
+                @if($errors->has('reply_to'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('reply_to') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.mailTemplates.fields.reply_to_helper') }}</span>
+            </div>
+
+            <div class="form-group">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $mailTemplate->is_active) ? 'checked' : '' }}>
                     <label class="form-check-label" for="is_active">

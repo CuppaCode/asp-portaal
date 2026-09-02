@@ -29,6 +29,7 @@ class MailTemplate extends Model implements HasMedia
         'subject',
         'body',
         'trigger_type',
+        'reply_to',
         'is_active',
         'is_automatic',
         'created_at',

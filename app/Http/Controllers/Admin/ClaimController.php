@@ -767,6 +767,8 @@ class ClaimController extends Controller {
     {
         abort_if(Gate::denies('claim_create') && Gate::denies('claim_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $replyTo = trim((string) ($request->input('mailReplyTo') ?: $request->input('reply_to') ?: config('mail.reply_to_default', 'schade@autoschadeplan.nl')));
+
         $attachments = null;
         if ($request->hasFile('mailAttachments')) {
             $attachments = array_map(fn($file) => [
@@ -780,7 +782,8 @@ class ClaimController extends Controller {
             $request->mailBody ?? '',
             $attachments,
             $request->mailCc ?? [],
-            $request->mailBcc ?? []
+            $request->mailBcc ?? [],
+            $replyTo ?: null
         );
 
         foreach($request->mailReceiver as $receiver) {
@@ -795,9 +798,13 @@ class ClaimController extends Controller {
 
 
         $receiverString = implode(', ', $request->mailReceiver);
+        $mailCcValue = is_array($request->mailCc) ? implode(', ', $request->mailCc) : (string) ($request->mailCc ?? '');
+        $mailBccValue = is_array($request->mailBcc) ? implode(', ', $request->mailBcc) : (string) ($request->mailBcc ?? '');
 
         $noteDescription = "Ontvanger(s): {$receiverString}<br/>
-        CC: {$request->cc}<br/>
+        CC: {$mailCcValue}<br/>
+        BCC: {$mailBccValue}<br/>
+        Antwoord naar: {$replyTo}<br/>
         Onderwerp: {$request->mailSubject}<br/>
         Bericht: {$request->mailBody}";
 
@@ -815,13 +822,21 @@ class ClaimController extends Controller {
         }
 
         // Example mail-sending logic with CC
-        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString, $note) {
+        Mail::send('emails.plain-email', ['body' => $request->mailBody], function ($message) use ($request, $receiverString, $note, $replyTo) {
             $message->to(explode(',', $receiverString))
                     ->subject($request->mailSubject);
 
+            if (!empty($replyTo)) {
+                $message->replyTo($replyTo);
+            }
+
             // Add CC recipients if provided
-            if ($request->filled('cc')) {
-                $message->cc(explode(',', $request->cc));
+            if ($request->filled('mailCc')) {
+                $message->cc($request->mailCc);
+            }
+
+            if ($request->filled('mailBcc')) {
+                $message->bcc($request->mailBcc);
             }
 
             // Add attachments if provided

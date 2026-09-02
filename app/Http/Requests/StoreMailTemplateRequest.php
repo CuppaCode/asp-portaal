@@ -27,6 +27,10 @@ class StoreMailTemplateRequest extends FormRequest
                 'nullable',
                 'string'
             ],
+            'reply_to' => [
+                'nullable',
+                'email'
+            ],
             'is_active' => [
                 'nullable',
                 'boolean'

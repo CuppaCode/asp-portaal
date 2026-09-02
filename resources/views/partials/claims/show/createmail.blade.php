@@ -53,11 +53,17 @@
 
                     @foreach ($mailTemplates as $id => $entry)
                         <option value="{{ $entry->body }}"
-                            data-subject="{{ $entry->subject ?? '' }}">{{ $entry->name ?? '' }}
+                            data-subject="{{ $entry->subject ?? '' }}"
+                            data-reply-to="{{ $entry->reply_to ?? '' }}">{{ $entry->name ?? '' }}
                         </option>
                     @endforeach
                 </select>
 
+            </div>
+
+            <div class="form-group">
+                <label for="mailReplyTo">Antwoord naar</label>
+                <input type="email" class="form-control" name="mailReplyTo" id="mailReplyTo" value="{{ config('mail.reply_to_default', 'schade@autoschadeplan.nl') }}">
             </div>
             <div class="form-group">
 

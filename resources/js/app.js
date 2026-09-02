@@ -747,7 +747,7 @@ async function setupMailBody() {
     const nativeMailBody = document.querySelector('#mailBody');
 
     const mailSubject = $('#mailSubject');
-
+    const mailReplyTo = $('#mailReplyTo');
     const mailTemplate = $('#mailTemplate');
 
     const claimText = $('#claimJson');
@@ -928,6 +928,10 @@ async function setupMailBody() {
             });
     }
 
+    const defaultReplyTo = 'schade@autoschadeplan.nl';
+    const currentReplyTo = mailReplyTo.val() || defaultReplyTo;
+    mailReplyTo.val(currentReplyTo);
+
     const ckeditor = await ClassicEditor.create(nativeMailBody);
     ckeditor.setData(finalBody);
     mailSubject.val(finalSubject);
@@ -935,6 +939,7 @@ async function setupMailBody() {
     mailTemplate.on('change', function (e) {
         var finalSubject = $('option:selected', this).data('subject') ?? '';
         var finalBody = $(this).val() ?? '';
+        var templateReplyTo = $('option:selected', this).data('replyTo') ?? '';
         $.each(find, (index, item) => {
             finalBody = finalBody.replaceAll(item, replace[index]);
             finalSubject = finalSubject.replaceAll(item, replace[index]);
@@ -947,6 +952,12 @@ async function setupMailBody() {
             });
         ckeditor.setData(finalBody);
         mailSubject.val(finalSubject);
+
+        if (templateReplyTo) {
+            mailReplyTo.val(templateReplyTo);
+        } else if (!mailReplyTo.val()) {
+            mailReplyTo.val(defaultReplyTo);
+        }
     });
 
    

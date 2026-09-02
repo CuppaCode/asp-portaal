@@ -102,6 +102,8 @@ return [
         'name' => env('MAIL_FROM_NAME', 'ASP Portaal')
     ],
 
+    'reply_to_default' => env('MAIL_REPLY_TO_DEFAULT', 'schade@autoschadeplan.nl'),
+
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings

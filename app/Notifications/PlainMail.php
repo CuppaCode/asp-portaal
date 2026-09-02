@@ -17,17 +17,19 @@ class PlainMail extends Notification
     protected $attachments;
     protected $cc;
     protected $bcc;
+    protected $replyTo;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($subject, $message, $attachments = null, $cc = [], $bcc = [])
+    public function __construct($subject, $message, $attachments = null, $cc = [], $bcc = [], $replyTo = null)
     {
         $this->subject = $subject;
         $this->message = $message;
         $this->attachments = $attachments;
         $this->cc = $cc;
         $this->bcc = $bcc;
+        $this->replyTo = $replyTo;
     }
 
     /**
@@ -58,6 +60,10 @@ class PlainMail extends Notification
 
         if (!empty($this->bcc)) {
             $mailMessage->bcc($this->bcc);
+        }
+
+        if (!empty($this->replyTo)) {
+            $mailMessage->replyTo($this->replyTo);
         }
       
         if($this->attachments) {

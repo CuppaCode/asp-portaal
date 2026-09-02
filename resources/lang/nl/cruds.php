@@ -641,6 +641,8 @@ return [
             'body_helper' => '',
             'trigger_type' => 'Triggertype',
             'trigger_type_helper' => 'Wanneer deze template wordt gebruikt',
+            'reply_to' => 'Antwoord naar',
+            'reply_to_helper' => 'Adres waar replies op terechtkomen. Laat leeg om de standaard fallback te gebruiken.',
             'is_active' => 'Actief',
             'is_active_helper' => 'Alleen actieve templates worden gebruikt',
             'is_automatic' => 'Automatisch',
