@@ -1,4 +1,157 @@
 @extends('layouts.admin')
+@section('styles')
+<style>
+    .attachments-card .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .attachment-group-header {
+        gap: 0.75rem;
+    }
+
+    .attachment-dropzone-shell {
+        border-radius: 0.75rem;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        padding: 0.25rem;
+    }
+
+    .attachment-dropzone-shell .dropzone {
+        min-height: 56px;
+        border: 1px dashed #c9d4df;
+        border-radius: 0.65rem;
+        background: #fff;
+        padding: 0.35rem;
+    }
+
+    .attachment-dropzone-shell .dropzone.dz-started {
+        padding-bottom: 0;
+    }
+
+    .attachment-dropzone-shell .dz-message {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #52616d;
+    }
+
+    .attachment-dropzone-shell .dz-preview {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 0.1rem 0.75rem;
+        width: 100%;
+        min-height: 0;
+        margin: 0.2rem 0 0;
+        padding: 0.25rem 0.45rem 0.5rem;
+        border: 1px solid #edf2f7;
+        border-radius: 0.5rem;
+        background: #fff;
+    }
+
+    .attachment-dropzone-shell .dz-preview .dz-image {
+        display: none;
+    }
+
+    .attachment-dropzone-shell .dz-preview .dz-details {
+        position: static;
+        flex: 1 1 0;
+        flex: 1;
+        min-width: 0;
+        padding: 0;
+        background: transparent;
+        text-align: left;
+        opacity: 1;
+        overflow: visible;
+    }
+
+    .attachment-dropzone-shell .dz-preview .attachment-file-title {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0;
+    }
+
+    .attachment-dropzone-shell .dz-preview .attachment-file-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem 0.4rem;
+        max-width: 100%;
+        font-size: 0.78rem;
+        color: #475569;
+        opacity: 1;
+        max-height: none;
+        margin-top: 0.05rem;
+        line-height: 1.25;
+        white-space: normal;
+    }
+
+    .attachment-dropzone-shell .dz-preview .attachment-file-meta .attachment-file-meta-item {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.15rem 0.35rem;
+        border-radius: 999px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+    }
+
+    .attachment-dropzone-shell .dz-preview .dz-progress {
+        position: absolute;
+        left: 0.45rem;
+        right: 0.45rem;
+        bottom: 0.18rem;
+        width: auto;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .attachment-dropzone-shell .dz-preview .dz-remove {
+        flex: 0 0 auto;
+        margin-left: auto;
+        padding: 0.25rem 0.45rem;
+        border-radius: 0.5rem;
+        color: #b91c1c;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        align-self: center;
+    }
+
+    .attachment-dropzone-shell .dz-preview .dz-remove:hover {
+        background: #fef2f2;
+        text-decoration: none;
+    }
+
+    .attachment-dropzone-shell .dz-preview .dz-details > .attachment-file-title,
+    .attachment-dropzone-shell .dz-preview .dz-details > .attachment-file-meta {
+        display: block;
+    }
+
+    .attachment-group-header .btn-group {
+        display: flex;
+        gap: 0.65rem;
+    }
+
+    .attachment-group-header .btn-group .btn {
+        border-radius: 0.5rem !important;
+        margin-left: 0 !important;
+    }
+
+    .attachment-dropzone-shell .dz-preview:hover .dz-filename,
+    .attachment-dropzone-shell .dz-preview:focus-within .dz-filename,
+    .attachment-dropzone-shell .dz-preview:hover .dz-size,
+    .attachment-dropzone-shell .dz-preview:focus-within .dz-size {
+        opacity: 1;
+        max-height: 1.5rem;
+    }
+</style>
+@endsection
 @section('content')
 
 @php 
@@ -950,14 +1103,22 @@
             </div>
         </div>
     </div>
-    <div id="attachments" class="card">
+    <div id="attachments" class="card attachments-card">
         <div class="card-header">
             Bijlages
         </div>
         <div class="card-body">
             <div class="form-group">
-                <label for="report_files">{{ trans('cruds.claim.fields.report_files') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('report_files') ? 'is-invalid' : '' }}" id="report_files-dropzone">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2 attachment-group-header">
+                    <label class="mb-0" for="report_files">{{ trans('cruds.claim.fields.report_files') }}</label>
+                    <div class="btn-group btn-group-sm attachment-group-actions">
+                        <button type="button" class="btn btn-outline-primary" id="report_files-add">Bestand toevoegen</button>
+                        <button type="button" class="btn btn-outline-secondary" id="report_files-clear">Alles wissen</button>
+                    </div>
+                </div>
+                <div class="attachment-dropzone-shell">
+                    <div class="needsclick dropzone {{ $errors->has('report_files') ? 'is-invalid' : '' }}" id="report_files-dropzone">
+                    </div>
                 </div>
                 @if($errors->has('report_files'))
                     <div class="invalid-feedback">
@@ -967,8 +1128,16 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.report_files_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="financial_files">{{ trans('cruds.claim.fields.financial_files') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('financial_files') ? 'is-invalid' : '' }}" id="financial_files-dropzone">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2 attachment-group-header">
+                    <label class="mb-0" for="financial_files">{{ trans('cruds.claim.fields.financial_files') }}</label>
+                    <div class="btn-group btn-group-sm attachment-group-actions">
+                        <button type="button" class="btn btn-outline-primary" id="financial_files-add">Bestand toevoegen</button>
+                        <button type="button" class="btn btn-outline-secondary" id="financial_files-clear">Alles wissen</button>
+                    </div>
+                </div>
+                <div class="attachment-dropzone-shell">
+                    <div class="needsclick dropzone {{ $errors->has('financial_files') ? 'is-invalid' : '' }}" id="financial_files-dropzone">
+                    </div>
                 </div>
                 @if($errors->has('financial_files'))
                     <div class="invalid-feedback">
@@ -978,8 +1147,16 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.financial_files_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="damage_files">{{ trans('cruds.claim.fields.damage_files') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('damage_files') ? 'is-invalid' : '' }}" id="damage_files-dropzone">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2 attachment-group-header">
+                    <label class="mb-0" for="damage_files">{{ trans('cruds.claim.fields.damage_files') }}</label>
+                    <div class="btn-group btn-group-sm attachment-group-actions">
+                        <button type="button" class="btn btn-outline-primary" id="damage_files-add">Bestand toevoegen</button>
+                        <button type="button" class="btn btn-outline-secondary" id="damage_files-clear">Alles wissen</button>
+                    </div>
+                </div>
+                <div class="attachment-dropzone-shell">
+                    <div class="needsclick dropzone {{ $errors->has('damage_files') ? 'is-invalid' : '' }}" id="damage_files-dropzone">
+                    </div>
                 </div>
                 @if($errors->has('damage_files'))
                     <div class="invalid-feedback">
@@ -989,8 +1166,16 @@
                 <span class="help-block">{{ trans('cruds.claim.fields.damage_files_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="other_files">{{ trans('cruds.claim.fields.other_files') }}</label>
-                <div class="needsclick dropzone {{ $errors->has('other_files') ? 'is-invalid' : '' }}" id="other_files-dropzone">
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2 attachment-group-header">
+                    <label class="mb-0" for="other_files">{{ trans('cruds.claim.fields.other_files') }}</label>
+                    <div class="btn-group btn-group-sm attachment-group-actions">
+                        <button type="button" class="btn btn-outline-primary" id="other_files-add">Bestand toevoegen</button>
+                        <button type="button" class="btn btn-outline-secondary" id="other_files-clear">Alles wissen</button>
+                    </div>
+                </div>
+                <div class="attachment-dropzone-shell">
+                    <div class="needsclick dropzone {{ $errors->has('other_files') ? 'is-invalid' : '' }}" id="other_files-dropzone">
+                    </div>
                 </div>
                 @if($errors->has('other_files'))
                     <div class="invalid-feedback">
@@ -1060,6 +1245,123 @@ $(document).ready(function() {
 
 const claimUploadMaxFileSizeMb = {{ (int) config('file-uploads.contexts.backoffice_claim.max_file_size_mb', 25) }};
 const claimUploadMaxFiles = {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) }};
+window.claimAttachmentDropzones = window.claimAttachmentDropzones || {};
+
+function bindClaimAttachmentControls(key, fieldName) {
+    const addButton = document.getElementById(fieldName + '-add');
+    const clearButton = document.getElementById(fieldName + '-clear');
+
+    if (addButton) {
+        addButton.addEventListener('click', function () {
+            const dropzone = window.claimAttachmentDropzones[key];
+            if (dropzone && dropzone.hiddenFileInput) {
+                dropzone.hiddenFileInput.click();
+            }
+        });
+    }
+
+    if (clearButton) {
+        clearButton.addEventListener('click', function () {
+            const dropzone = window.claimAttachmentDropzones[key];
+            if (dropzone) {
+                dropzone.removeAllFiles(true);
+            }
+        });
+    }
+}
+
+function formatAttachmentBytes(size) {
+    if (!size && size !== 0) {
+        return '';
+    }
+
+    const mb = size / (1024 * 1024);
+    if (mb >= 1) {
+        return `${mb.toFixed(1)} MB`;
+    }
+
+    const kb = size / 1024;
+    return `${Math.max(kb, 0.1).toFixed(kb >= 10 ? 0 : 1)} KB`;
+}
+
+function formatAttachmentDate(value) {
+    if (!value) {
+        return '';
+    }
+
+    const date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return '';
+    }
+
+    return new Intl.DateTimeFormat('nl-NL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date);
+}
+
+function renderAttachmentPreview(file, meta = {}) {
+    const previewElement = file.previewElement;
+
+    if (!previewElement) {
+        return;
+    }
+
+    const details = previewElement.querySelector('.dz-details');
+    if (!details) {
+        return;
+    }
+
+    details.innerHTML = '';
+
+    const title = document.createElement('div');
+    title.className = 'attachment-file-title';
+
+    const info = document.createElement('div');
+    info.className = 'attachment-file-meta';
+
+    const fileName = meta.fileName || file.name || 'Onbekend bestand';
+    const fileSize = meta.size ?? file.size;
+    const fileType = meta.type || file.type || '';
+    const uploadedAt = meta.uploadedAt || meta.createdAt || meta.date || '';
+
+    title.textContent = fileName;
+
+    const metaParts = [];
+    if (fileSize) {
+        metaParts.push(formatAttachmentBytes(fileSize));
+    }
+    if (fileType) {
+        metaParts.push(fileType);
+    }
+    if (uploadedAt) {
+        const formattedDate = formatAttachmentDate(uploadedAt);
+        if (formattedDate) {
+            metaParts.push(formattedDate);
+        }
+    }
+
+    metaParts.forEach((part) => {
+        const item = document.createElement('span');
+        item.className = 'attachment-file-meta-item';
+        item.textContent = part;
+        info.appendChild(item);
+    });
+
+    details.appendChild(title);
+    details.appendChild(info);
+}
+
+function getAttachmentFilename(fileName) {
+    if (!fileName) {
+        return '';
+    }
+
+    return fileName.replace(/^\d+_/, '');
+}
 
 var uploadedDamageFilesMap = {}
 Dropzone.options.damageFilesDropzone = {
@@ -1067,6 +1369,7 @@ Dropzone.options.damageFilesDropzone = {
     maxFilesize: claimUploadMaxFileSizeMb,
     maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->damage_files->count() }},
     addRemoveLinks: true,
+        dictRemoveFile: 'bestand verwijderen',
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
@@ -1076,6 +1379,12 @@ Dropzone.options.damageFilesDropzone = {
     success: function (file, response) {
       $('form').append('<input type="hidden" name="damage_files[]" value="' + response.name + '">')
       uploadedDamageFilesMap[file.name] = response.name
+            renderAttachmentPreview(file, {
+                    fileName: getAttachmentFilename(response.name),
+                    size: file.size,
+                    type: file.type,
+                    uploadedAt: new Date(),
+            })
     },
     removedfile: function (file) {
       file.previewElement.remove()
@@ -1088,6 +1397,7 @@ Dropzone.options.damageFilesDropzone = {
       $('form').find('input[name="damage_files[]"][value="' + name + '"]').remove()
     },
     init: function () {
+                window.claimAttachmentDropzones.damage = this;
 @if(isset($claim) && $claim->damage_files)
           var files =
             {!! json_encode($claim->damage_files) !!}
@@ -1095,6 +1405,12 @@ Dropzone.options.damageFilesDropzone = {
               var file = files[i]
               this.options.addedfile.call(this, file)
               file.previewElement.classList.add('dz-complete')
+                            renderAttachmentPreview(file, {
+                                    fileName: getAttachmentFilename(file.file_name),
+                                    size: file.size,
+                                    type: file.mime_type,
+                                    uploadedAt: file.created_at,
+                            })
               $('form').append('<input type="hidden" name="damage_files[]" value="' + file.file_name + '">')
             }
 @endif
@@ -1128,6 +1444,7 @@ Dropzone.options.reportFilesDropzone = {
     maxFilesize: claimUploadMaxFileSizeMb,
     maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->report_files->count() }},
     addRemoveLinks: true,
+        dictRemoveFile: 'bestand verwijderen',
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
@@ -1137,6 +1454,12 @@ Dropzone.options.reportFilesDropzone = {
     success: function (file, response) {
       $('form').append('<input type="hidden" name="report_files[]" value="' + response.name + '">')
       uploadedReportFilesMap[file.name] = response.name
+            renderAttachmentPreview(file, {
+                    fileName: getAttachmentFilename(response.name),
+                    size: file.size,
+                    type: file.type,
+                    uploadedAt: new Date(),
+            })
     },
     removedfile: function (file) {
       file.previewElement.remove()
@@ -1149,6 +1472,7 @@ Dropzone.options.reportFilesDropzone = {
       $('form').find('input[name="report_files[]"][value="' + name + '"]').remove()
     },
     init: function () {
+                window.claimAttachmentDropzones.report = this;
 @if(isset($claim) && $claim->report_files)
           var files =
             {!! json_encode($claim->report_files) !!}
@@ -1156,6 +1480,12 @@ Dropzone.options.reportFilesDropzone = {
               var file = files[i]
               this.options.addedfile.call(this, file)
               file.previewElement.classList.add('dz-complete')
+                            renderAttachmentPreview(file, {
+                                    fileName: getAttachmentFilename(file.file_name),
+                                    size: file.size,
+                                    type: file.mime_type,
+                                    uploadedAt: file.created_at,
+                            })
               $('form').append('<input type="hidden" name="report_files[]" value="' + file.file_name + '">')
             }
 @endif
@@ -1189,6 +1519,7 @@ Dropzone.options.financialFilesDropzone = {
     maxFilesize: claimUploadMaxFileSizeMb,
     maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->financial_files->count() }},
     addRemoveLinks: true,
+        dictRemoveFile: 'bestand verwijderen',
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
@@ -1198,6 +1529,12 @@ Dropzone.options.financialFilesDropzone = {
     success: function (file, response) {
       $('form').append('<input type="hidden" name="financial_files[]" value="' + response.name + '">')
       uploadedFinancialFilesMap[file.name] = response.name
+            renderAttachmentPreview(file, {
+                    fileName: getAttachmentFilename(response.name),
+                    size: file.size,
+                    type: file.type,
+                    uploadedAt: new Date(),
+            })
     },
     removedfile: function (file) {
       file.previewElement.remove()
@@ -1210,6 +1547,7 @@ Dropzone.options.financialFilesDropzone = {
       $('form').find('input[name="financial_files[]"][value="' + name + '"]').remove()
     },
     init: function () {
+                window.claimAttachmentDropzones.financial = this;
 @if(isset($claim) && $claim->financial_files)
           var files =
             {!! json_encode($claim->financial_files) !!}
@@ -1217,6 +1555,12 @@ Dropzone.options.financialFilesDropzone = {
               var file = files[i]
               this.options.addedfile.call(this, file)
               file.previewElement.classList.add('dz-complete')
+                            renderAttachmentPreview(file, {
+                                    fileName: getAttachmentFilename(file.file_name),
+                                    size: file.size,
+                                    type: file.mime_type,
+                                    uploadedAt: file.created_at,
+                            })
               $('form').append('<input type="hidden" name="financial_files[]" value="' + file.file_name + '">')
             }
 @endif
@@ -1250,6 +1594,7 @@ Dropzone.options.otherFilesDropzone = {
     maxFilesize: claimUploadMaxFileSizeMb,
     maxFiles: {{ (int) config('file-uploads.contexts.backoffice_claim.max_files_per_collection', 20) + $claim->other_files->count() }},
     addRemoveLinks: true,
+        dictRemoveFile: 'bestand verwijderen',
     headers: {
       'X-CSRF-TOKEN': "{{ csrf_token() }}"
     },
@@ -1259,6 +1604,12 @@ Dropzone.options.otherFilesDropzone = {
     success: function (file, response) {
       $('form').append('<input type="hidden" name="other_files[]" value="' + response.name + '">')
       uploadedOtherFilesMap[file.name] = response.name
+            renderAttachmentPreview(file, {
+                    fileName: getAttachmentFilename(response.name),
+                    size: file.size,
+                    type: file.type,
+                    uploadedAt: new Date(),
+            })
     },
     removedfile: function (file) {
       file.previewElement.remove()
@@ -1271,6 +1622,7 @@ Dropzone.options.otherFilesDropzone = {
       $('form').find('input[name="other_files[]"][value="' + name + '"]').remove()
     },
     init: function () {
+                window.claimAttachmentDropzones.other = this;
 @if(isset($claim) && $claim->other_files)
           var files =
             {!! json_encode($claim->other_files) !!}
@@ -1278,6 +1630,12 @@ Dropzone.options.otherFilesDropzone = {
               var file = files[i]
               this.options.addedfile.call(this, file)
               file.previewElement.classList.add('dz-complete')
+                            renderAttachmentPreview(file, {
+                                    fileName: getAttachmentFilename(file.file_name),
+                                    size: file.size,
+                                    type: file.mime_type,
+                                    uploadedAt: file.created_at,
+                            })
               $('form').append('<input type="hidden" name="other_files[]" value="' + file.file_name + '">')
             }
 @endif
@@ -1341,6 +1699,13 @@ function formatLicensePlate(plate) {
 }
 
 // Apply formatting to license plate input
+
+document.addEventListener('DOMContentLoaded', function () {
+    bindClaimAttachmentControls('damage', 'damage_files');
+    bindClaimAttachmentControls('report', 'report_files');
+    bindClaimAttachmentControls('financial', 'financial_files');
+    bindClaimAttachmentControls('other', 'other_files');
+});
 $('#vehicle_plates_opposite').on('input', function() {
     var formatted = formatLicensePlate($(this).val());
     $(this).val(formatted);
