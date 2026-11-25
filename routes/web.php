@@ -112,10 +112,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('certificate/{driver}', 'CertificateController@store')->name('certificate.store');
     Route::post('certificate/{certificate}/renew', 'CertificateController@renew')->name('certificate.renew');
     Route::post('certificate/bulk-renew', 'CertificateController@bulkRenew')->name('certificate.bulk-renew');
-    Route::patch('certificate/{certificate}/dates', 'CertificateController@updateDates')->name('certificate.update-dates');
-    Route::post('certificate/{certificate}/code95-courses', 'CertificateController@storeCode95Course')->name('certificate.code95-courses.store');
-    Route::put('certificate/code95-courses/{course}', 'CertificateController@updateCode95Course')->name('certificate.code95-courses.update');
-    Route::delete('certificate/code95-courses/{course}', 'CertificateController@destroyCode95Course')->name('certificate.code95-courses.destroy');
     Route::resource('certificate', 'CertificateController')->except(['create', 'store']);
     // Certificate categories
     Route::get('certificate-categories/search', 'CertificateCategoryController@search')->name('certificate-categories.search');
@@ -193,52 +189,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         Groet,
         Tester';
         return $markdown->render("emails.plain-email", ['body' => $data]);
-    });
-
-    // Academy
-    Route::group(['prefix' => 'academy', 'as' => 'academy.', 'namespace' => 'Academy'], function () {
-        // Overview (Nu te doen / Bewaken)
-        Route::get('/', 'OverviewController@index')->name('overview');
-        Route::post('routine', 'OverviewController@toggleRoutine')->name('routine.toggle');
-        Route::post('monitoring/{certificate}/new-document', 'OverviewController@newDocument')->name('monitoring.new-document');
-
-        // Employers
-        Route::get('employers', 'EmployerController@index')->name('employers.index');
-        Route::post('employers', 'EmployerController@store')->name('employers.store');
-        Route::get('employers/{company}', 'EmployerController@show')->name('employers.show');
-        Route::get('employers/{company}/forms', 'EmployerController@forms')->name('employers.forms');
-        Route::post('employers/{company}/academy', 'EmployerController@toggle')->name('employers.toggle');
-        Route::post('employers/{company}/drivers', 'EmployerController@storeDriver')->name('employers.drivers.store');
-
-        // Checklist items
-        Route::post('items/{item}/toggle', 'ChecklistItemController@toggle')->name('items.toggle');
-        Route::post('items/{item}/not-applicable', 'ChecklistItemController@notApplicable')->name('items.na');
-        Route::post('items/{item}/undo', 'ChecklistItemController@undo')->name('items.undo');
-
-        // Driver cards
-        Route::get('driver-cards/{driver}', 'DriverCardController@edit')->name('driver-cards.edit');
-        Route::get('driver-cards/{driver}/form', 'DriverCardController@form')->name('driver-cards.form');
-        Route::put('driver-cards/{driver}', 'DriverCardController@update')->name('driver-cards.update');
-        Route::post('driver-cards/{driver}/courses', 'DriverCardController@storeCourse')->name('driver-cards.courses.store');
-        Route::delete('driver-cards/{driver}/courses/{course}', 'DriverCardController@destroyCourse')->name('driver-cards.courses.destroy');
-        Route::post('driver-cards/{driver}/check', 'DriverCardController@check')->name('driver-cards.check');
-        Route::post('driver-cards/{driver}/comment', 'DriverCardController@comment')->name('driver-cards.comment');
-
-        // Trainings
-        Route::get('trainings', 'TrainingController@index')->name('trainings.index');
-        Route::get('trainings/create', 'TrainingController@create')->name('trainings.create');
-        Route::post('trainings', 'TrainingController@store')->name('trainings.store');
-        Route::get('trainings/{training}', 'TrainingController@show')->name('trainings.show');
-        Route::put('trainings/{training}', 'TrainingController@update')->name('trainings.update');
-        Route::post('trainings/{training}/participants', 'TrainingController@addParticipants')->name('trainings.participants.store');
-        Route::post('trainings/{training}/participants/new', 'TrainingController@newParticipant')->name('trainings.participants.new');
-        Route::patch('trainings/{training}/participants/{participant}', 'TrainingController@updateParticipant')->name('trainings.participants.update');
-        Route::delete('trainings/{training}/participants/{participant}', 'TrainingController@removeParticipant')->name('trainings.participants.destroy');
-        Route::post('trainings/{training}/close', 'TrainingController@close')->name('trainings.close');
-
-        // Mail
-        Route::get('mail/compose', 'MailController@compose')->name('mail.compose');
-        Route::post('mail/send', 'MailController@send')->name('mail.send');
     });
 
     // Ajax routes

@@ -67,12 +67,6 @@ class MailTriggerService
             'recipients' => 'Primary contact person of the company',
             'available_tags' => ['bedrijf', 'dossiernr', 'contact_naam', 'kenteken', 'datumschade', 'verwijtbaar'],
         ],
-        'ACADEMY' => [
-            'name' => 'Academy',
-            'description' => 'Academy mails (M1 - M13), sent manually from the Academy module',
-            'recipients' => 'Selected by the Academy module based on the template (werkgever, opleider, chauffeur)',
-            'available_tags' => ['bedrijf', 'contactpersoon', 'voornaam contactpersoon', 'chauffeur', 'voornaam', 'training', 'datum training', 'document', 'vervaldatum'],
-        ],
     ];
 
     /**

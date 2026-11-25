@@ -23,12 +23,14 @@
                         <th width="10"></th>
                         <th>{{ trans('cruds.certificateCategory.fields.id') }}</th>
                         <th>{{ trans('cruds.certificateCategory.fields.name') }}</th>
+                        <th>{{ trans('cruds.certificateCategory.fields.duration') }}</th>
                         <th>&nbsp;</th>
                     </tr>
                     <tr>
                         <td></td>
                         <td><input class="search" type="text" placeholder="{{ trans('global.search') }}"></td>
                         <td><input class="search" type="text" placeholder="{{ trans('global.search') }}"></td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </thead>
@@ -38,6 +40,7 @@
                             <td></td>
                             <td>{{ $category->id ?? '' }}</td>
                             <td>{{ $category->name ?? '' }}</td>
+                            <td>{{ $category->duration ?? '' }} maanden</td>
                             <td>
                                 @can('certificate_category_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.certificate-categories.show', $category->id) }}">{{ trans('global.view') }}</a>

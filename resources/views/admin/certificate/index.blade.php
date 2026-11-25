@@ -10,7 +10,7 @@
             @can('certificate_access')
             <div class="card mb-3" id="bulkRenewalToolbar" style="display: none;">
                 <div class="card-body">
-                    <form action="{{ route('admin.certificate.bulk-renew') }}" method="POST" id="bulkRenewalForm">
+                    <form action="{{ route('certificate.bulk-renew') }}" method="POST" id="bulkRenewalForm">
                         @csrf
                         <div class="row align-items-end">
                             <div class="col-md-4">
@@ -35,7 +35,7 @@
 
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Overzicht certificaten per type</span>
+                    <span>Overzicht certificaten per categorie</span>
                     @can('certificate_access')
                     <div>
                         <input type="checkbox" id="selectAllCertificates" onchange="toggleSelectAll()">
@@ -58,7 +58,7 @@
                                                 @php
                                                     $expiry = $certificate->expiry_date ? \Carbon\Carbon::parse($certificate->expiry_date) : null;
                                                     $expired = $expiry ? $expiry->lte(\Carbon\Carbon::now()) : false;
-                                                    $driverName = $certificate->driver?->trashed() ? 'Verwijderde chauffeur' : ($certificate->driver?->driver_name ?? ($certificate->driver?->contact?->first_name . ' ' . $certificate->driver?->contact?->last_name ?? 'Niet gevonden'));
+                                                    $driverName = $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden');
                                                 @endphp
                                                 <li class="list-group-item">
                                                     <div class="d-flex justify-content-between align-items-center">
@@ -100,7 +100,7 @@
                             @endforeach
                         </div>
                     @else
-                        Geen certificaattypes gevonden
+                        Geen categorieën gevonden
                     @endif
                 </div>
             </div>

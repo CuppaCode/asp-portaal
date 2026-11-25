@@ -57,15 +57,6 @@ class Company extends Model implements HasMedia
         'start_fee',
         'claims_fee',
         'additional_costs',
-        'academy_enabled',
-        'academy_started_at',
-        'academy_completed_at',
-    ];
-
-    protected $casts = [
-        'academy_enabled' => 'boolean',
-        'academy_started_at' => 'date',
-        'academy_completed_at' => 'date',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -87,31 +78,6 @@ class Company extends Model implements HasMedia
     public function team()
     {
         return $this->belongsTo(Team::class, 'team_id');
-    }
-
-    public function scopeAcademy($query)
-    {
-        return $query->where('academy_enabled', true);
-    }
-
-    public function contactPerson()
-    {
-        return $this->belongsTo(Contact::class, 'contact_id')->withTrashed();
-    }
-
-    public function drivers()
-    {
-        return $this->hasMany(Driver::class);
-    }
-
-    public function academyTrainings()
-    {
-        return $this->hasMany(AcademyTraining::class);
-    }
-
-    public function academyItems()
-    {
-        return $this->morphMany(AcademyChecklistItem::class, 'subject');
     }
 
     public function contacts()

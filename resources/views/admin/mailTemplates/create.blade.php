@@ -63,7 +63,6 @@
                     <option value="TASK_ASSIGNED" {{ $selectedTrigger == 'TASK_ASSIGNED' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.TASK_ASSIGNED.name') }}</option>
                     <option value="MANUAL_CLAIMS" {{ $selectedTrigger == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
                     <option value="MANUAL_GENERAL" {{ $selectedTrigger == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
-                    <option value="ACADEMY" {{ $selectedTrigger == 'ACADEMY' ? 'selected' : '' }}>Academy</option>
                     <option value="VERWIJTBAAR_SET" {{ $selectedTrigger == 'VERWIJTBAAR_SET' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.VERWIJTBAAR_SET.name') }}</option>
                 </select>
                 @if($errors->has('trigger_type'))
@@ -73,8 +72,6 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.mailTemplates.fields.trigger_type_helper') }}</span>
             </div>
-
-            @include('admin.mailTemplates._academy_fields')
 
             <div class="form-group">
                 <label for="reply_to">{{ trans('cruds.mailTemplates.fields.reply_to') }}</label>

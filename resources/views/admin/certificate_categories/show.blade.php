@@ -21,13 +21,17 @@
                         <th>{{ trans('cruds.certificateCategory.fields.name') }}</th>
                         <td>{{ $certificateCategory->name }}</td>
                     </tr>
+                    <tr>
+                        <th>{{ trans('cruds.certificateCategory.fields.duration') }}</th>
+                        <td>{{ $certificateCategory->duration }} maanden</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
         
         {{-- Certificates list as a table --}}
         <div class="mt-4">
-            <h5>Certificaten met dit type</h5>
+            <h5>Certificaten in deze categorie</h5>
             @if($certificateCategory->certificates && $certificateCategory->certificates->count())
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
@@ -46,7 +50,7 @@
                                 @php
                                     $expiry = $certificate->expiry_date ? \Carbon\Carbon::parse($certificate->expiry_date) : null;
                                     $expired = $expiry ? $expiry->lte(\Carbon\Carbon::now()) : false;
-                                    $driverName = $certificate->driver?->trashed() ? 'Verwijderde chauffeur' : ($certificate->driver?->driver_name ?? ($certificate->driver?->contact?->first_name . ' ' . $certificate->driver?->contact?->last_name ?? 'Niet gevonden'));
+                                    $driverName = $certificate->driver->driver_name ?? ($certificate->driver->contact->first_name . ' ' . $certificate->driver->contact->last_name ?? 'Niet gevonden');
                                 @endphp
                                 <tr class="@if($expired) table-danger @endif">
                                     <td>{{ $certificate->id }}</td>
@@ -71,7 +75,7 @@
                     </table>
                 </div>
             @else
-                <div class="text-muted">Geen certificaten voor dit type</div>
+                <div class="text-muted">Geen certificaten in deze categorie</div>
             @endif
         </div>
     </div>

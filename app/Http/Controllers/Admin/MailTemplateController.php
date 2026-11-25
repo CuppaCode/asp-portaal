@@ -36,9 +36,7 @@ class MailTemplateController extends Controller
 
     public function store(StoreMailTemplateRequest $request)
     {
-        $mailTemplate = MailTemplate::create($request->except(['attachments', 'remove_attachment_ids']));
-
-        $this->syncAttachments($request, $mailTemplate);
+        $mailTemplate = MailTemplate::create($request->all());
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $mailTemplate->id]);
@@ -58,25 +56,9 @@ class MailTemplateController extends Controller
 
     public function update(UpdateMailTemplateRequest $request, MailTemplate $mailTemplate)
     {
-        $mailTemplate->update($request->except(['attachments', 'remove_attachment_ids']));
-
-        $this->syncAttachments($request, $mailTemplate);
+        $mailTemplate->update($request->all());
 
         return redirect()->route('admin.mail-templates.index');
-    }
-
-    /**
-     * Attachments that are sent with every mail of this template (e.g. Academy forms F1 and F2).
-     */
-    protected function syncAttachments(Request $request, MailTemplate $mailTemplate): void
-    {
-        foreach ($request->input('remove_attachment_ids', []) as $mediaId) {
-            $mailTemplate->getMedia('attachments')->firstWhere('id', (int) $mediaId)?->delete();
-        }
-
-        foreach ($request->file('attachments', []) as $file) {
-            $mailTemplate->addMedia($file)->preservingOriginal()->toMediaCollection('attachments');
-        }
     }
 
     public function destroy(MailTemplate $mailTemplate)

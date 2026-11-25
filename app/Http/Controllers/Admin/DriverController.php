@@ -61,7 +61,7 @@ class DriverController extends Controller
     {
         abort_if(Gate::denies('driver_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $driver->load('team', 'driverVehicles', 'driverVehicleOpposites', 'contact.company', 'certificates.category', 'certificates.metaFields', 'certificates.media', 'certificates.code95Courses');
+        $driver->load('team', 'driverVehicles', 'driverVehicleOpposites');
 
         return view('admin.drivers.show', compact('driver'));
     }

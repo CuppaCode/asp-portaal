@@ -777,13 +777,15 @@ return [
     ]
     ,
     'certificateCategory' => [
-        'title' => 'Certificaattypes',
-        'title_singular' => 'Certificaattype',
+        'title' => 'Certificaat Categorieën',
+        'title_singular' => 'Certificaat Categorie',
         'fields' => [
             'id' => 'ID',
             'id_helper' => ' ',
             'name' => 'Naam',
             'name_helper' => ' ',
+            'duration' => 'Duur (maanden)',
+            'duration_helper' => ' ',
             'created_at' => 'Aangemaakt op',
             'created_at_helper' => ' ',
             'updated_at' => 'Bijgewerkt op',

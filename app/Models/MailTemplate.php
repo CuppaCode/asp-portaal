@@ -26,9 +26,6 @@ class MailTemplate extends Model implements HasMedia
 
     protected $fillable = [
         'name',
-        'code',
-        'recipient_rule',
-        'cc_rule',
         'subject',
         'body',
         'trigger_type',

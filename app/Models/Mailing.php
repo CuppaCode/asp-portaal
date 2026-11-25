@@ -36,8 +36,6 @@ class Mailing extends Model implements HasMedia
         'sent_at',
         'user_id',
         'mail_template_id',
-        'context_type',
-        'context_id',
         'team_id',
         'created_at',
         'updated_at',
@@ -48,7 +46,6 @@ class Mailing extends Model implements HasMedia
         'recipients' => 'array',
         'cc' => 'array',
         'bcc' => 'array',
-        'sent_at' => 'datetime',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -61,14 +58,9 @@ class Mailing extends Model implements HasMedia
         return $this->belongsToMany(Claim::class);
     }
 
-    public function context()
-    {
-        return $this->morphTo();
-    }
-
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->withTrashed();
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function team()

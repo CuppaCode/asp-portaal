@@ -12,11 +12,11 @@
             <input type="hidden" name="back_to" value="{{ url()->previous() }}">
 
             <div class="form-group">
-                <label class="required" for="category_id">Certificaattype</label>
+                <label for="category_id">Categorie</label>
                 @php $oldCategory = old('category_id') ? \App\Models\CertificateCategory::find(old('category_id')) : null; @endphp
-                <select id="category_id" name="category_id" class="form-control select2 {{ $errors->has('category_id') ? 'is-invalid' : '' }}" required>
+                <select id="category_id" name="category_id" class="form-control select2 {{ $errors->has('category_id') ? 'is-invalid' : '' }}">
                     @if($oldCategory)
-                        <option value="{{ $oldCategory->id }}" selected data-code="{{ $oldCategory->module_key }}">{{ $oldCategory->name }}</option>
+                        <option value="{{ $oldCategory->id }}" selected data-duration="{{ $oldCategory->duration }}">{{ $oldCategory->name }}</option>
                     @endif
                 </select>
                 @if($errors->has('category_id'))
@@ -27,47 +27,34 @@
             </div>
 
             <div class="form-group">
-                <label class="required" for="issue_date">Datum afgifte</label>
-                <input class="form-control date custom_datepicker {{ $errors->has('issue_date') ? 'is-invalid' : '' }}" type="text" name="issue_date" id="issue_date" value="{{ old('issue_date') }}" required>
-                @if($errors->has('issue_date'))
+                <label class="required" for="name">{{ trans('cruds.contact.fields.name') }}</label>
+                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('first_name', '') }}" required>
+                @if($errors->has('name'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('issue_date') }}
+                        {{ $errors->first('name') }}
+                    </div>
+                @endif
+                
+            </div>
+
+            <div class="form-group">
+                <label for="notify_date">{{ trans('cruds.claim.fields.notify_date') }}</label>
+                <input class="form-control date custom_datepicker {{ $errors->has('notify_date') ? 'is-invalid' : '' }}" type="text" name="notify_date" id="notify_date" value="{{ old('notify_date') }}">
+                @if($errors->has('notify_date'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('notify_date') }}
                     </div>
                 @endif
             </div>
 
             <div class="form-group">
-                <label class="required" for="expiry_date">Geldig tot</label>
-                <input class="form-control date custom_datepicker {{ $errors->has('expiry_date') ? 'is-invalid' : '' }}" type="text" name="expiry_date" id="expiry_date" value="{{ old('expiry_date') }}" required>
+                <label for="expiry_date">{{ trans('cruds.claim.fields.expiry_date') }}</label>
+                <input class="form-control date custom_datepicker {{ $errors->has('expiry_date') ? 'is-invalid' : '' }}" type="text" name="expiry_date" id="expiry_date" value="{{ old('expiry_date') }}">
                 @if($errors->has('expiry_date'))
                     <div class="invalid-feedback">
                         {{ $errors->first('expiry_date') }}
                     </div>
                 @endif
-            </div>
-
-            <div class="form-group">
-                <label for="card_number">Kaartnummer</label>
-                <input class="form-control {{ $errors->has('card_number') ? 'is-invalid' : '' }}" type="text" name="card_number" id="card_number" value="{{ old('card_number') }}">
-                @if($errors->has('card_number'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('card_number') }}
-                    </div>
-                @endif
-            </div>
-
-            <div class="form-group">
-                <label for="attachments">Certificaat en scans</label>
-                <input class="form-control {{ $errors->has('attachments') || $errors->has('attachments.*') ? 'is-invalid' : '' }}"
-                       type="file" name="attachments[]" id="attachments" accept=".pdf,.jpg,.jpeg,.png" multiple>
-                <div class="form-text">PDF, JPG of PNG. Maximaal 10 MB per bestand, maximaal 10 bestanden.</div>
-                @if($errors->has('attachments') || $errors->has('attachments.*'))
-                    <div class="invalid-feedback d-block">{{ $errors->first('attachments') ?: $errors->first('attachments.*') }}</div>
-                @endif
-            </div>
-
-            <div id="module-fields-container">
-                @include('admin.certificate.partials.module-fields')
             </div>
 
             <div class="form-group d-flex gap-2">
@@ -87,86 +74,19 @@
 @section('scripts')
 <script>
     $(function(){
-        const moduleFieldSchemas = @json($moduleFieldSchemas ?? []);
-        const moduleFieldValues = @json($moduleFieldValues ?? []);
-
-        function escapeHtml(value) {
-            return String(value)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/\"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+        // Category select2 with ajax search
+        function setExpiryFromDuration(duration) {
+            if (!duration) return;
+            var now = new Date();
+            var target = new Date(now.getFullYear(), now.getMonth() + parseInt(duration), now.getDate());
+            var dd = String(target.getDate()).padStart(2, '0');
+            var mm = String(target.getMonth() + 1).padStart(2, '0');
+            var yyyy = target.getFullYear();
+            var formatted = dd + '-' + mm + '-' + yyyy;
+            $('#expiry_date').val(formatted);
         }
-
-        function buildModuleFieldHtml(definitions) {
-            if (!definitions || definitions.length === 0) {
-                return '';
-            }
-
-            const fieldsHtml = definitions.map((definition) => {
-                const key = definition.key;
-                const label = definition.label || key;
-                const type = definition.type || 'text';
-                const required = definition.required ? 'required' : '';
-                const min = typeof definition.min !== 'undefined' ? `min="${definition.min}"` : '';
-                const max = typeof definition.max !== 'undefined' ? `max="${definition.max}"` : '';
-                const step = typeof definition.step !== 'undefined' ? `step="${definition.step}"` : '';
-                const name = `module_fields[${key}]`;
-                const id = `module_field_${key}`;
-                const value = Object.prototype.hasOwnProperty.call(moduleFieldValues, key) ? moduleFieldValues[key] : '';
-                const escapedValue = escapeHtml(value ?? '');
-
-                if (type === 'textarea') {
-                    return `
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="${id}">${label}</label>
-                                <textarea class="form-control" id="${id}" name="${name}" rows="3">${escapedValue}</textarea>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                const inputType = type === 'number' ? 'number' : (type === 'date' ? 'date' : 'text');
-
-                return `
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="${id}">${label}</label>
-                            <input class="form-control" type="${inputType}" id="${id}" name="${name}" value="${escapedValue}" ${required} ${min} ${max} ${step}>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            return `
-                <div class="card mt-3">
-                    <div class="card-header">Type-specifieke velden</div>
-                    <div class="card-body">
-                        <div class="row">${fieldsHtml}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderModuleFieldsByKey(moduleKey) {
-            const container = document.getElementById('module-fields-container');
-            if (!container) return;
-
-            const definitions = moduleFieldSchemas[moduleKey] || [];
-            const hasServerErrors = container.querySelector('.is-invalid') !== null;
-
-            if (hasServerErrors) {
-                return;
-            }
-
-            container.innerHTML = buildModuleFieldHtml(definitions);
-        }
-
-        // Certificate type select2 with ajax search
         $('#category_id').select2({
-            placeholder: 'Selecteer of zoek certificaattype',
+            placeholder: 'Selecteer of zoek categorie',
             allowClear: true,
                 tags: true,
                 ajax: {
@@ -199,23 +119,23 @@
                             var tmpOption = $('#category_id').find('option[value="' + selected.id + '"]');
                             if (tmpOption.length) {
                                 tmpOption.attr('value', res.id);
-                                tmpOption.attr('data-code', res.code);
+                                tmpOption.attr('data-duration', res.duration);
                                 $('#category_id').trigger('change');
                             } else {
                                 var newOption = new Option(res.name, res.id, true, true);
-                                $(newOption).attr('data-code', res.code);
+                                $(newOption).attr('data-duration', res.duration);
                                 $('#category_id').append(newOption).trigger('change');
                             }
-                            if (typeof sendFlashMessage === 'function') sendFlashMessage('Certificaattype aangemaakt', 'alert-success');
-                            renderModuleFieldsByKey(res.code);
+                            if (typeof sendFlashMessage === 'function') sendFlashMessage('Categorie aangemaakt', 'alert-success');
+                            setExpiryFromDuration(res.duration);
                         })
                         .fail(function () {
-                            if (typeof sendFlashMessage === 'function') sendFlashMessage('Kon certificaattype niet aanmaken', 'alert-danger');
+                            if (typeof sendFlashMessage === 'function') sendFlashMessage('Kon categorie niet aanmaken', 'alert-danger');
                         });
                 } else {
                     // existing selection
-                    var code = selected.code || $('#category_id').find('option[value="' + selected.id + '"]').data('code');
-                    renderModuleFieldsByKey(code);
+                    var duration = selected.duration || $('#category_id').find('option[value="' + selected.id + '"]').data('duration');
+                    setExpiryFromDuration(duration);
                 }
             });
 
@@ -223,11 +143,15 @@
             $('#category_id').on('change', function (e) {
                 var data = $('#category_id').select2('data')[0];
                 if (!data) return;
-                var code = data.code || $('#category_id').find('option[value="' + data.id + '"]').data('code');
-                renderModuleFieldsByKey(code);
+                var duration = data.duration || $('#category_id').find('option[value="' + data.id + '"]').data('duration');
+                setExpiryFromDuration(duration);
             });
 
-            renderModuleFieldsByKey('{{ $selectedModuleKey ?? '' }}');
+            // if there's already a selected option on load (old value), set expiry
+            var initial = $('#category_id').find('option:selected');
+            if (initial.length && initial.data('duration')) {
+                setExpiryFromDuration(initial.data('duration'));
+            }
     });
 </script>
 @endsection
