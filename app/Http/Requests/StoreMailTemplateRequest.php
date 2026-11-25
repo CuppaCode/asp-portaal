@@ -31,6 +31,11 @@ class StoreMailTemplateRequest extends FormRequest
                 'nullable',
                 'email'
             ],
+            'code' => ['nullable', 'string', 'max:20'],
+            'recipient_rule' => ['nullable', 'in:werkgever,opleider,chauffeur,deelnemers,intern'],
+            'cc_rule' => ['nullable', 'in:werkgever'],
+            'attachments' => ['nullable', 'array', 'max:10'],
+            'attachments.*' => ['file', 'max:10240', 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png'],
             'is_active' => [
                 'nullable',
                 'boolean'

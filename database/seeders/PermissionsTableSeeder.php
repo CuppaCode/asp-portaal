@@ -433,7 +433,15 @@ class PermissionsTableSeeder extends Seeder
             [
                 'id'    => 106,
                 'title' => 'mailing_delete',
-            ]
+            ],
+            [
+                'id'    => 107,
+                'title' => 'academy_access',
+            ],
+            [
+                'id'    => 108,
+                'title' => 'academy_manage',
+            ],
         ];
 
         Permission::upsert($permissions, ['title'], ['title']);

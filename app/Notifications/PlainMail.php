@@ -18,11 +18,15 @@ class PlainMail extends Notification
     protected $cc;
     protected $bcc;
     protected $replyTo;
+    protected $from;
+    protected $withSalutation;
 
     /**
      * Create a new notification instance.
+     *
+     * @param array|null $from [address, name] to override the default sender
      */
-    public function __construct($subject, $message, $attachments = null, $cc = [], $bcc = [], $replyTo = null)
+    public function __construct($subject, $message, $attachments = null, $cc = [], $bcc = [], $replyTo = null, $from = null, $withSalutation = true)
     {
         $this->subject = $subject;
         $this->message = $message;
@@ -30,6 +34,8 @@ class PlainMail extends Notification
         $this->cc = $cc;
         $this->bcc = $bcc;
         $this->replyTo = $replyTo;
+        $this->from = $from;
+        $this->withSalutation = $withSalutation;
     }
 
     /**
@@ -51,7 +57,11 @@ class PlainMail extends Notification
             ->subject($this->subject)
             ->greeting('') // No greeting for template-based emails
             ->line(new HtmlString($this->message))
-            ->salutation(new HtmlString("Bedankt, <br>" . config('app.name')));
+            ->salutation(new HtmlString($this->withSalutation ? "Bedankt, <br>" . config('app.name') : ''));
+
+        if (!empty($this->from['address'] ?? null)) {
+            $mailMessage->from($this->from['address'], $this->from['name'] ?? null);
+        }
 
         // Add CC recipients if provided
         if(!empty($this->cc)) {

@@ -52,6 +52,10 @@ return [
             'max_file_size_mb' => env('FILE_UPLOAD_BACKOFFICE_MAIL_MAX_SIZE_MB', 25),
             'max_files' => env('FILE_UPLOAD_BACKOFFICE_MAIL_MAX_FILES', 20),
         ],
+        'academy_mail' => [
+            'max_file_size_mb' => env('FILE_UPLOAD_ACADEMY_MAIL_MAX_SIZE_MB', 25),
+            'max_files' => env('FILE_UPLOAD_ACADEMY_MAIL_MAX_FILES', 10),
+        ],
     ],
 
     /*

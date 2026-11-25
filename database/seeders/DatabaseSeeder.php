@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             RoleUserTableSeeder::class,
             CertificateCategorySeeder::class,
+            AcademyCertificateCategorySeeder::class,
+            AcademyMailTemplateSeeder::class,
         ]);
     }
 }
