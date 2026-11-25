@@ -27,7 +27,25 @@ class Driver extends Model
         'deleted_at',
         'team_id',
         'company_id',
-        'contact_id'
+        'contact_id',
+        'function',
+        'in_service',
+        'out_of_service_at',
+        'street',
+        'zipcode',
+        'city',
+        'cbr_customer_number',
+        'driver_pass_number',
+        'scans_attached',
+        'checked_by_user_id',
+        'checked_at',
+    ];
+
+    protected $casts = [
+        'in_service' => 'boolean',
+        'scans_attached' => 'boolean',
+        'out_of_service_at' => 'date',
+        'checked_at' => 'datetime',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -57,12 +75,27 @@ class Driver extends Model
 
     public function contact()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->belongsTo(Contact::class)->withTrashed();
     }
 
     public function certificates()
     {
         return $this->hasMany(Certificate::class);
+    }
+
+    public function checkedBy()
+    {
+        return $this->belongsTo(User::class, 'checked_by_user_id')->withTrashed();
+    }
+
+    public function scopeInService($query)
+    {
+        return $query->where('in_service', true);
+    }
+
+    public function trainingParticipations()
+    {
+        return $this->hasMany(AcademyTrainingParticipant::class);
     }
 
     public function getDriverFullNameAttribute()

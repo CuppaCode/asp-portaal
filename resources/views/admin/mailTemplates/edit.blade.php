@@ -64,6 +64,7 @@
                     <option value="CERTIFICATE_NOTIFICATION_ERROR" {{ old('trigger_type', $mailTemplate->trigger_type) == 'CERTIFICATE_NOTIFICATION_ERROR' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.CERTIFICATE_NOTIFICATION_ERROR.name') }}</option>
                     <option value="MANUAL_CLAIMS" {{ old('trigger_type', $mailTemplate->trigger_type) == 'MANUAL_CLAIMS' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_CLAIMS.name') }}</option>
                     <option value="MANUAL_GENERAL" {{ old('trigger_type', $mailTemplate->trigger_type) == 'MANUAL_GENERAL' ? 'selected' : '' }}>{{ trans('cruds.superAdmin.triggers.types.MANUAL_GENERAL.name') }}</option>
+                    <option value="ACADEMY" {{ old('trigger_type', $mailTemplate->trigger_type) == 'ACADEMY' ? 'selected' : '' }}>Academy</option>
                 </select>
                 @if($errors->has('trigger_type'))
                     <div class="invalid-feedback">
@@ -72,6 +73,8 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.mailTemplates.fields.trigger_type_helper') }}</span>
             </div>
+
+            @include('admin.mailTemplates._academy_fields')
 
             <div class="form-group">
                 <label for="reply_to">{{ trans('cruds.mailTemplates.fields.reply_to') }}</label>

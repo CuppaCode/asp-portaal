@@ -74,6 +74,10 @@ class CertificateRenewalController extends Controller
         $certificate->last_notification_sent_at = null; // Reset for new expiry cycle
         $certificate->save();
 
+        if ($certificate->category) {
+            app(\App\Services\Academy\CertificateRenewalHandler::class)->afterRenewal($certificate);
+        }
+
         // Send renewal confirmation emails
         $recipients = [];
         

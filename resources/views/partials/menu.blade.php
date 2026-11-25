@@ -49,6 +49,45 @@
                 </ul>
             </li>
         @endcan
+        @can('academy_access')
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/academy*") ? "c-show" : "" }}">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-graduation-cap c-sidebar-nav-icon">
+
+                    </i>
+                    Academy
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.academy.overview") }}" class="c-sidebar-nav-link {{ request()->routeIs("admin.academy.overview") || request()->routeIs("admin.academy.mail.*") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-tasks c-sidebar-nav-icon">
+
+                            </i>
+                            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;">Overzicht</span>
+                            @if(!empty($academyOverdueCount))
+                                <span class="badge badge-pill badge-danger" style="margin-left:auto;flex-shrink:0;align-self:center;font-size:0.7rem;">{{ $academyOverdueCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.academy.employers.index") }}" class="c-sidebar-nav-link {{ request()->routeIs("admin.academy.employers.*") || request()->routeIs("admin.academy.driver-cards.*") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-building c-sidebar-nav-icon">
+
+                            </i>
+                            Werkgevers
+                        </a>
+                    </li>
+                    <li class="c-sidebar-nav-item">
+                        <a href="{{ route("admin.academy.trainings.index") }}" class="c-sidebar-nav-link {{ request()->routeIs("admin.academy.trainings.*") ? "c-active" : "" }}">
+                            <i class="fa-fw fas fa-chalkboard-teacher c-sidebar-nav-icon">
+
+                            </i>
+                            Trainingen
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endcan
         @can('contact_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/contacts/*") ? "c-show" : "" }} {{ request()->is("admin/injury-offices*") ? "c-show" : "" }} {{ request()->is("admin/expertise-offices*") ? "c-show" : "" }} {{ request()->is("admin/recovery-offices*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
@@ -147,8 +186,18 @@
                 </a>
             </li>
         @endcan
+        @can('driver_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.drivers.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/drivers") || request()->is("admin/drivers/*") ? "c-active" : "" }}">
+                    <i class="fa-fw far fa-address-card c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.driver.title') }}
+                </a>
+            </li>
+        @endcan
         @can('vehicle_information_access')
-            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/vehicles*") ? "c-show" : "" }} {{ request()->is("admin/vehicle-opposites*") ? "c-show" : "" }} {{ request()->is("admin/drivers*") ? "c-show" : "" }}">
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/vehicles*") ? "c-show" : "" }} {{ request()->is("admin/vehicle-opposites*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-car c-sidebar-nav-icon">
 
@@ -173,16 +222,6 @@
 
                                 </i>
                                 {{ trans('cruds.vehicleOpposite.title') }}
-                            </a>
-                        </li>
-                    @endcan
-                    @can('driver_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.drivers.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/drivers") || request()->is("admin/drivers/*") ? "c-active" : "" }}">
-                                <i class="fa-fw far fa-address-card c-sidebar-nav-icon">
-
-                                </i>
-                                {{ trans('cruds.driver.title') }}
                             </a>
                         </li>
                     @endcan

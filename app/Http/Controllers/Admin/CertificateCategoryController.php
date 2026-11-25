@@ -32,7 +32,6 @@ class CertificateCategoryController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'duration' => 'required|integer|min:0',
             'notify_days_before' => 'nullable|integer|min:1|max:365',
             'enable_notifications' => 'nullable|boolean',
             'notification_recipients' => 'required_if:enable_notifications,1|nullable|string',
@@ -60,7 +59,7 @@ class CertificateCategoryController extends Controller
 
         $category = CertificateCategory::create($data);
 
-        return redirect()->route('admin.certificate-categories.index')->with('success', 'Categorie aangemaakt');
+        return redirect()->route('admin.certificate-categories.index')->with('success', 'Certificaattype aangemaakt');
     }
 
     /**
@@ -71,21 +70,19 @@ class CertificateCategoryController extends Controller
         abort_if(Gate::denies('certificate_category_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $name = trim($request->get('name', ''));
-        $duration = $request->get('duration', 12);
-
         if ($name === '') {
             return response()->json(['message' => 'Name required'], 422);
         }
 
         $category = CertificateCategory::firstOrCreate(
             ['name' => $name],
-            ['duration' => (int)$duration]
+            []
         );
 
         return response()->json([
             'id' => $category->id,
             'name' => $category->name,
-            'duration' => $category->duration,
+            'code' => $category->module_key,
         ]);
     }
 
@@ -102,7 +99,6 @@ class CertificateCategoryController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'duration' => 'required|integer|min:0',
             'notify_days_before' => 'nullable|integer|min:1|max:365',
             'enable_notifications' => 'nullable|boolean',
             'notification_recipients' => 'required_if:enable_notifications,1|nullable|string',
@@ -130,7 +126,7 @@ class CertificateCategoryController extends Controller
 
         $certificateCategory->update($data);
 
-        return redirect()->route('admin.certificate-categories.index')->with('success', 'Categorie bijgewerkt');
+        return redirect()->route('admin.certificate-categories.index')->with('success', 'Certificaattype bijgewerkt');
     }
 
     public function show(CertificateCategory $certificateCategory)
@@ -168,7 +164,11 @@ class CertificateCategoryController extends Controller
         }
 
         $results = $query->orderBy('name')->limit(20)->get()->map(function ($c) {
-            return ['id' => $c->id, 'text' => $c->name, 'duration' => $c->duration];
+            return [
+                'id' => $c->id,
+                'text' => $c->name,
+                'code' => $c->module_key,
+            ];
         });
 
         return response()->json(['results' => $results]);

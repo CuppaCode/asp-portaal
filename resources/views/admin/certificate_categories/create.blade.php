@@ -17,17 +17,8 @@
                 @endif
             </div>
 
-            <div class="form-group">
-                <label for="duration">{{ trans('cruds.certificateCategory.fields.duration') }}</label>
-                <input class="form-control {{ $errors->has('duration') ? 'is-invalid' : '' }}" type="number" name="duration" id="duration" value="{{ old('duration', 12) }}">
-                @if($errors->has('duration'))
-                    <div class="invalid-feedback">{{ $errors->first('duration') }}</div>
-                @endif
-                <small class="form-text text-muted">Duur van het certificaat in maanden</small>
-            </div>
-
             <hr class="my-4">
-            <h5>Notificatie Instellingen</h5>
+            <h5>Notificatie instellingen</h5>
 
             <div class="form-group">
                 <div class="form-check">
