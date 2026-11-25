@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            @endif 
 
             @if($certificate->metaFields->isNotEmpty())
                 <div class="card mt-3">
